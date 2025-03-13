@@ -1,5 +1,5 @@
 <?php
-    include '../includes/navbar.php'
+    include '../../views/admin/includes/navbar.php'
 ?>
 
 <div class="p-3 bg-light">
@@ -26,7 +26,6 @@
                 <td>1</td>
                 <td>1</td>
                 <td>
-                    <button class="btn btn-info btn-sm">Xem</button>
                     <button class="btn btn-warning btn-sm">Sửa</button>
                     <button class="btn btn-danger btn-sm">Xóa</button>
                 </td>
@@ -69,105 +68,66 @@
                 <label for="permissionGroupName" style="color: #1D712C;">Tên nhóm quyền</label>
                 <span class="text-message role-name-msg"></span>
             </div>
-            <table class="table table-borderless permission-group">
+            <table class="table table-borderless permission-group table-hover">
                 <thead>
                     <tr>
-                        <th class="text-success text-start fs-5">Danh mục chức năng</th>
-                        <th>Xem</th>
-                        <th>Tạo mới</th>
-                        <th>Cập nhật</th>
-                        <th>Khóa</th>
-                        <th>In</th>
+                        <th class="text-success fs-5">Danh mục chức năng</th>
+                        <th class="text-success fs-5">Được quyền</th>                   
                     </tr>
                 </thead>
-                <tbody>
+                <tbody>                   
                     <tr>
                         <td>Quản lý nhóm quyền</td>
                         <td><input type="checkbox" name="NQ_xem" class="form-check-input"></td>
-                        <td><input type="checkbox" name="NQ_them" class="form-check-input"></td>
-                        <td><input type="checkbox" name="NQ_sua" class="form-check-input"></td>
-                        <td><input type="checkbox" name="NQ_xoa" class="form-check-input"></td>
-                        <td>-</td>
+                       
                     </tr>
                     <tr>
                         <td>Quản lý tài khoản</td>
-                        <td>-</td>
-                        <td><input type="checkbox" name="TK_them" class="form-check-input"></td>
-                        <td><input type="checkbox" name="TK_sua" class="form-check-input"></td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td><input type="checkbox" name="NQ_xem" class="form-check-input"></td>
                     </tr>
                     <tr>
                         <td>Quản lý sản phẩm</td>
-                        <td>-</td>
-                        <td><input type="checkbox" name="TG_them" class="form-check-input"></td>
-                        <td><input type="checkbox" name="TG_sua" class="form-check-input"></td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td><input type="checkbox" name="NQ_xem" class="form-check-input"></td>
                     </tr>
                     <tr>
                         <td>Quản lý hóa đơn</td>
-                        <td>-</td>
-                        <td><input type="checkbox" name="DM_them" class="form-check-input"></td>
-                        <td><input type="checkbox" name="DM_sua" class="form-check-input"></td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td><input type="checkbox" name="NQ_xem" class="form-check-input"></td>
                     </tr>
                     <tr>
                         <td>Quản lý nhà cung cấp</td>
-                        <td><input type="checkbox" name="NCC_xem" class="form-check-input"></td>
-                        <td><input type="checkbox" name="NCC_them" class="form-check-input"></td>
-                        <td><input type="checkbox" name="NCC_sua" class="form-check-input"></td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td><input type="checkbox" name="NQ_xem" class="form-check-input"></td>
                     </tr>
                     <tr>
                         <td>Quản lý mã giảm giá</td>
-                        <td>-</td>
-                        <td><input type="checkbox" name="MGG_them" class="form-check-input"></td>
-                        <td><input type="checkbox" name="MGG_sua" class="form-check-input"></td>
-                        <td><input type="checkbox" name="MGG_xoa" class="form-check-input"></td>
-                        <td>-</td>
+                        <td><input type="checkbox" name="NQ_xem" class="form-check-input"></td>
                     </tr>
                     <tr>
                         <td>Quản lý phiếu nhập</td>
-                        <td><input type="checkbox" name="SP_xem" class="form-check-input"></td>
-                        <td><input type="checkbox" name="SP_them" class="form-check-input"></td>
-                        <td><input type="checkbox" name="SP_sua" class="form-check-input"></td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td><input type="checkbox" name="NQ_xem" class="form-check-input"></td>
                     </tr>
                     <tr>
                         <td>Đặt hàng</td>
-                        <td><input type="checkbox" name="SP_xem" class="form-check-input"></td>
-                        <td><input type="checkbox" name="SP_them" class="form-check-input"></td>
-                        <td><input type="checkbox" name="SP_sua" class="form-check-input"></td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td><input type="checkbox" name="NQ_xem" class="form-check-input"></td>
                     </tr>
                     <tr>
                         <td>Quản lý đơn vị vận chuyển</td>
-                        <td><input type="checkbox" name="SP_xem" class="form-check-input"></td>
-                        <td><input type="checkbox" name="SP_them" class="form-check-input"></td>
-                        <td><input type="checkbox" name="SP_sua" class="form-check-input"></td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td><input type="checkbox" name="NQ_xem" class="form-check-input"></td>
                     </tr>
                     <tr>
                         <td>Quản lý Bảo hành</td>
                         <td><input type="checkbox" name="DH_xem" class="form-check-input"></td>
-                        <td>-</td>
-                        <td><input type="checkbox" name="DH_sua" class="form-check-input"></td>
-                        <td>-</td>
-                        <td><input type="checkbox" name="DH_in" class="form-check-input"></td>
+                        
                     </tr>
                     <tr>
                         <td>Thống kê</td>
                         <td><input type="checkbox" name="PN_xem" class="form-check-input"></td>
-                        <td><input type="checkbox" name="PN_them" class="form-check-input"></td>
-                        <td><input type="checkbox" name="PN_sua" class="form-check-input"></td>
-                        <td>-</td>
-                        <td><input type="checkbox" name="PN_in" class="form-check-input"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="btn btn-info btn-sm"><i class='bx bx-plus' ></i></button>
+                            <button class="btn btn-danger btn-sm"><i class='bx bx-minus'></i></button>
+                        </td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>

@@ -1,5 +1,5 @@
 <?php
-    include '../includes/navbar.php';
+    include '../../views/admin/includes/navbar.php'
 ?>
 <div class="p-3 bg-light">
     <div>
