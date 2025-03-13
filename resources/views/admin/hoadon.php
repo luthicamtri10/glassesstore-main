@@ -1,5 +1,5 @@
 <?php
-    include '../includes/navbar.php';
+    include '../../views/admin/includes/navbar.php'
 ?>
 <div class="p-4 bg-light">
     <div class="col-md-12 d-flex flex-wrap align-items-center gap-3">
@@ -35,10 +35,14 @@
         <table class="table table-striped table-bordered text-center table-hover">
             <thead class="">
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Họ</th>
-                    <th scope="col">Tên</th>
-                    <th scope="col">Tài khoản</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">ID khách hàng</th>
+                    <th scope="col">ID nhân viên</th>
+                    <th scope="col">Tổng tiền</th>
+                    <th scope="col">ID PTTT</th>
+                    <th scope="col">Ngày tạo</th>
+                    <th scope="col">ID DVVC</th>
+                    <th scope="col">Trạng thái</th>
                     <th scope="col">Hành động</th>
                 </tr>
             </thead>
@@ -48,6 +52,13 @@
                     <td>Nguyễn</td>
                     <td>Văn A</td>
                     <td>@vana</td>
+                    <td>Nguyễn</td>
+                    <td>Văn A</td>
+                    <td>@vana</td>
+                    <?php
+                     
+                    ?>
+                    <td class="text-danger">@vana</td>
                     <td>
                         <button class="btn btn-warning btn-sm">Xem chi tiết</button>
                     </td>

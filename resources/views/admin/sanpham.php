@@ -1,8 +1,7 @@
 <?php
-    include '../includes/navbar.php';
+    include '../../views/admin/includes/navbar.php'
 ?>
 <div class="p-3 bg-light">
-    <div>
         <!-- Nút Plus để mở Modal -->
         <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addProductModal">
             <i class='bx bx-plus'></i>
@@ -64,7 +63,6 @@
                 </li>
             </ul>
         </nav>
-    </div>
 </div>
 
 <!-- Modal Form Thêm Sản Phẩm -->
@@ -90,12 +88,10 @@
             <div class="col">
               <label class="form-label">Loại sản phẩm</label>
               <select id="" class="form-select">
-                <option selected>Choose...</option>
-
-                </option>
+                <option selected>Chọn...</option>
               </select>
+        
             </div>
-          </div>
           
           <!-- Hàng 2: Hãng & Mức giá -->
           <div class="row mb-3">
