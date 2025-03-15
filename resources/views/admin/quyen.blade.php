@@ -1,6 +1,4 @@
-<?php
-    include '../../views/admin/includes/navbar.php'
-?>
+@include('admin.includes.navbar')
 
 <div class="p-3 bg-light">
     <div>
@@ -122,16 +120,20 @@
                         <td>Thống kê</td>
                         <td><input type="checkbox" name="PN_xem" class="form-check-input"></td>
                     </tr>
-                    <tr>
-                        <td>
-                            <button class="btn btn-info btn-sm"><i class='bx bx-plus' ></i></button>
-                            <button class="btn btn-danger btn-sm"><i class='bx bx-minus'></i></button>
-                        </td>
-                        <td></td>
-                    </tr>
+               
+                  
                 </tbody>
             </table>
-          </div>
+            <div class="col-8 ">
+                <input type="text" class="form-control" id="inputEmail4" placeholder="Nhập tên quyền">
+            </div>
+                        
+             <div class="my-2">
+                <button class="btn btn-info btn-sm"><i class='bx bx-plus' ></i></button>
+                <!-- <button class="btn btn-danger btn-sm"><i class='bx bx-minus'></i></button> -->
+             </div>
+                
+    
           <div class="modal-footer">
             <button type="button" class="btn btn-success" id="submit_btn">Xác nhận</button>
           </div>

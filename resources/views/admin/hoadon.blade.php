@@ -1,6 +1,4 @@
-<?php
-    include '../../views/admin/includes/navbar.php'
-?>
+@include('admin.includes.navbar')
 <div class="p-4 bg-light">
     <div class="col-md-12 d-flex flex-wrap align-items-center gap-3">
         <form class="d-flex flex-wrap w-100 gap-2">

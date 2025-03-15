@@ -1,6 +1,4 @@
-<?php
-    include '../../views/admin/includes/navbar.php'
-?>
+@include('admin.includes.navbar')
 <div class="p-3 bg-light">
         <!-- Nút Plus để mở Modal -->
         <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addTypeProductModal">

@@ -14,15 +14,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     sidebarLinks.forEach(link => {
         link.addEventListener("click", function (event) {
-            event.preventDefault(); // Ngăn trang reload
-            const page = this.getAttribute("data-page"); // Lấy file PHP cần tải
+            event.preventDefault();
+            const page = this.getAttribute("data-page"); 
 
-            fetch(page)
+            fetch(page, { headers: { "X-Requested-With": "XMLHttpRequest" } }) 
                 .then(response => response.text())
                 .then(data => {
-                    contentDiv.innerHTML = data; // Chèn nội dung vào phần chính
+                    contentDiv.innerHTML = data;
                 })
                 .catch(error => console.error("Lỗi tải trang:", error));
         });
     });
 });
+

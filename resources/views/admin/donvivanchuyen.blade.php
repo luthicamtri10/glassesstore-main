@@ -1,40 +1,30 @@
-<?php
-    include '../../views/admin/includes/navbar.php'
-?>
+@include('admin.includes.navbar')
 <div class="p-3 bg-light">
     <div>
             <!-- Nút mở Modal -->
-            <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#userModal">
+            <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#transportModal">
                 <i class='bx bx-plus'></i>
             </button>
-
-            <select class="form-select w-25 mb-1 ms-1" aria-label="Default select example">
-                <option selected>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
-
             <table class="table table-hover">
             <thead>
                 <tr>
-                <th scope="col">Tên tài khoản</th>
-                <th scope="col">Email</th>
-                <th scope="col">Password</th>
-                <th scope="col">ID người dùng</th>
-                <th scope="col">ID quyền</th>
+                <th scope="col">ID</th>
+                <th scope="col">Tên đơn vị vận chuyển</th>
+                <th scope="col">Thành phố</th>
+                <th scope="col">Chi phí vận chuyển</th>
+                <th scope="col">Mô tả</th>
                 <th scope="col">Trạng thái</th>
                 <th scope="col">Hành động</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
+                <th scope="row"></th>
+                <th scope="row"></th>
+                <th scope="row"></th>
+                <th scope="row"></th>
+                <th scope="row"></th>
+                <th scope="row"></th>
                 
                 <td>
                     <button class="btn btn-warning btn-sm">Sửa</button>
@@ -64,30 +54,29 @@
     </div>
 </div>
 
-<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg"> <!-- modal-lg để modal to hơn -->
+<div class="modal fade" id="transportModal">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="userModalLabel">Thông tin tài khoản</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form class="row g-3">
+        <form class="row g-3 modal-lg">
           <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">Username</label>
+              <label for="inputEmail4" class="form-label">Tên đơn vị vận chuyển</label>
               <input type="text" class="form-control" id="inputEmail4">
           </div>
           <div class="col-md-6">
-              <label for="inputPassword4" class="form-label">Password</label>
-              <input type="password" class="form-control" id="inputPassword4">
+              <label for="inputStatus" class="form-label">Thành phố</label>
+              <select id="inputStatus" class="form-select">
+                <option selected>Choose...</option>
+                <option selected>Hồ chí minh</option>
+              </select>
           </div>
           <div class="col-md-6">
-              <label for="inputGroup" class="form-label">Nhóm quyền</label>
-              <select id="inputGroup" class="form-select">
-                <option selected>Choose...</option>
-                <option>Admin</option>
-                <option>User</option>
-              </select>
+              <label for="inputEmail4" class="form-label">Chi phí vận chuyển</label>
+              <input type="text" class="form-control" id="inputEmail4">
           </div>
           <div class="col-md-6">
               <label for="inputStatus" class="form-label">Trạng thái</label>
@@ -96,6 +85,10 @@
                 <option>Hoạt động</option>
                 <option>Ngừng hoạt động</option>
               </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mô tả</label>
+            <textarea class="form-control" rows="3" placeholder="Nhập mô tả"></textarea>
           </div>
         </form>
       </div>
