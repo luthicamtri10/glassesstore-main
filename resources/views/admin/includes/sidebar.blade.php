@@ -9,85 +9,85 @@
       </div>
       <ul class="sidebar-nav">
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/quyen.php">
+          <a href="#" class="sidebar-link" data-page="admin/quyen">
             <i class='bx bx-bug'></i>
             <span>Quyền</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/nguoidung.php">
+          <a href="#" class="sidebar-link" data-page="admin/nguoidung">
             <i class='bx bx-user'></i>
             <span>Người dùng</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/taikhoan.php">
+          <a href="#" class="sidebar-link" data-page="admin/taikhoan">
             <i class='bx bxs-user-account'></i>
             <span>Tài khoản</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/sanpham.php">
+          <a href="#" class="sidebar-link" data-page="admin/sanpham">
             <i class='bx bx-glasses'></i>
             <span>Sản phẩm</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/loaisanpham.php">
+          <a href="#" class="sidebar-link" data-page="admin/loaisanpham">
             <i class='bx bx-bar-chart'></i>
             <span>Loại sản phẩm</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/hang.php">
+          <a href="#" class="sidebar-link" data-page="admin/hang">
             <i class='bx bx-bar-chart'></i>
             <span>Hãng</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/hoadon.php">
+          <a href="#" class="sidebar-link" data-page="admin/hoadon">
             <i class='bx bx-cart'></i>
             <span>Hóa đơn</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/donvivanchuyen.php">
+          <a href="#" class="sidebar-link" data-page="admin/donvivanchuyen">
             <i class='bx bxs-truck'></i>
             <span>Đơn vị vận chuyển</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/thanhpho.php">
+          <a href="#" class="sidebar-link" data-page="admin/thanhpho">
             <i class='bx bxs-truck'></i>
             <span>Thành phố</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/nhacungcap.php">
+          <a href="#" class="sidebar-link" data-page="admin/nhacungcap">
             <i class='bx bx-edit-alt'></i>
             <span>Nhà cung cấp</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/kho.php">
+          <a href="#" class="sidebar-link" data-page="admin/kho">
             <i class='bx bx-home-alt'></i>  
             <span>Nhập kho</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/khuyenmai.php">
+          <a href="#" class="sidebar-link" data-page="admin/khuyenmai">
             <i class='bx bx-time'></i>
             <span>Khuyến mại</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/baohanh.php">
+          <a href="#" class="sidebar-link" data-page="admin/baohanh">
             <i class='bx bx-shield-plus'></i>
             <span>Bảo hành</span>
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="#" class="sidebar-link" data-page="../../views/admin/thongke.php">
+          <a href="#" class="sidebar-link" data-page="admin/thongke">
             <i class='bx bx-bar-chart'></i>
             <span>Thống kê</span>
           </a>

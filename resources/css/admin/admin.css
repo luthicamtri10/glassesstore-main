@@ -9,10 +9,6 @@ li {
     list-style: none;
 }
 
-body {
-    font-family: 'Outfit', serif;
-}
-
 .wrapper {
     display: flex;
     height: 100vh;

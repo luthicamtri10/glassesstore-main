@@ -1,6 +1,4 @@
-<?php
-    include '../../views/admin/includes/navbar.php'
-?>
+@include('admin.includes.navbar')
 <div class="p-3 bg-light">
     <div>
             <!-- Nút mở Modal -->

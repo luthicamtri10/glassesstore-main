@@ -1,37 +1,28 @@
-<?php
-    include '../../views/admin/includes/navbar.php'
-?>
-<div class="p-3 bg-light">
-    <div>
+@include('admin.includes.navbar')
+<div class="p-3">
             <!-- Nút mở Modal -->
-            <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#supplierModal">
+            <!-- <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#warehouseModal">
                 <i class='bx bx-plus'></i>
-            </button>
-            <table class="table table-hover">
-            <thead>
-                <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Tên nhà cung cấp</th>
-                <th scope="col">Số điện thoại</th>
-                <th scope="col">Địa chỉ</th>
-                <th scope="col">Trạng thái</th>
-                <th scope="col">Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                <th scope="row"></th>
-                <th scope="row"></th>
-                <th scope="row"></th>
-                <th scope="row"></th>
-                <th scope="row"></th>
-                
-                <td>
-                    <button class="btn btn-warning btn-sm">Sửa</button>
-                    <button class="btn btn-danger btn-sm">Xóa</button>
-                </td>
-                </tr>
-            </tbody>
+            </button> -->
+            <table class="table table-hover shadow-sm">
+                <thead>
+                    <tr>
+                    <th scope="col">ID khách hàng</th>
+                    <th scope="col">ID sản phẩm</th>
+                    <th scope="col">Chi phí bảo hành</th>
+                    <th scope="col">Thời điểm bảo hành</th>
+                    <th scope="col">Số seri</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <th scope="row"></th>
+                    <th scope="row"></th>
+                    <th scope="row"></th>
+                    <th scope="row"></th>
+                    <th scope="row"></th>
+                    </tr>
+                </tbody>
             </table>
 
             <nav aria-label="Page navigation example" class="d-flex justify-content-center">
@@ -51,14 +42,13 @@
                     </li>
                 </ul>
             </nav>
-    </div>
 </div>
 
-<div class="modal fade" id="supplierModal">
+<!-- <div class="modal fade" id="warehouseModal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="userModalLabel">Thông tin tài khoản</h5>
+        <h5 class="modal-title" id="userModalLabel">Thông tin kho</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -94,4 +84,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
