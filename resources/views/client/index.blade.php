@@ -20,7 +20,7 @@
         <ul class="list-top-nav d-flex ms-auto gap-2">
           <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill " id="chinhsach"><a href="">Chính sách</a></li>
           <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang"><a href="">Tra cứu đơn hàng</a></li>
-          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="taikhoan"><a href="../../views/client/Login-Register.php">Tài khoản</a></li>
+          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="taikhoan"><a href="../../views/client/Login-Register.blade.php">Tài khoản</a></li>
         </ul>
       </div>
       <div class="navbar text-white navbar-expand" id="navbar">

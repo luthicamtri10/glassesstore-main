@@ -24,7 +24,7 @@
                     <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="taikhoan"><a href="../../views/client/Login-Register.php">Tài khoản</a></li>
                 </ul>
             </div>
-            <div class="navbar text-white navbar-expand" id="navbar">
+            <div class="navbar text-white navbar-expand" id="navbar">  
                 <a href="" class="navbar-brand">Logo</a>
                 <ul class="navbar-nav gap-5">
                     <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a></li>
