@@ -2,73 +2,82 @@
 namespace App\Dao;
 
 use App\Interface\DAOInterface;
-use App\Models\ChucNang;
+use App\Models\CTQ;
+use App\Models\Tinh;
 use App\Services\database_connection;
 use Exception;
 use InvalidArgumentException;
 
 use function Laravel\Prompts\alert;
 
-class ChucNang_DAO implements DAOInterface {
+class CTQ_DAO implements DAOInterface {
     private static $instance;
     public static function getInstance()
     {
         if(self::$instance == null) {
-            self::$instance = new ChucNang_DAO();
+            self::$instance = new CTQ_DAO();
         }
         return self::$instance;
     }
     public function readDatabase(): array
     {
         $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM ChucNang");
+        $rs = database_connection::executeQuery("SELECT * FROM CTQ");
         while ($row = $rs->fetch_assoc()) {
-            $model = $this->createChucNangModel($row);
+            $model = $this->createCTQModel($row);
             array_push($list, $model);
         }
         return $list;
     }
-    public function createChucNangModel($rs) {
-        $id = $rs['ID'];
-        $tenChucNang = $rs['TENCHUCNANG'];
+    public function createCTQModel($rs) {
+        $idNguoiDung = $rs['IDNGUOIDUNG'];
+        $idQuyen = $rs['IDQUYEN'];
+        $thaoTac = $rs['THAOTAC'];
         $trangThaiHD = $rs['TRANGTHAIHD'];
-        return new ChucNang($id, $tenChucNang, $trangThaiHD);
+        return new CTQ($idNguoiDung, $idQuyen, $thaoTac, $trangThaiHD);
     }
     public function getAll() : array {
         $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM ChucNang");
+        $rs = database_connection::executeQuery("SELECT * FROM CTQ");
         while($row = $rs->fetch_assoc()) {
-            $model = $this->createChucNangModel($row);
+            $model = $this->createCTQModel($row);
             array_push($list, $model);
         }
         return $list;
     }
     public function getById($id) {
-        $query = "SELECT * FROM ChucNang WHERE id = ?";
+        $query = "SELECT * FROM CTQ WHERE idQuyen = ?";
         $result = database_connection::executeQuery($query, $id);
         if($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             if($row) {
-                return $this->createChucNangModel($row);
+                return $this->createCTQModel($row);
             }
         }
         return null;
     }
     public function insert($model): int {
-        $query = "INSERT INTO ChucNang (tenChucNang, trangThaiHD) VALUES (?,?)";
-        $args = [$model->getTenChucNang(), $model->getTrangThaiHD()];
+        $query = "INSERT INTO CTQ (idQuyen, idChucNang, thaoTac, trangThaiHD) VALUES (?,?,?,?)";
+        $args = [$model->getIdQuyen(), $model->getIdChucNang(), $model->getThaoTac(), $model->getTrangThaiHD()];
         return database_connection::executeQuery($query, ...$args);
     }
     public function update($model): int {
-        $query = "UPDATE ChucNang SET tenChucNang = ?, trangThaiHD = ? WHERE id = ?";
-        $args = [$model->getTenChucNang(), $model->getTrangThaiHD(), $model->getId()];
+        $query = "UPDATE CTQ SET idChucNang = ?, thaoTac = ?, trangThaiHD = ? WHERE idQuyen = ?";
+        $args = [$model->getIdChucNang(), $model->getThaoTac(), $model->getTrangThaiHD(), $model->getIdQuyen()];
         $result = database_connection::executeUpdate($query, ...$args);
         return is_int($result) ? $result : 0;  
     }
-    public function delete($id): int
+    public function delete(int $id): int
     {
-        $query = "UPDATE ChucNang SET trangThaiHD = false WHERE id = ?";
+        $query = "UPDATE CTQ SET trangThaiHD = false WHERE idQuyen = ?";
         $result = database_connection::executeUpdate($query, ...[$id]);
+        
+        return is_int($result) ? $result : 0;
+    }
+    public function deleteByIdQuyenAndIdChucNang($idQuyen, $idChucNang): int
+    {
+        $query = "UPDATE CTQ SET trangThaiHD = false WHERE idQuyen = ? AND idChucNang = ?";
+        $result = database_connection::executeUpdate($query, $idQuyen, $idChucNang);
         
         return is_int($result) ? $result : 0;
     }
@@ -80,20 +89,20 @@ class ChucNang_DAO implements DAOInterface {
         }
         $query = "";
         if ($columnNames === null || count($columnNames) === 0) {
-            $query = "SELECT * FROM ChucNang WHERE id LIKE ? OR tenChucNang LIKE ? OR trangThaiHD LIKE ? ";
-            $args = array_fill(0,  3, "%" . $condition . "%");
+            $query = "SELECT * FROM CTQ WHERE idquyen LIKE ? OR idChucNang LIKE ? OR thaoTac LIKE ? OR trangThaiHD LIKE ? ";
+            $args = array_fill(0,  4, "%" . $condition . "%");
         } else if (count($columnNames) === 1) {
             $column = $columnNames[0];
-            $query = "SELECT * FROM ChucNang WHERE $column LIKE ?";
+            $query = "SELECT * FROM CTQ WHERE $column LIKE ?";
             $args = ["%" . $condition . "%"];
         } else {
-            $query = "SELECT * FROM ChucNang WHERE " . implode(" LIKE ? OR ", $columnNames) . " LIKE ?";
+            $query = "SELECT * FROM CTQ WHERE " . implode(" LIKE ? OR ", $columnNames) . " LIKE ?";
             $args = array_fill(0, count($columnNames), "%" . $condition . "%");
         }
         $rs = database_connection::executeQuery($query, ...$args);
         $list = [];
         while ($row = $rs->fetch_assoc()) {
-            $model = $this->createChucNangModel($row);
+            $model = $this->createCTQModel($row);
             array_push($list, $model);
         }
         if (count($list) === 0) {

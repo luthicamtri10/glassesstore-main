@@ -1,18 +1,18 @@
 <?php
 namespace App\Bus;
 
-use App\Dao\ChucNang_DAO;
+use App\Dao\CTQ_DAO;
+use App\Dao\Tinh_DAO;
 use App\Interface\BUSInterface;
-use PhpParser\Node\Stmt\Echo_;
 
 use function Laravel\Prompts\error;
 
-class ChucNang_BUS implements BUSInterface{
-    private $ChucNangList = array();
+class CTQ_BUS implements BUSInterface{
+    private $CTQList = array();
     private static $instance;
     public static function getInstance () {
         if(self::$instance == null) {
-            self::$instance = new ChucNang_BUS();
+            self::$instance = new CTQ_BUS();
         }
         return self::$instance;
     }
@@ -22,48 +22,51 @@ class ChucNang_BUS implements BUSInterface{
     }
     public function refreshData(): void
     {
-        $this->ChucNangList = ChucNang_DAO::getInstance()->getAll();
+        $this->CTQList = CTQ_DAO::getInstance()->getAll();
     }
     public function getAllModels() : array
     {
-        return $this->ChucNangList;
+        return $this->CTQList;
     }
     public function getModelById($id)
     {
-        return ChucNang_DAO::getInstance()->getById($id);    }
+        return CTQ_DAO::getInstance()->getById($id);    }
     public function addModel($model)
     {
         if($model == null) {
-            error("Error when add a ChucNang");
+            error("Error when add a CTQ");
             return;
         }
-        return ChucNang_DAO::getInstance()->insert($model);
+        return CTQ_DAO::getInstance()->insert($model);
     }
     public function updateModel($model)
     {
         if($model == null) {
-            error("Error when update a ChucNang");
+            error("Error when update a CTQ");
             return;
         } 
-        return ChucNang_DAO::getInstance()->update($model);
+        return CTQ_DAO::getInstance()->update($model);
     }
     public function deleteModel($id)
     {
         if($id == null || $id == "") {
-            error("Error when delete a ChucNang");
+            error("Error when delete a CTQ");
             return;
         } 
-        return ChucNang_DAO::getInstance()->delete($id);
+        return CTQ_DAO::getInstance()->delete($id);
     }
     public function searchModel(string $value, array $columns)
     {
-        $list = ChucNang_DAO::getInstance()->search($value, $columns);
+        $list = CTQ_DAO::getInstance()->search($value, $columns);
         if(count($list) > 0) {
             return $list;
         } else {
             echo "Not found";
         }
         return null;
+    }
+    public function deleteByIdQuyenAndIdChucNang($idQuyen, $idChucNang) {
+        return CTQ_DAO::getInstance()->deleteByIdQuyenAndIdChucNang($idQuyen, $idChucNang);
     }
 }
 ?>
