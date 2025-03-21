@@ -65,7 +65,7 @@ class TaiKhoan_DAO implements DAOInterface {
     }
     public function update($model): int {
         $query = "UPDATE TAIKHOAN SET tentk = ?, password = ?, idnguoidung = ?, idquyen = ?, trangThaiHD = ? WHERE email = ?";
-        $args = [$model->getTenTK(), $model->getPassword(), $model->getIdNguoiDung()->getId(), $model->getIdQuyen()->getId(), $model->getTrangThaiHD(), $model->getEmail()];
+        $args = [$model->getTenTK(), password_hash($model->getPassword(), PASSWORD_DEFAULT), $model->getIdNguoiDung()->getId(), $model->getIdQuyen()->getId(), $model->getTrangThaiHD(), $model->getEmail()];
         $result = database_connection::executeUpdate($query, ...$args);
         return is_int($result) ? $result : 0;  
     }
