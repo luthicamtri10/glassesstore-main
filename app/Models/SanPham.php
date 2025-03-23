@@ -6,8 +6,9 @@ class SanPham
 {
     private $id, $tenSanPham, $idHang, $idLSP, $soLuong, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD;
 
-    public function __construct($tenSanPham, $idHang, $idLSP, $soLuong, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD)
+    public function __construct($id, $tenSanPham, $idHang, $idLSP, $soLuong, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD)
     {
+        $this->id = $id;
         $this->tenSanPham = $tenSanPham;
         $this->idHang = $idHang;
         $this->idLSP = $idLSP;

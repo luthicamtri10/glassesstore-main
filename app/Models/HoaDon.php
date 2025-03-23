@@ -6,8 +6,9 @@ class HoaDon
 {
     private $id, $idKhachHang, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $trangThai;
 
-    public function __construct($idKhachHang, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $trangThai)
+    public function __construct($id, $idKhachHang, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $trangThai)
     {
+        $this->id = $id;
         $this->idKhachHang = $idKhachHang;
         $this->idNhanVien = $idNhanVien;
         $this->tongTien = $tongTien;

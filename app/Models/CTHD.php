@@ -6,8 +6,9 @@ class CTHD
 {
     private $idHD, $idSP, $soLuong, $giaLucDat, $trangThaiHD, $soSeri;
 
-    public function __construct($idSP, $soLuong, $giaLucDat, $soSeri, $trangThaiHD)
+    public function __construct($idHD, $idSP, $soLuong, $giaLucDat, $soSeri, $trangThaiHD)
     {
+        $this->idHD = $idHD;
         $this->idSP = $idSP;
         $this->soLuong = $soLuong;
         $this->giaLucDat = $giaLucDat;
