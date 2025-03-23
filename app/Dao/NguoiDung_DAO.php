@@ -13,19 +13,6 @@ use PhpParser\Node\Expr\List_;
 use function Laravel\Prompts\error;
 
 class NguoiDung_DAO implements DAOInterface {
-    private static $instance;
-    private $tinhBUS;
-    public static function getInstance()
-    {
-        if(self::$instance == null) {
-            self::$instance = new NguoiDung_DAO();
-        }
-        return self::$instance;
-    }
-    public function __construct()
-    {
-        $this->tinhBUS = new Tinh_BUS();
-    }
     public function readDatabase(): array
     {
         $list = [];
@@ -52,7 +39,7 @@ class NguoiDung_DAO implements DAOInterface {
                 error("Can not create NGUOIDUNG model");
                 break;
         }
-        $tinh = $this->tinhBUS->getModelById($rs['IDTINH']);
+        $tinh = app(Tinh_BUS::class)->getModelById($rs['IDTINH']);
         return new NguoiDung(
             $rs['ID'],
             $rs['HOTEN'],

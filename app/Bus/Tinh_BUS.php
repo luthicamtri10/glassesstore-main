@@ -8,20 +8,13 @@ use function Laravel\Prompts\error;
 
 class Tinh_BUS implements BUSInterface{
     private $tinhList = array();
-    private static $instance;
-    public static function getInstance () {
-        if(self::$instance == null) {
-            self::$instance = new Tinh_BUS();
-        }
-        return self::$instance;
-    }
     public function __construct()
     {
         $this->refreshData();
     }
     public function refreshData(): void
     {
-        $this->tinhList = Tinh_DAO::getInstance()->getAll();
+        $this->tinhList = app(Tinh_DAO::class)->getAll();
     }
     public function getAllModels() : array
     {
@@ -29,14 +22,14 @@ class Tinh_BUS implements BUSInterface{
     }
     public function getModelById($id)
     {
-        return Tinh_DAO::getInstance()->getById($id);    }
+        return app(Tinh_DAO::class)->getById($id);    }
     public function addModel($model)
     {
         if($model == null) {
             error("Error when add a Tinh");
             return;
         }
-        return Tinh_DAO::getInstance()->insert($model);
+        return app(Tinh_DAO::class)->insert($model);
     }
     public function updateModel($model)
     {
@@ -44,7 +37,7 @@ class Tinh_BUS implements BUSInterface{
             error("Error when update a Tinh");
             return;
         } 
-        return Tinh_DAO::getInstance()->update($model);
+        return app(Tinh_DAO::class)->update($model);
     }
     public function deleteModel($id)
     {
@@ -52,11 +45,11 @@ class Tinh_BUS implements BUSInterface{
             error("Error when delete a Tinh");
             return;
         } 
-        return Tinh_DAO::getInstance()->delete($id);
+        return app(Tinh_DAO::class)->delete($id);
     }
     public function searchModel(string $value, array $columns)
     {
-        $list = Tinh_DAO::getInstance()->search($value, $columns);
+        $list = app(Tinh_DAO::class)->search($value, $columns);
         if(count($list) > 0) {
             return $list;
         } else {

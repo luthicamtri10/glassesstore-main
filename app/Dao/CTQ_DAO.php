@@ -11,14 +11,6 @@ use InvalidArgumentException;
 use function Laravel\Prompts\alert;
 
 class CTQ_DAO implements DAOInterface {
-    private static $instance;
-    public static function getInstance()
-    {
-        if(self::$instance == null) {
-            self::$instance = new CTQ_DAO();
-        }
-        return self::$instance;
-    }
     public function readDatabase(): array
     {
         $list = [];

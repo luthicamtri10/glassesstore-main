@@ -6,21 +6,14 @@ use App\Interface\BUSInterface;
 use App\Models\NguoiDung;
 
 class NguoiDung_BUS implements BUSInterface {
-    private static $instance;
     private $nguoiDungList = array();
-    public static function getInstance () {
-        if(self::$instance == null) {
-            self::$instance = new NguoiDung_BUS();
-        }
-        return self::$instance;
-    }
     public function __construct()
     {
         $this->refreshData();
     }
     public function refreshData(): void
     {
-        $this->nguoiDungList = NguoiDung_DAO::getInstance()->getAll();
+        $this->nguoiDungList = app(NguoiDung_DAO::class)->getAll();
     }
     public function getAllModels()
     {
@@ -28,7 +21,7 @@ class NguoiDung_BUS implements BUSInterface {
     }
     public function getModelById($id)
     {
-        return NguoiDung_DAO::getInstance()->getById($id);
+        return app(NguoiDung_DAO::class)->getById($id);
     }
     public function addModel($model)
     {
@@ -36,7 +29,7 @@ class NguoiDung_BUS implements BUSInterface {
             error_log("Error when insert a NguoiDung");
             return;
         }
-        return NguoiDung_DAO::getInstance()->insert($model);
+        return app(NguoiDung_DAO::class)->insert($model);
     }
     public function updateModel($model)
     {
@@ -44,7 +37,7 @@ class NguoiDung_BUS implements BUSInterface {
             error_log("Error when update a NguoiDung");
             return;
         }
-        return NguoiDung_DAO::getInstance()->update($model);
+        return app(NguoiDung_DAO::class)->update($model);
     }
     public function deleteModel($id)
     {
@@ -52,11 +45,11 @@ class NguoiDung_BUS implements BUSInterface {
             error_log("Error when delete a NguoiDung");
             return;
         }
-        return NguoiDung_DAO::getInstance()->delete($id);
+        return app(NguoiDung_DAO::class)->delete($id);
     }
     public function searchModel(string $value, array $columns)
     {
-        return NguoiDung_DAO::getInstance()->search($value, $columns);
+        return app(NguoiDung_DAO::class)->search($value, $columns);
     }
 }
 ?>

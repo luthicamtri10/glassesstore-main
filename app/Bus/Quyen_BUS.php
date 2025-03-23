@@ -9,20 +9,13 @@ use function Laravel\Prompts\error;
 
 class Quyen_BUS implements BUSInterface{
     private $quyenList = array();
-    private static $instance;
-    public static function getInstance () {
-        if(self::$instance == null) {
-            self::$instance = new Quyen_BUS();
-        }
-        return self::$instance;
-    }
     public function __construct()
     {
         $this->refreshData();
     }
     public function refreshData(): void
     {
-        $this->quyenList = Quyen_DAO::getInstance()->getAll();
+        $this->quyenList = app(Quyen_DAO::class)->getAll();
     }
     public function getAllModels() : array
     {
@@ -30,14 +23,14 @@ class Quyen_BUS implements BUSInterface{
     }
     public function getModelById($id)
     {
-        return Quyen_DAO::getInstance()->getById($id);    }
+        return app(Quyen_DAO::class)->getById($id);    }
     public function addModel($model)
     {
         if($model == null) {
             error("Error when add a Quyen");
             return;
         }
-        return Quyen_DAO::getInstance()->insert($model);
+        return app(Quyen_DAO::class)->insert($model);
     }
     public function updateModel($model)
     {
@@ -45,7 +38,7 @@ class Quyen_BUS implements BUSInterface{
             error("Error when update a Quyen");
             return;
         } 
-        return Quyen_DAO::getInstance()->update($model);
+        return app(Quyen_DAO::class)->update($model);
     }
     public function deleteModel($id)
     {
@@ -53,11 +46,11 @@ class Quyen_BUS implements BUSInterface{
             error("Error when delete a Quyen");
             return;
         } 
-        return Quyen_DAO::getInstance()->delete($id);
+        return app(Quyen_DAO::class)->delete($id);
     }
     public function searchModel(string $value, array $columns)
     {
-        $list = Quyen_DAO::getInstance()->search($value, $columns);
+        $list = app(Quyen_DAO::class)->search($value, $columns);
         if(count($list) > 0) {
             return $list;
         } else {

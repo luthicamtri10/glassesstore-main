@@ -9,20 +9,13 @@ use function Laravel\Prompts\error;
 
 class ChucNang_BUS implements BUSInterface{
     private $ChucNangList = array();
-    private static $instance;
-    public static function getInstance () {
-        if(self::$instance == null) {
-            self::$instance = new ChucNang_BUS();
-        }
-        return self::$instance;
-    }
     public function __construct()
     {
         $this->refreshData();
     }
     public function refreshData(): void
     {
-        $this->ChucNangList = ChucNang_DAO::getInstance()->getAll();
+        $this->ChucNangList = app(ChucNang_DAO::class)->getAll();
     }
     public function getAllModels() : array
     {
@@ -30,14 +23,14 @@ class ChucNang_BUS implements BUSInterface{
     }
     public function getModelById($id)
     {
-        return ChucNang_DAO::getInstance()->getById($id);    }
+        return app(ChucNang_DAO::class)->getById($id);    }
     public function addModel($model)
     {
         if($model == null) {
             error("Error when add a ChucNang");
             return;
         }
-        return ChucNang_DAO::getInstance()->insert($model);
+        return app(ChucNang_DAO::class)->insert($model);
     }
     public function updateModel($model)
     {
@@ -45,7 +38,7 @@ class ChucNang_BUS implements BUSInterface{
             error("Error when update a ChucNang");
             return;
         } 
-        return ChucNang_DAO::getInstance()->update($model);
+        return app(ChucNang_DAO::class)->update($model);
     }
     public function deleteModel($id)
     {
@@ -53,11 +46,11 @@ class ChucNang_BUS implements BUSInterface{
             error("Error when delete a ChucNang");
             return;
         } 
-        return ChucNang_DAO::getInstance()->delete($id);
+        return app(ChucNang_DAO::class)->delete($id);
     }
     public function searchModel(string $value, array $columns)
     {
-        $list = ChucNang_DAO::getInstance()->search($value, $columns);
+        $list = app(ChucNang_DAO::class)->search($value, $columns);
         if(count($list) > 0) {
             return $list;
         } else {

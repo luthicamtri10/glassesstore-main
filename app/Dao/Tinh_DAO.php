@@ -10,14 +10,6 @@ use InvalidArgumentException;
 use function Laravel\Prompts\alert;
 
 class Tinh_DAO implements DAOInterface {
-    private static $instance;
-    public static function getInstance()
-    {
-        if(self::$instance == null) {
-            self::$instance = new Tinh_DAO();
-        }
-        return self::$instance;
-    }
     public function readDatabase(): array
     {
         $list = [];

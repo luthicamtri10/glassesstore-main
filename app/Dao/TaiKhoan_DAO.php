@@ -11,14 +11,6 @@ use Psy\Readline\Hoa\Console;
 use Symfony\Component\Mailer\Event\MessageEvent;
 
 class TaiKhoan_DAO implements DAOInterface {
-    private static $instance;
-    public static function getInstance()
-    {
-        if(self::$instance == null) {
-            self::$instance = new TaiKhoan_DAO();
-        }
-        return self::$instance;
-    }
     public function readDatabase(): array
     {
         $list = [];
@@ -33,8 +25,8 @@ class TaiKhoan_DAO implements DAOInterface {
         $tentk = $rs['TENTK'];
         $email = $rs['EMAIL'];
         $password = $rs['PASSWORD'];
-        $idNguoiDung = NguoiDung_BUS::getInstance()->getModelById($rs['IDNGUOIDUNG']);
-        $idQuyen = Quyen_BUS::getInstance()->getModelById($rs['IDQUYEN']);
+        $idNguoiDung = app(NguoiDung_BUS::class)->getModelById($rs['IDNGUOIDUNG']);
+        $idQuyen = app(Quyen_BUS::class)->getModelById($rs['IDQUYEN']);
         $trangThaiHD = $rs['TRANGTHAIHD'];
         return new TaiKhoan($tentk, $email, $password, $idNguoiDung, $idQuyen, $trangThaiHD);
     }
@@ -125,7 +117,7 @@ class TaiKhoan_DAO implements DAOInterface {
     public function login($email, $password) {
         session_start();
         
-        $taiKhoanDAO = TaiKhoan_DAO::getInstance();
+        $taiKhoanDAO = app(TaiKhoan_DAO::class);
         $user = $taiKhoanDAO->getById($email);
     
         if (!$user) {
