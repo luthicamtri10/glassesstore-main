@@ -1,6 +1,8 @@
-<?php
-    include '../includes/navbar.php';
-?>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+@extends('admin.layouts.master')
+@section('title', 'Quản lí bảo hành')
+@section('content')
 <div class="p-3 bg-light">
     <div>
             <!-- Nút mở Modal -->
@@ -18,11 +20,15 @@
             <table class="table table-hover">
             <thead>
                 <tr>
-                <th scope="col">Tên tài khoản</th>
+                <th scope="col">ID</th>
+                <th scope="col">Họ tên</th>
                 <th scope="col">Email</th>
-                <th scope="col">Password</th>
-                <th scope="col">ID người dùng</th>
-                <th scope="col">ID quyền</th>
+                <th scope="col">Ngày sinh</th>
+                <th scope="col">Giới tính</th>
+                <th scope="col">Địa chỉ</th>
+                <th scope="col">Thành phố</th>
+                <th scope="col">Số điện thoại</th>
+                <th scope="col">CCCD</th>
                 <th scope="col">Trạng thái</th>
                 <th scope="col">Hành động</th>
                 </tr>
@@ -30,12 +36,15 @@
             <tbody>
                 <tr>
                 <th scope="row">1</th>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                
+                <td>Minh đẹp trại</td>
+                <td>pcongminh551@gmail.com</td>
+                <td>14/04/2004</td>
+                <td>Nữ</td>
+                <td>123</td>
+                <td>Đồng Nai</td>
+                <td>0896634215</td>
+                <td>011104001111</td>
+                <td>1</td>
                 <td>
                     <button class="btn btn-warning btn-sm">Sửa</button>
                     <button class="btn btn-danger btn-sm">Xóa</button>
@@ -65,7 +74,7 @@
 </div>
 
 <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg"> <!-- modal-lg để modal to hơn -->
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="userModalLabel">Thông tin tài khoản</h5>
@@ -74,24 +83,45 @@
       <div class="modal-body">
         <form class="row g-3">
           <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">Username</label>
-              <input type="text" class="form-control" id="inputEmail4">
+              <label for="fullName" class="form-label">Họ tên</label>
+              <input type="text" class="form-control" id="fullName">
           </div>
           <div class="col-md-6">
-              <label for="inputPassword4" class="form-label">Password</label>
-              <input type="password" class="form-control" id="inputPassword4">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email">
           </div>
           <div class="col-md-6">
-              <label for="inputGroup" class="form-label">Nhóm quyền</label>
-              <select id="inputGroup" class="form-select">
+              <label for="dob" class="form-label">Ngày sinh</label>
+              <input type="date" class="form-control" id="dob">
+          </div>
+          <div class="col-md-6">
+              <label for="gender" class="form-label">Giới tính</label>
+              <select id="gender" class="form-select">
                 <option selected>Choose...</option>
-                <option>Admin</option>
-                <option>User</option>
+                <option>Nam</option>
+                <option>Nữ</option>
+                <option>Khác</option>
               </select>
           </div>
           <div class="col-md-6">
-              <label for="inputStatus" class="form-label">Trạng thái</label>
-              <select id="inputStatus" class="form-select">
+              <label for="address" class="form-label">Địa chỉ</label>
+              <input type="text" class="form-control" id="address">
+          </div>
+          <div class="col-md-6">
+              <label for="city" class="form-label">Thành phố</label>
+              <input type="text" class="form-control" id="city">
+          </div>
+          <div class="col-md-6">
+              <label for="phone" class="form-label">Số điện thoại</label>
+              <input type="tel" class="form-control" id="phone">
+          </div>
+          <div class="col-md-6">
+              <label for="cccd" class="form-label">CCCD</label>
+              <input type="text" class="form-control" id="cccd">
+          </div>
+          <div class="col-md-6">
+              <label for="status" class="form-label">Trạng thái</label>
+              <select id="status" class="form-select">
                 <option selected>Choose...</option>
                 <option>Hoạt động</option>
                 <option>Ngừng hoạt động</option>
@@ -105,3 +135,4 @@
     </div>
   </div>
 </div>
+@endsection

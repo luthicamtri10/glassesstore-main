@@ -32,7 +32,7 @@
                     <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;"><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555;"></i></li>
                     <li class="nav-item fw-medium my-2" id="item-xemthem"><a href="" class="nav-link text-white">Xem Thêm <i class="fa-regular fa-angle-up"></i></a></li>
                     <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li>
-                    <li class="nav-item fw-medium my-2"><a href="#" class="nav-link text-white">Giỏ Hàng</a> <i class="fa-light fa-bag-shopping"></i></li>
+                    <li class="nav-item fw-medium my-2"><a href="#" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping"></i></a></li>
                 </ul>
             </div>
         </div>
@@ -48,30 +48,30 @@
             <img src="./img/img-login.jpeg" class="w-100 img-fluid  p-auto" alt="" style="border-radius: 30px;overflow: hidden;">
         </div>
         <div class="content-right w-50 ">
-            <div style="width:80%;margin:0 auto;display: block;text-align: center;">
+            <form style="width:80%;margin:0 auto;display: block;text-align: center;" method="POST" action="process_login.blade.php">
                 <h1>ĐĂNG NHẬP</h1>
                 <p>Hãy đăng nhập để được hưởng những đặc quyền dành cho riêng bạn</p>
                 <div class="form-group">
-                    <label for="exampleFormControlInput1" class="form-label">Địa chỉ Email</label>
-                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Nhập địa chỉ Email">
+                    <label for="email-login" class="form-label">Địa chỉ Email</label>
+                    <input type="email" class="form-control" id="email-login" name="email-login" placeholder="Nhập địa chỉ Email">
                 </div>
                 <div class="form-group">
-                    <label for="inputPassword5" class="form-label">Mật khẩu</label>
-                    <input type="password" id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock" placeholder="Nhập mật khẩu">
+                    <label for="password-login" class="form-label">Mật khẩu</label>
+                    <input type="password" id="password-login" name="password-login" class="form-control" aria-describedby="passwordHelpBlock" placeholder="Nhập mật khẩu">
                     <div id="passwordHelpBlock" class="form-text text-start">
                         Mật khẩu của bạn phải dài từ 8-20 ký tự, chứa chữ và số và không chứa khoảng trắng, ký tự đặc biệt hoặc biểu tượng cảm xúc.
                     </div>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                    <label class="form-check-label" for="defaultCheck1">
+                    <input class="form-check-input" type="checkbox" value="" id="condition-Login">
+                    <label class="form-check-label" for="condition-Login">
                         Ghi nhớ đăng nhập
                     </label>
                 </div>
                 <button type="submit" class="w-100">Đăng nhập ngay</button>
                 <p class="text-start my-4"><a href="#">Quên mật khẩu?</a></p>
-                <p>Bạn chưa có tài khoản? <a href="#"  class="link-register" onclick="registerLink()">Đăng ký ngay</a></p>
-            </div>
+                <p>Bạn chưa có tài khoản? <a href="#" class="link-register" onclick="registerLink()       ">Đăng ký ngay</a></p>
+            </form>
         </div>
     </div>
 

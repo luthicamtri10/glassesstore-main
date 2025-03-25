@@ -4,20 +4,45 @@ namespace App\Models;
 
 class ChucNang
 {
-    private $id, $quanlisanpham, $quanlihoadon, $quanlincc, $quanliphieunhap, $quanlitaikhoan, $dathang, $thongke, $quanlikhuyenmai, $quanliquyen, $quanlidvvc, $quanlibaohanh;
-    public function __construct($id, $quanlisanpham, $quanlihoadon, $quanlincc, $quanliphieunhap, $quanlitaikhoan, $dathang, $thongke, $quanlikhuyenmai, $quanliquyen, $quanlidvvc, $quanlibaohanh)
+    private $id, $tenChucNang, $trangThaiHD;
+
+    public function __construct($id = null, $tenChucNang, $trangThaiHD)
     {
         $this->id = $id;
-        $this->quanlisanpham = $quanlisanpham;
-        $this->quanlihoadon = $quanlihoadon;
-        $this->quanlincc = $quanlincc;
-        $this->quanliphieunhap = $quanliphieunhap;
-        $this->quanlitaikhoan = $quanliphieunhap;
-        $this->dathang = $dathang;
-        $this->thongke = $thongke;
-        $this->quanlikhuyenmai = $quanlikhuyenmai;
-        $this->quanliquyen = $quanliquyen;
-        $this->quanlidvvc = $quanlidvvc;
-        $this->quanlibaohanh = $quanlibaohanh;
+        $this->tenChucNang = $tenChucNang;
+        $this->trangThaiHD = $trangThaiHD;
+    }
+
+    // Getter và Setter cho ID
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    // Getter và Setter cho tenChucNang
+    public function getTenChucNang()
+    {
+        return $this->tenChucNang;
+    }
+
+    public function setTenChucNang($tenChucNang)
+    {
+        $this->tenChucNang = $tenChucNang;
+    }
+
+    // Getter và Setter cho trangThaiHD
+    public function getTrangThaiHD()
+    {
+        return $this->trangThaiHD;
+    }
+
+    public function setTrangThaiHD($trangThaiHD)
+    {
+        $this->trangThaiHD = $trangThaiHD;
     }
 }
