@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,68 +14,34 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::view('/', 'admin.includes.sidebar'); 
+Route::view('/admin', 'admin.includes.sidebar');
 
 Route::get('/', function () {
-    return view('admin.index');
+    return redirect('/admin/nguoidung');
 });
 
 Route::get('/admin', function () {
-    return view('admin.index'); // Đây sẽ tìm file ở resources/views/admin/index.blade.php
+    return redirect('/admin/nguoidung');
 });
 
-Route::get('/admin/quyen', function () {
-    return view('admin.quyen'); // Đây sẽ tìm file ở resources/views/admin/quyen.blade.php
-});
 
-Route::get('/admin/baohanh', function () {
-    return view('admin.baohanh'); 
-});
+Route::get('/admin/{page}', function ($page) {
+    $validPages = [
+        'quyen', 'baohanh', 'donvivanchuyen', 'hang', 'hoadon', 
+        'kho', 'khuyenmai', 'loaisanpham', 'nguoidung', 
+        'nhacungcap', 'sanpham', 'taikhoan', 'thanhpho', 'thongke'
+    ];
 
-Route::get('/admin/donvivanchuyen', function () {
-    return view('admin.donvivanchuyen'); 
-});
+    if (!in_array($page, $validPages)) {
+        abort(404);
+    }
 
-Route::get('/admin/hang', function () {
-    return view('admin.hang'); 
-});
+    // Nếu là AJAX request, trả về view nhỏ gọn
+    if (request()->ajax()) {
+        return view("admin.{$page}");
+    }
 
-Route::get('/admin/hoadon', function () {
-    return view('admin.hoadon'); 
-});
-
-Route::get('/admin/kho', function () {
-    return view('admin.kho'); 
-});
-
-Route::get('/admin/khuyenmai', function () {
-    return view('admin.khuyenmai'); 
-});
-
-Route::get('/admin/loaisanpham', function () {
-    return view('admin.loaisanpham'); 
-});
-
-Route::get('/admin/nguoidung', function () {
-    return view('admin.nguoidung'); 
-});
-
-Route::get('/admin/nhacungcap', function () {
-    return view('admin.nhacungcap'); 
-});
-
-Route::get('/admin/sanpham', function () {
-    return view('admin.sanpham'); 
-});
-
-Route::get('/admin/taikhoan', function () {
-    return view('admin.taikhoan'); 
-});
-
-Route::get('/admin/thanhpho', function () {
-    return view('admin.thanhpho'); 
-});
-
-Route::get('/admin/thongke', function () {
-    return view('admin.thongke'); 
-});
-
+    // Nếu load trực tiếp (nhập URL), trả về layout đầy đủ
+    return view('admin.includes.sidebar');
+})->where('page', '[a-z]+');
