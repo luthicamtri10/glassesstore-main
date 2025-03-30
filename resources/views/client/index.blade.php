@@ -31,7 +31,7 @@
           <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;"><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555;"></i></li>
           <li class="nav-item fw-medium my-2" id="item-xemthem"><a href="" class="nav-link text-white">Xem Thêm <i class="fa-regular fa-angle-up"></i></a></li>
           <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li>
-          <li class="nav-item fw-medium my-2"><a href="#" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping"></i></a></li>
+          <li class="nav-item fw-medium my-2" id="item-giohang"><a href="#" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;"><small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small></i></a></li>
         </ul>
       </div>
     </div>

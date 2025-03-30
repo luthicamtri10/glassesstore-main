@@ -14,29 +14,29 @@
 </head>
 
 <body>
-    <header>
-        <div class="text-white" id="navbar-ctn">
-            <div class="top-nav">
-                <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
-                <ul class="list-top-nav d-flex ms-auto gap-2">
-                    <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill " id="chinhsach"><a href="">Chính sách</a></li>
-                    <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang"><a href="">Tra cứu đơn hàng</a></li>
-                    <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="taikhoan"><a href="../../views/client/Login-Register.php">Tài khoản</a></li>
-                </ul>
-            </div>
-            <div class="navbar text-white navbar-expand" id="navbar">
-                <a href="" class="navbar-brand">Logo</a>
-                <ul class="navbar-nav gap-5">
-                    <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a></li>
-                    <li class="nav-item fw-medium d-flex"><a href="#" class="nav-link text-white">Tìm Cửa Hàng<i class="fa-regular fa-location-dot fa-bounce"></i></a> </li>
-                    <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;"><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555;"></i></li>
-                    <li class="nav-item fw-medium my-2" id="item-xemthem"><a href="" class="nav-link text-white">Xem Thêm <i class="fa-regular fa-angle-up"></i></a></li>
-                    <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li>
-                    <li class="nav-item fw-medium my-2"><a href="#" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping"></i></a></li>
-                </ul>
-            </div>
-        </div>
-    </header>
+<header>
+    <div class="text-white" id="navbar-ctn">
+      <div class="top-nav">
+        <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
+        <ul class="list-top-nav d-flex ms-auto gap-2">
+          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill " id="chinhsach"><a href="">Chính sách</a></li>
+          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang"><a href="">Tra cứu đơn hàng</a></li>
+          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="taikhoan"><a href="../../views/client/Login-Register.blade.php">Tài khoản</a></li>
+        </ul>
+      </div>
+      <div class="navbar text-white navbar-expand" id="navbar">
+        <a href="" class="navbar-brand">Logo</a>
+        <ul class="navbar-nav gap-5">
+          <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a></li>
+          <li class="nav-item fw-medium d-flex"><a href="#" class="nav-link text-white">Tìm Cửa Hàng<i class="fa-regular fa-location-dot fa-bounce"></i></a> </li>
+          <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;"><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555;"></i></li>
+          <li class="nav-item fw-medium my-2" id="item-xemthem"><a href="" class="nav-link text-white">Xem Thêm <i class="fa-regular fa-angle-up"></i></a></li>
+          <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li>
+          <li class="nav-item fw-medium my-2" id="item-giohang"><a href="#" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;"><small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small></i></a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
     <div class="submenu card" style="z-index: 100;">
         <div class="card-menu d-flex ">
 

@@ -58,22 +58,19 @@ class PhieuNhap_DAO implements DAOInterface
         }
         return $list;
     }
-    public function getById($id)
+    public function getById($id): ?PhieuNhap
     {
         $query = "SELECT * FROM PHIEUNHAP WHERE id = ?";
         $result = database_connection::executeQuery($query, $id);
         if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            if ($row) {
-                return $this->createPhieuNhapModel($row);
-            }
+            return $this->createPhieuNhapModel($result->fetch_assoc());
         }
-        return;
+        return null;
     }
     public function insert($e): int
     {
-        $query = "INSERT INTO PHIEUNHAP (id, idNCC, tongTien, ngayTao, idNhanVien,trangThai) VALUES (?,?,?,?,?,?)";
-        $args = [$e->getId(), $e->getIdNCC(), $e->getTongTien(), $e->getIdNhanVien(), $e->getNgayTao(), $e->gettrangThai()];
+        $query = "INSERT INTO PHIEUNHAP (id, idNCC, tongTien, ngayTao, idNhanVien, trangThai) VALUES (?,?,?,?,?,?)";
+        $args = [$e->getId(), $e->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien(), $e->getTrangThai()];
         $rs = database_connection::executeQuery($query, ...$args);
         return is_int($rs) ? $rs : 0;
     }

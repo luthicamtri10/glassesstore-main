@@ -1,9 +1,12 @@
 const itemSanPham = document.querySelector('#item-sanpham');
 const itemXemThem = document.querySelector('#item-xemthem');
+const itemGioHang = document.querySelector('#item-giohang');
 const submenu = document.querySelector('.submenu');
 
 itemSanPham.addEventListener('mouseenter', () => {
     setTimeout(() => {
+        submenu.style.width = "80%"
+        submenu.style.transform = "translateX(-50%)"
         submenu.innerHTML = `
             <div class="card-menu d-flex " style="position:relative">
                 <i class="fa-solid fa-caret-up" style="position:absolute; color:#55d5d2; left:10%;top:-35px;font-size:70px"></i>
@@ -83,6 +86,8 @@ submenu.addEventListener('mouseleave', () => {
 
 itemXemThem.addEventListener('mouseenter', () => {
     setTimeout(() => {
+        submenu.style.width = "80%"
+        submenu.style.transform = "translateX(-50%)"
         submenu.innerHTML = `
             <div class="card-menu d-flex " style="position:relative">
                 <i class="fa-solid fa-caret-up" style="position:absolute; color:#ffff; right:32%;top:-35px;font-size:70px"></i>
@@ -122,17 +127,17 @@ itemXemThem.addEventListener('mouseenter', () => {
                     icon.style.transition = 'transform 0.4s ease';
                     icon.style.fontSize = "15px"
                     icon.style.transform = 'rotate(45deg)';
-                    div.style.backgroundColor="#fb923c"
+                    div.style.backgroundColor = "#fb923c"
                 });
                 element.addEventListener('mouseleave', () => {
                     const icon = element.querySelector('i');
                     const div = element.querySelector('.itxt-div');
                     icon.style.transform = 'rotate(0deg)';
-                    div.style.backgroundColor="#55d5d2"
-                    
+                    div.style.backgroundColor = "#55d5d2"
+
                 });
             });
-            
+
         });
     }, 300);
 
@@ -140,14 +145,129 @@ itemXemThem.addEventListener('mouseenter', () => {
 
 // Lấy navbar
 const navbar = document.querySelector('#navbar-ctn');
-let lastScrollY = window.scrollY; 
+let lastScrollY = window.scrollY;
 window.addEventListener('scroll', () => {
-    const currentScrollY = window.scrollY; 
+    const currentScrollY = window.scrollY;
     if (currentScrollY > lastScrollY) {
-        navbar.style.transform = "translateY(-110%)"; 
+        navbar.style.transform = "translateY(-110%)";
     } else {
-        navbar.style.transform = "translateY(0%)"; 
+        navbar.style.transform = "translateY(0%)";
     }
 
     lastScrollY = currentScrollY;
+});
+itemGioHang.addEventListener('mouseenter', () => {
+    setTimeout(() => {
+        submenu.style.width = "25%"
+        submenu.style.transform = "translateX(70%)"
+
+
+        submenu.innerHTML = `
+            <div class="card-menu d-flex " style="position:relative;width:100%;">
+                <div class="card" style="width: 100%;">
+                <div class="card-body" >
+                    <h5 class="card-title">Giỏ Hàng</h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">Số lượng: <small style="padding:1px 4px;background:#55d5d2;border-radius:50%;color:white">0</small></h6>
+                    <ul class="product-list-cart">
+                        <li class="item-product-cart">
+                            <div class="left">
+                                <img src="../../views/client/img/itemsanpham.jpeg" class="img-fluid">
+                            </div>
+                            <div class="center">
+                            <small>Mắt kính</small>
+                            <p>tên sản phẩm sdnguv bưg</p>
+                            <p class="quantity-price">2 X 400000</p>
+                            </div>
+                            <div class="right">
+                            x
+                            </div>
+                        
+                        </li>
+                        <li class="item-product-cart">
+                            <div class="left">
+                                <img src="../../views/client/img/itemsanpham.jpeg" class="img-fluid">
+                            </div>
+                            <div class="center">
+                            <small>Mắt kính</small>
+                            <p>tên sản phẩm sdnguv bưg</p>
+                            <p class="quantity-price">2 X 400000</p>
+                            </div>
+                            <div class="right">
+                            x
+                            </div>
+                        
+                        </li>
+                        <li class="item-product-cart">
+                            <div class="left">
+                                <img src="../../views/client/img/itemsanpham.jpeg" class="img-fluid">
+                            </div>
+                            <div class="center">
+                            <small>Gọng kính</small>
+                            <p>tên sản phẩm sdnguv bưg</p>
+                            <p class="quantity-price">2 X 400000</p>
+                            </div>
+                            <div class="right">
+                            x
+                            </div>
+                        
+                        </li>
+                        <li class="item-product-cart">
+                            <div class="left">
+                                <img src="../../views/client/img/itemsanpham.jpeg" class="img-fluid">
+                            </div>
+                            <div class="center">
+                            <small>Mắt kính</small>
+                            <p>tên sản phẩm sdnguv bưg</p>
+                            <p class="quantity-price">2 X 400000</p>
+                            </div>
+                            <div class="right">
+                            x
+                            </div>
+                        
+                        </li>
+                        <li class="item-product-cart">
+                            <div class="left">
+                                <img src="../../views/client/img/itemsanpham.jpeg" class="img-fluid">
+                            </div>
+                            <div class="center">
+                            <small>Mắt kính</small>
+                            <p>tên sản phẩm sdnguv bưg</p>
+                            <p class="quantity-price">2 X 400000</p>
+                            </div>
+                            <div class="right">
+                            x
+                            </div>
+                        
+                        </li>
+                    </ul>
+                    <div class="d-flex  fw-medium itgh-div" style="width:50%;color:white;white-space: nowrap;background-color:#55d5d2;font-size:16px;padding:5px 5px 5px 5px;border-radius:40px;"><div class="d-flex align-items-center justify-content-center">Thanh toán ngay</div> <i class="fa-solid fa-arrow-up-right d-flex align-items-center justify-content-center" style="background-color:white;color:#55d5d2;height:30px;width:30px;border-radius:50%;margin-left:5px"></i></div>
+                </div>
+                </div>
+                
+            </div>
+        
+        `
+
+        submenu.style.visibility = 'visible';
+        submenu.style.opacity = '1';
+        const itgh = document.querySelector(".itgh-div")
+
+        itgh.addEventListener('mouseenter', () => {
+                const icon = itgh.querySelector('i');
+                const div = itgh.querySelector('.itxt-div');
+                icon.style.transition = 'transform 0.4s ease';
+                icon.style.fontSize = "15px"
+                icon.style.transform = 'rotate(45deg)';
+                itgh.style.backgroundColor = "#fb923c"
+            });
+            itgh.addEventListener('mouseleave', () => {
+                const icon = itgh.querySelector('i');
+                icon.style.transform = 'rotate(0deg)';
+                itgh.style.backgroundColor = "#55d5d2"
+
+            });
+        
+
+    }, 300);
+
 });

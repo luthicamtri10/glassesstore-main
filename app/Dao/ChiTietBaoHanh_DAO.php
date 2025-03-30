@@ -1,112 +1,162 @@
 <?php
-
 namespace App\Dao;
 
 use App\Interface\DAOInterface;
 use App\Models\ChiTietBaoHanh;
 use App\Services\database_connection;
-use Illuminate\Support\Arr;
 use InvalidArgumentException;
-
-use function Laravel\Prompts\error;
 
 class ChiTietBaoHanh_DAO implements DAOInterface
 {
+    /**
+     * Đọc toàn bộ dữ liệu từ bảng CHITIETBAOHANH
+     * @return ChiTietBaoHanh[]
+     */
     public function readDatabase(): array
     {
         $list = [];
         $rs = database_connection::executeQuery("SELECT * FROM CHITIETBAOHANH");
         while ($row = $rs->fetch_assoc()) {
-            $model = $this->createCTBHModel($row);
-            $list[] = $model;
+            $list[] = $this->createModel($row);
         }
         return $list;
     }
-    public function createCTBHModel($rs): ChiTietBaoHanh
+
+    /**
+     * Tạo mô hình ChiTietBaoHanh từ dữ liệu cơ sở dữ liệu
+     */
+    private function createModel(array $row): ChiTietBaoHanh
     {
-        
         return new ChiTietBaoHanh(
-            $rs['idKhachHang'],
-            $rs['idSanPham'],
-            $rs['chiPhiBaoHanh'],
-            $rs['thoiDiemBaohanh'],
-            $rs['soSeri']
+            (int)$row['idKhachHang'],
+            (int)$row['idSanPham'],
+            (float)$row['chiPhiBaoHanh'],
+            $row['thoiDiemBaoHanh'],
+            $row['soSeri']
         );
     }
+
+    /**
+     * Lấy tất cả bản ghi từ bảng CHITIETBAOHANH
+     * @return ChiTietBaoHanh[]
+     */
     public function getAll(): array
     {
-        $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM CHITIETBAOHANH");
-        while ($row = $rs->fetch_assoc()) {
-            $model = $this->createCTBHModel($row);
-            array_push($list, $model);
-        }
-        return $list;
+        return $this->readDatabase();
     }
-    public function getById($id)
+
+    /**
+     * Lấy một bản ghi theo idKhachHang và idSanPham
+     */
+    public function getById($id): ?ChiTietBaoHanh
     {
-        $query = "SELECT * FROM CHITIETBAOHANH WHERE id = ?";
-        $result = database_connection::executeQuery($query, $id);
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            if ($row) {
-                return $this->createCTBHModel($row);
-            }
+        if (!is_array($id) || !isset($id['idKhachHang']) || !isset($id['idSanPham'])) {
+            throw new InvalidArgumentException("ID phải là mảng chứa idKhachHang và idSanPham");
         }
-        return;
+
+        $query = "SELECT * FROM CHITIETBAOHANH WHERE idKhachHang = ? AND idSanPham = ?";
+        $result = database_connection::executeQuery($query, $id['idKhachHang'], $id['idSanPham']);
+
+        if ($result->num_rows > 0) {
+            return $this->createModel($result->fetch_assoc());
+        }
+        return null;
     }
+
+    /**
+     * Thêm một bản ghi vào bảng CHITIETBAOHANH
+     */
     public function insert($e): int
     {
-        $query = "INSERT INTO PhieuNhap (id, idNCC, tongTien, ngayTao, idNhanVien,trangThai) VALUES (?,?,?,?,?,?)";
-        $args = [$e->getId(), $e->getIdNCC(), $e->getTongTien(), $e->getIdNhanVien(), $e->getNgayTao(), $e->gettrangThai()];
+        if (!$e instanceof ChiTietBaoHanh) {
+            throw new InvalidArgumentException("Tham số phải là instance của ChiTietBaoHanh");
+        }
+
+        $query = "INSERT INTO CHITIETBAOHANH (idKhachHang, idSanPham, chiPhiBaoHanh, thoiDiemBaoHanh, soSeri) VALUES (?, ?, ?, ?, ?)";
+        $args = [
+            $e->getIdKhachHang(),
+            $e->getIdSanPham(),
+            $e->getChiPhiBH(),
+            $e->getThoiDiemBH()->format('Y-m-d H:i:s'), // Chuyển DateTime thành chuỗi
+            $e->getSoSeri()
+        ];
         $rs = database_connection::executeQuery($query, ...$args);
         return is_int($rs) ? $rs : 0;
     }
+
+    /**
+     * Cập nhật một bản ghi trong bảng CHITIETBAOHANH
+     */
     public function update($e): int
     {
-        $query = "UPDATE PhieuNhap SET idNCC = ?, tongTien = ?, ngayTao = ?, idNhanVien = ?, trangThai = ? WHERE id = ?";
-        $args = [$e->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien(), $e->getTrangThai(), $e->getId()];
+        if (!$e instanceof ChiTietBaoHanh) {
+            throw new InvalidArgumentException("Tham số phải là instance của ChiTietBaoHanh");
+        }
+
+        $query = "UPDATE CHITIETBAOHANH SET chiPhiBaoHanh = ?, thoiDiemBaoHanh = ?, soSeri = ? WHERE idKhachHang = ? AND idSanPham = ?";
+        $args = [
+            $e->getChiPhiBH(),
+            $e->getThoiDiemBH()->format('Y-m-d H:i:s'), // Chuyển DateTime thành chuỗi
+            $e->getSoSeri(),
+            $e->getIdKhachHang(),
+            $e->getIdSanPham()
+        ];
         $rs = database_connection::executeUpdate($query, ...$args);
         return is_int($rs) ? $rs : 0;
     }
-    public function delete(int $id): int
+
+    /**
+     * Xóa một bản ghi từ bảng CHITIETBAOHANH
+     */
+    public function delete($id): int
     {
-        $query = "DELETE FROM PhieuNhap WHERE id = ?";
-        $rs = database_connection::executeUpdate($query, $id);
+        if (!is_array($id) || !isset($id['idKhachHang']) || !isset($id['idSanPham'])) {
+            throw new InvalidArgumentException("ID phải là mảng chứa idKhachHang và idSanPham");
+        }
+
+        $query = "DELETE FROM CHITIETBAOHANH WHERE idKhachHang = ? AND idSanPham = ?";
+        $rs = database_connection::executeUpdate($query, $id['idKhachHang'], $id['idSanPham']);
         return is_int($rs) ? $rs : 0;
     }
-    public function exists(int $id): bool
+
+    /**
+     * Kiểm tra xem một bản ghi có tồn tại không
+     */
+    public function exists($id): bool
     {
-        $query = "SELECT COUNT(*) as count FROM PhieuNhap WHERE id = ?";
-        $rs = database_connection::executeQuery($query, $id);
+        if (!is_array($id) || !isset($id['idKhachHang']) || !isset($id['idSanPham'])) {
+            throw new InvalidArgumentException("ID phải là mảng chứa idKhachHang và idSanPham");
+        }
+
+        $query = "SELECT COUNT(*) as count FROM CHITIETBAOHANH WHERE idKhachHang = ? AND idSanPham = ?";
+        $rs = database_connection::executeQuery($query, $id['idKhachHang'], $id['idSanPham']);
         $row = $rs->fetch_assoc();
         return $row['count'] > 0;
     }
 
+    /**
+     * Tìm kiếm bản ghi theo điều kiện
+     * @return ChiTietBaoHanh[]
+     */
     public function search(string $condition, array $columnNames = []): array
     {
         if (empty($condition)) {
-            throw new InvalidArgumentException("Search condition cannot be empty or null");
+            throw new InvalidArgumentException("Điều kiện tìm kiếm không được để trống");
         }
 
-        // Danh sách cột mặc định nếu không truyền vào
         $columns = empty($columnNames)
-            ? ["id", "idNCC", "tongTien", "idNhanVien", "ngayTao", "trangThai"]
+            ? ['idKhachHang', 'idSanPham', 'chiPhiBaoHanh', 'thoiDiemBaoHanh', 'soSeri']
             : $columnNames;
 
-        // Xây dựng câu lệnh SQL với các cột được chỉ định
-        $query = "SELECT * FROM PhieuNhap WHERE " . implode(" LIKE ? OR ", $columns) . " LIKE ?";
-
-        // Mảng chứa các tham số tìm kiếm
+        $query = "SELECT * FROM CHITIETBAOHANH WHERE " . implode(" LIKE ? OR ", $columns) . " LIKE ?";
         $args = array_fill(0, count($columns), "%" . $condition . "%");
-
         $rs = database_connection::executeQuery($query, ...$args);
+
         $list = [];
-
         while ($row = $rs->fetch_assoc()) {
-            $list[] = $this->createCTBHModel($row);
+            $list[] = $this->createModel($row);
         }
-
         return $list;
     }
 }
+?>
