@@ -1,4 +1,9 @@
-@include('admin.includes.navbar')
+<!-- @include('admin.includes.navbar') -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+@extends('admin.layouts.master')
+@section('title', 'Quản lí bảo hành')
+@section('content')
 <div class="p-3 bg-light">
         <!-- Nút Plus để mở Modal -->
         <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addBrand">
@@ -89,3 +94,4 @@
     </div>
   </div>
 </div>
+@endsection

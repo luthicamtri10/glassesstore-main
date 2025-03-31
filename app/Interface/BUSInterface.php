@@ -20,7 +20,7 @@ interface BUSInterface
      * @param int $id the id of the model to retrieve
      * @return mixed the model with the given id, or null if not found
      */
-    public function getModelById(int $id);
+    public function getModelById($id);
 
     /**
      * Adds the given model to the database.
@@ -41,7 +41,7 @@ interface BUSInterface
      *
      * @param int $id the id of the model to delete
      */
-    public function deleteModel(int $id);
+    public function deleteModel($id);
 
     /**
      * Searches for models that match the given value in the specified columns.

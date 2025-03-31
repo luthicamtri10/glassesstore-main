@@ -1,4 +1,8 @@
-@include('admin.includes.navbar')
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+@extends('admin.layouts.master')
+@section('title', 'Quản lí bảo hành')
+@section('content')
 <div class="p-4 bg-light">
     <div class="col-md-12 d-flex flex-wrap align-items-center gap-3">
         <form class="d-flex flex-wrap w-100 gap-2">
@@ -83,3 +87,4 @@
         </ul>
     </nav>
 </div>
+@endsection
