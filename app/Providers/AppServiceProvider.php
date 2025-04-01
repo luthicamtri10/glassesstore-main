@@ -8,6 +8,10 @@ use App\Models\HoaDon;
 use App\Models\SanPham;
 use CTHD_BUS;
 use CTHD_DAO;
+use App\Bus\CPVC_BUS;
+use App\Dao\CPVC_DAO;
+use App\Models\ChucNang;
+use App\Models\CPVC;
 use Illuminate\Support\ServiceProvider;
 use SanPham_BUS;
 use SanPham_DAO;
@@ -54,6 +58,20 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(CTHD_BUS::class, function ($app) {
             return new CTHD_BUS($app->make(CTHD_DAO::class));
         });
+        $this->app->bind(ChucNang_DAO::class, function ($app) {
+            return new ChucNang_DAO();
+        });
+        $this->app->singleton(ChucNang_BUS::class, function ($app) {
+            return new ChucNang_BUS($app->make(ChucNang_DAO::class));
+        });
+        $this->app->bind(CPVC_DAO::class, function ($app) {
+            return new CPVC_DAO();
+        });
+        $this->app->singleton(CPVC_BUS::class, function ($app) {
+            return new CPVC_BUS($app->make(CPVC_DAO::class));
+        });
+       
+        
     }
 
     /**

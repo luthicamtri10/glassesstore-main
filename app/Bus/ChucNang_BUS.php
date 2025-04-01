@@ -9,14 +9,6 @@ use function Laravel\Prompts\error;
 
 class ChucNang_BUS implements BUSInterface{
     private $ChucNangList = array();
-    private $StaticList = array();
-    private static $instance;
-    public static function getInstance () {
-        if(self::$instance == null) {
-            self::$instance = new ChucNang_BUS();
-        }
-        return self::$instance;
-    }
     public function __construct()
     {
         $this->refreshData();
