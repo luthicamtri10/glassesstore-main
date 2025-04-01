@@ -2,64 +2,64 @@
 namespace App\Dao;
 
 use App\Interface\DAOInterface;
-use App\Models\ChucNang;
+use App\Models\Tinh;
 use App\Services\database_connection;
 use Exception;
 use InvalidArgumentException;
 
 use function Laravel\Prompts\alert;
 
-class ChucNang_DAO implements DAOInterface {
+class Tinh_DAO implements DAOInterface {
     public function readDatabase(): array
     {
         $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM ChucNang");
+        $rs = database_connection::executeQuery("SELECT * FROM TINH");
         while ($row = $rs->fetch_assoc()) {
-            $model = $this->createChucNangModel($row);
+            $model = $this->createTinhModel($row);
             array_push($list, $model);
         }
         return $list;
     }
-    public function createChucNangModel($rs) {
+    public function createTinhModel($rs) {
         $id = $rs['ID'];
-        $tenChucNang = $rs['TENCHUCNANG'];
+        $tenTinh = $rs['TENTINH'];
         $trangThaiHD = $rs['TRANGTHAIHD'];
-        return new ChucNang($id, $tenChucNang, $trangThaiHD);
+        return new Tinh($id, $tenTinh, $trangThaiHD);
     }
     public function getAll() : array {
         $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM ChucNang");
+        $rs = database_connection::executeQuery("SELECT * FROM TINH");
         while($row = $rs->fetch_assoc()) {
-            $model = $this->createChucNangModel($row);
+            $model = $this->createTinhModel($row);
             array_push($list, $model);
         }
         return $list;
     }
     public function getById($id) {
-        $query = "SELECT * FROM ChucNang WHERE id = ?";
+        $query = "SELECT * FROM Tinh WHERE id = ?";
         $result = database_connection::executeQuery($query, $id);
         if($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             if($row) {
-                return $this->createChucNangModel($row);
+                return $this->createTinhModel($row);
             }
         }
         return null;
     }
     public function insert($model): int {
-        $query = "INSERT INTO ChucNang (tenChucNang, trangThaiHD) VALUES (?,?)";
-        $args = [$model->getTenChucNang(), $model->getTrangThaiHD()];
+        $query = "INSERT INTO TINH (tenTinh, trangThaiHD) VALUES (?,?)";
+        $args = [$model->getTinh(), $model->getTrangThaiHD()];
         return database_connection::executeQuery($query, ...$args);
     }
     public function update($model): int {
-        $query = "UPDATE ChucNang SET tenChucNang = ?, trangThaiHD = ? WHERE id = ?";
-        $args = [$model->getTenChucNang(), $model->getTrangThaiHD(), $model->getId()];
+        $query = "UPDATE TINH SET tenTinh = ?, trangThaiHD = ? WHERE id = ?";
+        $args = [$model->getTenTinh(), $model->getTrangThaiHD(), $model->getId()];
         $result = database_connection::executeUpdate($query, ...$args);
         return is_int($result) ? $result : 0;  
     }
     public function delete($id): int
     {
-        $query = "UPDATE ChucNang SET trangThaiHD = false WHERE id = ?";
+        $query = "UPDATE TINH SET trangThaiHD = false WHERE id = ?";
         $result = database_connection::executeUpdate($query, ...[$id]);
         
         return is_int($result) ? $result : 0;
@@ -72,20 +72,20 @@ class ChucNang_DAO implements DAOInterface {
         }
         $query = "";
         if ($columnNames === null || count($columnNames) === 0) {
-            $query = "SELECT * FROM ChucNang WHERE id LIKE ? OR tenChucNang LIKE ? OR trangThaiHD LIKE ? ";
+            $query = "SELECT * FROM TINH WHERE id LIKE ? OR tenTinh LIKE ? OR trangThaiHD LIKE ? ";
             $args = array_fill(0,  3, "%" . $condition . "%");
         } else if (count($columnNames) === 1) {
             $column = $columnNames[0];
-            $query = "SELECT * FROM ChucNang WHERE $column LIKE ?";
+            $query = "SELECT * FROM TINH WHERE $column LIKE ?";
             $args = ["%" . $condition . "%"];
         } else {
-            $query = "SELECT * FROM ChucNang WHERE " . implode(" LIKE ? OR ", $columnNames) . " LIKE ?";
+            $query = "SELECT * FROM TINH WHERE " . implode(" LIKE ? OR ", $columnNames) . " LIKE ?";
             $args = array_fill(0, count($columnNames), "%" . $condition . "%");
         }
         $rs = database_connection::executeQuery($query, ...$args);
         $list = [];
         while ($row = $rs->fetch_assoc()) {
-            $model = $this->createChucNangModel($row);
+            $model = $this->createTinhModel($row);
             array_push($list, $model);
         }
         if (count($list) === 0) {

@@ -1,10 +1,10 @@
 <?php
 namespace App\Enum;
-class HoaDonEnum
+enum HoaDonEnum : String
 {
-    const PENDING = 'PENDING';
-    const PAID = 'PAID';
-    const EXPIRED = 'EXPIRED';
-    const CANCELLED = 'CANCELLED';
-    const REFUNDED = 'REFUNDED';
+    case PENDING = 'PENDING';
+    case PAID = 'PAID';
+    case EXPIRED = 'EXPIRED';
+    case CANCELLED = 'CANCELLED';
+    case REFUNDED = 'REFUNDED';
 }
