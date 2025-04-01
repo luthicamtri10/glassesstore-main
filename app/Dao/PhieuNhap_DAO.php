@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Dao;
-
+use App\Bus\NguoiDung_BUS;
+use App\Bus\NCC_BUS;
 use App\Enum\ReceiptStatus;
 use App\Interface\DAOInterface;
 use App\Models\PhieuNhap;
