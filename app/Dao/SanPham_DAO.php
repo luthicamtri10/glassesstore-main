@@ -1,5 +1,5 @@
 <?php
-
+namespace App\Dao;
 use App\Interface\DAOInterface;
 use App\Models\SanPham;
 use App\Services\database_connection;
@@ -44,7 +44,7 @@ class SanPham_DAO implements DAOInterface{
     public function search(string $condition, array $columnNames): array
     {
         $column = $columnNames[0];
-        $query = "SELECT * FROM ChucNang WHERE $column LIKE ?";
+        $query = "SELECT * FROM SanPham WHERE $column LIKE ?";
         $args = ["%" . $condition . "%"];
         $rs = database_connection::executeQuery($query, ...$args);
         $cartsList = [];
@@ -61,15 +61,16 @@ class SanPham_DAO implements DAOInterface{
 
 
     public function createSanPhamModel($rs) {
-        $id = $rs['ID'];
-        $tenSanPham = $rs['TENCHUCNANG'];
-        $idHang = $rs['TENCHUCNANG'];
-        $idLSP = $rs['TENCHUCNANG'];
-        $soLuong = $rs['TENCHUCNANG'];
-        $moTa = $rs['TENCHUCNANG'];
-        $donGia = $rs['TENCHUCNANG'];
-        $thoiGianBaoHanh = $rs['TENCHUCNANG'];
-        $trangThaiHD = $rs['TRANGTHAIHD'];
+        $id = $rs['id'];
+        $tenSanPham = $rs['tenSanPham'];
+        $idHang = $rs['idHang'];
+        $idLSP = $rs['idLSP'];
+        $soLuong = $rs['soLuong'];
+        $moTa = $rs['moTa'];
+        $donGia = $rs['donGia'];
+        $thoiGianBaoHanh = $rs['thoiGianBaoHanh'];
+        $trangThaiHD = $rs['trangThaiHD'];
+
         return new SanPham($id, $tenSanPham, $idHang, $idLSP, $soLuong, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD);
     }
 
