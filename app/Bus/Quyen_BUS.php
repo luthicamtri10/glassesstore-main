@@ -9,13 +9,15 @@ use function Laravel\Prompts\error;
 
 class Quyen_BUS implements BUSInterface{
     private $quyenList = array();
-    public function __construct()
+    private $quyenDAO;
+    public function __construct(Quyen_DAO $quyen_dao)
     {
+        $this->quyenDAO = $quyen_dao;
         $this->refreshData();
     }
     public function refreshData(): void
     {
-        $this->quyenList = app(Quyen_DAO::class)->getAll();
+        $this->quyenList = $this->quyenDAO->getAll();
     }
     public function getAllModels() : array
     {
@@ -23,14 +25,14 @@ class Quyen_BUS implements BUSInterface{
     }
     public function getModelById($id)
     {
-        return app(Quyen_DAO::class)->getById($id);    }
+        return $this->quyenDAO->getById($id);    }
     public function addModel($model)
     {
         if($model == null) {
             error("Error when add a Quyen");
             return;
         }
-        return app(Quyen_DAO::class)->insert($model);
+        return $this->quyenDAO->insert($model);
     }
     public function updateModel($model)
     {
@@ -38,7 +40,7 @@ class Quyen_BUS implements BUSInterface{
             error("Error when update a Quyen");
             return;
         } 
-        return app(Quyen_DAO::class)->update($model);
+        return $this->quyenDAO->update($model);
     }
     public function deleteModel($id)
     {
@@ -46,11 +48,11 @@ class Quyen_BUS implements BUSInterface{
             error("Error when delete a Quyen");
             return;
         } 
-        return app(Quyen_DAO::class)->delete($id);
+        return $this->quyenDAO->delete($id);
     }
     public function searchModel(string $value, array $columns)
     {
-        $list = app(Quyen_DAO::class)->search($value, $columns);
+        $list = $this->quyenDAO->search($value, $columns);
         if(count($list) > 0) {
             return $list;
         } else {

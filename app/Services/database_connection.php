@@ -7,7 +7,7 @@ class database_connection {
     private static $instance;
     private static $host = "localhost";
     private static $port = "3307";
-    private static $dbname = "web2";
+    private static $dbname = "glassesstore";
     private static $user = "root";
     private static $pass = "";
 

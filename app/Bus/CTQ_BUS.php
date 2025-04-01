@@ -10,13 +10,15 @@ use function Laravel\Prompts\error;
 
 class CTQ_BUS implements BUSInterface{
     private $CTQList = array();
-    public function __construct()
+    private $ctqDAO;
+    public function __construct(CTQ_DAO $ctq_dao)
     {
+        $this->ctqDAO = $ctq_dao;
         $this->refreshData();
     }
     public function refreshData(): void
     {
-        $this->CTQList = app(CTQ_DAO::class)->getAll();
+        $this->CTQList = $this->ctqDAO->getAll();
     }
     public function getAllModels() : array
     {
@@ -24,14 +26,14 @@ class CTQ_BUS implements BUSInterface{
     }
     public function getModelById($id)
     {
-        return app(CTQ_DAO::class)->getById($id);    }
+        return $this->ctqDAO->getById($id);    }
     public function addModel($model)
     {
         if($model == null) {
             error("Error when add a CTQ");
             return;
         }
-        return app(CTQ_DAO::class)->insert($model);
+        return $this->ctqDAO->insert($model);
     }
     public function updateModel($model)
     {
@@ -39,7 +41,7 @@ class CTQ_BUS implements BUSInterface{
             error("Error when update a CTQ");
             return;
         } 
-        return app(CTQ_DAO::class)->update($model);
+        return $this->ctqDAO->update($model);
     }
     public function deleteModel($id)
     {
@@ -47,11 +49,11 @@ class CTQ_BUS implements BUSInterface{
             error("Error when delete a CTQ");
             return;
         } 
-        return app(CTQ_DAO::class)->delete($id);
+        return $this->ctqDAO->delete($id);
     }
     public function searchModel(string $value, array $columns)
     {
-        $list = app(CTQ_DAO::class)->search($value, $columns);
+        $list = $this->ctqDAO->search($value, $columns);
         if(count($list) > 0) {
             return $list;
         } else {
@@ -60,7 +62,7 @@ class CTQ_BUS implements BUSInterface{
         return null;
     }
     public function deleteByIdQuyenAndIdChucNang($idQuyen, $idChucNang) {
-        return app(CTQ_DAO::class)->deleteByIdQuyenAndIdChucNang($idQuyen, $idChucNang);
+        return $this->ctqDAO->deleteByIdQuyenAndIdChucNang($idQuyen, $idChucNang);
     }
 }
 ?>

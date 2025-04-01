@@ -8,14 +8,15 @@ use function Laravel\Prompts\error;
 
 class TaiKhoan_BUS implements BUSInterface{
     private $taiKhoanList = array();
-    
-    public function __construct()
+    private $taiKhoanDAO;
+    public function __construct(TaiKhoan_DAO $tai_khoan_dao)
     {
+        $this->taiKhoanDAO = $tai_khoan_dao;
         $this->refreshData();
     }
     public function refreshData(): void
     {
-        $this->taiKhoanList = app(TaiKhoan_DAO::class)->getAll();
+        $this->taiKhoanList = $this->taiKhoanDAO->getAll();
     }
     public function getAllModels() : array
     {
@@ -23,14 +24,14 @@ class TaiKhoan_BUS implements BUSInterface{
     }
     public function getModelById($id)
     {
-        return app(TaiKhoan_DAO::class)->getById($id);    }
+        return $this->taiKhoanDAO->getById($id);    }
     public function addModel($model)
     {
         if($model == null) {
             error("Error when add a TaiKhoan");
             return;
         }
-        return app(TaiKhoan_DAO::class)->insert($model);
+        return $this->taiKhoanDAO->insert($model);
     }
     public function updateModel($model)
     {
@@ -38,7 +39,7 @@ class TaiKhoan_BUS implements BUSInterface{
             error("Error when update a TaiKhoan");
             return;
         } 
-        return app(TaiKhoan_DAO::class)->update($model);
+        return $this->taiKhoanDAO->update($model);
     }
     public function deleteModel($id)
     {
@@ -46,11 +47,11 @@ class TaiKhoan_BUS implements BUSInterface{
             error("Error when delete a TaiKhoan");
             return;
         } 
-        return app(TaiKhoan_DAO::class)->delete($id);
+        return $this->taiKhoanDAO->delete($id);
     }
     public function searchModel(string $value, array $columns)
     {
-        $list = app(TaiKhoan_DAO::class)->search($value, $columns);
+        $list = $this->taiKhoanDAO->search($value, $columns);
         if(count($list) > 0) {
             return $list;
         } else {
@@ -59,13 +60,13 @@ class TaiKhoan_BUS implements BUSInterface{
         return null;
     }
     public function checkLogin($email, $password) : bool {
-        return app(TaiKhoan_DAO::class)->checkLogin($email, $password);
+        return $this->taiKhoanDAO->checkLogin($email, $password);
     }
     public function login($email, $password) {
-        return app(TaiKhoan_DAO::class)->login($email, $password);
+        return $this->taiKhoanDAO->login($email, $password);
     }
     public function logout() {
-        return app(TaiKhoan_DAO::class)->logout();
+        return $this->taiKhoanDAO->logout();
     }
 }
 ?>
