@@ -45,3 +45,7 @@ Route::get('/admin/{page}', function ($page) {
     // Nếu load trực tiếp (nhập URL), trả về layout đầy đủ
     return view('admin.includes.sidebar');
 })->where('page', '[a-z]+');
+
+Route::get('/login', function() {
+    return view("client.Login-Register");
+});
