@@ -1,16 +1,27 @@
 <?php
 namespace App\Dao;
 
+use App\Bus\GioHang_BUS;
 use App\Bus\NguoiDung_BUS;
 use App\Bus\Quyen_BUS;
 use App\Interface\DAOInterface;
+use App\Models\GioHang;
 use App\Models\TaiKhoan;
 use App\Services\database_connection;
+use Exception;
 use InvalidArgumentException;
 use Psy\Readline\Hoa\Console;
 use Symfony\Component\Mailer\Event\MessageEvent;
 
-class TaiKhoan_DAO implements DAOInterface {
+class TaiKhoan_DAO{
+    protected $gioHangBus;
+
+    // Inject GioHang_BUS thông qua constructor
+    public function __construct(GioHang_BUS $gioHangBus)
+    {
+        $this->gioHangBus = $gioHangBus;
+    }
+
     public function readDatabase(): array
     {
         $list = [];
@@ -42,18 +53,31 @@ class TaiKhoan_DAO implements DAOInterface {
     public function getById($id) {
         $query = "SELECT * FROM TAIKHOAN WHERE email = ?";
         $result = database_connection::executeQuery($query, $id);
-        if($result->num_rows > 0) {
+        
+        if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            if($row) {
+            if ($row) {
                 return $this->createTaiKhoanModel($row);
             }
         }
         return null;
     }
+    
     public function insert($model): int {
-        $query = "INSERT INTO TAIKHOAN (tentk, email, password, idNguoiDung, idQuyen, trangthaihd) VALUES (?,?,?,?,?,?)";
-        $args = [$model->getTenTK(),$model->getEmail(), password_hash($model->getPassword(), PASSWORD_DEFAULT), $model->getIdNguoiDung()->getId(), $model->getIdQuyen()->getId(), $model->getTrangThaiHD()];
-        return database_connection::executeQuery($query, ...$args);
+        try {
+            $query = "INSERT INTO TAIKHOAN (tentk, email, password, idNguoiDung, idQuyen, trangthaihd) VALUES (?,?,?,?,?,?)";
+            $args = [$model->getTenTK(),$model->getEmail(), password_hash($model->getPassword(), PASSWORD_DEFAULT), $model->getIdNguoiDung()->getId(), $model->getIdQuyen()->getId(), $model->getTrangThaiHD()];
+            $result = database_connection::executeUpdate($query, ...$args);
+            $tmp = 0;
+            if ($result >= 1) {
+                $gh = new GioHang(null, $model->getEmail(), date('Y-m-d'), 1);
+                $this->gioHangBus->addModel($gh);
+            }
+            return $result;
+        } catch (Exception $e) {
+            echo "Error " . $e->getMessage() . '<br>';
+            return 0;
+        }
     }
     public function update($model): int {
         $query = "UPDATE TAIKHOAN SET tentk = ?, password = ?, idnguoidung = ?, idquyen = ?, trangThaiHD = ? WHERE email = ?";
@@ -61,11 +85,18 @@ class TaiKhoan_DAO implements DAOInterface {
         $result = database_connection::executeUpdate($query, ...$args);
         return is_int($result) ? $result : 0;  
     }
-    public function delete($email): int
+    public function controlDelete($email, $active): int
     {
-        $query = "UPDATE TAIKHOAN SET trangThaiHD = false WHERE email = ?";
-        $result = database_connection::executeUpdate($query, ...[$email]);
-        
+        $query = "UPDATE TAIKHOAN SET trangThaiHD = ? WHERE email = ?";
+        $args = [$active, $email];
+        $result = database_connection::executeUpdate($query, ...$args);
+        if ($result) {
+            $list = $this->gioHangBus->getByEmail($email);
+            foreach($list as $it) {
+                // $it->setEmail($email);
+                $this->gioHangBus->controlDeleteModel($it->getIdGH(), $active);
+            }
+        }
         return is_int($result) ? $result : 0;
     }
 
@@ -104,15 +135,12 @@ class TaiKhoan_DAO implements DAOInterface {
         
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            // var_dump($row); // Xem kết quả có đúng không
-            
             $hashedPassword = $row['password'];
-            if (password_verify($password, $hashedPassword)) {
-                return true;
-            }
+            return password_verify($password, $hashedPassword);
         }
         return false;
     }
+    
     
     public function login($email, $password) {
         session_start();

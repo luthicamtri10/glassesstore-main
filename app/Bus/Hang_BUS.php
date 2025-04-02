@@ -9,13 +9,14 @@ use function Laravel\Prompts\error;
 
 class Hang_BUS implements BUSInterface {
     private $hangList = array();
-
-    public function __construct() {
+    private $hangDAO;
+    public function __construct(Hang_DAO $hang_dao) {
+        $this->hangDAO = $hang_dao;
         $this->refreshData();
     }
 
     public function refreshData(): void {
-        $this->hangList = app(Hang_DAO::class)->getAll();
+        $this->hangList = $this->hangDAO->getAll();
     }
 
     public function getAllModels(): array {
@@ -23,7 +24,7 @@ class Hang_BUS implements BUSInterface {
     }
 
     public function getModelById($id) {
-        return app(Hang_DAO::class)->getById($id);
+        return $this->hangDAO->getById($id);
     }
 
     public function addModel($model) {
@@ -31,7 +32,7 @@ class Hang_BUS implements BUSInterface {
             error("Error when adding a Hang");
             return;
         }
-        return app(Hang_DAO::class)->insert($model);
+        return $this->hangDAO->insert($model);
     }
 
     public function updateModel($model) {
@@ -39,7 +40,7 @@ class Hang_BUS implements BUSInterface {
             error("Error when updating a Hang");
             return;
         }
-        return app(Hang_DAO::class)->update($model);
+        return $this->hangDAO->update($model);
     }
 
     public function deleteModel($id) {
@@ -47,11 +48,11 @@ class Hang_BUS implements BUSInterface {
             error("Error when deleting a Hang");
             return;
         }
-        return app(Hang_DAO::class)->delete($id);
+        return $this->hangDAO->delete($id);
     }
 
     public function searchModel(string $value, array $columns) {
-        $list = app(Hang_DAO::class)->search($value, $columns);
+        $list = $this->hangDAO->search($value, $columns);
         if (count($list) > 0) {
             return $list;
         } else {

@@ -4,9 +4,12 @@ namespace App\Models;
 
 class SanPham
 {
-    private $id, $tenSanPham, $idHang, $idLSP, $soLuong, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD;
+    private $id, $tenSanPham;
+    private Hang $idHang;
+    private LoaiSanPham $idLSP;
+    private $soLuong, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD;
 
-    public function __construct($id, $tenSanPham, $idHang, $idLSP, $soLuong, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD)
+    public function __construct($id = null, $tenSanPham, $idHang, $idLSP, $soLuong, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD)
     {
         $this->id = $id;
         $this->tenSanPham = $tenSanPham;
@@ -42,23 +45,23 @@ class SanPham
     }
 
     // Getter và Setter cho idHang
-    public function getIdHang()
+    public function getIdHang() : Hang
     {
         return $this->idHang;
     }
 
-    public function setIdHang($idHang)
+    public function setIdHang(Hang $idHang)
     {
         $this->idHang = $idHang;
     }
 
     // Getter và Setter cho idLSP
-    public function getIdLSP()
+    public function getIdLSP() : LoaiSanPham
     {
         return $this->idLSP;
     }
 
-    public function setIdLSP($idLSP)
+    public function setIdLSP(LoaiSanPham $idLSP)
     {
         $this->idLSP = $idLSP;
     }

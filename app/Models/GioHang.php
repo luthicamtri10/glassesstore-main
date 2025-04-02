@@ -1,39 +1,52 @@
 <?php
 namespace App\Models;
 
-class GioHang {
-    private string $email;
-    private int $idSanPham;
-    private string $soSeri;
+use App\Bus\TaiKhoan_BUS;
 
-    public function __construct(string $email, int $idSanPham, string $soSeri) {
+class GioHang {
+    private $idGH, $email, $createdAt, $trangthaiHD;
+
+    public function __construct($idGH = null, $email, $createdAt, $trangThaiHD) {
         $this->email = $email;
-        $this->idSanPham = $idSanPham;
-        $this->soSeri = $soSeri;
+        $this->idGH = $idGH;
+        $this->createdAt = $createdAt;
+        $this->trangthaiHD = $trangThaiHD;
     }
 
     public function getEmail(): string {
         return $this->email;
     }
 
-    public function getIdSanPham(): int {
-        return $this->idSanPham;
+    public function getIdGH() {
+        return $this->idGH;
     }
 
-    public function getSoSeri(): string {
-        return $this->soSeri;
+    public function getCreatedAt() {
+        return $this->createdAt;
     }
 
-    public function setEmail(string $email): void {
-        $this->email = $email;
+    public function getTrangThaiHD() {
+        return $this->trangthaiHD;
     }
 
-    public function setIdSanPham(int $idSanPham): void {
-        $this->idSanPham = $idSanPham;
+    public function setIDGH($idGh) { 
+        $this->idGH = $idGh;
+    } 
+
+    public function setEmail(string $email){
+        if (app(TaiKhoan_BUS::class)->checkExistingEmail($email)) {
+            $this->email = $email;
+            return;
+        }
+        return "This email is not existing, please set a existing email!";
     }
 
-    public function setSoSeri(string $soSeri): void {
-        $this->soSeri = $soSeri;
+    public function setCreatedAt($createdAt) {
+        $this->createdAt = $createdAt;
+    }
+
+    public function setTrangThaiHD($trangThaiHD) {
+        $this->trangthaiHD = $trangThaiHD;
     }
 }
 

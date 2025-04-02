@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Bus\Auth_BUS;
 use App\Bus\ChiTietBaoHanh_BUS;
 use App\Bus\ChucNang_BUS;
 use App\Bus\ChucNangDVVC_BUS;
@@ -17,6 +18,7 @@ use App\Bus\NguoiDung_BUS;
 use App\Bus\PhieuNhap_BUS;
 use App\Bus\PTTT_BUS;
 use App\Bus\Quyen_BUS;
+use App\Bus\SanPham_BUS;
 use App\Bus\TaiKhoan_BUS;
 use App\Bus\Tinh_BUS;
 use App\Dao\ChiTietBaoHanh_DAO;
@@ -35,6 +37,7 @@ use App\Dao\PTTT_DAO;
 use App\Dao\Quyen_DAO;
 use App\Dao\TaiKhoan_DAO;
 use App\Dao\Tinh_DAO;
+use App\Validates\validation;
 use CTHD_BUS;
 use CTHD_DAO;
 use CTSP_BUS;
@@ -42,7 +45,6 @@ use CTSP_DAO;
 use HoaDon_BUS;
 use HoaDon_DAO;
 use Illuminate\Support\ServiceProvider;
-use SanPham_BUS;
 use SanPham_DAO;
 
 class AppServiceProvider extends ServiceProvider
@@ -73,7 +75,7 @@ class AppServiceProvider extends ServiceProvider
         'KhuyenMai' => [KhuyenMai_DAO::class, KhuyenMai_BUS::class],
         'LoaiSanPham' => [LoaiSanPham_DAO::class, LoaiSanPham_BUS::class],
         'NCC' => [NCC_DAO::class, NCC_BUS::class],
-        'PTTT' => [PTTT_DAO::class, PTTT_BUS::class]
+        'PTTT' => [PTTT_DAO::class, PTTT_BUS::class],
     ];
 
     /**
@@ -90,6 +92,19 @@ class AppServiceProvider extends ServiceProvider
                 return new $classes[1]($app->make($classes[0])); // Sử dụng classes[1] đã được truyền vào
             });
         }
+        $this->app->singleton(validation::class, function($app) {
+            return new validation();
+        });
+        $this->app->singleton(GioHang_BUS::class, function ($app) {
+            return new GioHang_BUS($app->make(GioHang_DAO::class));
+        });
+        
+        $this->app->singleton(TaiKhoan_DAO::class, function ($app) {
+            return new TaiKhoan_DAO($app->make(GioHang_BUS::class));
+        });
+        $this->app->singleton(Auth_BUS::class, function ($app) {
+            return new Auth_BUS($app->make(TaiKhoan_BUS::class));
+        });
     }
 
     /**

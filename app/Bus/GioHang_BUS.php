@@ -5,17 +5,17 @@ use App\Dao\GioHang_DAO;
 use App\Interface\BUSInterface;
 use App\Models\GioHang;
 
-class GioHang_BUS implements BUSInterface {
+class GioHang_BUS  {
     private array $gioHangList = [];
     private GioHang_DAO $dao;
-    public function __construct()
+    public function __construct(GioHang_DAO $gio_hang_dao)
     {
-        $this->dao = app(GioHang_DAO::class);
+        $this->dao = $gio_hang_dao;
         $this->refreshData();
     }
     public function refreshData(): void
     {
-        $this->gioHangList = app(GioHang_BUS::class)->getAll();
+        $this->gioHangList = $this->dao->getAll();
     }
     public function getAllModels()
     {
@@ -23,15 +23,15 @@ class GioHang_BUS implements BUSInterface {
     }
     public function getModelById($id)
     {
-        return app(GioHang_DAO::class)->getById($id);
+        return $this->dao->getById($id);
     }
     public function addModel($model)
     {
         if($model == null) {
-            error_log("Error when insert a GioHang");
-            return;
+            // error_log("Error when insert a GioHang");
+            return "Error when insert a GioHang";
         }
-        return app(GioHang_DAO::class)->insert($model);
+        return $this->dao->insert($model);
     }
     public function updateModel($model)
     {
@@ -39,19 +39,22 @@ class GioHang_BUS implements BUSInterface {
             error_log("Error when update a GioHang");
             return;
         }
-        return app(GioHang_DAO::class)->update($model);
+        return $this->dao->update($model);
     }
-    public function deleteModel($id)
+    public function controlDeleteModel($id, $active)
     {
         if($id == null || $id == "") {
             error_log("Error when delete a GioHang");
             return;
         }
-        return app(GioHang_DAO::class)->delete($id);
+        return $this->dao->controlDelete($id, $active);
     }
     public function searchModel(string $value, array $columns)
     {
-        return app(GioHang_DAO::class)->search($value, $columns);
+        return $this->dao->search($value, $columns);
+    }
+    public function getByEmail($email) {
+        return $this->dao->getByEmail($email);
     }
 }
 ?>

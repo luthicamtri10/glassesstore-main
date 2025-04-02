@@ -7,16 +7,14 @@ session_start();
 
 class Auth_BUS {
     private static $instance;
-
-    public static function getInstance () {
-        if (self::$instance == null) {
-            self::$instance = new Auth_BUS();
-        }
-        return self::$instance;
+    private $taiKhoanDAO;
+    public function __construct(TaiKhoan_BUS $tai_khoan_bus)
+    {
+        $this->taiKhoanDAO = $tai_khoan_bus;
     }
 
     public function login($email, $password) {
-        $user = TaiKhoan_BUS::getInstance()->getModelById($email);
+        $user = $this->taiKhoanDAO->getModelById($email);
         
         if ($user && password_verify($password, $user->getPassword())) {
             $token = JWTUtils::generateToken($user->getEmail());

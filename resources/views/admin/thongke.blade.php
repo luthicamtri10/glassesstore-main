@@ -1,20 +1,21 @@
 <?php
 
+use App\Bus\GioHang_BUS;
+use App\Bus\Hang_BUS;
+use App\Bus\NguoiDung_BUS;
+use App\Bus\Quyen_BUS;
+use App\Bus\SanPham_BUS;
 use App\Bus\TaiKhoan_BUS;
-
-// Inject TaiKhoan_BUS if this is in a controller or use app() if still in a view/context
-$taiKhoanBus = app(TaiKhoan_BUS::class);
-$list = $taiKhoanBus->getAllModels();
-
-if (!empty($list)) {
-    echo '<ul>';
-    foreach ($list as $i) {
-        echo '<li>' . htmlspecialchars($i->getTenTK()) . '</li>'; // Sử dụng htmlspecialchars để tránh XSS
-    }
-    echo '</ul>';
-} else {
-    echo '<p>No accounts found.</p>'; // Thông báo nếu không có tài khoản nào
-}
+use App\Enum\GioiTinhEnum;
+use App\Models\GioHang;
+use App\Models\NguoiDung;
+use App\Models\TaiKhoan;
+   $list = app(GioHang_BUS::class)->getByEmail("holobinhinh@gmail.com");
+   foreach($list as $it) {
+        echo $it->getEmail() . '<br>';
+   }
+    $tk = app(TaiKhoan_BUS::class)->getModelById("holobinhinh@gmail.com");
+    echo $tk->getEmail() .'<br>';
+    echo app(TaiKhoan_BUS::class)->controlDeleteModel("holobinhinh@gmail.com", 0);
 
 ?>
-<!-- <h1>HELLO</h1> -->

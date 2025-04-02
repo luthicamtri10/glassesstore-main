@@ -33,9 +33,9 @@ class Hang_DAO implements DAOInterface {
         return $list;
     }
     
-    public function getById($id): ?Hang {
+    public function getById($id){
         $query = "SELECT * FROM hang WHERE ID = ?";
-        $result = database_connection::executeQuery($query, [$id]);
+        $result = database_connection::executeQuery($query, $id);
         if ($result && $result->num_rows > 0) {
             return $this->createHangModel($result->fetch_assoc());
         }
