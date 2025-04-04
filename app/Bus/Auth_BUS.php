@@ -3,24 +3,31 @@ namespace App\Bus;
 
 use App\Bus\TaiKhoan_BUS;
 use App\Utils\JWTUtils; // Import class JWTUtils
+use Firebase\JWT\JWT;
+
 session_start();
 
 class Auth_BUS {
-    private static $instance;
-    private $taiKhoanDAO;
-    public function __construct(TaiKhoan_BUS $tai_khoan_bus)
+    // private static $instance;
+    private $taiKhoanBUS;
+    private $jwt;
+    public function __construct(TaiKhoan_BUS $tai_khoan_bus, JWTUtils $jWTUtils)
     {
-        $this->taiKhoanDAO = $tai_khoan_bus;
+        $this->jwt = $jWTUtils;
+        $this->taiKhoanBUS = $tai_khoan_bus;
     }
 
     public function login($email, $password) {
-        $user = $this->taiKhoanDAO->getModelById($email);
-        
-        if ($user && password_verify($password, $user->getPassword())) {
-            $token = JWTUtils::generateToken($user->getEmail());
-            $_SESSION['token'] = $token; // Lưu token vào session
-            // echo $token . '<br>';
-            return true;
+        $user = $this->taiKhoanBUS->getModelById($email);
+        if (!$user->getTrangThaiHD()) {
+            return false;
+        } else {
+            if ($user && password_verify($password, $user->getPassword())) {
+                $token = $this->jwt::generateToken($user->getEmail());
+                $_SESSION['token'] = $token; // Lưu token vào session
+                // echo $token . '<br>';
+                return true;
+            }
         }
         return false;
     }
@@ -29,7 +36,7 @@ class Auth_BUS {
         if (!isset($_SESSION['token'])) {
             return false;
         }
-        return JWTUtils::verifyToken($_SESSION['token']) !== null;
+        return $this->jwt::verifyToken($_SESSION['token']) !== null;
     }
 
     public function logout() {

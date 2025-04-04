@@ -37,6 +37,7 @@ use App\Dao\PTTT_DAO;
 use App\Dao\Quyen_DAO;
 use App\Dao\TaiKhoan_DAO;
 use App\Dao\Tinh_DAO;
+use App\Utils\JWTUtils;
 use App\Validates\validation;
 use CTHD_BUS;
 use CTHD_DAO;
@@ -103,7 +104,7 @@ class AppServiceProvider extends ServiceProvider
             return new TaiKhoan_DAO($app->make(GioHang_BUS::class));
         });
         $this->app->singleton(Auth_BUS::class, function ($app) {
-            return new Auth_BUS($app->make(TaiKhoan_BUS::class));
+            return new Auth_BUS($app->make(TaiKhoan_BUS::class), $app->make(JWTUtils::class));
         });
     }
 

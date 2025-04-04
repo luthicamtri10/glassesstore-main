@@ -7,14 +7,6 @@ use Firebase\JWT\Key;
 class JWTUtils {
     private static $secretKey = "MY_SECRET_KEY";
 
-    private static $instance;
-    public static function getInstance () {
-        if(self::$instance == null) {
-            self::$instance = new JWTUtils();
-        }
-        return self::$instance;
-    }
-
     public static function generateToken($userId) {
         $payload = [
             "iss" => "myapp",
