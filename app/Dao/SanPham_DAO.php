@@ -1,10 +1,13 @@
 <?php
 
+namespace App\Dao;
+
 use App\Bus\Hang_BUS;
 use App\Bus\LoaiSanPham_BUS;
 use App\Interface\DAOInterface;
 use App\Models\SanPham;
 use App\Services\database_connection;
+use App\Exceptions\ValidationException;
 
 class SanPham_DAO implements DAOInterface{
 
@@ -20,7 +23,7 @@ class SanPham_DAO implements DAOInterface{
     }
 
     public function getById($id) {
-        $query = "SELECT * FROM sanpham WHERE email = ?";
+        $query = "SELECT * FROM SanPham WHERE ID = ?";
         $result = database_connection::executeQuery($query, $id);
         if($result->num_rows > 0) {
             $row = $result->fetch_assoc();
@@ -41,8 +44,8 @@ class SanPham_DAO implements DAOInterface{
 
     public function update($e): int
     {
-        $sql = "UPDATE SanPham SET tenSanPham = ?, idHang = ?, idLSP = ?, soLuong = ?, moTa = ?, donGia = ?, thoiGianBaoHanh = ?, trangThaiHD = ?) 
-        WHERE id = ?";
+        $sql = "UPDATE SanPham SET tenSanPham = ?, idHang = ?, idLSP = ?, soLuong = ?, moTa = ?, donGia = ?, thoiGianBaoHanh = ?, trangThaiHD = ? 
+        WHERE ID = ?";
         $args = [$e->getTenSanPham(), $e->getIdHang(), $e->getIdLSP(), $e->getSoLuong(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD(), $e->getId()];
         $result = database_connection::executeUpdate($sql, ...$args);
         return is_int($result)? $result : 0;
@@ -50,51 +53,63 @@ class SanPham_DAO implements DAOInterface{
 
     public function delete(int $id): int
     {
-        $sql = "UPDATE SanPham SET trangThaiHD = false WHERE id = ?";
-        $result = database_connection::executeUpdate($sql, ...[$id]);
+        $sql = "UPDATE SanPham SET trangThaiHD = false WHERE ID = ?";
+        $result = database_connection::executeUpdate($sql, $id);
         return is_int($result)? $result : 0;
     }
 
     public function search(string $condition, array $columnNames): array
     {
+        // Danh sách các cột được phép tìm kiếm
+        $allowedColumns = ['ID', 'TENSANPHAM', 'IDHANG', 'IDLSP', 'SOLUONG', 'MOTA', 'DONGIA', 'THOIGIANBAOHANH', 'TRANGTHAIHD'];
+        
         $column = $columnNames[0];
-        $query = "SELECT * FROM ChucNang WHERE $column LIKE ?";
-        $args = ["%" . $condition . "%"];
-        $rs = database_connection::executeQuery($query, ...$args);
-        $cartsList = [];
-        while ($row = $rs->fetch_assoc()) {
-            $cartsModel = $this->createSanPhamModel($row);
-            array_push($cartsList, $cartsModel);
-        }
-        if (count($cartsList) === 0) {
+        // Kiểm tra xem cột có được phép tìm kiếm không
+        if (!in_array(strtoupper($column), $allowedColumns)) {
             return [];
         }
-        return $cartsList;
+
+        $query = "SELECT * FROM SanPham WHERE $column LIKE ?";
+        $args = ["%" . $condition . "%"];
+        $rs = database_connection::executeQuery($query, ...$args);
+        $productList = [];
+        while ($row = $rs->fetch_assoc()) {
+            $productModel = $this->createSanPhamModel($row);
+            array_push($productList, $productModel);
+        }
+        return $productList;
     }
-
-
 
     public function createSanPhamModel($rs) {
         $id = $rs['ID'];
         $tenSanPham = $rs['TENSANPHAM'];
-        $idHang = app(Hang_BUS::class)->getModelById($rs['IDHANG']);
-        $idLSP = app(LoaiSanPham_BUS::class)->getModelById($rs['IDLSP']);
+        
+        // Khởi tạo trực tiếp các đối tượng BUS
+        $hangBUS = new Hang_BUS();
+        $loaiSanPhamBUS = new LoaiSanPham_BUS();
+        
+        $idHang = $hangBUS->getModelById($rs['IDHANG']);
+        $idLSP = $loaiSanPhamBUS->getModelById($rs['IDLSP']);
+        
         $soLuong = $rs['SOLUONG'];
         $moTa = $rs['MOTA'];
         $donGia = $rs['DONGIA'];
         $thoiGianBaoHanh = $rs['THOIGIANBAOHANH'];
         $trangThaiHD = $rs['TRANGTHAIHD'];
+        
         return new SanPham($id, $tenSanPham, $idHang, $idLSP, $soLuong, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD);
     }
 
     public function getAll() : array {
-        $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM sanpham");
-        while($row = $rs->fetch_assoc()) {
-            $model = $this->createSanPhamModel($row);
-            array_push($list, $model);
-        }
-        return $list;
+        return $this->readDatabase();
     }
 
+    private function validateModel($model) {
+        if ($model->getSoLuong() <= 0) {
+            throw new ValidationException("Số lượng phải lớn hơn 0");
+        }
+        if ($model->getDonGia() <= 0) {
+            throw new ValidationException("Giá bán phải lớn hơn 0");
+        }
+    }
 }
