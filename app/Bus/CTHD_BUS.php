@@ -1,4 +1,8 @@
 <?php
+namespace App\Bus;
+
+use App\Dao\CTHD_DAO;
+
 class CTHD_BUS {
     private $cthdDAO;
 

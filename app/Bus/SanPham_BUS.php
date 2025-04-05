@@ -2,7 +2,7 @@
 namespace App\Bus;
 use App\Interface\BUSInterface;
 use Illuminate\Support\Facades\Validator;
-use SanPham_DAO;
+use App\Dao\SanPham_DAO;
 
 class SanPham_BUS implements BUSInterface {
     private $listSanPham = array();
