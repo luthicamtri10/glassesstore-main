@@ -47,9 +47,15 @@ Route::get('/admin/{page}', function ($page) {
     return view('admin.includes.sidebar');
 })->where('page', '[a-z]+');
 
+<<<<<<< HEAD
 
 
 Route::get('/sanpham', [SanPhamController::class, 'index'])->name('sanpham.index');
 Route::post('/sanpham', [SanPhamController::class, 'store'])->name('sanpham.store');
 Route::delete('/sanpham/{id}', [SanPhamController::class, 'destroy'])->name('sanpham.destroy');
 
+=======
+Route::get('/login', function() {
+    return view("client.Login-Register");
+});
+>>>>>>> 41f970b774d8f41eee9da7000c770a06ff9bdf23

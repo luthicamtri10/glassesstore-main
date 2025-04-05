@@ -1,30 +1,28 @@
 <?php
-
 namespace App\Bus;
-
 use App\Interface\BUSInterface;
 use Illuminate\Support\Facades\Validator;
 use App\Dao\SanPham_DAO;
 
 class SanPham_BUS implements BUSInterface {
-
+    private $listSanPham = array();
     private $sanPhamDAO;
-
     public function __construct(SanPham_DAO $sanPhamDAO)
     {
         $this->sanPhamDAO = $sanPhamDAO;
+        $this->refreshData();
     }
 
     public function getAllModels() {
-        return $this->sanPhamDAO->readDatabase();
+        return $this->listSanPham;
     }
 
     public function refreshData(): void {
-       $this->sanPhamDAO->getAll();
+       $this->listSanPham = $this->sanPhamDAO->getAll();
     }
 
-    public function getModelById(int $id) {
-        $models = $this->sanPhamDAO->readDatabase();
+    public function getModelById($id) {
+        $models = $this->sanPhamDAO->getById($id);
         foreach ($models as $model) {
             if ($model->getId() === $id) {
                 return $model;

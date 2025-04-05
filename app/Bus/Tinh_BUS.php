@@ -1,56 +1,57 @@
 <?php
 namespace App\Bus;
 
-use App\Dao\ChucNang_DAO;
+use App\Dao\Tinh_DAO;
 use App\Interface\BUSInterface;
-use PhpParser\Node\Stmt\Echo_;
 
 use function Laravel\Prompts\error;
 
-class ChucNang_BUS implements BUSInterface{
-    private $ChucNangList = array();
-    public function __construct()
-    {
+class Tinh_BUS implements BUSInterface{
+    private $tinhList = array();
+    private $tinhDao;
+
+    public function __construct(Tinh_DAO $tinhDao) {
+        $this->tinhDao = $tinhDao;
         $this->refreshData();
     }
     public function refreshData(): void
     {
-        $this->ChucNangList = app(ChucNang_DAO::class)->getAll();
+        $this->tinhList = $this->tinhDao->getAll();
     }
     public function getAllModels() : array
     {
-        return $this->ChucNangList;
+        return $this->tinhList;
     }
     public function getModelById($id)
     {
-        return app(ChucNang_DAO::class)->getById($id);    }
+        return $this->tinhDao->getById($id);    }
     public function addModel($model)
     {
         if($model == null) {
-            error("Error when add a ChucNang");
+            error("Error when add a Tinh");
             return;
         }
-        return app(ChucNang_DAO::class)->insert($model);
+        return $this->tinhDao->insert($model);
     }
     public function updateModel($model)
     {
         if($model == null) {
-            error("Error when update a ChucNang");
+            error("Error when update a Tinh");
             return;
         } 
-        return app(ChucNang_DAO::class)->update($model);
+        return $this->tinhDao->update($model);
     }
     public function deleteModel($id)
     {
         if($id == null || $id == "") {
-            error("Error when delete a ChucNang");
+            error("Error when delete a Tinh");
             return;
         } 
-        return app(ChucNang_DAO::class)->delete($id);
+        return $this->tinhDao->delete($id);
     }
     public function searchModel(string $value, array $columns)
     {
-        $list = app(ChucNang_DAO::class)->search($value, $columns);
+        $list = $this->tinhDao->search($value, $columns);
         if(count($list) > 0) {
             return $list;
         } else {

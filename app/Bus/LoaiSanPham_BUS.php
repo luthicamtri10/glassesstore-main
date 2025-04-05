@@ -7,13 +7,14 @@ use function Laravel\Prompts\error;
 
 class LoaiSanPham_BUS implements BUSInterface {
     private $LoaiSanPhamList = array();
-
-    public function __construct() {
+    private $loaiSanPhamDAO;
+    public function __construct(LoaiSanPham_DAO $loai_san_pham_dao) {
+        $this->loaiSanPhamDAO = $loai_san_pham_dao;
         $this->refreshData();
     }
 
     public function refreshData(): void {
-        $this->LoaiSanPhamList = app(LoaiSanPham_DAO::class)->getAll();
+        $this->LoaiSanPhamList = $this->loaiSanPhamDAO->getAll();
     }
 
     public function getAllModels(): array {
@@ -21,7 +22,7 @@ class LoaiSanPham_BUS implements BUSInterface {
     }
 
     public function getModelById($id) {
-        return app(LoaiSanPham_DAO::class)->getById($id);
+        return $this->loaiSanPhamDAO->getById($id);
     }
 
     public function addModel($model) {
@@ -29,7 +30,7 @@ class LoaiSanPham_BUS implements BUSInterface {
             error("Error when adding a LoaiSanPham");
             return;
         }
-        return app(LoaiSanPham_DAO::class)->insert($model);
+        return $this->loaiSanPhamDAO->insert($model);
     }
 
     public function updateModel($model) {
@@ -37,7 +38,7 @@ class LoaiSanPham_BUS implements BUSInterface {
             error("Error when updating a LoaiSanPham");
             return;
         }
-        return app(LoaiSanPham_DAO::class)->update($model);
+        return $this->loaiSanPhamDAO->update($model);
     }
 
     public function deleteModel($id) {
@@ -45,11 +46,11 @@ class LoaiSanPham_BUS implements BUSInterface {
             error("Error when deleting a LoaiSanPham");
             return;
         }
-        return app(LoaiSanPham_DAO::class)->delete($id);
+        return $this->loaiSanPhamDAO->delete($id);
     }
 
     public function searchModel(string $value, array $columns) {
-        $list = app(LoaiSanPham_DAO::class)->search($value, $columns);
+        $list = $this->loaiSanPhamDAO->search($value, $columns);
         if (count($list) > 0) {
             return $list;
         } else {
