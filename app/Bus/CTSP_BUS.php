@@ -1,4 +1,6 @@
 <?php
+namespace App\Bus;
+use App\Dao\CTSP_DAO;
 class CTSP_BUS {
     private $ctspDAO;
 

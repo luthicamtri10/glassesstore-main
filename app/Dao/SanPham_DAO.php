@@ -1,4 +1,5 @@
 <?php
+namespace App\Dao;
 
 use App\Bus\Hang_BUS;
 use App\Bus\LoaiSanPham_BUS;
@@ -58,7 +59,7 @@ class SanPham_DAO implements DAOInterface{
     public function search(string $condition, array $columnNames): array
     {
         $column = $columnNames[0];
-        $query = "SELECT * FROM ChucNang WHERE $column LIKE ?";
+        $query = "SELECT * FROM SanPham WHERE $column LIKE ?";
         $args = ["%" . $condition . "%"];
         $rs = database_connection::executeQuery($query, ...$args);
         $cartsList = [];
@@ -77,8 +78,8 @@ class SanPham_DAO implements DAOInterface{
     public function createSanPhamModel($rs) {
         $id = $rs['ID'];
         $tenSanPham = $rs['TENSANPHAM'];
-        $idHang = app(Hang_BUS::class)->getModelById($rs['IDHANG']);
-        $idLSP = app(LoaiSanPham_BUS::class)->getModelById($rs['IDLSP']);
+        $idHang = $rs['IDHANG'];
+        $idLSP = $rs['IDLSP'];
         $soLuong = $rs['SOLUONG'];
         $moTa = $rs['MOTA'];
         $donGia = $rs['DONGIA'];

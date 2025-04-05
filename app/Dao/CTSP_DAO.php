@@ -1,4 +1,5 @@
 <?php
+namespace App\Dao;
 
 use App\Interface\DAOInterface;
 use App\Services\database_connection;

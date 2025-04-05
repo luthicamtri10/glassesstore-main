@@ -23,23 +23,25 @@
                 </tr>
             </thead>
             <tbody>
+              @foreach($sanPhams as $sanPham)
                 <tr>
-                    <th scope="row">1</th>
-                    <th scope="row">1</th>
-                    <th scope="row">1</th>
-                    <th scope="row">1</th>
-                    <th scope="row">1</th>
-                    <th scope="row">1</th>
-                    <th scope="row">1</th>
-                    <th scope="row">1</th>
-                    <th scope="row">1</th>
-                    <th scope="row">1</th>
-                    
-                    <td>
-                        <button class="btn btn-warning btn-sm">Sửa</button>
-                        <button class="btn btn-danger btn-sm">Xóa</button>
-                    </td>
+                  <td>{{ $sanPham->getId() }}</td>
+                  <td>{{ $sanPham->getTenSanPham() }}</td>
+                  <td>{{ $sanPham->getIdHang() }}</td>
+                  <td>{{ $sanPham->getIdLSP() }}</td>
+                  <td>{{ $sanPham->getSoLuong() }}</td>
+                  <td>{{ number_format($sanPham->getDonGia()) }} VNĐ</td>
+                  <td>{{ $sanPham->getThoiGianBaoHanh() }} tháng</td>
+                  <td>{{ Str::limit($sanPham->getMoTa(), 50) }}</td>
+                  <td>
+                      @if($sanPham->getTrangThaiHD() == 1)
+                          <span class="badge bg-success">Đang kinh doanh</span>
+                      @else
+                          <span class="badge bg-danger">Ngừng kinh doanh</span>
+                      @endif
+                  </td>
                 </tr>
+                @endforeach
             </tbody>
         </table>
 
