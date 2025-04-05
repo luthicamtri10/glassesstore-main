@@ -1,64 +1,137 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 @include('admin.includes.navbar')
+<?php
+
+use App\Bus\Quyen_BUS;
+use App\Bus\TaiKhoan_BUS;
+$taiKhoanBUS = app(TaiKhoan_BUS::class);
+$quyenBUS = app(Quyen_BUS::class);
+$listTK = $taiKhoanBUS->getAllModels();
+$listQ = $quyenBUS->getAllModels();
+$listTK = $taiKhoanBUS->getAllModels();
+
+if (isset($_GET['keyword']) && !empty(trim($_GET['keyword']))) {
+    $keyword = $_GET['keyword'];
+    $listTK = $taiKhoanBUS->searchModel($keyword, []);
+} elseif (isset($_GET['keywordQuyen']) && !empty(trim($_GET['keywordQuyen']))) {
+    $keyword = $_GET['keywordQuyen'];
+    $listTK = $taiKhoanBUS->searchByQuyen($keyword);
+}
+
+
+
+$current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+$limit = 8;
+$total_record = count($listTK); 
+$total_page = ceil($total_record / $limit);
+$current_page = max(1, min($current_page, $total_page));
+$start = ($current_page - 1) * $limit;
+$tmp = array_slice($listTK, $start, $limit);
+echo "Current page: " . $current_page . '<br>';
+?>
 <div class="p-3 bg-light">
+    <form class="d-flex" method="get" role="search">
+        <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search"
+            id="keyword" name="keyword" value="<?php echo isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : ''; ?>">
+
+        <button class="btn btn-outline-success" type="submit" >Tìm</button>
+    </form>
     <div>
-            <!-- Nút mở Modal -->
-            <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#userModal">
-                <i class='bx bx-plus'></i>
-            </button>
+        <!-- Nút mở Modal -->
+        <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#userModal">
+            <i class='bx bx-plus'></i>
+        </button>
 
-            <select class="form-select w-25 mb-1 ms-1" aria-label="Default select example">
-                <option selected>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+        <form method="get" class="mb-2 ms-1 w-25">
+            <select class="form-select" name="keywordQuyen" onchange="this.form.submit()">
+                <option selected disabled>Lọc theo quyền</option>
+                <?php
+                    foreach($listQ as $it) {
+                        $selected = isset($_GET['keywordQuyen']) && $_GET['keywordQuyen'] == $it->getId() ? 'selected' : '';
+                        echo '<option value="'.$it->getId().'" '.$selected.'>'.$it->getTenQuyen().'</option>';
+                    }
+                ?>
             </select>
+        </form>
 
-            <table class="table table-hover">
+        <table class="table table-hover">
             <thead>
                 <tr>
-                <th scope="col">Tên tài khoản</th>
-                <th scope="col">Email</th>
-                <th scope="col">Password</th>
-                <th scope="col">ID người dùng</th>
-                <th scope="col">ID quyền</th>
-                <th scope="col">Trạng thái</th>
-                <th scope="col">Hành động</th>
+                    <th scope="col">Tên tài khoản</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Tên người dùng</th>
+                    <th scope="col">Tên quyền</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Hành động</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                <th scope="row">1</th>
-                
-                <td>
-                    <button class="btn btn-warning btn-sm">Sửa</button>
-                    <button class="btn btn-danger btn-sm">Xóa</button>
-                </td>
-                </tr>
+                <?php
+                foreach ($tmp as $tk) {
+                    echo '<tr>
+                            <td>' . $tk->getTenTK() . '</td>
+                            <td>' . $tk->getEmail() . '</td>
+                            <td>' . $tk->getIdNguoiDung()->getHoTen() . '</td>
+                            <td>' . $tk->getIdQuyen()->getTenQuyen() . '</td>
+                            <td>
+                                <span class="badge ' . ($tk->getTrangThaiHD() ? 'bg-success' : 'bg-danger') . '">
+                                    ' . ($tk->getTrangThaiHD() ? 'Hoạt động' : 'Ngừng hoạt động') . '
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-warning btn-sm">Sửa</button>
+                                <button class="btn btn-danger btn-sm">Xóa</button>
+                            </td>
+                        </tr>';
+                }
+                ?>
             </tbody>
-            </table>
+        </table>
+        
+        <!-- Phân trang -->
+<nav aria-label="Page navigation example" class="d-flex justify-content-center">
+    <ul class="pagination">
+        <!-- Hiển thị PREV nếu không phải trang đầu tiên -->
+        <?php
+        $queryString = isset($_GET['keyword']) ? '&keyword=' . urlencode($_GET['keyword']) : '';
 
-            <nav aria-label="Page navigation example" class="d-flex justify-content-center">
-                <ul class="pagination">
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
+        // PREV
+        if ($current_page > 1) {
+            echo '<li class="page-item">
+                    <a class="page-link" href="?page=' . ($current_page - 1) . $queryString . '" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
+                  </li>';
+        }
+
+        // Hiển thị các trang phân trang xung quanh trang hiện tại
+        $page_range = 1; // Hiển thị 1 trang trước và 1 trang sau
+        $start_page = max(1, $current_page - $page_range);
+        $end_page = min($total_page, $current_page + $page_range);
+
+        for ($i = $start_page; $i <= $end_page; $i++) {
+            if ($i == $current_page) {
+                echo '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
+            } else {
+                echo '<li class="page-item"><a class="page-link" href="?page=' . $i . $queryString . '">' . $i . '</a></li>';
+            }
+        }
+        
+        // NEXT
+        if ($current_page < $total_page) {
+            echo '<li class="page-item">
+                    <a class="page-link" href="?page=' . ($current_page + 1) . $queryString . '" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
-                    </li>
-                </ul>
-            </nav>
+                  </li>';
+        }
+        ?>
+    </ul>
+</nav>
+
     </div>
 </div>
 
@@ -103,3 +176,4 @@
     </div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76A2z02tPqdjfvJ0f0FftCjN4Ckz1p5F1TXMGL6H1F6Cf0AxvKU8kHku6XlQW1T" crossorigin="anonymous"></script>
