@@ -64,6 +64,9 @@ class TaiKhoan_BUS{
         }
         return null;
     }
+    public function searchByQuyen($idQuyen) {
+        return $this->taiKhoanDAO->searchByQuyen($idQuyen);
+    }
     public function checkLogin($email, $password) : bool {
         return $this->taiKhoanDAO->checkLogin($email, $password);
     }

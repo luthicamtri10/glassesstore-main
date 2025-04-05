@@ -1,10 +1,7 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container">
-    <div class="collapse navbar-collapse d-flex justify-content-between">
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Tìm kiếm" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Tìm</button>
-      </form>
+    <div class="collapse navbar-collapse d-flex justify-content-end">
+      
       <div class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class='bx bxs-cog'></i>

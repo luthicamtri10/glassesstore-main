@@ -45,7 +45,7 @@
     </div>
     <div class="content-ctn">
         <div class="content-left w-50" style="z-index: 1;">
-            <img src="./img/img-login.jpeg" class="w-100 img-fluid  p-auto" alt="" style="border-radius: 30px;overflow: hidden;">
+            <img src="{{ asset('client/img/img-login.jpeg') }}" class="w-100 img-fluid  p-auto" alt="" style="border-radius: 30px;overflow: hidden;">
         </div>
         <div class="content-right w-50 ">
             <form style="width:80%;margin:0 auto;display: block;text-align: center;" method="POST" action="process_login.blade.php">
@@ -94,7 +94,7 @@
         <div class="footer-container d-flex">
             <div class="footer-left">
                 <div class="logo">
-                    <img src="./img/logo.svg" alt="Anna Logo">
+                    <img src="{{ asset('client/img/logo.svg') }}" alt="Anna Logo">
                 </div>
                 <div class="newsletter">
                     <p>Đăng kí để nhận tin mới nhất</p>

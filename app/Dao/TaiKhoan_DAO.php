@@ -129,6 +129,17 @@ class TaiKhoan_DAO{
         return $list;
     }
 
+    public function searchByQuyen($idQuyen) {
+        $list = [];
+        $query = "SELECT * FROM TAIKHOAN WHERE IDQUYEN = ?";
+        $rs = database_connection::executeQuery($query, $idQuyen);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createTaiKhoanModel($row);
+            array_push($list, $model);
+        }
+        return $list;
+    }
+
     public function checkLogin($email, $password): bool {
         $query = "SELECT password FROM TAIKHOAN WHERE email = ?";
         $result = database_connection::executeQuery($query, $email);
@@ -140,7 +151,6 @@ class TaiKhoan_DAO{
         }
         return false;
     }
-    
     
     public function login($email, $password) {
         session_start();

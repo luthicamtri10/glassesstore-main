@@ -1,16 +1,26 @@
 // Sidebar Toggle
 const hamburger = document.querySelector(".toggle-btn");
 const toggler = document.querySelector("#icon");
-hamburger.addEventListener("click", function() {
-    document.querySelector("#sidebar").classList.toggle("expand");
-    toggler.classList.toggle("bx-chevrons-right");
-    toggler.classList.toggle("bx-chevrons-left");
-});
+// hamburger.addEventListener("click", function() {
+//     document.querySelector("#sidebar").classList.toggle("expand");
+//     toggler.classList.toggle("bx-chevrons-right");
+//     toggler.classList.toggle("bx-chevrons-left");
+// });
 
 document.addEventListener('DOMContentLoaded', function() {
     const content = document.getElementById('content');
     let sidebarLinks = document.querySelectorAll('.sidebar-link'); // Lưu ý: Lấy 1 lần
 
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+        fetch('/login', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.text())
+        .then(html => {
+            mainContent.innerHTML = html;
+        });
+    }
     // Hàm xử lý tải nội dung
     function loadContent(href, replaceState = true) {
         if (!href || href === "null" || href.trim() === "") {
@@ -22,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (replaceState) {
             history.pushState(null, '', href);
         }
-
+    
         // Hiển thị loading
         content.innerHTML = `
             <div class="text-center p-5">
