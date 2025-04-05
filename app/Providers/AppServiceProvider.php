@@ -40,12 +40,12 @@ use App\Dao\Tinh_DAO;
 use App\Dao\SanPham_DAO;
 use App\Utils\JWTUtils;
 use App\Validates\validation;
-use CTHD_BUS;
-use CTHD_DAO;
-use CTSP_BUS;
-use CTSP_DAO;
-use HoaDon_BUS;
-use HoaDon_DAO;
+use App\Bus\CTHD_BUS;
+use App\Dao\CTHD_DAO;
+use App\Bus\CTSP_BUS;
+use App\Dao\CTSP_DAO;
+use App\Bus\HoaDon_BUS;
+use App\Dao\HoaDon_DAO;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
