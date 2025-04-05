@@ -1,4 +1,6 @@
 <?php
+namespace App\Bus;
+use App\Dao\HoaDon_DAO;
 
 use App\Interface\BUSInterface;
 use Illuminate\Support\Facades\Validator;

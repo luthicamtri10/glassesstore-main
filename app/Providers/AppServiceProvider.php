@@ -37,16 +37,16 @@ use App\Dao\PTTT_DAO;
 use App\Dao\Quyen_DAO;
 use App\Dao\TaiKhoan_DAO;
 use App\Dao\Tinh_DAO;
+use App\Dao\SanPham_DAO;
 use App\Utils\JWTUtils;
 use App\Validates\validation;
-use CTHD_BUS;
-use CTHD_DAO;
-use CTSP_BUS;
-use CTSP_DAO;
-use HoaDon_BUS;
-use HoaDon_DAO;
+use App\Bus\CTHD_BUS;
+use App\Dao\CTHD_DAO;
+use App\Bus\CTSP_BUS;
+use App\Dao\CTSP_DAO;
+use App\Bus\HoaDon_BUS;
+use App\Dao\HoaDon_DAO;
 use Illuminate\Support\ServiceProvider;
-use SanPham_DAO;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -105,6 +105,14 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton(Auth_BUS::class, function ($app) {
             return new Auth_BUS($app->make(TaiKhoan_BUS::class), $app->make(JWTUtils::class));
+        });
+
+        $this->app->bind(LoaiSanPham_DAO::class, function ($app) {
+            return new LoaiSanPham_DAO();
+        });
+
+        $this->app->singleton(LoaiSanPham_BUS::class, function ($app) {
+            return new LoaiSanPham_BUS($app->make(CTHD_DAO::class));
         });
     }
 

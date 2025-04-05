@@ -4,6 +4,7 @@ use App\Bus\TaiKhoan_BUS;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\SanPhamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,6 +120,12 @@ Route::get('/admin/{page}', function ($page, Request $request) {
     // Nếu load trực tiếp (nhập URL), trả về layout đầy đủ
     return view('layout.admin');
 })->where('page', '[a-z]+');
+
+
+
+Route::get('/sanpham', [SanPhamController::class, 'index'])->name('sanpham.index');
+Route::post('/sanpham', [SanPhamController::class, 'store'])->name('sanpham.store');
+Route::delete('/sanpham/{id}', [SanPhamController::class, 'destroy'])->name('sanpham.destroy');
 
 Route::get('/login', function() {
     if(request()->ajax()) {
