@@ -53,5 +53,8 @@ class NguoiDung_BUS implements BUSInterface {
     {
         return $this->nguoiDungDAO->search($value, $columns);
     }
+    public function searchByTinh($idTinh) {
+        return $this->nguoiDungDAO->searchByTinh($idTinh);
+    }
 }
 ?>

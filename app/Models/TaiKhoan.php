@@ -1,7 +1,11 @@
 <?php
 namespace App\Models;
 
-class TaiKhoan {
+use Illuminate\Database\Eloquent\Model;
+
+class TaiKhoan extends Model {
+
+    protected $table = 'taikhoan';
     private $tenTK;
     private $email;
     private $password;

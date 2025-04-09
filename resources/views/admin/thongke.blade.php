@@ -14,8 +14,8 @@ use App\Models\Quyen;
 use App\Models\TaiKhoan;
 use Illuminate\Support\Facades\Auth;
 
-   $list = app(Quyen_BUS::class)->getAllModels;
+   $list = app(NguoiDung_BUS::class)->getAllModels();
    foreach($list as $it) {
-    echo $it->getTenQuyen() . '<br>';
+    echo $it->getHoTen() . '<br>';
    }
 ?>

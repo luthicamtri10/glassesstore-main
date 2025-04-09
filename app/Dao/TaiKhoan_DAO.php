@@ -80,8 +80,17 @@ class TaiKhoan_DAO{
         }
     }
     public function update($model): int {
+        // Lấy tài khoản cũ từ DB để lấy mật khẩu nếu người dùng không đổi
+        $oldModel = $this->getById($model->getEmail());
+
+        // Nếu người dùng không nhập password mới (tức giữ nguyên chuỗi hash cũ)
+        if (password_verify($model->getPassword(), $oldModel->getPassword())) {
+            $hashedPassword = $oldModel->getPassword();
+        } else {
+            $hashedPassword = password_hash($model->getPassword(), PASSWORD_DEFAULT);
+        }
         $query = "UPDATE TAIKHOAN SET tentk = ?, password = ?, idnguoidung = ?, idquyen = ?, trangThaiHD = ? WHERE email = ?";
-        $args = [$model->getTenTK(), password_hash($model->getPassword(), PASSWORD_DEFAULT), $model->getIdNguoiDung()->getId(), $model->getIdQuyen()->getId(), $model->getTrangThaiHD(), $model->getEmail()];
+        $args = [$model->getTenTK(), $hashedPassword, $model->getIdNguoiDung()->getId(), $model->getIdQuyen()->getId(), $model->getTrangThaiHD(), $model->getEmail()];
         $result = database_connection::executeUpdate($query, ...$args);
         return is_int($result) ? $result : 0;  
     }

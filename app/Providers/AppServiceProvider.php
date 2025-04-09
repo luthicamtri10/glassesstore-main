@@ -46,6 +46,7 @@ use App\Bus\CTSP_BUS;
 use App\Dao\CTSP_DAO;
 use App\Bus\HoaDon_BUS;
 use App\Dao\HoaDon_DAO;
+use App\Http\Controllers\TaiKhoanController;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -114,6 +115,14 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(LoaiSanPham_BUS::class, function ($app) {
             return new LoaiSanPham_BUS($app->make(CTHD_DAO::class));
         });
+        $this->app->singleton(TaiKhoanController::class, function ($app) {
+            return new TaiKhoanController(
+                $app->make(TaiKhoan_BUS::class),
+                $app->make(NguoiDung_BUS::class),   // đúng vị trí thứ 2
+                $app->make(Quyen_BUS::class)        // đúng vị trí thứ 3
+            );
+        });
+        
     }
 
     /**
