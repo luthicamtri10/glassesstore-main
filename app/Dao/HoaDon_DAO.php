@@ -1,7 +1,6 @@
 <?php
 namespace App\Dao;
 
-use App\Interface\DAOInterface;
 use App\Models\HoaDon;
 use App\Services\database_connection;
 

@@ -17,16 +17,17 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row"></th>
-                    <th scope="row"></th>
-                    <th scope="row"></th>
-                    <th scope="row"></th>
-                    
-                    <td>
-                        <button class="btn btn-warning btn-sm">Sửa</button>
-                    </td>
-                </tr>
+            @foreach($danhSachLoaiSanPham as $loai)
+            <tr>
+              <td>{{ $loai->getId() }}</td>
+              <td>{{ $loai->gettenLSP() }}</td>
+              <td>{{ $loai->getmoTa() }}</td>
+              <td>{{ $loai->gettrangThaiHD() }}</td>
+              <td>
+                  <button class="btn btn-warning btn-sm">Sửa</button>
+              </td>
+          </tr>
+          @endforeach
             </tbody>
         </table>
 
