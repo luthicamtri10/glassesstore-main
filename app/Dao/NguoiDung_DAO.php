@@ -120,5 +120,15 @@ class NguoiDung_DAO implements DAOInterface {
         }
         return $list;
     }
+    public function searchByTinh($idTinh) {
+        $list = [];
+        $query = "SELECT * FROM NguoiDung WHERE IDTINH = ?";
+        $rs = database_connection::executeQuery($query, $idTinh);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createNguoiDungModel($row);
+            array_push($list, $model);
+        }
+        return $list;
+    }
 }
 ?>
