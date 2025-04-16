@@ -6,21 +6,15 @@ use App\Interface\BUSInterface;
 
 class NCC_BUS implements BUSInterface {
     private $NCCList = array();
-    private static $instance;
+    private $nccDAO;
 
-    public static function getInstance() {
-        if (self::$instance == null) {
-            self::$instance = new NCC_BUS();
-        }
-        return self::$instance;
-    }
-
-    public function __construct() {
+    public function __construct(NCC_DAO $nCCDAO) {
+        $this->nccDAO = $nCCDAO;
         $this->refreshData();
     }
 
     public function refreshData(): void {
-        $this->NCCList = NCC_DAO::getInstance()->getAll();
+        $this->NCCList = $this->nccDAO->getAll();
     }
 
     public function getAllModels(): array {
@@ -28,32 +22,32 @@ class NCC_BUS implements BUSInterface {
     }
 
     public function getModelById(int $id) {
-        return NCC_DAO::getInstance()->getById($id);
+        return $this->nccDAO->getById($id);
     }
 
     public function addModel($model) {
         if ($model == null) {
             throw new \InvalidArgumentException("Error when adding an NCC");
         }
-        return NCC_DAO::getInstance()->insert($model);
+        return $this->nccDAO->insert($model);
     }
 
     public function updateModel($model) {
         if ($model == null) {
             throw new \InvalidArgumentException("Error when updating an NCC");
         }
-        return NCC_DAO::getInstance()->update($model);
+        return $this->nccDAO->update($model);
     }
 
     public function deleteModel(int $id) {
         if ($id == null || $id == "") {
             throw new \InvalidArgumentException("Error when deleting an NCC");
         }
-        return NCC_DAO::getInstance()->delete($id);
+        return $this->nccDAO->delete($id);
     }
 
     public function searchModel(string $value, array $columns) {
-        $list = NCC_DAO::getInstance()->search($value, $columns);
+        $list = $this->nccDAO->search($value, $columns);
         if (count($list) > 0) {
             return $list;
         } else {

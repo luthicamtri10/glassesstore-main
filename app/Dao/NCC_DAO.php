@@ -18,7 +18,7 @@ class NCC_DAO implements DAOInterface
         return self::$instance;
     }
 
-    public function getAll(): array
+    public function getAll()
     {
         $list = [];
         $rs = database_connection::executeQuery("SELECT * FROM NCC");
@@ -31,7 +31,7 @@ class NCC_DAO implements DAOInterface
 
     public function getById($id)
     {
-        $query = "SELECT * FROM NCC WHERE idNCC = ?";
+        $query = "SELECT * FROM NCC WHERE ID = ?";
         $result = database_connection::executeQuery($query, $id);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
@@ -76,13 +76,13 @@ class NCC_DAO implements DAOInterface
 
     private function createNCCModel($row): NCC
     {
-        return new NCC(
-            $row['idNCC'],
-            $row['tenNCC'],
-            $row['sdtNCC'],
-            $row['diachi'],
-            $row['trangthaiHD']
-        );
+        $id = $row['ID'];
+        $tenncc = $row['TENNCC'];
+        $sdt = $row['SODIENTHOAI'];
+        $mota = $row['MOTA'];
+        $diachi = $row['DIACHI'];
+        $trangthaiHD = $row['TRANGTHAIHD'];
+        return new NCC($id, $tenncc, $sdt, $mota, $diachi, $trangthaiHD);
     }
     public function readDatabase(): array
     {

@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Dao;
+
 use App\Bus\NguoiDung_BUS;
 use App\Bus\SanPham_BUS;
 
@@ -17,7 +19,7 @@ class ChiTietBaoHanh_DAO implements DAOInterface
     public function readDatabase(): array
     {
         $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM chitietbaohanh WHERE TRANGTHAIHD = 1");
+        $rs = database_connection::executeQuery("SELECT * FROM chitietbaohanh");
         while ($row = $rs->fetch_assoc()) {
             $list[] = $this->createModel($row);
         }
@@ -29,14 +31,12 @@ class ChiTietBaoHanh_DAO implements DAOInterface
      */
     private function createModel(array $rs): ChiTietBaoHanh
     {
-    
-        $idKhachHang = app(NguoiDung_BUS::class)->getModelById($rs['idNguoiDung']);
-        $idSanPham = app(SanPham_BUS::class)->getModelById($rs['idSanPham']);
-        $soSeri = $rs['soSeri'];
-        $chiPhiBH = $rs['chiPhiBH'];
-        $thoiDiemBH = $rs['thoiDiemBH'];
-        $trangThaiHD = $rs['trangthai'];
-        return new ChiTietBaoHanh($idKhachHang, $idSanPham, $chiPhiBH, $thoiDiemBH, $soSeri,$trangThaiHD);
+
+        $idKhachHang = app(NguoiDung_BUS::class)->getModelById($rs['IDKHACHHANG']);
+        $soSeri = $rs['SOSERI'];
+        $chiPhiBH = $rs['CHIPHIBH'];
+        $thoiDiemBH = $rs['THOIDIEMBAOHANH'];
+        return new ChiTietBaoHanh($idKhachHang, $soSeri, $chiPhiBH, $thoiDiemBH);
     }
 
     /**
@@ -51,14 +51,17 @@ class ChiTietBaoHanh_DAO implements DAOInterface
     /**
      * Lấy một bản ghi theo idKhachHang và idSanPham
      */
+
     public function getById($id): ?ChiTietBaoHanh
     {
-        if (!is_array($id) || !isset($id['idKhachHang']) || !isset($id['idSanPham'])|| !isset($id['soSeri'])) {
-            throw new InvalidArgumentException("ID phải là mảng chứa idKhachHang và idSanPham va soSeri");
+        // Kiểm tra tính hợp lệ của $id
+        if (!is_array($id) || !isset($id['idKhachHang']) || !isset($id['soSeri'])) {
+            throw new InvalidArgumentException("ID phải là mảng chứa idKhachHang và soSeri");
         }
 
-        $query = "SELECT * FROM chitietbaohanh WHERE IDKHACHHANG = ? AND IDSANPHAM = ? AND SOSERI = ? AND TRANGTHAIHD = 1";
-        $result = database_connection::executeQuery($query, $id['idKhachHang'], $id['idSanPham'],$id['idKhachHang']) ;
+        // Truy vấn an toàn với tham số đúng
+        $query = "SELECT * FROM chitietbaohanh WHERE IDKHACHHANG = ? AND SOSERI = ?";
+        $result = database_connection::executeQuery($query, $id['idKhachHang'], $id['soSeri']);
 
         if ($result->num_rows > 0) {
             return $this->createModel($result->fetch_assoc());
@@ -69,15 +72,15 @@ class ChiTietBaoHanh_DAO implements DAOInterface
     /**
      * Kiểm tra tính hợp lệ của sản phẩm trong hóa đơn trước khi tạo chi tiết bảo hành
      */
-    private function isValidForWarranty(int $idKhachHang, int $idSanPham, string $soSeri): bool
+    private function isValidForWarranty(int $idKhachHang, string $soSeri): bool
     {
         $query = "SELECT cthd.TRANGTHAIBH
                   FROM hoadon hd 
                   INNER JOIN chitiethoadon cthd 
                   ON hd.ID = cthd.IDHD 
-                  WHERE cthd.SOSERI = ? AND cthd.IDSP = ? AND hd.IDKHACHHANG = ? AND hd.TRANGTHAI = 'PAID'";
-        $rs = database_connection::executeQuery($query, $soSeri, $idSanPham, $idKhachHang);
-        
+                  WHERE cthd.SOSERI = ? AND hd.IDKHACHHANG = ? AND hd.TRANGTHAI = 'PAID'";
+        $rs = database_connection::executeQuery($query, $soSeri, $idKhachHang);
+
         if ($rs->num_rows === 0) {
             return false; // Không tìm thấy hóa đơn
         }
@@ -89,17 +92,11 @@ class ChiTietBaoHanh_DAO implements DAOInterface
 
         return true;
     }
-    private function productExists(int $idSanPham): bool
+
+    private function soSeriExists(string $soSeri): bool
     {
-        $query = "SELECT COUNT(*) as count FROM sanpham WHERE ID = ?";
-        $rs = database_connection::executeQuery($query, $idSanPham);
-        $row = $rs->fetch_assoc();
-        return $row['count'] > 0;
-    }
-    private function soSeriExists(int $idSanPham,string $soSeri): bool
-    {
-        $query = "SELECT COUNT(*) as count FROM ctsp WHERE IDSP = ? AND SOSERI = ?";
-        $rs = database_connection::executeQuery($query, $idSanPham, $soSeri);
+        $query = "SELECT COUNT(*) as count FROM ctsp WHERE  SOSERI = ?";
+        $rs = database_connection::executeQuery($query, $soSeri);
         $row = $rs->fetch_assoc();
         return $row['count'] > 0;
     }
@@ -115,37 +112,33 @@ class ChiTietBaoHanh_DAO implements DAOInterface
      */
     public function insert($e): int
     {
+        // Kiểm tra kiểu dữ liệu đầu vào
         if (!$e instanceof ChiTietBaoHanh) {
             throw new InvalidArgumentException("Tham số phải là instance của ChiTietBaoHanh");
         }
-        if (!$this->productExists($e->getIdSanPham())) {
-            throw new \Exception("ID sanpham {$e->getIdSanPham()} không tồn tại trong bảng sanpham.");
-        }
-        if (!$this->soSeriExists($e->getIdSanPham(),$e->getSoSeri())) {
-            throw new \Exception("So Seri {$e->getSoSeri()} không tồn tại trong bảng ctsp.");
-        }
-        if (!$this->customerExists($e->getIdKhachHang())) {
-            throw new \Exception("ID KHACHHANG {$e->getSoSeri()} không tồn tại trong bảng NGÙODUNG.");
-        }
-        
 
-        // Kiểm tra tính hợp lệ trước khi thêm
-        if (!$this->isValidForWarranty($e->getIdKhachHang(), $e->getIdSanPham(), $e->getSoSeri())) {
+        // Kiểm tra sự tồn tại của số seri
+        if (!$this->soSeriExists($e->getSoSeri())) {
+            throw new \Exception("Số Seri {$e->getSoSeri()} không tồn tại trong bảng ctsp.");
+        }
+        // Kiểm tra sự tồn tại của khách hàng
+        if (!$this->customerExists($e->getIdKhachHang())) {
+            throw new \Exception("ID KHACHHANG {$e->getIdKhachHang()} không tồn tại trong bảng NGUOIDUNG.");
+        }
+
+        // Kiểm tra điều kiện bảo hành
+        if (!$this->isValidForWarranty($e->getIdKhachHang(), $e->getSoSeri())) {
             throw new \Exception("Sản phẩm không đủ điều kiện bảo hành.");
         }
-        if ($this->exists($e->getIdKhachHang(), $e->getIdSanPham(), $e->getSoSeri())) {
-            throw new \Exception("Bản ghi bảo hành đã tồn tại cho khách hàng, sản phẩm và số seri này.");
-        }
 
-        $query = "INSERT INTO chitietbaohanh (IDKHACHHANG, IDSANPHAM, CHIPHIBH, THOIDIEMBAOHANH, SOSERI,TRANGTHAIHD) 
-                  VALUES (?, ?, ?, ?, ?,?)";
+        // Truy vấn chèn dữ liệu với số tham số khớp
+        $query = "INSERT INTO chitietbaohanh (IDKHACHHANG, SOSERI, CHIPHIBH, THOIDIEMBAOHANH) 
+              VALUES (?, ?, ?, ?)";
         $args = [
             $e->getIdKhachHang(),
-            $e->getIdSanPham(),
-            $e->getChiPhiBH(),
-            $e->getThoiDiemBH()->format('Y-m-d H:i:s'),
             $e->getSoSeri(),
-            $e->getTrangThaiHD()
+            $e->getChiPhiBH(),
+            $e->getThoiDiemBH()->format('Y-m-d H:i:s')
         ];
         $rs = database_connection::executeQuery($query, ...$args);
         return is_int($rs) ? $rs : 0;
@@ -159,26 +152,22 @@ class ChiTietBaoHanh_DAO implements DAOInterface
         if (!$e instanceof ChiTietBaoHanh) {
             throw new InvalidArgumentException("Tham số phải là instance của ChiTietBaoHanh");
         }
-        if (!$this->productExists($e->getIdSanPham())) {
-            throw new \Exception("ID sanpham {$e->getIdSanPham()} không tồn tại trong bảng sanpham.");
-        }
-        if (!$this->soSeriExists($e->getIdSanPham(),$e->getSoSeri())) {
+
+        if (!$this->soSeriExists($e->getSoSeri())) {
             throw new \Exception("So Seri {$e->getSoSeri()} không tồn tại trong bảng ctsp.");
         }
         if (!$this->customerExists($e->getIdKhachHang())) {
             throw new \Exception("ID KHACHHANG {$e->getSoSeri()} không tồn tại trong bảng NGÙODUNG.");
         }
-        
 
-        $query = "UPDATE chitietbaohanh SET CHIPHIBH = ?, THOIDIEMBAOHANH = ?,TRANGTHAIHD = ?
-                  WHERE SOSERI = ? AND IDKHACHHANG = ? AND IDSANPHAM = ?";
+
+        $query = "UPDATE chitietbaohanh SET CHIPHIBH = ?, THOIDIEMBAOHANH = ?
+                  WHERE SOSERI = ? AND IDKHACHHANG = ?";
         $args = [
             $e->getChiPhiBH(),
             $e->getThoiDiemBH()->format('Y-m-d H:i:s'),
-            $e->getTrangThaiHD(),
             $e->getSoSeri(),
             $e->getIdKhachHang(),
-            $e->getIdSanPham()
         ];
         $rs = database_connection::executeUpdate($query, ...$args);
         return is_int($rs) ? $rs : 0;
@@ -189,26 +178,27 @@ class ChiTietBaoHanh_DAO implements DAOInterface
      */
     public function delete($id): int
     {
-        if (!is_array($id) || !isset($id['idKhachHang']) || !isset($id['idSanPham'])|| !isset($id['soSeri'])) {
-            throw new InvalidArgumentException("ID phải là mảng chứa idKhachHang và idSanPham và soSeri");
+        // Kiểm tra tính hợp lệ của $id
+        if (!is_array($id) || !isset($id['idKhachHang']) || !isset($id['soSeri'])) {
+            throw new InvalidArgumentException("ID phải là mảng chứa idKhachHang và soSeri");
         }
 
-        $query = "UPDATE FROM chitietbaohanh SET TRANGTHAIHD = 0 WHERE IDKHACHHANG = ? AND IDSANPHAM = ? AND SOSERI = ?";
-        $rs = database_connection::executeUpdate($query, $id['idKhachHang'], $id['idSanPham'], $id["soSeri"]);
+        // Sử dụng DELETE thay vì UPDATE
+        $query = "DELETE FROM chitietbaohanh WHERE IDKHACHHANG = ? AND SOSERI = ?";
+        $rs = database_connection::executeUpdate($query, $id['idKhachHang'], $id['soSeri']);
         return is_int($rs) ? $rs : 0;
     }
-
     /**
      * Kiểm tra xem một bản ghi có tồn tại không
      */
     public function exists($id): bool
     {
-        if (!is_array($id) || !isset($id['idKhachHang']) || !isset($id['idSanPham'])|| !isset($id['soSeri'])) {
-            throw new InvalidArgumentException("ID phải là mảng chứa idKhachHang và idSanPham");
+        if (!is_array($id) || !isset($id['idKhachHang']) || !isset($id['soSeri'])) {
+            throw new InvalidArgumentException("ID phải là mảng chứa idKhachHang và soSeri");
         }
 
-        $query = "SELECT COUNT(*) as count FROM chitietbaohanh WHERE IDKHACHHANG = ? AND IDSANPHAM = ? AND SOSERI = ?";
-        $rs = database_connection::executeQuery($query, $id['idKhachHang'], $id['idSanPham'], $id["soSeri"]);
+        $query = "SELECT COUNT(*) as count FROM chitietbaohanh WHERE IDKHACHHANG = ?  AND SOSERI = ?";
+        $rs = database_connection::executeQuery($query, $id['idKhachHang'], $id["soSeri"]);
         $row = $rs->fetch_assoc();
         return $row['count'] > 0;
     }
@@ -224,7 +214,7 @@ class ChiTietBaoHanh_DAO implements DAOInterface
         }
 
         $columns = empty($columnNames)
-            ? ['IDKHACHHANG', 'IDSANPHAM', 'CHIPHIBH', 'THOIDIEMBAOHANH', 'SOSERI']
+            ? ['IDKHACHHANG', 'CHIPHIBH', 'THOIDIEMBAOHANH', 'SOSERI']
             : $columnNames;
 
         $query = "SELECT * FROM chitietbaohanh WHERE " . implode(" LIKE ? OR ", $columns) . " LIKE ?";
@@ -238,4 +228,3 @@ class ChiTietBaoHanh_DAO implements DAOInterface
         return $list;
     }
 }
-?>

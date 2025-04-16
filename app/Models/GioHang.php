@@ -1,40 +1,67 @@
 <?php
+
 namespace App\Models;
 
-class GioHang {
-    private string $email;
-    private int $idSanPham;
-    private string $soSeri;
+class GioHang
+{
+    private TaiKhoan $tkModel;
+    private int $id, $trangThaiHD;
+    private string $createdAt;
 
-    public function __construct(string $email, int $idSanPham, string $soSeri) {
-        $this->email = $email;
-        $this->idSanPham = $idSanPham;
-        $this->soSeri = $soSeri;
+
+    public function __construct(int $id, TaiKhoan $tkModel, string $createdAt, int $trangThaiHD)
+    {
+        $this->id = $id;
+        $this->tkModel = $tkModel;
+        $this->createdAt = $createdAt;
+        $this->trangThaiHD = $trangThaiHD;
     }
 
-    public function getEmail(): string {
-        return $this->email;
+    // Getter cho ID
+    public function getId(): int
+    {
+        return $this->id;
     }
 
-    public function getIdSanPham(): int {
-        return $this->idSanPham;
+    // Setter cho ID
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
-    public function getSoSeri(): string {
-        return $this->soSeri;
+    // Getter cho tk
+    public function getTaiKhoan(): TaiKhoan
+    {
+        return $this->tkModel;
     }
 
-    public function setEmail(string $email): void {
-        $this->email = $email;
+    // Setter cho tk
+    public function setTaiKhoan(TaiKhoan $tkModel): void
+    {
+        $this->tkModel = $tkModel;
     }
 
-    public function setIdSanPham(int $idSanPham): void {
-        $this->idSanPham = $idSanPham;
+    // Getter cho CREATEDAT
+    public function getCreatedAt(): string
+    {
+        return $this->createdAt;
     }
 
-    public function setSoSeri(string $soSeri): void {
-        $this->soSeri = $soSeri;
+    // Setter cho CREATEDAT
+    public function setCreatedAt(string $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    // Getter cho TRANGTHAIID
+    public function getTrangThaiHD(): int
+    {
+        return $this->trangThaiHD;
+    }
+
+    // Setter cho TRANGTHAIID
+    public function setTrangThaiHD(int $trangThaiHD): void
+    {
+        $this->trangThaiHD = $trangThaiHD;
     }
 }
-
-?>

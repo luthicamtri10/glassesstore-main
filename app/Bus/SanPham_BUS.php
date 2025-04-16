@@ -1,5 +1,6 @@
 <?php
-
+namespace App\Bus;
+use App\Dao\SanPham_DAO;
 use App\Interface\BUSInterface;
 use Illuminate\Support\Facades\Validator;
 class SanPham_BUS implements BUSInterface {

@@ -14,6 +14,14 @@ use function Laravel\Prompts\error;
 
 class PhieuNhap_DAO implements DAOInterface
 {
+    private $nccBUS;
+    private $ndBUS;
+    public function __construct(NCC_BUS $ncc_bus, NguoiDung_BUS $nguoi_dung_bus)
+    {
+        $this->nccBUS = $ncc_bus;
+        $this->ndBUS = $nguoi_dung_bus;
+        
+    }
     public function readDatabase(): array
     {
         $list = [];
@@ -26,29 +34,18 @@ class PhieuNhap_DAO implements DAOInterface
     }
     public function createPhieuNhapModel($rs): PhieuNhap
     {
-        $trangThaiHD = $rs['trangThaiHD'];
-        switch ($trangThaiHD) {
-            case 'PAID':
-                $trangThaiHD = ReceiptStatus::PAID;
-                break;
-            case 'UNPAID':
-                $trangThaiHD = ReceiptStatus::UNPAID;
-                break;
-            default:
-                error("Can not create PhieuNhap model");
-                break;
-        }
-        $id = $rs['id'];
-        $idNCC = app(NCC_BUS::class)->getModelById($rs['idNCC']);
-        $tongTien = $rs['tongTien'];
-        $ngayTao = $rs['ngayTao'];
-        $idNhanVien = app(NguoiDung_BUS::class)->getModelById($rs['idNhanVien']);
-        return new PhieuNhap($id,$idNCC,$tongTien,$ngayTao,$idNhanVien,$trangThaiHD);
+        $trangThaiHD = $rs['TRANGTHAIHD'];
+        $id = $rs['ID'];
+        $NCC = $this->nccBUS->getModelById($rs['IDNCC']);
+        $tongTien = $rs['TONGTIEN'];
+        $ngayTao = $rs['NGAYTAO'];
+        $NhanVien = $this->ndBUS->getModelById($rs['IDNHANVIEN']);
+        return new PhieuNhap($id,$NCC,$tongTien,$ngayTao,$NhanVien,$trangThaiHD);
     }
     public function getAll(): array
     {
         $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM phieunhap");
+        $rs = database_connection::executeQuery("SELECT * FROM phieunhap WHERE TRANGTHAIHD <> 0");
         while ($row = $rs->fetch_assoc()) {
             $model = $this->createPhieuNhapModel($row);
             array_push($list, $model);
@@ -64,58 +61,25 @@ class PhieuNhap_DAO implements DAOInterface
         }
         return null;
     }
-    private function supplierExists(int $idNCC): bool
-    {
-        $query = "SELECT COUNT(*) as count FROM ncc WHERE ID = ?";
-        $rs = database_connection::executeQuery($query, $idNCC);
-        $row = $rs->fetch_assoc();
-        return $row['count'] > 0;
-    }
-
-    /**
-     * Kiểm tra sự tồn tại của idNhanVien trong bảng nguoidung
-     */
-    private function employeeExists(int $idNhanVien): bool
-    {
-        $query = "SELECT COUNT(*) as count FROM nguoidung WHERE ID = ?";
-        $rs = database_connection::executeQuery($query, $idNhanVien);
-        $row = $rs->fetch_assoc();
-        return $row['count'] > 0;
-    }
+   
     public function insert($e): int
     {
-        if (!$e instanceof PhieuNhap) {
-            throw new InvalidArgumentException("Tham số phải là instance của PhieuNhap");
-        }
-        // Kiểm tra khóa ngoại
-        if (!$this->supplierExists($e->getIdNCC())) {
-            throw new \Exception("ID nhà cung cấp {$e->getIdNCC()} không tồn tại trong bảng nhacungcap.");
-        }
-        if (!$this->employeeExists($e->getIdNhanVien())) {
-            throw new \Exception("ID nhân viên {$e->getIdNhanVien()} không tồn tại trong bảng nguoidung.");
-        }
-        $query = "INSERT INTO phieunhap (ID, IDNCC, TONGTIEN, NGAYTAO, IDNHANVIEN, TRANGTHAIHD) VALUES (?,?,?,?,?,?)";
-        $args = [$e->getId(), $e->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien(), $e->getTrangThaiHD()];
+        $query = "INSERT INTO phieunhap (IDNCC, TONGTIEN, NGAYTAO, IDNHANVIEN, TRANGTHAIHD) VALUES (?,?,?,?,?)";
+        $args = [ $e->getNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getNhanVien()->getId(), $e->getTrangThaiHD()];
         $rs = database_connection::executeQuery($query, ...$args);
         return is_int($rs) ? $rs : 0;
+        return 0;
     }
     public function update($e): int
     {
-        // Kiểm tra khóa ngoại
-        if (!$this->supplierExists($e->getIdNCC())) {
-            throw new \Exception("ID nhà cung cấp {$e->getIdNCC()} không tồn tại trong bảng nhacungcap.");
-        }
-        if (!$this->employeeExists($e->getIdNhanVien())) {
-            throw new \Exception("ID nhân viên {$e->getIdNhanVien()} không tồn tại trong bảng nguoidung.");
-        }
         $query = "UPDATE phieunhap SET IDNCC = ?, TONGTIEN = ?, NGAYTAO = ?, IDNHANVIEN = ?, TRANGTHAIHD = ? WHERE ID = ?";
-        $args = [$e->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien(), $e->getTrangThaiHD(), $e->getId()];
+        $args = [$e->getNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getNhanVien()->getId(), $e->getTrangThaiHD(), $e->getId()];
         $rs = database_connection::executeUpdate($query, ...$args);
         return is_int($rs) ? $rs : 0;
     }
     public function delete(int $id): int
     {
-        $query = "DELETE FROM phieunhap WHERE ID = ?";
+        $query = "UPDATE phieunhap SET TRANGTHAIHD = 0 WHERE ID = ?";
         $rs = database_connection::executeUpdate($query, $id);
         return is_int($rs) ? $rs : 0;
     }
@@ -129,10 +93,7 @@ class PhieuNhap_DAO implements DAOInterface
 
     public function search(string $condition, array $columnNames = []): array
     {
-        if (empty($condition)) {
-            throw new InvalidArgumentException("Search condition cannot be empty or null");
-        }
-
+        
         // Danh sách cột mặc định nếu không truyền vào
         $columns = empty($columnNames)
             ? ["ID", "IDNCC", "TONGTIEN", "IDNHANVIEN", "NGAYTAO", "TRANGTHAIHD"]

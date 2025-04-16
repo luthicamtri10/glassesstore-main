@@ -62,7 +62,7 @@ class NguoiDung_DAO implements DAOInterface {
         return $list;
     }
     public function getById($id) {
-        $query = "SELECT * FROM NGUOIDUNG WHERE id = ?";
+        $query = "SELECT * FROM NGUOIDUNG WHERE ID = ?";
         $result = database_connection::executeQuery($query, $id);
         if($result->num_rows > 0) {
             $row = $result->fetch_assoc();

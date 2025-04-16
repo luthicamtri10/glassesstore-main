@@ -1,5 +1,5 @@
 <?php
-
+namespace App\Dao;
 use App\Interface\DAOInterface;
 use App\Models\SanPham;
 use App\Services\database_connection;

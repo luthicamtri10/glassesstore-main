@@ -10,4 +10,7 @@ class CTSP_BUS {
     public function addModel($model): int {
         return $this->ctspDAO->insert($model);
     }
+    public function getModelById($seri){
+        return $this->ctspDAO->getById($seri);
+    }
 }

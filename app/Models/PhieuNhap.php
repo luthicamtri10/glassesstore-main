@@ -5,42 +5,43 @@ use App\Enum\ReceiptStatus;
 
 class PhieuNhap {
     private int $id;
-    private int $idNCC;
+    private NguoiDung $ndModel;
+    private NCC $nccModel;
     private float $tongTien;
-    private \DateTime $ngayTao;
-    private int $idNhanVien;
-    private ReceiptStatus $trangThaiHD;
+    private  $ngayTao;
+    private int $trangThaiHD;
 
-    public function __construct(int $id, int $idNCC, float $tongTien, string $ngayTao, int $idNhanVien, ReceiptStatus $trangThaiHD) {
+    public function __construct(int $id, NCC $nccModel, float $tongTien, string $ngayTao, NguoiDung $ndModel, int $trangThaiHD) {
         $this->id = $id;
-        $this->idNCC = $idNCC;
+        $this->nccModel = $nccModel;
         $this->tongTien = $tongTien;
-        $this->ngayTao = new \DateTime($ngayTao);
-        $this->idNhanVien = $idNhanVien;
+        $this->ngayTao = $ngayTao;
+        $this->ndModel = $ndModel;
         $this->trangThaiHD = $trangThaiHD;
     }
+   
 
     public function getId(): int {
         return $this->id;
     }
 
-    public function getIdNCC(): int {
-        return $this->idNCC;
+    public function getNCC(): NCC {
+        return $this->nccModel;
     }
 
     public function getTongTien(): float {
         return $this->tongTien;
     }
 
-    public function getNgayTao(): \DateTime {
+    public function getNgayTao() {
         return $this->ngayTao;
     }
 
-    public function getIdNhanVien(): int {
-        return $this->idNhanVien;
+    public function getNhanVien(): NguoiDung {
+        return $this->ndModel;
     }
 
-    public function getTrangThaiHD(): ReceiptStatus {
+    public function getTrangThaiHD(): int {
         return $this->trangThaiHD;
     }
 
@@ -48,8 +49,8 @@ class PhieuNhap {
         $this->id = $id;
     }
 
-    public function setIdNCC(int $idNCC): void {
-        $this->idNCC = $idNCC;
+    public function setNCC(NCC $nccModel): void {
+        $this->nccModel = $nccModel;
     }
 
     public function setTongTien(float $tongTien): void {
@@ -57,14 +58,14 @@ class PhieuNhap {
     }
 
     public function setNgayTao(string $ngayTao): void {
-        $this->ngayTao = new \DateTime($ngayTao);
+        $this->ngayTao = ($ngayTao);
     }
 
-    public function setIdNhanVien(int $idNhanVien): void {
-        $this->idNhanVien = $idNhanVien;
+    public function setIdNhanVien(NguoiDung $ndModel): void {
+        $this->ndModel = $ndModel;
     }
 
-    public function setTrangThaiHD(ReceiptStatus $trangThaiHD): void {
+    public function setTrangThaiHD(int $trangThaiHD): void {
         $this->trangThaiHD = $trangThaiHD;
     }
 }

@@ -1,26 +1,30 @@
 <?php
 
+
+// use App\Bus\TaiKhoan_BUS;
+
 use App\Bus\TaiKhoan_BUS;
-use App\Bus\ChiTietBaoHanh_BUS;
-use App\Models\ChiTietBaoHanh;
+use App\Bus\NguoiDung_BUS;
+use App\Bus\PhieuNhap_BUS;
+use App\Bus\GioHang_BUS;
+use App\Models\GioHang;
+use App\Models\NguoiDung;
+use App\Models\PhieuNhap;
+use App\Models\TaiKhoan;
 
-// Inject TaiKhoan_BUS if this is in a controller or use app() if still in a view/context
-$taiKhoanBus = app(TaiKhoan_BUS::class);
-$list = $taiKhoanBus->getAllModels();
+//  $nccmodel = app(TaiKhoan_BUS::class)->getModelById("trilu@gmail.com");
+// $ndmodel = app(GioHang_BUS::class)->getAllModels();
 
-if (!empty($list)) {
-    echo '<ul>';
-    foreach ($list as $i) {
-        echo '<li>' . htmlspecialchars($i->getTenTK()) . '</li>'; // Sử dụng htmlspecialchars để tránh XSS
-    }
-    echo '</ul>';
-} else {
-    echo '<p>No accounts found.</p>'; // Thông báo nếu không có tài khoản nào
-}
-$chiTietBHBus = app(ChiTietBaoHanh_BUS::class);
-$chiTietBH = new ChiTietBaoHanh(1,1,50000,'1-4-2025','BL001',1);
-$bool = $chiTietBHBus->addModel($chiTietBH);
-// echo "<p>" . ($bool ? "Thêm chi tiết bảo hành thành công!" : "Thêm chi tiết bảo hành thất bại!") . "</p>";
+// $pnmodel = new GioHang(2,$nccmodel,'2025-04-18',1);
+// $pnmodel = app(PhieuNhap_BUS::class)->getModelById(5);
+
+// echo $pnmodel->getTaiKhoan()->getEmail();
+$new = app(GioHang_BUS::class)->getModelById(1);
+// echo $new;
+//    $list = app(NguoiDung_BUS::class)->getAllModels();
+   // foreach($ndmodel as $it) {
+      echo $new->getTaiKhoan()->getEmail() . '<br>';
+   // }
 
 ?>
 <!-- <h1>HELLO</h1> -->

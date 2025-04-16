@@ -9,15 +9,15 @@ use InvalidArgumentException;
 
 class GioHang_BUS implements BUSInterface {
     private array $gioHangList = [];
-    private GioHang_DAO $dao;
-    public function __construct()
+    private GioHang_DAO $gioHangDAO;
+    public function __construct(GioHang_DAO $gio_hang_dao)
     {
-        $this->dao = app(GioHang_DAO::class);
+        $this->gioHangDAO = $gio_hang_dao;
         $this->refreshData();
     }
     public function refreshData(): void
     {
-        $this->gioHangList = app(GioHang_BUS::class)->getAll();
+        $this->gioHangList = $this->gioHangDAO->getAll();
     }
     public function getAllModels()
     {
@@ -25,38 +25,21 @@ class GioHang_BUS implements BUSInterface {
     }
     public function getModelById($id)
     {
-        if (!is_array($id) || !isset($id['enail'])|| !isset($id['soSeri'])) {
-            throw new InvalidArgumentException("ID phải là mảng chứa enail và soSeri");
-        }
-        return app(GioHang_DAO::class)->getById($id);
+        return $this->gioHangDAO->getById($id);
     }
     public function addModel($model)
     {
-        if (!$model instanceof GioHang) {
-            throw new InvalidArgumentException("Model phải là instance của GioHang");
-        }
-
-        if($model == null) {
-            error_log("Error when insert a GioHang");
-            return;
-        }
-        return app(GioHang_DAO::class)->insert($model);
+        
+        return $this->gioHangDAO->insert($model);
     }
     public function updateModel($model)
     {
-        if($model == null) {
-            error_log("Error when update a GioHang");
-            return;
-        }
-        return app(GioHang_DAO::class)->update($model);
+        return $this->gioHangDAO->update($model);
     }
     public function deleteModel($id)
     {
-        if($id == null || $id == "") {
-            error_log("Error when delete a GioHang");
-            return;
-        }
-        return app(GioHang_DAO::class)->delete($id);
+       
+        return $this->gioHangDAO->delete($id);
     }
     public function searchModel(string $value, array $columns)
     {
