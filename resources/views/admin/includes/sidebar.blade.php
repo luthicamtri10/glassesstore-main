@@ -1,12 +1,9 @@
 
-<aside id="sidebar">
+<aside id="sidebar" class="expand">
 <div class="d-flex justify-content-between p-4">
         <div class="sidebar-logo">
           <a href="#">Web2</a>
         </div>
-        <button class="toggle-btn border-0" type="button">
-          <i id="icon"class='bx bx-chevrons-right'></i>
-        </button>
       </div>
       <ul class="sidebar-nav">
         <li class="sidebar-item" id="quyen">

@@ -92,6 +92,9 @@ use Illuminate\Support\Facades\View as FacadesView;
                     case 'thongke':
                         include base_path('resources/views/admin/thongke.blade.php');
                         break;
+                    case 'loaisanpham':
+                        include base_path('resources/views/admin/loaisanpham.blade.php');
+                        break;
                     default:
                         include base_path('resources/views/admin/nguoidung.blade.php');
                         break;
