@@ -141,6 +141,17 @@ class SanPham_DAO implements DAOInterface{
         }
         return $list;
     }
+
+    // public function getTop4ProductWasHigestSale() {
+    //     $list = [];
+    //     $query = "SELECT * FROM SANPHAM WHERE IDLSP = ? AND IDHANG = ?";
+    //     $rs = database_connection::executeQuery($query, $lsp, $hang);
+    //     while($row = $rs->fetch_assoc()) {
+    //         $model = $this->createSanPhamModel($row);
+    //         array_push($list, $model);
+    //     }
+    //     return $list;
+    // }
     
 
 }
