@@ -1,38 +1,142 @@
-<!DOCTYPE html>
-<html lang="en">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/client/include/navbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/client/include/footer.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/client/Login-Register.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/client/HomePageClient.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/client/AcctInfoOH.css') }}">
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        
+  const searchForms = document.querySelectorAll('form[role="search"]');
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../../css/client/HomePageClient.css">
-  <link rel="stylesheet" href="../../css/client/include/navbar.css">
-  <link rel="stylesheet" href="../../css/client/include/footer.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <title>Document</title>
-  <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
-</head>
+  searchForms.forEach(function (searchForm) {
+    searchForm.addEventListener('submit', function (e) {
+      e.preventDefault();
 
-<body>
-  <header>
+      const currentUrl = new URL(window.location.href);
+      const keywordInput = searchForm.querySelector('#keyword');
+      const lspSelect = searchForm.querySelector('select[name="lsp"]');
+      const hangSelect = searchForm.querySelector('select[name="hang"]')
+      if (keywordInput && keywordInput.value.trim()) {
+        currentUrl.searchParams.set('keyword', keywordInput.value.trim());
+        currentUrl.searchParams.delete('lsp');
+        currentUrl.searchParams.delete('hang');
+      } else if (lspSelect && lspSelect.value && lspSelect.value !== "0") {
+        currentUrl.searchParams.set('lsp', lspSelect.value);
+        currentUrl.searchParams.delete('hang');
+        currentUrl.searchParams.delete('keyword');
+      } else if (hangSelect && hangSelect.value && hangSelect.value !== "0") {
+        currentUrl.searchParams.set('hang', hangSelect.value);
+        currentUrl.searchParams.delete('lsp');
+        currentUrl.searchParams.delete('keyword');
+      } else {
+        currentUrl.searchParams.delete('keyword');
+        currentUrl.searchParams.delete('hang');
+        currentUrl.searchParams.delete('lsp');
+      }
+
+      currentUrl.searchParams.delete('page');
+
+      window.location.href = currentUrl.toString();
+    });
+
+    const lspSelect = searchForm.querySelector('select[name="lsp"]');
+    if (lspSelect) {
+      lspSelect.addEventListener('change', function () {
+        searchForm.dispatchEvent(new Event('submit'));
+      });
+    }
+    const hangSelect = searchForm.querySelector('select[name="hang"]');
+    if (hangSelect) {
+      hangSelect.addEventListener('change', function () {
+        searchForm.dispatchEvent(new Event('submit'));
+      });
+    }
+  });
+  const userBtn = document.getElementById('userDropdownBtn');
+  const dropdownMenu = document.getElementById('userDropdownMenu');
+
+  if (userBtn && dropdownMenu) {
+    userBtn.addEventListener('click', function (e) {
+      e.stopPropagation(); // tránh việc click ngoài làm tắt menu ngay lập tức
+      const isVisible = dropdownMenu.style.display === 'block';
+      dropdownMenu.style.display = isVisible ? 'none' : 'block';
+    });
+
+    // Click ngoài menu thì ẩn dropdown
+    document.addEventListener('click', function (e) {
+      if (!userBtn.contains(e.target)) {
+        dropdownMenu.style.display = 'none';
+      }
+    });
+  }
+  document.querySelectorAll(".product").forEach((productDiv) => {
+    productDiv.addEventListener("click", () => {
+      
+      const modal = document.querySelector('#productDetailModal');
+      if (!modal) return;
+      modal.querySelector('input[name="tensp"]').value = this.dataset.tensp;
+      modal.querySelector('input[name="hang"]').value = this.dataset.hang;
+      modal.querySelector('select[name="lsp"]').value = this.dataset.lsp;
+      modal.querySelector('select[name="soluong"]').value = this.dataset.soluong;
+      modal.querySelector('select[name="mota"]').value = this.dataset.mota;
+      modal.querySelector('select[name="dongia"]').value = this.dataset.dongia;
+      modal.querySelector('select[name="tgbh"]').value = this.dataset.thbh;
+      modal.querySelector('img[name="img"]').src = this.dataset.img;
+      // Hiển thị modal
+      document.getElementById("productDetailModal").style.display = "block";
+    });
+  });
+
+  // Đóng modal khi click nút đóng
+  document.querySelector(".btn-close").addEventListener("click", () => {
+    document.getElementById("productDetailModal").style.display = "none";
+  });
+});
+
+  </script>
+
+    <!-- Nội dung trang chính ở đây -->
+     <header>
     <div class="text-white" id="navbar-ctn">
       <div class="top-nav">
         <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
         <ul class="list-top-nav d-flex ms-auto gap-2">
           <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill " id="chinhsach"><a href="">Chính sách</a></li>
           <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang"><a href="">Tra cứu đơn hàng</a></li>
-          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="taikhoan"><a href="../../views/client/Login-Register.blade.php">Tài khoản</a></li>
+          @if($user->getIdQuyen()->getId() == 1 || $user->getIdQuyen()->getId() == 2) 
+            <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang"><a href="/admin">Trang quản trị</a></li>
+          @endif
+          @if($isLogin) 
+          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="userDropdownBtn" style="position: relative; cursor: pointer;">
+            {{$user->getTenTK()}}
+            <div id="userDropdownMenu" class="" style="display: none ; width: 150px; height: auto; position: absolute; right: 0; background: white; border: 1px solid #ccc; padding: 10px; z-index: 999;align-items: center; border-radius: 5px; padding: 15px;">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-danger btn-sm" style="height: 40px; width: 120px; margin: auto;">Đăng xuất</button>
+                </form>
+            </div>
+          </li>
+          @else 
+          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="taikhoan"><a href="/login">Đăng nhập</a></li>
+          @endif
         </ul>
       </div>
       <div class="navbar text-white navbar-expand" id="navbar">
         <a href="" class="navbar-brand">Logo</a>
-        <ul class="navbar-nav gap-5">
-          <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a></li>
-          <li class="nav-item fw-medium d-flex"><a href="#" class="nav-link text-white">Tìm Cửa Hàng<i class="fa-regular fa-location-dot fa-bounce"></i></a> </li>
-          <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;"><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555;"></i></li>
-          <li class="nav-item fw-medium my-2" id="item-xemthem"><a href="" class="nav-link text-white">Xem Thêm <i class="fa-regular fa-angle-up"></i></a></li>
-          <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li>
-          <li class="nav-item fw-medium my-2" id="item-giohang"><a href="#" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;"><small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small></i></a></li>
-        </ul>
+        <form action="" method="get" role="search">
+          <ul class="navbar-nav gap-5">
+            <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a></li>
+            <li class="nav-item fw-medium d-flex"><a href="#" class="nav-link text-white">Tìm Cửa Hàng<i class="fa-regular fa-location-dot fa-bounce"></i></a> </li>
+            <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}"><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555;"></i></li>
+            <li class="nav-item fw-medium my-2" id="item-xemthem"><a href="" class="nav-link text-white">Xem Thêm <i class="fa-regular fa-angle-up"></i></a></li>
+            <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li>
+            <li class="nav-item fw-medium my-2" id="item-giohang"><a href="#" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;"><small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small></i></a></li>
+          </ul>
+        </form>
+        
       </div>
     </div>
   </header>
@@ -43,7 +147,7 @@
 
   </div>
   <div class="ctn-content">
-    <img src="./img/bannner.png" class="img-fluid w-100">
+  <img src="{{ asset('client/img/bannner.png') }}" class="img-fluid w-100">
 
     <div class="main justify-content-center d-flex">
       <div class="best-seller text-center">
@@ -51,7 +155,7 @@
         <div class="row my-5" style="max-height: 380px;display: flex;">
           <div class="col-3 item-product">
             <div class="img-product">
-              <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
+            <img src="{{ asset('client/img/sanpham.jpeg') }}" class="img-fluid w-100" alt="">
 
             </div>
             <div class="info-product ">
@@ -62,7 +166,7 @@
           </div>
           <div class="col-3 item-product">
             <div class="img-product">
-              <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
+            <img src="{{ asset('client/img/sanpham.jpeg') }}" class="img-fluid w-100" alt="">
             </div>
             <div class="info-product ">
               <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
@@ -72,7 +176,7 @@
           </div>
           <div class="col-3 item-product">
             <div class="img-product">
-              <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
+            <img src="{{ asset('client/img/sanpham.jpeg') }}" class="img-fluid w-100" alt="">
             </div>
             <div class="info-product ">
               <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
@@ -82,7 +186,7 @@
           </div>
           <div class="col-3 item-product">
             <div class="img-product">
-              <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
+            <img src="{{ asset('client/img/sanpham.jpeg') }}" class="img-fluid w-100" alt="">
             </div>
             <div class="info-product ">
               <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
@@ -96,30 +200,28 @@
 
     </div>
     <div class="banner-small ">
-      <div class="bnsm"><img src="./img/small-banner1.png" class="img-fluid w-100"></div>
-      <div class="bnsm"><img src="./img/small-banner2.png" class="img-fluid w-100"></div>
+      <div class="bnsm"><img src="client/img/small-banner1.png" class="img-fluid w-100"></div>
+      <div class="bnsm"><img src="client/img/small-banner2.png" class="img-fluid w-100"></div>
     </div>
     <div class="ctn-danhmucsanpham" style="background-color: #f6f2f2;padding-bottom: 30px;">
-      <div class="type-product-items">
+      <div class="type-product-items flex flex-row justify-between">
         <h1 style="font-family: Sigmar;font-weight: 800;color: #555;width: 40%;">BỘ SƯU TẬP MỚI NHẤT</h1>
-        <ul class="type-product-items-ul" style="display: flex;margin: 0;padding: 0;width: 60%;justify-content: space-between; align-items: center;">
-          <li><i class="fa-solid fa-arrow-right fa-shake" style="opacity: 0;visibility: hidden;color: #fb923c;margin-right: 3px;"></i>GỌNG KÍNH</li>
-          <li><i class="fa-solid fa-arrow-right fa-shake" style="opacity: 0;visibility: hidden;color: #fb923c;margin-right: 3px;"></i>TRÒNG KÍNH</li>
-          <li><i class="fa-solid fa-arrow-right fa-shake" style="opacity: 0;visibility: hidden;color: #fb923c;margin-right: 3px;"></i>KÍNH RÂM</li>
-          <li><i class="fa-solid fa-arrow-right fa-shake" style="opacity: 0;visibility: hidden;color: #fb923c;margin-right: 3px;"></i>KÍNH ÁP TRÒNG</li>
-          <li><i class="fa-solid fa-arrow-right fa-shake" style="opacity: 0;visibility: hidden;color: #fb923c;margin-right: 3px;"></i>XEM TẤT CẢ</li>
-        </ul>
-      </div>
-      <div class="filter">
-        <button id="filter-btn">Open Filter</button>
-        <div id="filter-options" style="">
-          <select id="sort-by">
-            <option value="">Sort By</option>
-            <option value="price-desc">Giá Cao - Thấp</option>
-            <option value="price-asc">Giá Thấp - Cao</option>
-            <option value="noibat">Nổi Bật</option>
-          </select>
-        </div>
+        <form action="" method="get" class="d-flex flex-row-reverse w-50 g-10" role="search">
+            <select class="form-select w-15" name="lsp" id="lsp">
+              <option disabled {{ request('lsp') ? '' : 'selected' }}>Lọc theo loại</option>
+              <option value="0">Xem tất cả</option>
+              @foreach($listLSP as $lsp)
+              <option value="{{ $lsp->getId() }}" {{ request('lsp') == $lsp->getId() ? 'selected' : '' }}>{{$lsp->gettenLSP()}}</option>
+              @endforeach
+            </select>
+            <select class="form-select w-15" name="hang" id="hang">
+              <option disabled {{ request('hang') ? '' : 'selected' }}>Lọc theo hãng</option>
+              <option value="0">Xem tất cả</option>
+              @foreach($listHang as $h)
+              <option value="{{ $h->getId() }}" {{ request('hang') == $h->getId() ? 'selected' : '' }}>{{$h->gettenHang()}}</option>
+              @endforeach
+            </select>
+          </form>
       </div>
 
       <div class="content-prd " style="margin: 0 5% 0;display: flex;">
@@ -176,677 +278,88 @@
             </ul>
           </div>
         </div>
-        <div class="dmsp">
+        <div class="dmsp w-100">
           <div class="container-rows" style="width: 100%;display: block;" id="product-list">
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
+          @if(empty($listSP))
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 my-5 w-100">
+              <h3 class="text-center text-gray w-100">Không có sản phẩm cần tìm</h3>
             </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-            </div>
-            <div class="row my-5 d-flex ">
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100 " alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              <div class="col-3 item-product">
-                <div class="img-product">
-                  <img src="./img/sanpham.jpeg" class="img-fluid w-100" alt="">
-                </div>
-                <div class="info-product ">
-                  <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-                  <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-                </div>
-                <div class="" style="height: 80px; width: 100%;"></div>
-              </div>
-              
-            </div>
+          @else
+            @php $count = 0; @endphp
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 my-5 w-100">
+              @foreach($listSP as $sp)
+                @if($count++ >= 8) @break @endif
+                <div class="col rounded-5 product"
+                    data-tensp="{{ $sp->getTenSanPham() }}"
+                    data-hang="{{ $sp->getIdHang()->getTenHang() }}"
+                    data-lsp="{{ $sp->getIdLSP()->getTenLSP() }}"
+                    data-soluong="{{ $sp->getSoLuong() }}"
+                    data-mota="{{ $sp->getMoTa() }}"
+                    data-dongia="{{ $sp->getDonGia() }}"
+                    data-thbg="{{ $sp->getThoiGianBaoHanh() }}"
+                    data-img="productImg/{{ $sp->getId() }}.webp"
+                    data-bs-toggle="modal"
+                    data-bs-target="#productDetailModal"
+                >
+                  <div class="card shadow-sm border-0 h-100 col rounded-5 product-item">
+                    <div class="ratio ratio-1x1">
+                      <img src="productImg/{{ $sp->getId() }}.webp" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
+                    </div>
+                    <div class=" card-body d-flex flex-column justify-content-between h-60 p-3">
+                      <h6 class="card-title text-truncate text-center w-100" title="{{ $sp->getTenSanPham() }}">{{ $sp->getTenSanPham() }}</h6>
+                      <div class="d-flex align-items-center justify-content-between mt-auto rounded-4 bg-blue-500">
+                        <span class="fw-bold text-primary fs-5 text-center w-100 text-white rounded-4 flex justify-center p-2" style="background-color: #55d5d2;height: 50px;">
+                          {{ number_format($sp->getDonGia(), 0, ',', '.') }}₫
+                        </span>
+                        <i class="fa-solid fa-arrow-up-right text-success"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            @endforeach
+          @endif
           </div>
-          <div id="pagination">
-            <button class="page-btn prev-btn"><i class="fa-solid fa-angles-left"></i></button>
-            <!-- Các nút số trang sẽ được thêm bằng JS -->
-            <button class="page-btn next-btn"><i class="fa-solid fa-angles-right"></i></button>
-          </div>
+          <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+            <ul class="pagination">
+                <!-- Hiển thị PREV nếu không phải trang đầu tiên -->
+                <?php
+                $queryString = isset($_GET['keyword']) ? '&keyword=' . urlencode($_GET['keyword']) : '';
+                $query = $_GET;
+
+                // PREV
+                if ($current_page > 1) {
+                    echo '<li class="page-item">
+                            <a class="page-link" href="?' . http_build_query(array_merge($query, ['page' => $current_page - 1])) . '" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>';
+                }
+
+                // Hiển thị các trang phân trang xung quanh trang hiện tại
+                $page_range = 1; // Hiển thị 1 trang trước và 1 trang sau
+                $start_page = max(1, $current_page - $page_range);
+                $end_page = min($total_page, $current_page + $page_range);
+
+                for ($i = $start_page; $i <= $end_page; $i++) {
+                    if ($i == $current_page) {
+                        echo '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
+                    } else {
+                        echo '<li class="page-item"><a class="page-link" href="?' . http_build_query(array_merge($query, ['page' => $i])) . '">' . $i . '</a></li>';
+                    }
+                }
+                
+                // NEXT
+                
+                if ($current_page < $total_page) {
+                    echo '<li class="page-item">
+                            <a class="page-link" href="?' . http_build_query(array_merge($query, ['page' => $current_page + 1])) . '" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>';
+                }
+                ?>
+            </ul>
+        </nav>
         </div>
 
       </div>
@@ -868,7 +381,7 @@
     </a>
   </div>
   <div class="d-flex " style="padding: 0 5%;">
-    <div style="width: 40%;"><img src="./img/traidep.png" alt="" class="img-fluid w-100"></div>
+    <div style="width: 40%;"><img src="client/img/traidep.png" alt="" class="img-fluid w-100"></div>
     <div style="padding-left: 50px;width: 60%;">
       <h2 style="padding: 30px;background-color: #e4f4f4;border-top-left-radius: 30px;border-top-right-radius: 30px;border-bottom-right-radius: 30px;color: #55d5d2;font-weight: 800;">CHỌN KÍNH PHÙ HỢP VỚI BẠN</h2>
       <div class="choiceglasses" >
@@ -905,7 +418,7 @@
     <div class="footer-container d-flex">
       <div class="footer-left">
         <div class="logo">
-          <img src="./img/logo.svg" alt="Anna Logo">
+          <img src="client/img/logo.svg" alt="Anna Logo">
         </div>
         <div class="newsletter">
           <p>Đăng kí để nhận tin mới nhất</p>
@@ -957,9 +470,28 @@
       <p style="margin: 0;">Anna 2018-2023. Design by OKHUB Viet Nam</p>
     </div>
   </footer>
-</body>
-<script src="../../js/client/HomPageClient.js"></script>
-<script src="../../js/client/include/navbar.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-</html>
+  <!-- modal chi tiết sản phẩm -->
+  <div class="modal fade" id="productDetailModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg"> <!-- modal-lg để modal to hơn -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userModalLabel">Thông tin sản phẩm</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-column mb-3">
+        <div class="p-3 d-flex flex-row" style="height: 80%; background-color: #55d5d2;">
+          <div class="" style="width: 30%; background-color: blue;">
+          <div class="ratio ratio-1x1">
+            <img name="img" src="" alt="Product Image" />
+          </div>
+          </div>
+          <div class="" style="width: 70%;background-color: coral;">xeyo</div>
+        </div>
+        <div class="p-5" style="height: 20%; background-color: aquamarine;">BYE</div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

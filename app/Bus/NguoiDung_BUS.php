@@ -5,7 +5,7 @@ use App\Dao\NguoiDung_DAO;
 use App\Interface\BUSInterface;
 use App\Models\NguoiDung;
 
-class NguoiDung_BUS implements BUSInterface {
+class NguoiDung_BUS{
     private $nguoiDungList = array();
     private $nguoiDungDAO;
     public function __construct(NguoiDung_DAO $nguoi_dung_dao)
@@ -41,13 +41,13 @@ class NguoiDung_BUS implements BUSInterface {
         }
         return $this->nguoiDungDAO->update($model);
     }
-    public function deleteModel($id)
+    public function controlDeleteModel($id, $active)
     {
         if($id == null || $id == "") {
             error_log("Error when delete a NguoiDung");
             return;
         }
-        return $this->nguoiDungDAO->delete($id);
+        return $this->nguoiDungDAO->controlDelete($id, $active);
     }
     public function searchModel(string $value, array $columns)
     {
@@ -56,5 +56,16 @@ class NguoiDung_BUS implements BUSInterface {
     public function searchByTinh($idTinh) {
         return $this->nguoiDungDAO->searchByTinh($idTinh);
     }
-}
+    public function checkExistingUser($sdt) {
+        foreach($this->nguoiDungList as $it) {
+            if($it->getgetSoDienThoai() == $sdt) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public function getModelBySDT($sdt) {
+        return $this->nguoiDungDAO->getBySDT($sdt);
+    }
+ }
 ?>

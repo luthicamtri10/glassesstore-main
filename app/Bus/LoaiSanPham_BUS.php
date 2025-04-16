@@ -1,6 +1,7 @@
 <?php
 namespace App\Bus;
 
+use App\Dao\CTHD_DAO;
 use App\Dao\LoaiSanPham_DAO;
 use App\Interface\BUSInterface;
 use function Laravel\Prompts\error;

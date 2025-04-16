@@ -17,6 +17,10 @@ class SanPham_BUS implements BUSInterface {
         return $this->listSanPham;
     }
 
+    public function getAllModelsActive() {
+        return $this->sanPhamDAO->getAllModelsActive();
+    }
+
     public function refreshData(): void {
        $this->listSanPham = $this->sanPhamDAO->getAll();
     }
@@ -59,5 +63,13 @@ class SanPham_BUS implements BUSInterface {
     public function searchModel(string $value, array $columns): array {
         return $this->sanPhamDAO->search($value, $columns);
     }
-
+    public function searchByLoaiSanPham($idLSP) {
+        return $this->sanPhamDAO->searchByLoaiSanPham($idLSP);
+    }
+    public function searchByHang($idHang) {
+        return $this->sanPhamDAO->searchByHang($idHang);
+    }
+    public function searchByLSPAndHang($lsp,$hang) {
+        return $this->sanPhamDAO->searchByLSPAndHang($lsp,$hang);
+    }
 }

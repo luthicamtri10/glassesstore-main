@@ -7,12 +7,12 @@ use Firebase\JWT\Key;
 class JWTUtils {
     private static $secretKey = "MY_SECRET_KEY";
 
-    public static function generateToken($userId) {
+    public static function generateToken($email) {
         $payload = [
             "iss" => "myapp",
             "iat" => time(),
             "exp" => time() + 3600, // Token hết hạn sau 1 giờ
-            "user_id" => $userId
+            "email" => $email
         ];
         return JWT::encode($payload, self::$secretKey, 'HS256');
     }

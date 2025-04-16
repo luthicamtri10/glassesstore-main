@@ -20,8 +20,8 @@
                 use App\Bus\NguoiDung_BUS;
                 use App\Bus\Quyen_BUS;
                 use App\Bus\TaiKhoan_BUS;
-use App\Bus\Tinh_BUS;
-use Illuminate\Support\Facades\View as FacadesView;
+                use App\Bus\Tinh_BUS;
+                use Illuminate\Support\Facades\View as FacadesView;
 
                 $page = $_GET['modun'] ?? 'nguoidung';
 
@@ -47,7 +47,11 @@ use Illuminate\Support\Facades\View as FacadesView;
                         $total_page = ceil($total_record / $limit);
                         $current_page = max(1, min($current_page, $total_page));
                         $start = ($current_page - 1) * $limit;
-                        $tmp = array_slice($listTK, $start, $limit);
+                        if(empty($listTK)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listTK, $start, $limit);
+                        }
 
                         echo FacadesView::make('admin.taikhoan', [
                             'tmp' => $tmp,
@@ -65,7 +69,7 @@ use Illuminate\Support\Facades\View as FacadesView;
                         if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
                             $keyword = $_GET['keyword'];
                             $listND = $ndBUS->searchModel($keyword, []);
-                        } elseif (isset($_GET['keywordTinh']) || !empty($_GET['keyworTinh'])) {
+                        } elseif (isset($_GET['keywordTinh']) || !empty($_GET['keywordTinh'])) {
                             $keywordTinh = $_GET['keywordTinh'];
                             $listND = $ndBUS->searchByTinh($keywordTinh);
                         }
@@ -76,11 +80,14 @@ use Illuminate\Support\Facades\View as FacadesView;
                         $total_page = ceil($total_record / $limit);
                         $current_page = max(1, min($current_page, $total_page));
                         $start = ($current_page - 1) * $limit;
-                        $tmp = array_slice($listND, $start, $limit);
+                        if(empty($listND)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listND, $start, $limit);
+                        }
 
                         echo FacadesView::make('admin.nguoidung', [
                             'tmp' => $tmp,
-                            'listND' => $listND,
                             'listTinh' => $listTinh,
                             'current_page' => $current_page,
                             'total_page' => $total_page
