@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\SanPhamController;
 use App\Http\Controllers\TaiKhoanController;
 
+//Controller
+use App\Http\Controllers\LoaiSanPhamController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes

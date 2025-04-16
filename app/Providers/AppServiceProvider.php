@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Bus\Auth_BUS;
 use App\Bus\ChiTietBaoHanh_BUS;
 use App\Bus\ChucNang_BUS;
-use App\Bus\ChucNangDVVC_BUS;
 use App\Bus\CPVC_BUS;
 use App\Bus\CTQ_BUS;
 use App\Bus\DVVC_BUS;
@@ -102,13 +101,6 @@ class AppServiceProvider extends ServiceProvider
         // $this->
         $this->app->singleton(validation::class, function($app) {
             return new validation();
-        });
-        $this->app->singleton(GioHang_BUS::class, function ($app) {
-            return new GioHang_BUS($app->make(GioHang_DAO::class));
-        });
-        
-        $this->app->singleton(TaiKhoan_DAO::class, function ($app) {
-            return new TaiKhoan_DAO($app->make(GioHang_BUS::class));
         });
         $this->app->singleton(Auth_BUS::class, function ($app) {
             return new Auth_BUS($app->make(TaiKhoan_BUS::class), $app->make(JWTUtils::class));
