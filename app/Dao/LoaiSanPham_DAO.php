@@ -36,17 +36,25 @@ class LoaiSanPham_DAO implements DAOInterface {
     }
 
  
-    private function createLoaiSanPhamModel($row): LoaiSanPham {
-        return new LoaiSanPham(
-            $row['ID'], $row['TENLSP'], $row['MOTA'], $row['TRANGTHAIHD']
-        );
+    private function createLoaiSanPhamModel($row){
+        // return new LoaiSanPham(
+        //     $row['ID'], $row['TENLSP'], $row['MOTA'], $row['TRANGTHAIHD']
+        // );
+        $id = $row['ID'];
+        $tenlsp = $row['TENLSP'];
+        $mota = $row['MOTA'];
+        $trangThaiHD = $row['TRANGTHAIHD'];
+        return new LoaiSanPham($id, $tenlsp, $mota, $trangThaiHD);
     }
 
-    public function getById($id): ?LoaiSanPham {
-        $query = "SELECT * FROM loaisanpham WHERE ID = ?";
-        $result = database_connection::executeQuery($query, [$id]);
-        if ($result && $result->num_rows > 0) {
-            return $this->createLoaiSanPhamModel($result->fetch_assoc());
+    public function getById($id) {
+        $query = "SELECT * FROM LOAISANPHAM WHERE id = ?";
+        $result = database_connection::executeQuery($query, $id);
+        if($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if($row) {
+                return $this->createLoaiSanPhamModel($row);
+            }
         }
         return null;
     }

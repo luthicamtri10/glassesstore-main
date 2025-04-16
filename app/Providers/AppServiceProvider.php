@@ -46,6 +46,7 @@ use App\Dao\CTSP_DAO;
 use App\Bus\HoaDon_BUS;
 use App\Dao\HoaDon_DAO;
 use App\Http\Controllers\TaiKhoanController;
+use AuthController;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -93,20 +94,22 @@ class AppServiceProvider extends ServiceProvider
                 return new $classes[1]($app->make($classes[0])); // Sử dụng classes[1] đã được truyền vào
             });
         }
+
+        // $this->app->bind(SanPham_DAO::class, function($app) {
+        //     return new SanPham_DAO();
+        // });
+        // $this->
         $this->app->singleton(validation::class, function($app) {
             return new validation();
         });
         $this->app->singleton(Auth_BUS::class, function ($app) {
             return new Auth_BUS($app->make(TaiKhoan_BUS::class), $app->make(JWTUtils::class));
         });
-
-        $this->app->bind(LoaiSanPham_DAO::class, function ($app) {
-            return new LoaiSanPham_DAO();
+        $this->app->singleton(AuthController::class, function($app) {
+            return new AuthController(($app->make(Auth_BUS::class)));
         });
 
-        $this->app->singleton(LoaiSanPham_BUS::class, function ($app) {
-            return new LoaiSanPham_BUS($app->make(CTHD_DAO::class));
-        });
+       
         $this->app->singleton(TaiKhoanController::class, function ($app) {
             return new TaiKhoanController(
                 $app->make(TaiKhoan_BUS::class),

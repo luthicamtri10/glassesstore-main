@@ -12,7 +12,7 @@ use PhpParser\Node\Expr\List_;
 
 use function Laravel\Prompts\error;
 
-class NguoiDung_DAO implements DAOInterface {
+class NguoiDung_DAO {
     public function readDatabase(): array
     {
         $list = [];
@@ -86,11 +86,12 @@ class NguoiDung_DAO implements DAOInterface {
         $rs = database_connection::executeUpdate($query, ...$args);
         return is_int($rs) ? $rs : 0;
     }
-    public function delete(int $id): int
+    public function controlDelete($id, $active): int
     {
-        $query = "UPDATE NGUOIDUNG SET TRANGTHAIHD = FALSE WHERE ID = ?";
-        $rs = database_connection::executeUpdate($query, $id);
-        return is_int($rs) ? $rs : 0;
+        $query = "UPDATE NGUOIDUNG SET trangThaiHD = ? WHERE ID = ?";
+        $args = [$active, $id];
+        $result = database_connection::executeUpdate($query, ...$args);
+        return is_int($result) ? $result : 0;
     }
     public function search(string $condition, array $columnNames): array
     {
@@ -129,6 +130,17 @@ class NguoiDung_DAO implements DAOInterface {
             array_push($list, $model);
         }
         return $list;
+    }
+    public function getBySDT($sdt) {
+        $query = "SELECT * FROM NGUOIDUNG WHERE SODIENTHOAI = ?";
+        $result = database_connection::executeQuery($query, $sdt);
+        if($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if($row) {
+                return $this->createNguoiDungModel($row);
+            }
+        }
+        return null;
     }
 }
 ?>

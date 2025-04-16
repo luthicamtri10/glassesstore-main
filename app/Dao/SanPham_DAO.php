@@ -4,6 +4,7 @@ namespace App\Dao;
 use App\Bus\Hang_BUS;
 use App\Bus\LoaiSanPham_BUS;
 use App\Interface\DAOInterface;
+use App\Models\Hang;
 use App\Models\SanPham;
 use App\Services\database_connection;
 
@@ -78,8 +79,8 @@ class SanPham_DAO implements DAOInterface{
     public function createSanPhamModel($rs) {
         $id = $rs['ID'];
         $tenSanPham = $rs['TENSANPHAM'];
-        $idHang = $rs['IDHANG'];
-        $idLSP = $rs['IDLSP'];
+        $idHang = app(Hang_BUS::class)->getModelById($rs['IDHANG']);
+        $idLSP = app(LoaiSanPham_BUS::class)->getModelById($rs['IDLSP']);
         $soLuong = $rs['SOLUONG'];
         $moTa = $rs['MOTA'];
         $donGia = $rs['DONGIA'];
@@ -97,5 +98,49 @@ class SanPham_DAO implements DAOInterface{
         }
         return $list;
     }
+
+    public function getAllModelsActive() : array {
+        $list = [];
+        $rs = database_connection::executeQuery("SELECT * FROM sanpham WHERE TRANGTHAIHD = 1");
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createSanPhamModel($row);
+            array_push($list, $model);
+        }
+        return $list;
+    }
+
+    public function searchByLoaiSanPham($idLSP) {
+        $list = [];
+        $query = "SELECT * FROM SANPHAM WHERE IDLSP = ?";
+        $rs = database_connection::executeQuery($query, $idLSP);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createSanPhamModel($row);
+            array_push($list, $model);
+        }
+        return $list;
+    }
+
+    public function searchByHang($idHang) {
+        $list = [];
+        $query = "SELECT * FROM SANPHAM WHERE IDHANG = ?";
+        $rs = database_connection::executeQuery($query, $idHang);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createSanPhamModel($row);
+            array_push($list, $model);
+        }
+        return $list;
+    }
+
+    public function searchByLSPAndHang($lsp,$hang) {
+        $list = [];
+        $query = "SELECT * FROM SANPHAM WHERE IDLSP = ? AND IDHANG = ?";
+        $rs = database_connection::executeQuery($query, $lsp, $hang);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createSanPhamModel($row);
+            array_push($list, $model);
+        }
+        return $list;
+    }
+    
 
 }

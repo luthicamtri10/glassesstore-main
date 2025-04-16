@@ -46,6 +46,19 @@ class Auth_BUS {
         }
         return false; // Trả về false nếu không có token
     }
+
+    public function getEmailFromToken() {
+        if (!isset($_SESSION['token'])) {
+            return null;
+        }
+    
+        $decoded = $this->jwt::verifyToken($_SESSION['token']);
+        if ($decoded && isset($decoded->email)) {
+            return $decoded->email;
+        }
+    
+        return null;
+    }
     
 }
 ?>

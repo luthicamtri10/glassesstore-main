@@ -14,30 +14,7 @@
 </head>
 
 <body>
-<header>
-    <div class="text-white" id="navbar-ctn">
-      <div class="top-nav">
-        <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
-        <ul class="list-top-nav d-flex ms-auto gap-2">
-          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill " id="chinhsach"><a href="">Chính sách</a></li>
-          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang"><a href="">Tra cứu đơn hàng</a></li>
-          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="taikhoan"><a href="../../views/client/Login-Register.blade.php">Tài khoản</a></li>
-        </ul>
-      </div>
-      <div class="navbar text-white navbar-expand" id="navbar">
-        <a href="" class="navbar-brand">Logo</a>
-        <ul class="navbar-nav gap-5">
-          <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a></li>
-          <li class="nav-item fw-medium d-flex"><a href="#" class="nav-link text-white">Tìm Cửa Hàng<i class="fa-regular fa-location-dot fa-bounce"></i></a> </li>
-          <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;"><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555;"></i></li>
-          <li class="nav-item fw-medium my-2" id="item-xemthem"><a href="" class="nav-link text-white">Xem Thêm <i class="fa-regular fa-angle-up"></i></a></li>
-          <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li>
-          <li class="nav-item fw-medium my-2" id="item-giohang"><a href="#" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;"><small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small></i></a></li>
-        </ul>
-      </div>
-    </div>
-  </header>
-    <div class="submenu card" style="z-index: 100;">
+    <div class="submenu card">
         <div class="card-menu d-flex ">
 
         </div>
@@ -48,7 +25,8 @@
             <img src="{{ asset('client/img/img-login.jpeg') }}" class="w-100 img-fluid  p-auto" alt="" style="border-radius: 30px;overflow: hidden;">
         </div>
         <div class="content-right w-50 ">
-            <form style="width:80%;margin:0 auto;display: block;text-align: center;" method="POST" action="process_login.blade.php">
+            <form style="width:80%;margin:0 auto;display: block;text-align: center;" method="POST" action="{{ route('login') }}">
+            @csrf
                 <h1>ĐĂNG NHẬP</h1>
                 <p>Hãy đăng nhập để được hưởng những đặc quyền dành cho riêng bạn</p>
                 <div class="form-group">
@@ -70,7 +48,7 @@
                 </div>
                 <button type="submit" class="w-100">Đăng nhập ngay</button>
                 <p class="text-start my-4"><a href="#">Quên mật khẩu?</a></p>
-                <p>Bạn chưa có tài khoản? <a href="#" class="link-register" onclick="registerLink()       ">Đăng ký ngay</a></p>
+                <p>Bạn chưa có tài khoản? <a href="/register" class="link-register" >Đăng ký ngay</a></p>
             </form>
         </div>
     </div>
@@ -146,6 +124,11 @@
             <p style="margin: 0;">Anna 2018-2023. Design by OKHUB Viet Nam</p>
         </div>
     </footer>
+@if($errors->has('login'))
+<div class="alert alert-danger">
+    {{ $errors->first('login') }}
+</div>
+@endif
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="../../js/client/include/navbar.js"></script>
