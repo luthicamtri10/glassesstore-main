@@ -41,10 +41,10 @@ li {
     min-width: 260px;
 }
 
-#sidebar:not(.expand) .sidebar-logo,
+/* #sidebar:not(.expand) .sidebar-logo,
 #sidebar:not(.expand) a.sidebar-link span {
     display: none;
-}
+} */
 
 .toggle-btn {
     width: 30px;
