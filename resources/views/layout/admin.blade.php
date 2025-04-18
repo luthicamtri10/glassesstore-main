@@ -17,7 +17,9 @@
         <div class="main bg-light" id="content">
         @include('admin.includes.navbar')
             <?php
-                use App\Bus\NguoiDung_BUS;
+
+use App\Bus\LoaiSanPham_BUS;
+use App\Bus\NguoiDung_BUS;
                 use App\Bus\Quyen_BUS;
                 use App\Bus\TaiKhoan_BUS;
                 use App\Bus\Tinh_BUS;
@@ -99,6 +101,37 @@
                     case 'thongke':
                         include base_path('resources/views/admin/thongke.blade.php');
                         break;
+                    case 'loaisanpham':
+                        $bus = app(LoaiSanPham_BUS::class);
+                        $list = $bus->getAllModels();
+
+                        $keyword = trim(request('keyword'));
+                        if ($keyword === '') {
+                            $list = $bus->getAllModels();
+                        } else {
+                            $list = $bus->searchModel($keyword, []);
+                        }
+
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($list ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if(empty($list)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($list, $start, $limit);
+                        }
+
+                        echo FacadesView::make('admin.loaisanpham', [
+                            'listLSP' => $tmp,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page
+              
+                        ])->render();
+                
+                        break;  
                     default:
                         include base_path('resources/views/admin/nguoidung.blade.php');
                         break;
