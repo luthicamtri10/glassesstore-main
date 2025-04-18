@@ -56,21 +56,20 @@ class Hang_DAO implements DAOInterface {
         return is_int($result) ? $result : 0;
     }
 
-    public function delete(int $id): int {
+    public function delete($id): int {
         $query = "DELETE FROM hang WHERE ID = ?";
-        $result = database_connection::executeUpdate($query, $id);
-        return is_int($result) ? $result : 0;
+        return database_connection::executeQuery($query, $id);
     }
 
-    public function search(string $condition, array $columnNames = []): array {
+    public function search($value, $columns): array {
         $list = [];
-        if (empty($columnNames)) {
+        if (empty($columns)) {
             $query = "SELECT * FROM hang WHERE TENHANG LIKE ? OR MOTA LIKE ?";
-            $args = array_fill(0, 2, "%$condition%");
+            $args = array_fill(0, 2, "%$value%");
         } else {
-            $whereClauses = implode(" LIKE ? OR ", $columnNames) . " LIKE ?";
+            $whereClauses = implode(" LIKE ? OR ", $columns) . " LIKE ?";
             $query = "SELECT * FROM hang WHERE $whereClauses";
-            $args = array_fill(0, count($columnNames), "%$condition%");
+            $args = array_fill(0, count($columns), "%$value%");
         }
 
         $rs = database_connection::executeQuery($query, ...$args);

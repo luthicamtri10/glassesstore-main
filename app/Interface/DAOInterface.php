@@ -8,7 +8,7 @@ interface DAOInterface
      *
      * @return array an array of all Entity objects in the table
      */
-    public function readDatabase(): array;
+    public function getAll();
 
     /**
      * Inserts an entity to the database table associated with this DAO.
@@ -16,7 +16,7 @@ interface DAOInterface
      * @param mixed $e the entity to insert
      * @return int the number of rows affected by the insert statement
      */
-    public function insert($e): int;
+    public function insert($model): int;
 
     /**
      * Updates an existing entry in the database table associated with this DAO.
@@ -24,7 +24,7 @@ interface DAOInterface
      * @param mixed $e the entity to update
      * @return int the number of rows affected by the update statement
      */
-    public function update($e): int;
+    public function update($model): int;
 
     /**
      * Deletes a given entity from the database table associated with this DAO.
@@ -32,7 +32,7 @@ interface DAOInterface
      * @param int $id the primary key of the entry to delete
      * @return int the number of rows affected by the deletion statement
      */
-    public function delete(int $id): int;
+    public function delete($id): int;
 
     /**
      * Searches the database table associated with this DAO for entities that match
@@ -42,5 +42,5 @@ interface DAOInterface
      * @param array $columnNames the names of the columns to search in
      * @return array a list of entities that match the search condition
      */
-    public function search(string $condition, array $columnNames): array;
+    public function search($value, $columns): array;
 }

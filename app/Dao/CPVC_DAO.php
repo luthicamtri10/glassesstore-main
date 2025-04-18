@@ -28,12 +28,12 @@ class CPVC_DAO implements DAOInterface
         }
         return $list;
     }
-    public function search(string $condition, array $columnNames): array
+    public function search($value, $columns): array
     {
         $list = [];
-        $conditions = implode(" OR ", array_map(fn($col) => "$col LIKE ?", $columnNames));
+        $conditions = implode(" OR ", array_map(fn($col) => "$col LIKE ?", $columns));
         $query = "SELECT * FROM CPVC WHERE $conditions";
-        $params = array_fill(0, count($columnNames), "%$condition%");
+        $params = array_fill(0, count($columns), "%$value%");
         $rs = database_connection::executeQuery($query, ...$params);
         
         while ($row = $rs->fetch_assoc()) {
@@ -45,7 +45,7 @@ class CPVC_DAO implements DAOInterface
     
     public function getById($id)
     {
-        $query = "SELECT * FROM CPVC WHERE idTinh = ?";
+        $query = "SELECT * FROM CPVC WHERE IDTINH = ?";
         $result = database_connection::executeQuery($query, $id);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
@@ -56,30 +56,30 @@ class CPVC_DAO implements DAOInterface
 
     public function insert($model): int
     {
-        $query = "INSERT INTO CPVC (idTinh, idVC, chiPhiVC) VALUES (?, ?, ?)";
-        $args = [$model->getIdTinh(), $model->getIdVC(), $model->getChiPhiVC()];
+        $query = "INSERT INTO CPVC (IDTINH, IDVC, CHIPHIVC) VALUES (?, ?, ?)";
+        $args = [$model->getIDTINH(), $model->getIDVC(), $model->getCHIPHIVC()];
         return database_connection::executeQuery($query, ...$args);
     }
 
     public function update($model): int
     {
-        $query = "UPDATE CPVC SET idVC = ?, chiPhiVC = ? WHERE idTinh = ?";
-        $args = [$model->getIdVC(), $model->getChiPhiVC(), $model->getIdTinh()];
+        $query = "UPDATE CPVC SET IDVC = ?, CHIPHIVC = ? WHERE IDTINH = ?";
+        $args = [$model->getIDVC(), $model->getCHIPHIVC(), $model->getIDTINH()];
         return database_connection::executeQuery($query, ...$args);
     }
 
     public function delete($id): int
     {
-        $query = "DELETE FROM CPVC WHERE idTinh = ?";
+        $query = "DELETE FROM CPVC WHERE IDTINH = ?";
         return database_connection::executeQuery($query, $id);
     }
 
     private function createCPVCModel($row): CPVC
     {
         return new CPVC(
-            $row['idTinh'],
-            $row['idVC'],
-            $row['chiPhiVC']
+            $row['IDTINH'],
+            $row['IDVC'],
+            $row['CHIPHIVC']
         );
     }
     public function readDatabase(): array

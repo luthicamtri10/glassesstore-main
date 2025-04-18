@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Bus;
 
 use App\Dao\CPVC_DAO;
@@ -29,13 +30,8 @@ class CPVC_BUS implements BUSInterface
 
     public function getAllModels(): array
     {
-        // Kiểm tra xem có dữ liệu trả về từ DB hay không
-        $result = CPVC_DAO::getInstance()->getAll();
-        
-        // Nếu không có dữ liệu, trả về mảng rỗng
-        return $result ?: [];
+        return $this->CPVCList;
     }
-
 
     public function getModelById(int $id)
     {
@@ -71,4 +67,4 @@ class CPVC_BUS implements BUSInterface
         $list = CPVC_DAO::getInstance()->search($value, $columns);
         return count($list) > 0 ? $list : null;
     }
-} 
+}

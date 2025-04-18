@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\SanPhamController;
 use App\Http\Controllers\TaiKhoanController;
-
+use App\Http\Controllers\NccController;
+use App\Http\Controllers\DonViVanChuyenController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -112,6 +113,9 @@ Route::post('/admin/nguoidung/store', [NguoiDungController::class, 'store'])->na
 Route::post('/admin/nguoidung/update', [NguoiDungController::class, 'update'])->name('admin.nguoidung.update');
 Route::post('/admin/nguoidung/controldelete', [NguoiDungController::class, 'controlDelete'])->name('admin.nguoidung.controlDelete');
 
+Route::post('/admin/donvivanchuyen/store', [DonViVanChuyenController::class, 'store'])->name('admin.donvivanchuyen.store');
+Route::post('/admin/donvivanchuyen/update', [DonViVanChuyenController::class, 'update'])->name('admin.donvivanchuyen.update');
+Route::post('/admin/donvivanchuyen/controldelete', [DonViVanChuyenController::class, 'controlDelete'])->name('admin.donvivanchuyen.controlDelete');
 use App\Http\Controllers\AuthController;
 
 Route::post('/login', function (\Illuminate\Http\Request $request) {
@@ -151,6 +155,62 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 //     }
 // })->name('chechExistingUserBySDT');
 
+// Routes for transport management
+Route::prefix('admin')->group(function () {
+    Route::get('/transport', [DonViVanChuyenController::class, 'index'])->name('admin.transport.index');
+    Route::post('/transport', [DonViVanChuyenController::class, 'store'])->name('admin.transport.store');
+    Route::put('/transport/{id}', [DonViVanChuyenController::class, 'update'])->name('admin.transport.update');
+    Route::delete('/transport/{id}', [DonViVanChuyenController::class, 'destroy'])->name('admin.transport.destroy');
+
+    // Supplier routes
+    Route::get('/supplier', [NccController::class, 'index'])->name('admin.supplier.index');
+    Route::post('/supplier', [NccController::class, 'store'])->name('admin.supplier.store');
+    Route::put('/supplier/{id}', [NccController::class, 'update'])->name('admin.supplier.update');
+    Route::delete('/supplier/{id}', [NccController::class, 'destroy'])->name('admin.supplier.destroy');
+    Route::get('/supplier/search', [NccController::class, 'search'])->name('admin.supplier.search');
+});
+
+// Routes for shipping cost management
+Route::prefix('admin')->group(function () {
+    Route::get('/shipping-cost', function() {
+        $shippingCostBUS = app(\App\Bus\CPVC_BUS::class);
+            
+        $listShippingCost = $shippingCostBUS->getAllModels();
+        return view('admin.chiphivanchuyen', [
+            'listShippingCost' => $listShippingCost ?? []
+        ]);
+    })->name('admin.shipping-cost.index');
+    // Thêm chi phí vận chuyển
+    Route::post('/shipping-cost/store', function(Request $request) {
+        $shippingCostBUS = app(\App\Bus\CPVC_BUS::class);
+        $shippingCostBUS->addModel([
+            'IDTINH' => $request->input('id_tinh'),
+            'IDVC' => $request->input('id_vc'),
+            'CHIPHIVC' => $request->input('chi_phi')
+        ]);
+        return redirect()->route('admin.shipping-cost.index')->with('success', 'Thêm chi phí vận chuyển thành công!');
+    })->name('admin.shipping-cost.store');
+
+    // Cập nhật chi phí vận chuyển
+    Route::post('/shipping-cost/update/{id}', function(Request $request, $id) {
+        $shippingCostBUS = app(\App\Bus\CPVC_BUS::class);
+        $shippingCostBUS->updateModel([
+            'ID' => $id,
+            'IDTINH' => $request->input('id_tinh'),
+            'IDVC' => $request->input('id_vc'),
+            'CHIPHIVC' => $request->input('chi_phi')
+        ]);
+        return redirect()->route('admin.shipping-cost.index')->with('success', 'Cập nhật thành công!');
+    })->name('admin.shipping-cost.update');
+
+    // Xóa chi phí vận chuyển
+    Route::delete('/shipping-cost/delete/{id}', function($id) {
+        $shippingCostBUS = app(\App\Bus\CPVC_BUS::class);
+        $shippingCostBUS->deleteModel($id);
+        return redirect()->route('admin.shipping-cost.index')->with('success', 'Xóa thành công!');
+    })->name('admin.shipping-cost.delete');
+    
+});
 
 
 ?>

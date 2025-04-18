@@ -50,18 +50,18 @@ class SanPham_DAO implements DAOInterface{
         return is_int($result)? $result : 0;
     }
 
-    public function delete(int $id): int
+    public function delete($id): int
     {
         $sql = "UPDATE SanPham SET trangThaiHD = false WHERE id = ?";
         $result = database_connection::executeUpdate($sql, ...[$id]);
         return is_int($result)? $result : 0;
     }
 
-    public function search(string $condition, array $columnNames): array
+    public function search($value, $columns): array
     {
-        $column = $columnNames[0];
+        $column = $columns[0];
         $query = "SELECT * FROM SanPham WHERE $column LIKE ?";
-        $args = ["%" . $condition . "%"];
+        $args = ["%" . $value . "%"];
         $rs = database_connection::executeQuery($query, ...$args);
         $cartsList = [];
         while ($row = $rs->fetch_assoc()) {

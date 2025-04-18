@@ -1,30 +1,25 @@
+
 <div class="p-3 bg-light">
     <div>
         <!-- Nút mở Modal -->
-        <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#supplierModal">
+        <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#shippingCostModal">
             <i class='bx bx-plus'></i>
         </button>
         <table class="table table-hover">
             <thead>
                 <tr>
-                    
-                    <th scope="col">Tên nhà cung cấp</th>
-                    <th scope="col">Số điện thoại</th>
-                    <th scope="col">Mô tả</th>
-                    <th scope="col">Địa chỉ</th>
-                    <th scope="col">Trạng thái</th>
+                    <th scope="col">ID Tỉnh</th>
+                    <th scope="col">ID Vận chuyển</th>
+                    <th scope="col">Chi phí vận chuyển</th>
                     <th scope="col">Hành động</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($listNCC as $supplier)
+                @foreach ($listCPVC as $cost)
                 <tr>
-                   
-                    <td>{{ $supplier->getTenNCC() }}</td>
-                    <td>{{ $supplier->getSdtNCC() }}</td>
-                    <td>{{ $supplier->getMoTa() }}</td>
-                    <td>{{ $supplier->getDiachi() }}</td>
-                    <td>{{ $supplier->getTrangthaiHD() }}</td>
+                    <td>{{ $cost->getIDTINH() }}</td>
+                    <td>{{ $cost->getIDVC() }}</td>
+                    <td>{{ $cost->getCHIPHIVC() }}</td>
                     <td>
                         <button class="btn btn-warning btn-sm">Sửa</button>
                         <button class="btn btn-danger btn-sm">Xóa</button>
@@ -54,39 +49,28 @@
     </div>
 </div>
 
-<!-- Modal Thêm/Sửa Nhà cung cấp -->
-<div class="modal fade" id="supplierModal">
+<!-- Modal Thêm/Sửa Chi phí vận chuyển -->
+<div class="modal fade" id="shippingCostModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="supplierModalLabel">Thêm nhà cung cấp</h5>
+                <h5 class="modal-title" id="shippingCostModalLabel">Thêm chi phí vận chuyển</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="POST" action="{{ route('admin.supplier.store') }}" class="row g-3">
+            <form method="POST" action="{{ route('admin.shipping-cost.store') }}" class="row g-3">
                 @csrf
                 <div class="modal-body">
                     <div class="col-md-12">
-                        <label for="supplierName" class="form-label">Tên nhà cung cấp</label>
-                        <input type="text" class="form-control" id="supplierName" name="TENNCC" required>
+                        <label for="provinceId" class="form-label">ID Tỉnh</label>
+                        <input type="text" class="form-control" id="provinceId" name="IDTINH" required>
                     </div>
                     <div class="col-md-12">
-                        <label for="phone" class="form-label">Số điện thoại</label>
-                        <input type="text" class="form-control" id="phone" name="SODIENTHOAI" required>
+                        <label for="shippingId" class="form-label">ID Vận chuyển</label>
+                        <input type="text" class="form-control" id="shippingId" name="IDVC" required>
                     </div>
                     <div class="col-md-12">
-                        <label for="description" class="form-label">Mô tả</label>
-                        <textarea class="form-control" id="description" name="MOTA"></textarea>
-                    </div>
-                    <div class="col-md-12">
-                        <label for="address" class="form-label">Địa chỉ</label>
-                        <input type="text" class="form-control" id="address" name="DIACHI" required>
-                    </div>
-                    <div class="col-md-12">
-                        <label for="status" class="form-label">Trạng thái</label>
-                        <select class="form-control" id="status" name="TRANGTHAIHD">
-                            <option value="1">Hoạt động</option>
-                            <option value="0">Không hoạt động</option>
-                        </select>
+                        <label for="shippingCost" class="form-label">Chi phí vận chuyển</label>
+                        <input type="number" class="form-control" id="shippingCost" name="CHIPHIVC" required>
                     </div>
                 </div>
                 <div class="modal-footer">

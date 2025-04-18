@@ -4,44 +4,46 @@ namespace App\Models;
 
 class CPVC
 {
-    private $idTinh, $idVC, $chiPhiVC;
+    private $IDTINH;
+    private $IDVC;
+    private $CHIPHIVC;
 
-    public function __construct($idTinh, $idVC, $chiPhiVC)
+    public function __construct($IDTINH, $IDVC, $CHIPHIVC)
     {
-        $this->idTinh = $idTinh;
-        $this->idVC = $idVC;
-        $this->chiPhiVC = $chiPhiVC;
+        $this->IDTINH = $IDTINH;
+        $this->IDVC = $IDVC;
+        $this->CHIPHIVC = $CHIPHIVC;
     }
 
     // Getters
-    public function getIdTinh()
+    public function getIDTINH()
     {
-        return $this->idTinh;
+        return $this->IDTINH;
     }
 
-    public function getIdVC()
+    public function getIDVC()
     {
-        return $this->idVC;
+        return $this->IDVC;
     }
 
-    public function getChiPhiVC()
+    public function getCHIPHIVC()
     {
-        return $this->chiPhiVC;
+        return $this->CHIPHIVC;
     }
 
     // Setters
-    public function setIdTinh($idTinh)
+    public function setIDTINH($IDTINH)
     {
-        $this->idTinh = $idTinh;
+        $this->IDTINH = $IDTINH;
     }
 
-    public function setIdVC($idVC)
+    public function setIDVC($IDVC)
     {
-        $this->idVC = $idVC;
+        $this->IDVC = $IDVC;
     }
 
-    public function setChiPhiVC($chiPhiVC)
+    public function setCHIPHIVC($CHIPHIVC)
     {
-        $this->chiPhiVC = $chiPhiVC;
+        $this->CHIPHIVC = $CHIPHIVC;
     }
 }

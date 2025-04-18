@@ -5,7 +5,7 @@ use App\Interface\DAOInterface;
 use App\Models\DVVC;
 use App\Services\database_connection;
 use Exception;
-use InvalidArgumentException;
+use InvalIDArgumentException;
 
 use function Laravel\Prompts\alert;
 
@@ -32,11 +32,11 @@ class DVVC_DAO implements DAOInterface {
     }
 
     public function createDVVCModel($rs) {
-        $idDVVC = $rs['idDVVC'];
-        $tenDV = $rs['tenDV'];
-        $moTa = $rs['moTa'];
-        $trangThaiHD = $rs['trangThaiHD'];
-        return new DVVC($idDVVC, $tenDV, $moTa, $trangThaiHD);
+        $ID = $rs['ID'];
+        $TENDV = $rs['TENDV'];
+        $moTa = $rs['MOTA'];
+        $trangThaiHD = $rs['TRANGTHAIHD'];
+        return new DVVC($ID, $TENDV, $moTa, $trangThaiHD);
     }
 
     public function getAll(): array {
@@ -49,9 +49,9 @@ class DVVC_DAO implements DAOInterface {
         return $list;
     }
 
-    public function getById($id) {
-        $query = "SELECT * FROM DVVC WHERE idDVVC = ?";
-        $result = database_connection::executeQuery($query, $id);
+    public function getByID($ID) {
+        $query = "SELECT * FROM DVVC WHERE ID = ?";
+        $result = database_connection::executeQuery($query, $ID);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             if ($row) {
@@ -62,39 +62,39 @@ class DVVC_DAO implements DAOInterface {
     }
 
     public function insert($model): int {
-        $query = "INSERT INTO DVVC (tenDV, moTa, trangThaiHD) VALUES (?, ? ,?)";
-        $args = [$model->getTenDV(), $model->getMoTa(), $model->getTrangThaiHD()];
+        $query = "INSERT INTO DVVC (TENDV, moTa, trangThaiHD) VALUES (?, ? ,?)";
+        $args = [$model->getTENDV(), $model->getMoTa(), $model->getTrangThaiHD()];
         return database_connection::executeQuery($query, ...$args);
     }
 
     public function update($model): int {
-        $query = "UPDATE DVVC SET tenDV = ?, moTa = ?, trangThaiHD = ? WHERE idDVVC = ?";
-        $args = [$model->getTenDV(), $model->getMoTa(), $model->getTrangThaiHD(), $model->getIdDVVC()];
+        $query = "UPDATE DVVC SET TENDV = ?, moTa = ?, trangThaiHD = ? WHERE ID = ?";
+        $args = [$model->getTENDV(), $model->getMoTa(), $model->getTrangThaiHD(), $model->getID()];
         $result = database_connection::executeUpdate($query, ...$args);
         return is_int($result) ? $result : 0;
     }
 
-    public function delete($id): int {
-        $query = "UPDATE DVVC SET trangThaiHD = false WHERE idDVVC = ?";
-        $result = database_connection::executeUpdate($query, ...[$id]);
+    public function delete($ID): int {
+        $query = "UPDATE DVVC SET trangThaiHD = false WHERE ID = ?";
+        $result = database_connection::executeUpdate($query, ...[$ID]);
         return is_int($result) ? $result : 0;
     }
 
-    public function search(string $condition, $columnNames): array {
-        if (empty($condition)) {
-            throw new InvalidArgumentException("Search condition cannot be empty or null");
+    public function search($value, $columns): array {
+        if (empty($value)) {
+            throw new InvalIDArgumentException("Search condition cannot be empty or null");
         }
         $query = "";
-        if ($columnNames === null || count($columnNames) === 0) {
-            $query = "SELECT * FROM DVVC WHERE idDVVC LIKE ? OR tenDV LIKE ? OR moTa LIKE ? OR trangThaiHD LIKE ?";
-            $args = array_fill(0, 4, "%" . $condition . "%");
-        } else if (count($columnNames) === 1) {
-            $column = $columnNames[0];
+        if ($columns === null || count($columns) === 0) {
+            $query = "SELECT * FROM DVVC WHERE ID LIKE ? OR TENDV LIKE ? OR moTa LIKE ? OR trangThaiHD LIKE ?";
+            $args = array_fill(0, 4, "%" . $value . "%");
+        } else if (count($columns) === 1) {
+            $column = $columns[0];
             $query = "SELECT * FROM DVVC WHERE $column LIKE ?";
-            $args = ["%" . $condition . "%"];
+            $args = ["%" . $value . "%"];
         } else {
-            $query = "SELECT * FROM DVVC WHERE " . implode(" LIKE ? OR ", $columnNames) . " LIKE ?";
-            $args = array_fill(0, count($columnNames), "%" . $condition . "%");
+            $query = "SELECT * FROM DVVC WHERE " . implode(" LIKE ? OR ", $columns) . " LIKE ?";
+            $args = array_fill(0, count($columns), "%" . $value . "%");
         }
         $rs = database_connection::executeQuery($query, ...$args);
         $dvvcList = [];

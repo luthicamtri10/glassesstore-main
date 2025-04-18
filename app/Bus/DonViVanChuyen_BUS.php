@@ -7,14 +7,14 @@ use PhpParser\Node\Stmt\Echo_;
 
 use function Laravel\Prompts\error;
 
-class DVVC_BUS implements BUSInterface {
+class DonViVanChuyen_BUS implements BUSInterface {
     private $ChucNangDVVCList = array();
     private $StaticList = array();
     private static $instance;
 
     public static function getInstance() {
         if (self::$instance == null) {
-            self::$instance = new DVVC_BUS();
+            self::$instance = new DonViVanChuyen_BUS();
         }
         return self::$instance;
     }

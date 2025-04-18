@@ -4,20 +4,20 @@ namespace App\Models;
 
 class DVVC
 {
-    private $idDVVC, $tenDV, $moTa, $trangThaiHD;
+    private $Id, $tenDV, $moTa, $trangThaiHD;
 
-    public function __construct($idDVVC, $tenDV, $moTa, $trangThaiHD)
+    public function __construct($Id, $tenDV, $moTa, $trangThaiHD)
     {
-        $this->idDVVC = $idDVVC;
+        $this->Id = $Id;
         $this->tenDV = $tenDV;
         $this->moTa = $moTa;
         $this->trangThaiHD = $trangThaiHD;
     }
 
     // Getters
-    public function getIdDVVC()
+    public function getId()
     {
-        return $this->idDVVC;
+        return $this->Id;
     }
 
     public function getTenDV()
@@ -36,9 +36,9 @@ class DVVC
     }
 
     // Setters
-    public function setIdDVVC($idDVVC)
+    public function setId($Id)
     {
-        $this->idDVVC = $idDVVC;
+        $this->Id = $Id;
     }
 
     public function setTenDV($tenDV)

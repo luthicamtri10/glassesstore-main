@@ -21,7 +21,10 @@
                 use App\Bus\Quyen_BUS;
                 use App\Bus\TaiKhoan_BUS;
                 use App\Bus\Tinh_BUS;
-                use Illuminate\Support\Facades\View as FacadesView;
+                use App\Bus\DonViVanChuyen_BUS; 
+                use App\Bus\CPVC_BUS;
+                use App\Bus\NCC_BUS;
+use Illuminate\Support\Facades\View as FacadesView;
 
                 $page = $_GET['modun'] ?? 'nguoidung';
 
@@ -93,8 +96,48 @@
                             'total_page' => $total_page
                         ])->render();
                         break;
+                    case 'donvivanchuyen':
+                        $donviBUS = app(DonViVanChuyen_BUS::class);
+                        $listDVVC = $donviBUS->getAllModels();
+                        if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
+                            $keyword = $_GET['keyword'];
+                            $listDVVC = $donviBUS->searchModel($keyword, []);
+                        }
+
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($listDVVC ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if(empty($listDVVC)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listDVVC, $start, $limit);
+                        }
+
+                        echo FacadesView::make('admin.donvivanchuyen', [
+                            'listDVVC' => $tmp,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page
+                        ])->render();
+                        break;
+                    case 'chiphivanchuyen':
+                        $cpvcBUS = app(CPVC_BUS::class);
+                        $listCPVC = $cpvcBUS->getAllModels();
+                        echo FacadesView::make('admin.chiphivanchuyen', [
+                            'listCPVC' => $listCPVC
+                        ])->render();
+                        break;
                     case 'quyen':
                         include base_path('resources/views/admin/quyen.blade.php');
+                        break;
+                    case 'nhacungcap':
+                        $nccBUS = app(NCC_BUS::class);
+                        $listNCC = $nccBUS->getAllModels();
+                        echo FacadesView::make('admin.nhacungcap', [
+                            'listNCC' => $listNCC
+                        ])->render();
                         break;
                     case 'thongke':
                         include base_path('resources/views/admin/thongke.blade.php');

@@ -78,16 +78,10 @@ class CTPN_DAO implements DAOInterface {
         return database_connection::executeUpdate($sql, ...$args);
     }
 
-    public function delete(int $id): int {
-        // For CTPN, we need both idPN and idSP, so we'll split the id
-        $ids = explode('_', $id);
-        if (count($ids) !== 2) {
-            return 0;
-        }
-        $idPN = $ids[0];
-        $idSP = $ids[1];
-        $sql = "DELETE FROM CTPN WHERE idPN = ? AND idSP = ?";
-        return database_connection::executeUpdate($sql, $idPN, $idSP);
+    public function delete($id): int
+    {
+        $query = "DELETE FROM CTPN WHERE ID = ?";
+        return database_connection::executeQuery($query, $id);
     }
 
     public function deleteByPhieuNhapId($idPN): int {
@@ -95,15 +89,15 @@ class CTPN_DAO implements DAOInterface {
         return database_connection::executeUpdate($sql, $idPN);
     }
 
-    public function search(string $condition, array $columnNames): array {
+    public function search($value, $columns): array {
         $sql = "SELECT * FROM CTPN WHERE ";
         $whereClauses = [];
-        foreach ($columnNames as $column) {
+        foreach ($columns as $column) {
             $whereClauses[] = "$column LIKE ?";
         }
         $sql .= implode(" AND ", $whereClauses);
         
-        $params = array_fill(0, count($columnNames), "%$condition%");
+        $params = array_fill(0, count($columns), "%$value%");
         $rs = database_connection::executeQuery($sql, ...$params);
         
         $list = [];

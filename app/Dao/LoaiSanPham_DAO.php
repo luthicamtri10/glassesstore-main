@@ -75,21 +75,20 @@ class LoaiSanPham_DAO implements DAOInterface {
     }
 
   
-    public function delete(int $id): int {
-        $query = "DELETE FROM loaisanpham WHERE ID = ?";
-        $result = database_connection::executeUpdate($query, $id);
-        return is_int($result) ? $result : 0;
+    public function delete($id): int {
+        $query = "DELETE FROM LOAISANPHAM WHERE ID = ?";
+        return database_connection::executeQuery($query, $id);
     }
 
-    public function search(string $condition, array $columnNames = []): array {
+    public function search($value, $columns): array {
         $list = [];
-        if (empty($columnNames)) {
-            $query = "SELECT * FROM loaisanpham WHERE TENLSP LIKE ? OR MOTA LIKE ?";
-            $args = array_fill(0, 2, "%$condition%");
+        if (empty($columns)) {
+            $query = "SELECT * FROM LOAISANPHAM WHERE TENLSP LIKE ? OR MOTA LIKE ?";
+            $args = array_fill(0, 2, "%$value%");
         } else {
-            $whereClauses = implode(" LIKE ? OR ", $columnNames) . " LIKE ?";
-            $query = "SELECT * FROM loaisanpham WHERE $whereClauses";
-            $args = array_fill(0, count($columnNames), "%$condition%");
+            $whereClauses = implode(" LIKE ? OR ", $columns) . " LIKE ?";
+            $query = "SELECT * FROM LOAISANPHAM WHERE $whereClauses";
+            $args = array_fill(0, count($columns), "%$value%");
         }
 
         $rs = database_connection::executeQuery($query, ...$args);

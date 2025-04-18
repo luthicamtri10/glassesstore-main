@@ -42,15 +42,15 @@ class NCC_DAO implements DAOInterface
 
     public function insert($model): int
     {
-        $query = "INSERT INTO NCC (tenNCC, sdtNCC, diachi, trangthaiHD) VALUES (?, ?, ?, ?)";
-        $args = [$model->getTenNCC(), $model->getSdtNCC(), $model->getDiachi(), $model->getTrangthaiHD()];
+        $query = "INSERT INTO NCC (TENNCC, sdtNCC, diachi, trangthaiHD) VALUES (?, ?, ?, ?)";
+        $args = [$model->getTENNCC(), $model->getSdtNCC(), $model->getDiachi(), $model->getTrangthaiHD()];
         return database_connection::executeQuery($query, ...$args);
     }
 
     public function update($model): int
     {
-        $query = "UPDATE NCC SET tenNCC = ?, sdtNCC = ?, diachi = ?, trangthaiHD = ? WHERE idNCC = ?";
-        $args = [$model->getTenNCC(), $model->getSdtNCC(), $model->getDiachi(), $model->getTrangthaiHD(), $model->getIdNCC()];
+        $query = "UPDATE NCC SET TENNCC = ?, sdtNCC = ?, diachi = ?, trangthaiHD = ? WHERE idNCC = ?";
+        $args = [$model->getTENNCC(), $model->getSdtNCC(), $model->getDiachi(), $model->getTrangthaiHD(), $model->getIdNCC()];
         return database_connection::executeQuery($query, ...$args);
     }
 
@@ -60,12 +60,12 @@ class NCC_DAO implements DAOInterface
         return database_connection::executeQuery($query, $id);
     }
 
-    public function search($keyword, array $columnNames): array
+    public function search($value, $columns): array
     {
         $list = [];
-        $conditions = implode(" OR ", array_map(fn($col) => "$col LIKE ?", $columnNames));
+        $conditions = implode(" OR ", array_map(fn($col) => "$col LIKE ?", $columns));
         $query = "SELECT * FROM NCC WHERE $conditions";
-        $params = array_fill(0, count($columnNames), "%$keyword%");
+        $params = array_fill(0, count($columns), "%$value%");
         $rs = database_connection::executeQuery($query, ...$params);
         while ($row = $rs->fetch_assoc()) {
             $model = $this->createNCCModel($row);
@@ -77,11 +77,12 @@ class NCC_DAO implements DAOInterface
     private function createNCCModel($row): NCC
     {
         return new NCC(
-            $row['idNCC'],
-            $row['tenNCC'],
-            $row['sdtNCC'],
-            $row['diachi'],
-            $row['trangthaiHD']
+            $row['ID'],
+            $row['TENNCC'],
+            $row['SODIENTHOAI'],
+            $row['MOTA'],
+            $row['DIACHI'],
+            $row['TRANGTHAIHD']
         );
     }
     public function readDatabase(): array

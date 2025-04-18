@@ -65,31 +65,17 @@ class Quyen_DAO implements DAOInterface {
         return is_int($result) ? $result : 0;
     }
 
-    public function search(string $condition, $columnNames): array
+    public function search($value, $columns): array
     {
-        if (empty($condition)) {
-            throw new InvalidArgumentException("Search condition cannot be empty or null");
-        }
-        $query = "";
-        if ($columnNames === null || count($columnNames) === 0) {
-            $query = "SELECT * FROM QUYEN WHERE id LIKE ? OR tenQuyen LIKE ? OR trangThaiHD LIKE ? ";
-            $args = array_fill(0,  3, "%" . $condition . "%");
-        } else if (count($columnNames) === 1) {
-            $column = $columnNames[0];
-            $query = "SELECT * FROM QUYEN WHERE $column LIKE ?";
-            $args = ["%" . $condition . "%"];
-        } else {
-            $query = "SELECT * FROM QUYEN WHERE " . implode(" LIKE ? OR ", $columnNames) . " LIKE ?";
-            $args = array_fill(0, count($columnNames), "%" . $condition . "%");
-        }
-        $rs = database_connection::executeQuery($query, ...$args);
         $list = [];
+        $conditions = implode(" OR ", array_map(fn($col) => "$col LIKE ?", $columns));
+        $query = "SELECT * FROM QUYEN WHERE $conditions";
+        $params = array_fill(0, count($columns), "%$value%");
+        $rs = database_connection::executeQuery($query, ...$params);
+        
         while ($row = $rs->fetch_assoc()) {
             $model = $this->createQuyenModel($row);
             array_push($list, $model);
-        }
-        if (count($list) === 0) {
-            return [];
         }
         return $list;
     }

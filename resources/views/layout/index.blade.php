@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('css/client/Login-Register.css') }}">
     <link rel="stylesheet" href="{{ asset('css/client/HomePageClient.css') }}">
     <link rel="stylesheet" href="{{ asset('css/client/AcctInfoOH.css') }}">
+
     @vite(['resources/css/admin/admin.css'])
 </head>
 <body>

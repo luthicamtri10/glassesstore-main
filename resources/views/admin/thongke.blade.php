@@ -16,17 +16,19 @@ use App\Models\Quyen;
 use App\Models\TaiKhoan;
 use App\Utils\JWTUtils;
 use Illuminate\Support\Facades\Auth;
+use App\Bus\CPVC_BUS;
+use App\Bus\NCC_BUS;
 
-   // $list = app(Hang_BUS::class)->getAllModels();
-   // foreach($list as $it) {
-   //  echo $it->gettenHang(). '<br>';
-   // }
+   $list = app(NCC_BUS::class)->getAllModels();
+   foreach($list as $it) {
+    echo $it->getMoTa(). '<br>';
+   }
    // $it = app(SanPham_BUS::class)->getModelById(1);
    // echo $it->gettenLSP(). '<br>';
    // session_start();
    // app(Auth_BUS::class)->login("admin@example.com","12345");
-    $isLogin = app(Auth_BUS::class)->isAuthenticated();
-    echo "Token: " .var_dump($isLogin) . '<br>';
+   //  $isLogin = app(Auth_BUS::class)->isAuthenticated();
+   //  echo "Token: " .var_dump($isLogin) . '<br>';
    //  $email = app(Auth_BUS::class)->getEmailFromToken();
    //  $user = app(TaiKhoan_BUS::class)->getModelById($email);
    //  echo 'isLogin '.$isLogin . '<br>';
@@ -37,4 +39,5 @@ use Illuminate\Support\Facades\Auth;
    // print_r($decoded);
    // echo '</pre>';
    app(Auth_BUS::class)->logout();
+   
 ?>
