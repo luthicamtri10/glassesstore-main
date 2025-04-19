@@ -8,33 +8,29 @@ use App\Bus\NguoiDung_BUS;
 use App\Bus\Quyen_BUS;
 use App\Bus\SanPham_BUS;
 use App\Bus\TaiKhoan_BUS;
+use App\Bus\Tinh_BUS;
 use App\Enum\GioiTinhEnum;
 use App\Models\GioHang;
 use App\Models\Hang;
 use App\Models\NguoiDung;
 use App\Models\Quyen;
+use App\Models\SanPham;
 use App\Models\TaiKhoan;
 use App\Utils\JWTUtils;
 use Illuminate\Support\Facades\Auth;
 
-   // $list = app(Hang_BUS::class)->getAllModels();
+   // $isLogin = app(Auth_BUS::class)->isAuthenticated();
+   // echo "Token: " .var_dump($isLogin) . '<br>';
+   // app(Auth_BUS::class)->logout();
+   // $list = app(SanPham_BUS::class)->getTop4ProductWasHigestSale();
    // foreach($list as $it) {
-   //  echo $it->gettenHang(). '<br>';
-   // }
-   // $it = app(SanPham_BUS::class)->getModelById(1);
-   // echo $it->gettenLSP(). '<br>';
-   // session_start();
-   // app(Auth_BUS::class)->login("admin@example.com","12345");
-    $isLogin = app(Auth_BUS::class)->isAuthenticated();
-    echo "Token: " .var_dump($isLogin) . '<br>';
-   //  $email = app(Auth_BUS::class)->getEmailFromToken();
-   //  $user = app(TaiKhoan_BUS::class)->getModelById($email);
-   //  echo 'isLogin '.$isLogin . '<br>';
-   //  echo 'email '. $email . '<br>';
-   //  echo 'user '. var_dump($user);
-   // $decoded = app(JWTUtils::class)::verifyToken($_SESSION['token']);
-   // echo '<pre>';
-   // print_r($decoded);
-   // echo '</pre>';
-   app(Auth_BUS::class)->logout();
+   //    echo $it->getTenSanPham() . '<br>';
+   // } 
+   // echo app(SanPham_BUS::class)->getStock(1);
+   echo 'tinh: ',app(Tinh_BUS::class)->getModelById(2)->getTenTinh().'<br>';
+   $nd = new NguoiDung(null,'test','2025-04-01',GioiTinhEnum::MALE,'Đường Phú Minh, Hà Nội',app(Tinh_BUS::class)->getModelById(2),'000000000000000','015632897459',1);
+   var_dump($nd);
+   echo 'add nd: ', app(NguoiDung_BUS::class)->addModel($nd);
+   // $tk = new TaiKhoan('khang','please@gmail.com','123456789',$nd,app(Quyen_BUS::class)->getModelById(3), 1);
+   // echo app(TaiKhoan_BUS::class)->addModel($tk);
 ?>

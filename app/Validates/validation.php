@@ -4,7 +4,13 @@ namespace App\Validates;
 
 class validation
 {
-   
+    public static function isEmail($email) : bool {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     private static function isMatch($input, $regex)
     {
         return preg_match($regex, $input);

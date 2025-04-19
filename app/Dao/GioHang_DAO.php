@@ -76,15 +76,15 @@ class GioHang_DAO
     /**
      * Thêm một bản ghi vào bảng GIOHANG
      */
-    public function insert($e): int
+    public function insert($e)
     {
-        if (!$e instanceof GioHang) {
-            throw new InvalidArgumentException("Tham số phải là instance của GioHang");
-        }
+        // if (!$e instanceof GioHang) {
+        //     throw new InvalidArgumentException("Tham số phải là instance của GioHang");
+        // }
 
         $query = "INSERT INTO `giohang`(`EMAIL`, `CREATEDAT`, `TRANGTHAIHD`) VALUES (?, ?, ?)";
         $args = [$e->getEmail(), $e->getCreatedAt(), $e->getTrangThaiHD()];
-        $rs = database_connection::executeQuery($query, ...$args);
+        $rs = database_connection::executeUpdate($query, ...$args);
         return is_int($rs) ? $rs : 0;
     }
 

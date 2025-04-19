@@ -63,12 +63,12 @@ class TaiKhoan_DAO{
         return null;
     }
     
-    public function insert($model): int {
+    public function insert($model) {
         try {
             $query = "INSERT INTO TAIKHOAN (tentk, email, password, idNguoiDung, idQuyen, trangthaihd) VALUES (?,?,?,?,?,?)";
             $args = [$model->getTenTK(),$model->getEmail(), password_hash($model->getPassword(), PASSWORD_DEFAULT), $model->getIdNguoiDung()->getId(), $model->getIdQuyen()->getId(), $model->getTrangThaiHD()];
             $result = database_connection::executeUpdate($query, ...$args);
-            $tmp = 0;
+            // $tmp = 0;
             if ($result >= 1) {
                 $gh = new GioHang(null, $model->getEmail(), date('Y-m-d'), 1);
                 $this->gioHangBus->addModel($gh);

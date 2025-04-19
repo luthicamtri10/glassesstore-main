@@ -4,6 +4,7 @@ namespace App\Bus;
 use App\Dao\NguoiDung_DAO;
 use App\Interface\BUSInterface;
 use App\Models\NguoiDung;
+use Illuminate\Support\Facades\Log;
 
 class NguoiDung_BUS{
     private $nguoiDungList = array();
@@ -27,11 +28,20 @@ class NguoiDung_BUS{
     }
     public function addModel($model)
     {
+        // if($model == null) {
+        //     error_log("Error when insert a NguoiDung");
+        //     return;
+        // }
+        // return $this->nguoiDungDAO->insert($model);
         if($model == null) {
-            error_log("Error when insert a NguoiDung");
+            Log::error("Error: Model is null when trying to insert.");
             return;
         }
-        return $this->nguoiDungDAO->insert($model);
+        $result = $this->nguoiDungDAO->insert($model);
+        if (!$result) {
+            Log::error("Error inserting model: " . json_encode($model));
+        }
+        return $result;
     }
     public function updateModel($model)
     {
@@ -58,7 +68,7 @@ class NguoiDung_BUS{
     }
     public function checkExistingUser($sdt) {
         foreach($this->nguoiDungList as $it) {
-            if($it->getgetSoDienThoai() == $sdt) {
+            if($it->getSoDienThoai() == $sdt) {
                 return true;
             }
         }

@@ -28,14 +28,14 @@ class TaiKhoan_BUS{
     }
     public function addModel($model)
     {
-        if($model == null) {
-            error("Error when add a TaiKhoan");
-            return 0;
-        } else if ($this->checkExistingEmail($model->getEmail())) {
-            error_log("This email is existing!");
-            return 0;
-        }
-        echo 'bus' .'<br>';
+        // if($model == null) {
+        //     error("Error when add a TaiKhoan");
+        //     return 0;
+        // } else if ($this->checkExistingEmail($model->getEmail())) {
+        //     error_log("This email is existing!");
+        //     return 0;
+        // }
+        // echo 'bus' .'<br>';
         return $this->taiKhoanDAO->insert($model);
     }
     public function updateModel($model)
