@@ -80,7 +80,6 @@
       modal.querySelector('input[name="tensp"]').value = this.dataset.tensp;
       modal.querySelector('input[name="hang"]').value = this.dataset.hang;
       modal.querySelector('select[name="lsp"]').value = this.dataset.lsp;
-      modal.querySelector('select[name="soluong"]').value = this.dataset.soluong;
       modal.querySelector('select[name="mota"]').value = this.dataset.mota;
       modal.querySelector('select[name="dongia"]').value = this.dataset.dongia;
       modal.querySelector('select[name="tgbh"]').value = this.dataset.thbh;
@@ -294,7 +293,6 @@
                     data-tensp="{{ $sp->getTenSanPham() }}"
                     data-hang="{{ $sp->getIdHang()->getTenHang() }}"
                     data-lsp="{{ $sp->getIdLSP()->getTenLSP() }}"
-                    data-soluong="{{ $sp->getSoLuong() }}"
                     data-mota="{{ $sp->getMoTa() }}"
                     data-dongia="{{ $sp->getDonGia() }}"
                     data-thbg="{{ $sp->getThoiGianBaoHanh() }}"

@@ -40,13 +40,13 @@
 })
 </script>
 
-
 <div class="p-3 bg-light">
         <form class="d-flex me-2 mb-3" method="get" role="search">
             <input class="form-control me-2 w-25" type="search" placeholder="Tìm kiếm" aria-label="Search" id="keyword" name="keyword" value="{{ request('keyword') }}">
             <button class="btn btn-outline-success me-2" type="submit">Tìm</button>    
             <button class="btn btn-info ms-2" id="refreshBtn" type="button">Refresh</button>
         </form>
+        
         <!-- Nút Plus để mở Modal -->
         <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addTypeProductModal">
             <i class='bx bx-plus'></i>
@@ -135,27 +135,20 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form method="post" action="{{ route('admin.loaisanpham.store') }}">
           <!-- Hàng 1: Tên sản phẩm & Số lượng -->
+          @csrf 
           <div class="row mb-3">
-            <div class="col-6">
+            <div class="col">
               <label class="form-label">Tên sản phẩm</label>
-              <input type="text" class="form-control" placeholder="Nhập tên sản phẩm">
+              <input type="text" name="tenLSP" class="form-control" placeholder="Nhập tên sản phẩm">
             </div>
-            <div class="col-6">
-            <label class="form-label">Trạng thái</label>
-            <select class="form-select">
-              <option>Đang kinh doanh</option>
-              <option>Ngừng kinh doanh</option>
-              <option>Hết hàng</option>
-            </select>
-          </div>
           </div>
 
           <!-- Hàng 3: Mô tả -->
           <div class="row mb-3">
             <label class="form-label">Mô tả</label>
-            <textarea class="form-control" rows="3" placeholder="Nhập mô tả"></textarea>
+            <textarea class="form-control" name="moTa" rows="3" placeholder="Nhập mô tả"></textarea>
           </div>
 
           <!-- Nút Lưu -->
@@ -165,5 +158,9 @@
     </div>
   </div>
 </div>
-
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
+    {{ session('success') }}
+</div>
+@endif
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

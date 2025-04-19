@@ -18,10 +18,12 @@
         @include('admin.includes.navbar')
             <?php
 
+use App\Bus\Hang_BUS;
 use App\Bus\LoaiSanPham_BUS;
 use App\Bus\NguoiDung_BUS;
                 use App\Bus\Quyen_BUS;
-                use App\Bus\TaiKhoan_BUS;
+use App\Bus\SanPham_BUS;
+use App\Bus\TaiKhoan_BUS;
                 use App\Bus\Tinh_BUS;
                 use Illuminate\Support\Facades\View as FacadesView;
 
@@ -95,6 +97,7 @@ use App\Bus\NguoiDung_BUS;
                             'total_page' => $total_page
                         ])->render();
                         break;
+                    
                     case 'quyen':
                         include base_path('resources/views/admin/quyen.blade.php');
                         break;
@@ -132,6 +135,53 @@ use App\Bus\NguoiDung_BUS;
                         ])->render();
                 
                         break;  
+                    case 'sanpham':
+                        $loaiSanPhamBUS = app(LoaiSanPham_BUS::class);
+                        $hangBUS = app(Hang_BUS::class);
+                        $sanPhamBUS = app(SanPham_BUS::class);
+                        $listLSP = $loaiSanPhamBUS->getAllModels();
+                        $listHang = $hangBUS->getAllModels();
+                        $listSP = $sanPhamBUS->getAllModels();
+
+                        $mapTenHang = [];
+                        foreach ($listHang as $hang){
+                            $mapTenHang[$hang->getId()] = $hang->gettenHang();
+                        }
+
+                        $mapTenLoaiSP = [];
+                        foreach ($listLSP as $loaiSP) {
+                            $mapTenLoaiSP[$loaiSP->getId()] = $loaiSP->getTenLSP();
+                        }
+
+                        $keyword = trim(request('keyword'));
+                        if ($keyword === '') {
+                            $listSP = $sanPhamBUS->getAllModels();
+                        } else {
+                            $listSP = $sanPhamBUS->searchModel($keyword, []);
+                        }
+
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($listSP ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if(empty($listSP)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listSP, $start, $limit);            
+                        }
+
+                        echo FacadesView::make('admin.sanpham', [
+                            'listSP' => $tmp,
+                            'listHang' => $listHang,
+                            'listLSP' => $listLSP,
+                            'mapTenLoaiSP' => $mapTenLoaiSP, 
+                            'mapTenHang' => $mapTenHang,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page
+                        ])->render();
+                        break;
                     default:
                         include base_path('resources/views/admin/nguoidung.blade.php');
                         break;
