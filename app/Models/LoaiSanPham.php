@@ -2,27 +2,27 @@
 namespace App\Models;
 
 class LoaiSanPham {
-    private int $id;
-    private string $tenLSP;
-    private string $moTa;
+    private $id;
+    private $tenLSP;
+    private $moTa;
     private $trangThaiHD; 
 
-    public function __construct(int $id, string $tenLSP, string $moTa, $trangThaiHD) {
+    public function __construct($id, $tenLSP, $moTa, $trangThaiHD) {
         $this->id = $id;
         $this->tenLSP = $tenLSP;
         $this->moTa = $moTa;
         $this->trangThaiHD = $trangThaiHD;
     }
 
-    public function getId(): int {
+    public function getId() {
         return $this->id;
     }
 
-    public function gettenLSP(): string {
+    public function gettenLSP() {
         return $this->tenLSP;
     }
 
-    public function getmoTa(): string {
+    public function getmoTa() {
         return $this->moTa;
     }
 
@@ -30,19 +30,19 @@ class LoaiSanPham {
         return $this->trangThaiHD;
     }
 
-    public function setId(int $id): void {
+    public function setId($id) {
         $this->id = $id;
     }
 
-    public function settenLSP(string $tenLSP): void {
+    public function settenLSP($tenLSP) {
         $this->tenLSP = $tenLSP;
     }
 
-    public function setmoTa(string $moTa): void {
+    public function setmoTa($moTa) {
         $this->moTa = $moTa;
     }
 
-    public function settrangThaiHD($trangThaiHD): void {
+    public function settrangThaiHD($trangThaiHD) {
         $this->trangThaiHD = $trangThaiHD;
     }
 }

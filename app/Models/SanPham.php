@@ -64,8 +64,7 @@ class SanPham
     {
         $this->idLSP = $idLSP;
     }
-
-
+  
     // Getter và Setter cho moTa
     public function getMoTa()
     {

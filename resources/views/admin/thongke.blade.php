@@ -8,10 +8,12 @@ use App\Bus\NguoiDung_BUS;
 use App\Bus\Quyen_BUS;
 use App\Bus\SanPham_BUS;
 use App\Bus\TaiKhoan_BUS;
+use App\Dao\LoaiSanPham_DAO;
 use App\Bus\Tinh_BUS;
 use App\Enum\GioiTinhEnum;
 use App\Models\GioHang;
 use App\Models\Hang;
+use App\Models\LoaiSanPham;
 use App\Models\NguoiDung;
 use App\Models\Quyen;
 use App\Models\SanPham;
@@ -33,4 +35,5 @@ use Illuminate\Support\Facades\Auth;
    echo 'add nd: ', app(NguoiDung_BUS::class)->addModel($nd);
    // $tk = new TaiKhoan('khang','please@gmail.com','123456789',$nd,app(Quyen_BUS::class)->getModelById(3), 1);
    // echo app(TaiKhoan_BUS::class)->addModel($tk);
+
 ?>
