@@ -21,19 +21,5 @@ use App\Models\TaiKhoan;
 use App\Utils\JWTUtils;
 use Illuminate\Support\Facades\Auth;
 
-   // $isLogin = app(Auth_BUS::class)->isAuthenticated();
-   // echo "Token: " .var_dump($isLogin) . '<br>';
-   // app(Auth_BUS::class)->logout();
-   // $list = app(SanPham_BUS::class)->getTop4ProductWasHigestSale();
-   // foreach($list as $it) {
-   //    echo $it->getTenSanPham() . '<br>';
-   // } 
-   // echo app(SanPham_BUS::class)->getStock(1);
-   echo 'tinh: ',app(Tinh_BUS::class)->getModelById(2)->getTenTinh().'<br>';
-   $nd = new NguoiDung(null,'test','2025-04-01',GioiTinhEnum::MALE,'Đường Phú Minh, Hà Nội',app(Tinh_BUS::class)->getModelById(2),'000000000000000','015632897459',1);
-   var_dump($nd);
-   echo 'add nd: ', app(NguoiDung_BUS::class)->addModel($nd);
-   // $tk = new TaiKhoan('khang','please@gmail.com','123456789',$nd,app(Quyen_BUS::class)->getModelById(3), 1);
-   // echo app(TaiKhoan_BUS::class)->addModel($tk);
 
 ?>

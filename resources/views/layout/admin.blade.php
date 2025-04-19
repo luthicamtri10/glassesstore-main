@@ -182,6 +182,9 @@ use App\Bus\TaiKhoan_BUS;
                             'total_page' => $total_page
                         ])->render();
                         break;
+                    case 'hoadon':
+                        include base_path('resources/views/admin/hoadon.blade.php');
+                        break;
                     default:
                         include base_path('resources/views/admin/nguoidung.blade.php');
                         break;

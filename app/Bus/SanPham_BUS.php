@@ -35,19 +35,17 @@ class SanPham_BUS implements BUSInterface {
         return null;
     }
 
-    public function addModel($model): int {
+    public function addModel($model) {
         
         // Validate dữ liệu
-        $validator = Validator::make($model->toArray(), [
-            'tenSanPham' => 'required|string|max:255',
-            'idHang' => 'required|integer|exists:hangs,id',
-            'idLSP' => 'required|integer|exists:loai_san_phams,id',
-            'soLuong' => 'required|integer|min:0',
-            'moTa' => 'nullable|string',
-            'donGia' => 'required|numeric|min:0',
-            'thoiGianBaoHanh' => 'nullable|string|max:50',
-            'trangThaiHD' => 'required|boolean',
-        ]);
+        // $validator = Validator::make($model->toArray(), [
+        //     'tenSanPham' => 'required|string|max:255',
+        //     'idHang' => 'required|integer|exists:hangs,id',
+        //     'idLSP' => 'required|integer|exists:loai_san_phams,id',
+        //     'moTa' => 'nullable|string',
+        //     'donGia' => 'required|numeric|min:0',
+        //     'thoiGianBaoHanh' => 'nullable|string|max:50',
+        // ]);
          
         return $this->sanPhamDAO->insert($model);
     }

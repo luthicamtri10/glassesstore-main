@@ -141,51 +141,59 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
       </div>
       <div class="modal-body">
-        <form>
-          <!-- Hàng 1: Tên sản phẩm & Số lượng -->
+        <form method="post" action="{{ route('admin.sanpham.store') }}">
+          @csrf
+          <!-- Hàng 1: Tên sản phẩm & Loại Sản Phẩm & Hãng -->
           <div class="row mb-3">
             <div class="col-4">
               <label class="form-label">Tên sản phẩm</label>
-              <input type="text" class="form-control" placeholder="Nhập tên sản phẩm">
-            </div>
-            <div class="col-4">
-              <label class="form-label">Số lượng</label>
-              <input type="number" class="form-control" placeholder="Nhập số lượng">
+              <input type="text" name="tenSanPham" class="form-control" placeholder="Nhập tên sản phẩm">
             </div>
             <div class="col-4">
               <label class="form-label">Loại sản phẩm</label>
-              <select id="" class="form-select">
-                <option selected>Chọn...</option>
+              <select id="" class="form-select" name="idLSP">
+                @foreach($listLSP as $it)
+                <option value="{{ $it->getId() }}">
+                    {{ $it->gettenLSP() }}
+                </option>
+                @endforeach
               </select>
-        
+            </div>
+            <div class="col-4">
+              <label class="form-label">Hãng</label>
+              <select id="inputCompany" name="idHang" class="form-select">
+                @foreach($listHang as $it)
+                <option value="{{ $it->getId() }}">
+                    {{ $it->gettenHang() }}
+                </option>
+                @endforeach
+              </select>
             </div>
           </div>
           
-          <!-- Hàng 2: Hãng & Mức giá -->
-          <div class="row mb-3">
-            <div class="col-4">
-              <label class="form-label">Hãng</label>
-              <select id="inputCompany" class="form-select">
-                <option selected>Choose...</option>
-
-                </option>
-              </select>
-            </div>
-            <div class="col-4">
+          <!-- Hàng 2: Thời gian bảo hành & Mức giá -->
+          <div class="row mb-3">           
+            <div class="col-6">
               <label class="form-label">Mức giá</label>
-              <input type="text" class="form-control" placeholder="Nhập mức giá">
+              <input type="text" name="donGia" class="form-control" placeholder="Nhập mức giá">
             </div>
-            <div class="col-4">
+            <div class="col-6">
               <label class="form-label">Thời gian bảo hành</label>
-              <input type="text" class="form-control" placeholder="Nhập thời gian bảo hành">
+              <input type="text" name="thoiGianBaoHanh" class="form-control" placeholder="Nhập thời gian bảo hành">
             </div>
           </div>
 
           <!-- Hàng 3: Mô tả -->
           <div class="mb-3">
             <label class="form-label">Mô tả</label>
-            <textarea class="form-control" rows="3" placeholder="Nhập mô tả"></textarea>
+            <textarea class="form-control" name="moTa" rows="3" placeholder="Nhập mô tả"></textarea>
           </div>
+          
+          <!-- Hàng 4: Ảnh sản phẩm -->
+          <!-- <div class="mb-3">
+            <label class="form-label">Ảnh sản phẩm</label>
+            <input type="file" class="form-control" accept="image/*">
+          </div> -->
           <!-- Nút Lưu -->
           <button type="submit" class="btn btn-primary">Lưu</button>
         </form>

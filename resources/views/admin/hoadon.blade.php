@@ -1,4 +1,4 @@
-@include('admin.includes.navbar')
+
 <div class="p-4 bg-light">
     <div class="col-md-12 d-flex flex-wrap align-items-center gap-3">
         <form class="d-flex flex-wrap w-100 gap-2">
@@ -34,12 +34,12 @@
             <thead class="">
                 <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">ID khách hàng</th>
-                    <th scope="col">ID nhân viên</th>
-                    <th scope="col">Tổng tiền</th>
-                    <th scope="col">ID PTTT</th>
+                    <th scope="col">Khách hàng</th>
+                    <th scope="col">Nhân viên</th>
+                    <th scope="col">PTTT</th>
                     <th scope="col">Ngày tạo</th>
-                    <th scope="col">ID DVVC</th>
+                    <th scope="col">Tổng tiền</th>
+                    <th scope="col">DVVC</th>
                     <th scope="col">Trạng thái</th>
                     <th scope="col">Hành động</th>
                 </tr>
@@ -47,12 +47,12 @@
             <tbody>
                 <tr>
                     <th scope="row">1</th>
-                    <td>Nguyễn</td>
-                    <td>Văn A</td>
-                    <td>@vana</td>
-                    <td>Nguyễn</td>
-                    <td>Văn A</td>
-                    <td>@vana</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <?php
                      
                     ?>
