@@ -72,11 +72,21 @@ class NguoiDung_DAO {
         }
         return null;
     }
-    public function insert($e): int
+    public function insert($e)
     {
         $query = "INSERT INTO NGUOIDUNG (ID, HOTEN, NGAYSINH, GIOITINH, DIACHI, IDTINH, SODIENTHOAI, CCCD, TRANGTHAIHD) VALUES (?,?,?,?,?,?,?,?,?)";
-        $args = [$e->getId(), $e->getHoTen(), $e->getNgaySinh(), $e->getGioiTinh(), $e->getDiaChi(), $e->getTinh()->getId(), $e->getSoDienThoai(), $e->getCccd(), $e->getTrangThaiHD()];
-        $rs = database_connection::executeQuery($query, ...$args);
+        $args = [
+            $e->getId(), 
+            $e->getHoTen(), 
+            $e->getNgaySinh(), 
+            $e->getGioiTinh(), 
+            $e->getDiaChi(), 
+            $e->getTinh()->getId(), 
+            $e->getSoDienThoai(), 
+            $e->getCccd(), 
+            $e->getTrangThaiHD()
+        ];
+        $rs = database_connection::executeUpdate($query, ...$args);
         return is_int($rs) ? $rs : 0;
     }
     public function update($e): int

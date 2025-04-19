@@ -29,7 +29,9 @@ use Illuminate\Support\Facades\View;
                     'current_page' => $current_page,
                     'total_page' => $total_page,
                     'isLogin' => $isLogin,
-                    'user' => $user
+                    'user' => $user,
+                    'top4Product' => $top4Product,
+                    'sanPham' => $sanPham
                 ])->render();
             ?>
         </div>

@@ -72,4 +72,10 @@ class SanPham_BUS implements BUSInterface {
     public function searchByLSPAndHang($lsp,$hang) {
         return $this->sanPhamDAO->searchByLSPAndHang($lsp,$hang);
     }
+    public function getTop4ProductWasHigestSale() {
+        return $this->sanPhamDAO->getTop4ProductWasHigestSale();
+    }
+    public function getStock($idPd) {
+        return $this->sanPhamDAO->getStock($idPd);
+    }
 }

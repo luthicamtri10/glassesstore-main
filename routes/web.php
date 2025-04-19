@@ -33,6 +33,7 @@ Route::get('/', function() {
     $listSP = $sanPham->getAllModelsActive();
     $listLSP = $lsp->getAllModels();
     $listHang = $hang->getAllModels();
+    $top4Product = $sanPham->getTop4ProductWasHigestSale();
     if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
         $keyword = $_GET['keyword'];
         $listSP = $sanPham->searchModel($keyword, []);
@@ -79,11 +80,14 @@ Route::get('/', function() {
         'current_page' => $current_page,
         'total_page' => $total_page,
         'isLogin' => $isLogin,
-        'user' => $user
+        'user' => $user,
+        'top4Product' => $top4Product,
+        'sanPham' => $sanPham
     ]);
 }); 
 Route::view('/index', 'client.index'); 
 Route::view('/login', 'client.Login-Register');
+Route::view('/yourcart', 'client.userCart');
 Route::get('/register', function() {
     $listTinh = app(Tinh_BUS::class)->getAllModels();
     $nguoidung = null;
@@ -97,7 +101,6 @@ Route::get('/register', function() {
     } 
     return view('client.Register', [
         'listTinh' => $listTinh,
-        'nguoidung' => $nguoidung
     ]);
 });
 Route::view('/admin', 'layout.admin');
@@ -132,30 +135,6 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
     }
 })->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-// Route::post('/chechExistingUserBySDT', function (Request $request) {
-//     $sdt = $request->query('sdt');
-//     $nd = app(NguoiDung_BUS::class)->getModelBySDT($sdt);
-
-//     if ($nd != null) {
-//         return response()->json([
-//             'exists' => true,
-//             'data' => [
-//                 'ho_ten' => $nd->getHoTen(),
-//                 'gioi_tinh' => $nd->getGioiTinh(),
-//                 'ngay_sinh' => $nd->getNgaySinh(),
-//                 'dia_chi' => $nd->getDiaChi(),
-//                 'tinh' => $nd->getTinh()->getTenTinh(), // ví dụ: Tinh cũng là object, phải gọi getter
-//                 'sodienthoai' => $nd->getSoDienThoai(),
-//                 'cccd' => $nd->getCccd()
-//             ]
-//         ]);
-//     } else {
-//         return response()->json([
-//             'exists' => false,
-//         ]);
-//     }
-// })->name('chechExistingUserBySDT');
-
-
+Route::post('/register/register', [AuthController::class, 'register'])->name('register.register');
 
 ?>

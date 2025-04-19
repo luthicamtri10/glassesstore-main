@@ -49,4 +49,7 @@ class SanPhamController extends Controller
         $this->sanPhamBUS->deleteModel($id);
         return redirect()->route('sanpham.index')->with('success', 'Xóa sản phẩm thành công!');
     }
+    public function stock(Request $request) {
+        
+    } 
 }

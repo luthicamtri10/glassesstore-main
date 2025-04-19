@@ -19,7 +19,7 @@
       const keywordInput = searchForm.querySelector('#keyword');
       const lspSelect = searchForm.querySelector('select[name="lsp"]');
       const hangSelect = searchForm.querySelector('select[name="hang"]')
-      if (keywordInput && keywordInput.value.trim()) {
+      if ((keywordInput && keywordInput.value.trim()) && (keywordInput && keywordInput.value.trim())) {
         currentUrl.searchParams.set('keyword', keywordInput.value.trim());
         currentUrl.searchParams.delete('lsp');
         currentUrl.searchParams.delete('hang');
@@ -77,13 +77,16 @@
       
       const modal = document.querySelector('#productDetailModal');
       if (!modal) return;
-      modal.querySelector('input[name="tensp"]').value = this.dataset.tensp;
-      modal.querySelector('input[name="hang"]').value = this.dataset.hang;
-      modal.querySelector('select[name="lsp"]').value = this.dataset.lsp;
-      modal.querySelector('select[name="mota"]').value = this.dataset.mota;
-      modal.querySelector('select[name="dongia"]').value = this.dataset.dongia;
-      modal.querySelector('select[name="tgbh"]').value = this.dataset.thbh;
-      modal.querySelector('img[name="img"]').src = this.dataset.img;
+
+      modal.querySelector('div[name="tensp"]').textContent = productDiv.dataset.tensp;
+      modal.querySelector('div[name="hang"]').textContent = productDiv.dataset.hang;
+      modal.querySelector('div[name="lsp"]').textContent = productDiv.dataset.lsp;
+      modal.querySelector('div[name="mota"]').textContent = productDiv.dataset.mota;
+      modal.querySelector('div[name="dongia"]').textContent = productDiv.dataset.dongia;
+      modal.querySelector('div[name="tgbh"]').textContent = productDiv.dataset.tgbh;
+      modal.querySelector('img[name="img"]').src = productDiv.dataset.img;
+      modal.querySelector('div[name="stock"]').textContent = productDiv.dataset.stock;
+
       // Hiển thị modal
       document.getElementById("productDetailModal").style.display = "block";
     });
@@ -125,15 +128,19 @@
         </ul>
       </div>
       <div class="navbar text-white navbar-expand" id="navbar">
-        <a href="" class="navbar-brand">Logo</a>
-        <form action="" method="get" role="search">
-          <ul class="navbar-nav gap-5">
-            <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a></li>
-            <li class="nav-item fw-medium d-flex"><a href="#" class="nav-link text-white">Tìm Cửa Hàng<i class="fa-regular fa-location-dot fa-bounce"></i></a> </li>
-            <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}"><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555;"></i></li>
-            <li class="nav-item fw-medium my-2" id="item-xemthem"><a href="" class="nav-link text-white">Xem Thêm <i class="fa-regular fa-angle-up"></i></a></li>
-            <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li>
-            <li class="nav-item fw-medium my-2" id="item-giohang"><a href="#" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;"><small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small></i></a></li>
+      <a href="" class="navbar-brand">
+        <img src="https://img.ws.mms.shopee.vn/vn-11134216-7r98o-lq2sgdy60w5uba" 
+            alt="Logo" 
+            class="img-fluid rounded-5" 
+            style="height: 40px;">
+      </a>
+        <form action="" method="get" role="search" class="w-100">
+          <ul class="d-flex justify-content-center gap-5 w-100 pt-4" >
+            <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="#product" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a></li>
+            <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}"><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555; padding: 10px"></i></li>
+            <!-- <li class="nav-item fw-medium my-2" id="item-xemthem"><a href="" class="nav-link text-white">Xem Thêm <i class="fa-regular fa-angle-up"></i></a></li> -->
+            <!-- <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li> -->
+            <li class="nav-item fw-medium my-2" id="item-giohang"><a href="/yourcart" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;"><small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small></i></a></li>
           </ul>
         </form>
         
@@ -151,55 +158,48 @@
 
     <div class="main justify-content-center d-flex">
       <div class="best-seller text-center">
-        <h1 class="text-start" style="width: fit-content; ;padding: 15px 0 10px;color: #55d5d2; border-bottom: solid 5px #55d5d2;margin-right: auto; font-family: Roboto;">BÁN CHẠY NHẤT</h1>
+        <h1 class="text-start" style="width: fit-content; ;color: #55d5d2; border-bottom: solid 5px #55d5d2;margin-right: auto; font-family: Roboto;">BÁN CHẠY NHẤT</h1>
         <div class="row my-5" style="max-height: 380px;display: flex;">
-          <div class="col-3 item-product">
-            <div class="img-product">
-            <img src="{{ asset('client/img/sanpham.jpeg') }}" class="img-fluid w-100" alt="">
-
-            </div>
-            <div class="info-product ">
-              <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-              <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-            </div>
-            <div class="" style="height: 80px; width: 100%;"></div>
-          </div>
-          <div class="col-3 item-product">
-            <div class="img-product">
-            <img src="{{ asset('client/img/sanpham.jpeg') }}" class="img-fluid w-100" alt="">
-            </div>
-            <div class="info-product ">
-              <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-              <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-            </div>
-            <div class="" style="height: 80px; width: 100%;"></div>
-          </div>
-          <div class="col-3 item-product">
-            <div class="img-product">
-            <img src="{{ asset('client/img/sanpham.jpeg') }}" class="img-fluid w-100" alt="">
-            </div>
-            <div class="info-product ">
-              <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-              <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-            </div>
-            <div class="" style="height: 80px; width: 100%;"></div>
-          </div>
-          <div class="col-3 item-product">
-            <div class="img-product">
-            <img src="{{ asset('client/img/sanpham.jpeg') }}" class="img-fluid w-100" alt="">
-            </div>
-            <div class="info-product ">
-              <div class="name-product">GK.M GỌNG NHỰA AN221393 (50.18.145)</div>
-              <div class="price-product" style="position: relative;">350.000đ <i class="fa-solid fa-arrow-up-right icon-arrow"></i></div>
-            </div>
-            <div class="" style="height: 80px; width: 100%;"></div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 my-5 w-100">
+              @foreach($top4Product as $sp)
+                @php
+                  $stock = $sanPham->getStock($sp->getId());
+                @endphp
+                <div class="col rounded-5 product"
+                    data-stock="{{ $stock }}"
+                    data-tensp="{{ $sp->getTenSanPham() }}"
+                    data-hang="{{ $sp->getIdHang()->getTenHang() }}"
+                    data-lsp="{{ $sp->getIdLSP()->getTenLSP() }}"
+                    data-mota="{{ $sp->getMoTa() }}"
+                    data-dongia="{{ number_format($sp->getDonGia(), 0, ',', '.') }}₫"
+                    data-tgbh="{{ $sp->getThoiGianBaoHanh() }}"
+                    data-img="productImg/{{ $sp->getId() }}.webp"
+                    data-bs-toggle="modal"
+                    data-bs-target="#productDetailModal"
+                >
+                  <div class="card shadow-sm border-0 h-100 col rounded-5 product-item">
+                    <div class="ratio ratio-1x1">
+                      <img src="productImg/{{ $sp->getId() }}.webp" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
+                    </div>
+                    <div class=" card-body d-flex flex-column justify-content-between h-60 p-3">
+                      <h6 class="card-title text-truncate text-center w-100" title="{{ $sp->getTenSanPham() }}">{{ $sp->getTenSanPham() }}</h6>
+                      <div class="d-flex align-items-center justify-content-between mt-auto rounded-4 bg-blue-500">
+                        <span class="fw-bold text-primary fs-5 text-center w-100 text-white rounded-4 flex justify-center p-2" style="background-color: #55d5d2;height: 50px;">
+                          {{ number_format($sp->getDonGia(), 0, ',', '.') }}₫
+                        </span>
+                        <i class="fa-solid fa-arrow-up-right text-success"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            @endforeach
           </div>
         </div>
 
       </div>
 
     </div>
-    <div class="banner-small ">
+    <div class="banner-small " style="margin-top: 150px;">
       <div class="bnsm"><img src="client/img/small-banner1.png" class="img-fluid w-100"></div>
       <div class="bnsm"><img src="client/img/small-banner2.png" class="img-fluid w-100"></div>
     </div>
@@ -278,7 +278,7 @@
             </ul>
           </div>
         </div>
-        <div class="dmsp w-100">
+        <div class="dmsp w-100" id="product">
           <div class="container-rows" style="width: 100%;display: block;" id="product-list">
           @if(empty($listSP))
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 my-5 w-100">
@@ -289,13 +289,17 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 my-5 w-100">
               @foreach($listSP as $sp)
                 @if($count++ >= 8) @break @endif
+                @php
+                  $stock = $sanPham->getStock($sp->getId());
+                @endphp
                 <div class="col rounded-5 product"
+                    data-stock="{{ $stock }}"
                     data-tensp="{{ $sp->getTenSanPham() }}"
                     data-hang="{{ $sp->getIdHang()->getTenHang() }}"
                     data-lsp="{{ $sp->getIdLSP()->getTenLSP() }}"
                     data-mota="{{ $sp->getMoTa() }}"
-                    data-dongia="{{ $sp->getDonGia() }}"
-                    data-thbg="{{ $sp->getThoiGianBaoHanh() }}"
+                    data-dongia="{{ number_format($sp->getDonGia(), 0, ',', '.') }}₫"
+                    data-tgbh="{{ $sp->getThoiGianBaoHanh() }}"
                     data-img="productImg/{{ $sp->getId() }}.webp"
                     data-bs-toggle="modal"
                     data-bs-target="#productDetailModal"
@@ -471,26 +475,42 @@
   </footer>
 
   <!-- modal chi tiết sản phẩm -->
-  <div class="modal fade" id="productDetailModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg"> <!-- modal-lg để modal to hơn -->
+  <div class="modal fade " id="productDetailModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl"> <!-- modal-lg để modal to hơn -->
+    <form action="" method="get" >
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="userModalLabel">Thông tin sản phẩm</h5>
+        <h5 class="modal-title text-center" id="userModalLabel">Thông tin sản phẩm</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body d-flex flex-column mb-3">
-        <div class="p-3 d-flex flex-row" style="height: 80%; background-color: #55d5d2;">
-          <div class="" style="width: 30%; background-color: blue;">
+        <div class="p-3 d-flex flex-row" style="height: 80%">
+          <div class="" style="width: 30%; ">
           <div class="ratio ratio-1x1">
-            <img name="img" src="" alt="Product Image" />
+            <img name="img" src="" alt="Product Image" class="rounded" />
           </div>
           </div>
-          <div class="" style="width: 70%;background-color: coral;">xeyo</div>
+          <div class="p-2 d-flex flex-column gap-2" style="width: 70%;">
+            <div class="rounded-5 p-1 fw-semibold bg-primary-subtle" style="width: 120px;font-size: small;text-align: center;" name="lsp"></div>
+            <div class="fs-3 fw-semibold" name="tensp" id=""></div>
+            <div class="fs-2 fw-bold" style="color: #55d5d2;" name="dongia"></div>
+            <div class="fs-6 fw-semibold d-flex flex-row gap-3 align-center" style="color: #413f3f;">Thương hiệu: <div class=" fw-bold" style="color: red;" name="hang"></div></div>
+            <div class="fs-6 fw-semibold d-flex flex-row gap-3 align-center" style="color: #413f3f;">Mô tả: <div name="mota"></div></div>
+            <div class="fs-6 fw-semibold d-flex flex-row gap-3 align-center" style="color: #413f3f;">Thời gian bảo hành: <div name="tgbh"></div></div>
+            <div class="fs-6 fw-semibold d-flex flex-row gap-3 align-center" style="color: #413f3f;">Số lượng tồn kho: <div name="stock"> </div></div>
+            
+          </div>
         </div>
-        <div class="p-5" style="height: 20%; background-color: aquamarine;">BYE</div>
+        <div class="p-5 d-flex flex-row-reverse gap-5" style="height: 20%;">
+          <button type="button" class="btn btn-danger" style="width: 150px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
+          <button type="button" class="btn btn-light" style="width: 200px;">Thêm vào giỏ hàng</button>
+          <button type="button" class="btn btn-light" style="width: 150px;">Mua ngay</button>
+          
+        </div>
       </div>
       
     </div>
+    </form>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
