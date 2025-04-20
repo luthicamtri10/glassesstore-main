@@ -7,49 +7,40 @@ use function Laravel\Prompts\error;
 
 class PTTT_BUS implements BUSInterface {
     private $PTTTList = array();
+    private $ptttDAO;
 
-    public function __construct() {
+    public function __construct(PTTT_DAO $ptttDAO) {
+        
+        $this->ptttDAO = $ptttDAO;
         $this->refreshData();
     }
 
     public function refreshData(): void {
-        $this->PTTTList = app(PTTT_DAO::class)->getAll();
+        $this->PTTTList = $this->ptttDAO->getAll();
     }
 
-    public function getAllModels(): array {
+    public function getAllModels() {
         return $this->PTTTList;
     }
 
     public function getModelById($id) {
-        return app(PTTT_DAO::class)->getById($id);
+        return $this->ptttDAO->getById($id);
     }
 
     public function addModel($model) {
-        if ($model == null) {
-            error("Error when adding a PTTT");
-            return;
-        }
-        return app(PTTT_DAO::class)->insert($model);
+        return $this->ptttDAO->insert($model);
     }
 
     public function updateModel($model) {
-        if ($model == null) {
-            error("Error when updating a PTTT");
-            return;
-        }
-        return app(PTTT_DAO::class)->update($model);
+        return $this->ptttDAO->update($model);
     }
 
     public function deleteModel($id) {
-        if ($id == null || $id == "") {
-            error("Error when deleting a PTTT");
-            return;
-        }
-        return app(PTTT_DAO::class)->delete($id);
+        return $this->ptttDAO->delete($id);
     }
 
     public function searchModel(string $value, array $columns) {
-        $list = app(PTTT_DAO::class)->search($value, $columns);
+        $list = $this->ptttDAO->search($value, $columns);
         if (count($list) > 0) {
             return $list;
         } else {

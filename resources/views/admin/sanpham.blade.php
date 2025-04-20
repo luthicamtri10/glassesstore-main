@@ -71,8 +71,8 @@
                 <tr>
                   <td>{{ $sanPham->getId() }}</td>
                   <td>{{ $sanPham->getTenSanPham() }}</td>
-                  <td>{{ $mapTenHang[$sanPham->getIdHang()->getId()]}}</td>
-                  <td>{{ $mapTenLoaiSP[$sanPham->getIdLSP()->getId()]}}</td>  
+                  <td>{{ $mapTenHang[$sanPham->getIdHang()->getId()] }}</td>
+                  <td>{{ $mapTenLoaiSP[$sanPham->getIdLSP()->getId()] }}</td>  
                   <td>{{ number_format($sanPham->getDonGia()) }} VNĐ</td>
                   <td>{{ $sanPham->getThoiGianBaoHanh() }} tháng</td>
                   <td>{{ Str::limit($sanPham->getMoTa(), 50) }}</td>

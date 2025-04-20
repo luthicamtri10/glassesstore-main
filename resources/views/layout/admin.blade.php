@@ -18,10 +18,13 @@
         @include('admin.includes.navbar')
             <?php
 
+use App\Bus\DVVC_BUS;
 use App\Bus\Hang_BUS;
+use App\Bus\HoaDon_BUS;
 use App\Bus\LoaiSanPham_BUS;
 use App\Bus\NguoiDung_BUS;
-                use App\Bus\Quyen_BUS;
+use App\Bus\PTTT_BUS;
+use App\Bus\Quyen_BUS;
 use App\Bus\SanPham_BUS;
 use App\Bus\TaiKhoan_BUS;
                 use App\Bus\Tinh_BUS;
@@ -183,7 +186,50 @@ use App\Bus\TaiKhoan_BUS;
                         ])->render();
                         break;
                     case 'hoadon':
-                        include base_path('resources/views/admin/hoadon.blade.php');
+                        $hoaDonBUS = app(HoaDon_BUS::class);
+                        $listHoaDon = $hoaDonBUS->getAllModels();
+                        $nguoiDungBUS = app(NguoiDung_BUS::class);
+                        $listNguoiDung = $nguoiDungBUS->getAllModels();
+                        $pttBUS = app(PTTT_BUS::class);
+                        $listpttt = $pttBUS->getAllModels();
+                        $dvvcBUS = app(DVVC_BUS::class);
+                        $listdvvc = $dvvcBUS->getAllModels();
+
+                        $mapNguoiDung = [];
+                        foreach ($listNguoiDung as $nguoiDung){
+                            $mapNguoiDung[$nguoiDung->getId()] = $nguoiDung->getHoTen();
+                        }
+
+                        $mapPTTT = [];
+                        foreach ($listpttt as $pttt) {
+                            $mapPTTT[$pttt->getId()] = $pttt->gettenPTTT();
+                        }
+
+                        $mapDVVC = [];
+                        foreach ($listdvvc as $dvvc) {
+                            $mapPTTT[$dvvc->getIdDVVC()] = $dvvc->getTenDV();
+                        }
+
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($listHoaDon ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if(empty($listHoaDon)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listHoaDon, $start, $limit);            
+                        }
+                        
+                        echo FacadesView::make('admin.hoadon', [
+                            'listHoaDon' => $tmp,
+                            'mapNguoiDung' => $mapNguoiDung, 
+                            'mapPTTT' => $mapPTTT,
+                            'mapDVVC' => $mapDVVC,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page
+                        ])->render();
                         break;
                     default:
                         include base_path('resources/views/admin/nguoidung.blade.php');

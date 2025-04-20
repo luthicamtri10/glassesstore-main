@@ -4,10 +4,9 @@ namespace App\Models;
 
 class SanPham
 {
-    private $id, $tenSanPham;
+    private $id, $tenSanPham, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD;
     private Hang $idHang;
     private LoaiSanPham $idLSP;
-    private $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD;
 
     public function __construct($id = null, $tenSanPham,Hang $idHang,LoaiSanPham $idLSP, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD)
     {
