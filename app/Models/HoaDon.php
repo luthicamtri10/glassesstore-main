@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use App\Enum\HoaDonEnum;
+
 class HoaDon
 {
-    private $id, $idKhachHang, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $trangThai;
+    private $id, $tongTien, $ngayTao, $idDVVC;
+    private NguoiDung $idKhachHang, $idNhanVien;
+    private PTTT $idPTTT;
+    private HoaDonEnum $trangThai;
 
-    public function __construct($id, $idKhachHang, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $trangThai)
+    public function __construct($id = null, $idKhachHang, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC,HoaDonEnum $trangThai)
     {
         $this->id = $id;
         $this->idKhachHang = $idKhachHang;
@@ -101,7 +106,7 @@ class HoaDon
          return $this->trangThai;
      }
  
-     public function setTrangThai($trangThai)
+     public function setTrangThai(HoaDonEnum $trangThai)
      {
          $this->trangThai = $trangThai;
      }
