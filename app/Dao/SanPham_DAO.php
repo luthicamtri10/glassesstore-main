@@ -22,7 +22,7 @@ class SanPham_DAO implements DAOInterface{
     }
 
     public function getById($id) {
-        $query = "SELECT * FROM sanpham WHERE email = ?";
+        $query = "SELECT * FROM sanpham WHERE ID = ?";
         $result = database_connection::executeQuery($query, $id);
         if($result->num_rows > 0) {
             $row = $result->fetch_assoc();

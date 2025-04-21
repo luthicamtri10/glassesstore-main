@@ -4,111 +4,98 @@ namespace App\Bus;
 use App\Dao\PhieuNhap_DAO;
 use App\Interface\BUSInterface;
 use App\Models\PhieuNhap;
-use InvalidArgumentException;
+use App\Dao\CTPN_DAO;
+use PhpParser\Node\Stmt\Echo_;
+
+use function Laravel\Prompts\error;
 
 class PhieuNhap_BUS implements BUSInterface
 {
-    private array $phieuNhapList = [];
-    private PhieuNhap_DAO $dao;
+    private $phieuNhapList = array();
+    private static $instance;
+    private $ctpnDAO;
 
-    /**
-     * Khởi tạo với DAO được inject
-     */
+    public static function getInstance()
+    {
+        if (self::$instance == null) {
+            self::$instance = new PhieuNhap_BUS();
+        }
+        return self::$instance;
+    }
+
     public function __construct()
     {
-        $this->dao = app(PhieuNhap_DAO::class);
+        $this->ctpnDAO = CTPN_DAO::getInstance();
         $this->refreshData();
     }
 
-    /**
-     * Làm mới dữ liệu từ DAO
-     */
     public function refreshData(): void
     {
-        $this->phieuNhapList = $this->dao->getAll();
+        $this->phieuNhapList = PhieuNhap_DAO::getInstance()->getAll();
+        // if (!empty($this->phieuNhapList)) {
+        //     foreach ($this->phieuNhapList as $phieuNhap) {
+        //         $chiTiet = $this->ctpnDAO->getByPhieuNhapId($phieuNhap->getId());
+        //         $phieuNhap->setChiTietPhieuNhap($chiTiet);
+        //     }
+        // }
     }
 
-    /**
-     * Lấy tất cả mô hình PhieuNhap
-     */
     public function getAllModels(): array
     {
         return $this->phieuNhapList;
     }
 
-    /**
-     * Lấy mô hình theo ID
-     */
-    public function getModelById($id): ?PhieuNhap
+    public function getModelById(int $id)
     {
-        if (empty($id)) {
-            throw new InvalidArgumentException("ID không được để trống");
-        }
-        return $this->dao->getById($id);
+        $phieuNhap = PhieuNhap_DAO::getInstance()->getById($id);
+        // if ($phieuNhap) {
+        //     $chiTiet = $this->ctpnDAO->getByPhieuNhapId($id);
+        //     $phieuNhap->setChiTietPhieuNhap($chiTiet);
+        // }
+        return $phieuNhap;
     }
 
-    /**
-     * Thêm một mô hình PhieuNhap
-     */
-    public function addModel($model): int
+    public function addModel($model)
     {
-        if (!$model instanceof PhieuNhap) {
-            throw new InvalidArgumentException("Model phải là instance của PhieuNhap");
+        if ($model == null) {
+            error("Error when adding a PhieuNhap");
+            return;
         }
-
-        $result = $this->dao->insert($model);
-        if ($result > 0) {
-            $this->refreshData(); // Cập nhật danh sách sau khi thêm
-        }
-        return $result;
+        return PhieuNhap_DAO::getInstance()->insert($model);
     }
 
-    /**
-     * Cập nhật một mô hình PhieuNhap
-     */
-    public function updateModel($model): int
+    public function updateModel($model)
     {
-        if (!$model instanceof PhieuNhap) {
-            throw new InvalidArgumentException("Model phải là instance của PhieuNhap");
+        if ($model == null) {
+            error("Error when updating a PhieuNhap");
+            return;
         }
-
-        $result = $this->dao->update($model);
-        if ($result > 0) {
-            $this->refreshData(); // Cập nhật danh sách sau khi sửa
-        }
-        return $result;
+        return PhieuNhap_DAO::getInstance()->update($model);
     }
 
-    /**
-     * Xóa một mô hình PhieuNhap
-     */
-    public function deleteModel($id): int
+    public function deleteModel(int $id)
     {
-        if (empty($id)) {
-            throw new InvalidArgumentException("ID không được để trống");
+        if ($id == null || $id == "") {
+            error("Error when deleting a PhieuNhap");
+            return;
         }
-
-        $result = $this->dao->delete($id);
-        if ($result > 0) {
-            $this->refreshData(); // Cập nhật danh sách sau khi xóa
-        }
-        return $result;
+        return PhieuNhap_DAO::getInstance()->delete($id);
     }
 
-    /**
-     * Tìm kiếm mô hình theo giá trị và cột
-     */
-    public function searchModel(string $value, array $columns): array
+    public function searchModel(string $value, array $columns)
     {
-        if (empty($value)) {
-            throw new InvalidArgumentException("Giá trị tìm kiếm không được để trống");
+        $list = PhieuNhap_DAO::getInstance()->search($value, $columns);
+        if (count($list) > 0) {
+            return $list;
+        } else {
+            echo "Not found";
         }
-
-        $list = $this->dao->search($value, $columns);
-        if (empty($list)) {
-            return []; // Trả về mảng rỗng thay vì null khi không tìm thấy
-        }
-        return $list;
+        return null;
+    }
+    public function populationChiTietPhieuNhaps($phieuNhap) {
+        $chiTietPhieuNhaps = $this->ctpnDAO->getByPhieuNhapId($phieuNhap->getId());
+        $phieuNhap->setChiTietPhieuNhaps($chiTietPhieuNhaps);
+        return $phieuNhap;
     }
 }
 ?>

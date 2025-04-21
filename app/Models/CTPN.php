@@ -4,7 +4,8 @@ namespace App\Models;
 
 class CTPN
 {
-    private $idPN, $idSP, $soLuong, $giaNhap, $phanTramLN;
+    private $idPN, $idSP, $soLuong, $giaNhap, $phanTramLN, $donGia;
+    private $sanPham;
 
     public function __construct($idPN, $idSP, $soLuong, $giaNhap, $phanTramLN)
     {
@@ -13,6 +14,8 @@ class CTPN
         $this->soLuong = $soLuong;
         $this->giaNhap = $giaNhap;
         $this->phanTramLN = $phanTramLN;
+        $this->donGia = $giaNhap; // Initialize donGia with giaNhap
+        $this->sanPham = null; // Initialize sanPham as null
     }
 
     // Getters
@@ -41,6 +44,16 @@ class CTPN
         return $this->phanTramLN;
     }
 
+    public function getDonGia(): float
+    {
+        return (float)$this->donGia;
+    }
+
+    public function getSanPham()
+    {
+        return $this->sanPham;
+    }
+
     // Setters
     public function setIdPN($idPN)
     {
@@ -60,10 +73,24 @@ class CTPN
     public function setGiaNhap($giaNhap)
     {
         $this->giaNhap = $giaNhap;
+        $this->donGia = $giaNhap; // Update donGia when giaNhap changes
     }
 
     public function setPhanTramLN($phanTramLN)
     {
         $this->phanTramLN = $phanTramLN;
     }
+
+    public function setDonGia(float $donGia): void
+    {
+        $this->donGia = $donGia;
+    }
+
+    public function setSanPham($sanPham)
+    {
+        $this->sanPham = $sanPham;
+    }
 }
+    
+
+

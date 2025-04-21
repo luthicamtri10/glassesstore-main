@@ -5,13 +5,14 @@ namespace App\Bus;
 use App\Dao\CTPN_DAO;
 use App\Dao\CTSP_DAO;
 use App\Dao\SanPham_DAO;
+use App\Interface\BUSInterface;
 use App\Models\CTPN;
 use App\Models\CTSP;
 use App\Models\SanPham;
 use App\Services\database_connection;
 use function Laravel\Prompts\error;
 
-class CTPN_BUS
+class CTPN_BUS implements BUSInterface
 {
     private $ctpnDAO;
     private $ctspDAO;
@@ -49,6 +50,29 @@ class CTPN_BUS
         if ($sanPham) {
             $sanPham->setDonGia($giaBanMoi);
             $this->sanPhamDAO->update($sanPham);
+        }
+    }
+
+    public function getAllModels(): array {
+        try {
+            return $this->ctpnDAO->readDatabase();
+        } catch (\Exception $e) {
+            error_log("Error getting purchase order details: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getModelById(int $id) {
+        try {
+            // Split the ID into IDPN and IDSP
+            $ids = explode('_', $id);
+            if (count($ids) !== 2) {
+                return null;
+            }
+            return $this->ctpnDAO->getById($ids[0], $ids[1]);
+        } catch (\Exception $e) {
+            error_log("Error getting purchase order detail: " . $e->getMessage());
+            return null;
         }
     }
 
@@ -96,12 +120,12 @@ class CTPN_BUS
         }
     }
 
-    public function getAllModels() {
+    public function deleteModel(int $id): int {
         try {
-            return $this->ctpnDAO->readDatabase();
+            return $this->ctpnDAO->delete($id);
         } catch (\Exception $e) {
-            error_log("Error getting purchase order details: " . $e->getMessage());
-            return [];
+            error_log("Error deleting purchase order detail: " . $e->getMessage());
+            return -1;
         }
     }
 
@@ -113,6 +137,24 @@ class CTPN_BUS
         }
     }
 
+    public function searchModel(string $value, array $columns): array {
+        try {
+            return $this->ctpnDAO->search($value, $columns);
+        } catch (\Exception $e) {
+            error_log("Error searching purchase order details: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getByPhieuNhapId($idPN): array {
+        try {
+            return $this->ctpnDAO->getByPhieuNhapId($idPN);
+        } catch (\Exception $e) {
+            error_log("Error getting purchase order details by ID: " . $e->getMessage());
+            return [];
+        }
+    }
+
     /**
      * Get all purchase order details
      * @return array
@@ -120,37 +162,6 @@ class CTPN_BUS
     public function getAll()
     {
         return $this->ctpnDAO->getAll();
-    }
-
-    /**
-     * Get purchase order details by ID
-     * @param int $idPN
-     * @param int $idSP
-     * @return CTPN|null
-     */
-    public function getById($idPN, $idSP)
-    {
-        try {
-            return $this->ctpnDAO->getById($idPN, $idSP);
-        } catch (\Exception $e) {
-            error_log("Error getting purchase order detail: " . $e->getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Get purchase order details by purchase order ID
-     * @param int $idPN
-     * @return array
-     */
-    public function getByPhieuNhapId($idPN)
-    {
-        try {
-            return $this->ctpnDAO->getByPhieuNhapId($idPN);
-        } catch (\Exception $e) {
-            error_log("Error getting purchase order details by ID: " . $e->getMessage());
-            return [];
-        }
     }
 
     /**
@@ -173,23 +184,6 @@ class CTPN_BUS
     public function update($idPN, $idSP, $data)
     {
         return $this->ctpnDAO->update($data);
-    }
-
-    /**
-     * Delete purchase order detail
-     * @param int $idPN
-     * @param int $idSP
-     * @return int
-     */
-    public function delete($idPN, $idSP)
-    {
-        try {
-            $id = $idPN . '_' . $idSP;
-            return $this->ctpnDAO->delete($id);
-        } catch (\Exception $e) {
-            error_log("Error deleting purchase order detail: " . $e->getMessage());
-            return -1;
-        }
     }
 
     /**
@@ -227,5 +221,11 @@ class CTPN_BUS
             error_log("Error calculating total amount: " . $e->getMessage());
             return 0;
         }
+    }
+    public function populationSanPham($CTPN) {
+        $idSP = $CTPN->getIdSP();
+        $sanPham = $this->sanPhamDAO->getById($idSP);
+        $CTPN->setSanPham($sanPham);
+        return $CTPN;
     }
 }

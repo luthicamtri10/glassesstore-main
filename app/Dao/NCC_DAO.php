@@ -31,9 +31,9 @@ class NCC_DAO implements DAOInterface
 
     public function getById($id)
     {
-        $query = "SELECT * FROM NCC WHERE idNCC = ?";
+        $query = "SELECT * FROM NCC WHERE ID = ?";
         $result = database_connection::executeQuery($query, $id);
-        if ($result->num_rows > 0) {
+        if ($result && $result->num_rows > 0) {
             $row = $result->fetch_assoc();
             return $this->createNCCModel($row);
         }
@@ -42,22 +42,22 @@ class NCC_DAO implements DAOInterface
 
     public function insert($model): int
     {
-        $query = "INSERT INTO NCC (TENNCC, sdtNCC, diachi, trangthaiHD) VALUES (?, ?, ?, ?)";
-        $args = [$model->getTENNCC(), $model->getSdtNCC(), $model->getDiachi(), $model->getTrangthaiHD()];
-        return database_connection::executeQuery($query, ...$args);
+        $query = "INSERT INTO NCC (TENNCC, SODIENTHOAI, DIACHI, MOTA, TRANGTHAIHD) VALUES (?, ?, ?, ?, ?)";
+        $args = [$model->getTenNCC(), $model->getSdtNCC(), $model->getDiachi(), $model->getMoTa(), $model->getTrangthaiHD()];
+        return database_connection::executeUpdate($query, ...$args);
     }
 
     public function update($model): int
     {
-        $query = "UPDATE NCC SET TENNCC = ?, sdtNCC = ?, diachi = ?, trangthaiHD = ? WHERE idNCC = ?";
-        $args = [$model->getTENNCC(), $model->getSdtNCC(), $model->getDiachi(), $model->getTrangthaiHD(), $model->getIdNCC()];
-        return database_connection::executeQuery($query, ...$args);
+        $query = "UPDATE NCC SET TENNCC = ?, SODIENTHOAI = ?, DIACHI = ?, MOTA = ?, TRANGTHAIHD = ? WHERE ID = ?";
+        $args = [$model->getTenNCC(), $model->getSdtNCC(), $model->getDiachi(), $model->getMoTa(), $model->getTrangthaiHD(), $model->getIdNCC()];
+        return database_connection::executeUpdate($query, ...$args);
     }
 
     public function delete($id): int
     {
-        $query = "DELETE FROM NCC WHERE idNCC = ?";
-        return database_connection::executeQuery($query, $id);
+        $query = "DELETE FROM NCC WHERE ID = ?";
+        return database_connection::executeUpdate($query, $id);
     }
 
     public function search($value, $columns): array
@@ -85,6 +85,7 @@ class NCC_DAO implements DAOInterface
             $row['TRANGTHAIHD']
         );
     }
+
     public function readDatabase(): array
     {
         return $this->getAll();

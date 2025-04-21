@@ -15,6 +15,8 @@ use App\Http\Controllers\SanPhamController;
 use App\Http\Controllers\TaiKhoanController;
 use App\Http\Controllers\NccController;
 use App\Http\Controllers\DonViVanChuyenController;
+use App\Http\Controllers\PhieuNhapController;
+use App\Bus\CPVC_BUS;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -116,6 +118,16 @@ Route::post('/admin/nguoidung/controldelete', [NguoiDungController::class, 'cont
 Route::post('/admin/donvivanchuyen/store', [DonViVanChuyenController::class, 'store'])->name('admin.donvivanchuyen.store');
 Route::post('/admin/donvivanchuyen/update', [DonViVanChuyenController::class, 'update'])->name('admin.donvivanchuyen.update');
 Route::post('/admin/donvivanchuyen/controldelete', [DonViVanChuyenController::class, 'controlDelete'])->name('admin.donvivanchuyen.controlDelete');
+
+
+Route::post('/admin/nhacungcap/controldelete', [NccController::class, 'controlDelete'])->name('admin.nhacungcap.controlDelete');
+Route::post('/admin/nhacungcap/store', [NccController::class, 'store'])->name('admin.nhacungcap.store');
+Route::post('/admin/nhacungcap/update', [NccController::class, 'update'])->name('admin.nhacungcap.update');
+
+Route::post('/admin/chiphivanchuyen/store', [CPVC_BUS::class, 'store'])->name('admin.chiphivanchuyen.store');
+Route::post('/admin/chiphivanchuyen/update', [CPVC_BUS::class, 'update'])->name('admin.chiphivanchuyen.update');
+Route::post('/admin/chiphivanchuyen/controldelete', [CPVC_BUS::class, 'controlDelete'])->name('admin.chiphivanchuyen.controlDelete');
+
 use App\Http\Controllers\AuthController;
 
 Route::post('/login', function (\Illuminate\Http\Request $request) {
@@ -212,5 +224,12 @@ Route::prefix('admin')->group(function () {
     
 });
 
+// Routes for purchase order management
+Route::prefix('admin')->group(function () {
+    Route::get('/phieunhap', [PhieuNhapController::class, 'index'])->name('admin.phieunhap.index');
+    Route::post('/phieunhap', [PhieuNhapController::class, 'store'])->name('admin.phieunhap.store');
+    Route::get('/phieunhap/search', [PhieuNhapController::class, 'search'])->name('admin.phieunhap.search');
+    Route::get('/phieunhap/{id}/chitiet', [PhieuNhapController::class, 'getChiTiet'])->name('admin.phieunhap.chitiet');
+});
 
 ?>

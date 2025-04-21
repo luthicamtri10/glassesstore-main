@@ -41,6 +41,12 @@
         <span>Hãng</span>
       </a>
     </li>
+    <li class="sidebar-item {{ request()->get('modun') == 'phieunhap' ? 'active' : '' }}" id="phieunhap">
+      <a href="/admin?modun=phieunhap" class="sidebar-link">
+        <i class='bx bx-cart'></i>
+        <span>Phiếu nhập</span>
+      </a>
+    </li>
     <li class="sidebar-item {{ request()->get('modun') == 'hoadon' ? 'active' : '' }}" id="hoadon">
       <a href="/admin?modun=hoadon" class="sidebar-link">
         <i class='bx bx-cart'></i>
