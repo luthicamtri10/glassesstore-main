@@ -2,8 +2,11 @@
 
 namespace App\Dao;
 
+use App\Bus\CTSP_BUS;
+use App\Bus\SanPham_BUS;
 use App\Interface\DAOInterface;
 use App\Models\CTPN;
+use App\Models\CTSP;
 use App\Services\database_connection;
 
 class CTPN_DAO implements DAOInterface {
@@ -52,9 +55,39 @@ class CTPN_DAO implements DAOInterface {
         return $list;
     }
 
+    public function taoCTSPTuDong($idsp, $soLuong = 1) {
+        $idspFormatted = str_pad($idsp, 3, '0', STR_PAD_LEFT); // 3 chữ số
+        
+        // Đếm số CTSP đã tồn tại với IDSP này
+        $dsCTSP = app(CTSP_BUS::class)->getCTSPByIDSP($idsp); // Hàm này bạn phải có
+        $soLuongHienTai = count($dsCTSP);
+    
+        $dsCTSPMoi = [];
+    
+        for ($i = 1; $i <= $soLuong; $i++) {
+            $stt = $soLuongHienTai + $i;
+            $sttFormatted = str_pad($stt, 5, '0', STR_PAD_LEFT); // 5 chữ số
+    
+            $soseri = $idspFormatted . $sttFormatted;
+            $idsanpham = app(SanPham_BUS::class)->getModelById($idsp);
+            // Tạo model CTSP mới (giả sử bạn có class CTSP)
+            $ctsp = new CTSP($idsanpham, $soseri);
+            // $ctsp->setSoSeri($soseri);
+            // $ctsp->setIdSP($idsp);
+    
+            // Lưu vào database
+            app(CTSP_BUS::class)->addModel($ctsp);
+    
+            // Lưu lại danh sách để kiểm tra
+            $dsCTSPMoi[] = $ctsp;
+        }
+    
+        return $dsCTSPMoi;
+    }
+    
     public function insert($e): int {
-        $sql = "INSERT INTO CTPN (idPN, idSP, soLuong, giaNhap, phanTramLN) 
-        VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO CTPN (idPN, idSP, soLuong, giaNhap, phanTramLN, TRANGTHAIHD) 
+        VALUES (?, ?, ?, ?, ?, 1)";
         $args = [
             $e->getIdPN(), 
             $e->getIdSP(), 
@@ -62,7 +95,9 @@ class CTPN_DAO implements DAOInterface {
             $e->getGiaNhap(), 
             $e->getPhanTramLN()
         ];
-        return database_connection::executeQuery($sql, ...$args);
+        $rs = database_connection::executeQuery($sql, ...$args);
+        $this->taoCTSPTuDong($e->getIdSP(), $e->getSoLuong());
+        return $rs;
     }
 
     public function update($e): int {

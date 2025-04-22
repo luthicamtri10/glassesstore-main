@@ -1,6 +1,8 @@
 <?php
 
 use App\Bus\Auth_BUS;
+use App\Bus\CTGH_BUS;
+use App\Bus\GioHang_BUS;
 use App\Bus\Hang_BUS;
 use App\Bus\LoaiSanPham_BUS;
 use App\Bus\NguoiDung_BUS;
@@ -24,53 +26,134 @@ use App\Http\Controllers\TaiKhoanController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// Route::get('/', function() {
+//     // session_start();
+//     $sanPham = app(SanPham_BUS::class);
+//     $lsp = app(LoaiSanPham_BUS::class);
+//     $hang = app(Hang_BUS::class);
+//     $listSP = $sanPham->getAllModelsActive();
+//     $listLSP = $lsp->getAllModels();
+//     $listHang = $hang->getAllModels();
+//     $top4Product = $sanPham->getTop4ProductWasHigestSale();
+//     if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
+//         $keyword = $_GET['keyword'];
+//         $listSP = $sanPham->searchModel($keyword, []);
+//     } elseif (isset($_GET['lsp']) || !empty($_GET['lsp'])) {
+//         $lsp = $_GET['lsp'];
+//         if ($lsp == 0) {
+//             $listSP = $sanPham->getAllModels();
+//         } else {
+//             $listSP = $sanPham->searchByLoaiSanPham($lsp);
+//         }
+//     } else if (isset($_GET['hang']) || !empty($_GET['hang'])) {
+//         $hang = $_GET['hang'];
+//         if ($hang == 0) {
+//             $listSP = $sanPham->getAllModels();
+//         } else {
+//             $listSP = $sanPham->searchByHang($hang);
+//         }
+//     } else if ((isset($_GET['hang']) || !empty($_GET['hang'])) && isset($_GET['lsp']) || !empty($_GET['lsp'])) {
+//         $lsp = $_GET['lsp'];
+//         $hang = $_GET['hang'];
+//         $listSP = $sanPham->searchByLSPAndHang($lsp,$hang);
+//     }
+
+//     $current_page = request()->query('page', 1);
+//     $limit = 8;
+//     $total_record = count($listSP ?? []);
+//     $total_page = ceil($total_record / $limit);
+//     $current_page = max(1, min($current_page, $total_page));
+//     $start = ($current_page - 1) * $limit;
+//     if(empty($listSP)) {
+//         $tmp = [];
+//     } else {
+//         $tmp = array_slice($listSP, $start, $limit);
+//     }
+//     $isLogin = app(Auth_BUS::class)->isAuthenticated();
+//     $email = app(Auth_BUS::class)->getEmailFromToken();
+//     $user = app(TaiKhoan_BUS::class)->getModelById($email);
+    
+//     return view('client.index', [
+//         'listSP' => $listSP,
+//         'listLSP' => $listLSP,
+//         'listHang' => $listHang,
+//         'tmp' => $tmp,
+//         'current_page' => $current_page,
+//         'total_page' => $total_page,
+//         'isLogin' => $isLogin,
+//         'user' => $user,
+//         'top4Product' => $top4Product,
+//         'sanPham' => $sanPham
+//     ]);
+// }); 
+// Route::view('/index', 'client.index'); 
 Route::get('/', function() {
-    // session_start();
+    return redirect('/index' );
+});
+Route::get('/index', function() {
     $sanPham = app(SanPham_BUS::class);
     $lsp = app(LoaiSanPham_BUS::class);
     $hang = app(Hang_BUS::class);
+    
+    // Lấy danh sách sản phẩm
     $listSP = $sanPham->getAllModelsActive();
     $listLSP = $lsp->getAllModels();
     $listHang = $hang->getAllModels();
     $top4Product = $sanPham->getTop4ProductWasHigestSale();
+
+    // Xử lý các tham số tìm kiếm
+    // if (request()->has('keyword')) {
+    //     $keyword = request('keyword');
+    //     $listSP = $sanPham->searchModel($keyword, []);
+    // } elseif (request()->has('lsp')) {
+    //     $lspValue = request('lsp');
+    //     $listSP = $lspValue == 0 ? $sanPham->getAllModels() : $sanPham->searchByLoaiSanPham($lspValue);
+    // } elseif (request()->has('hang')) {
+    //     $hangValue = request('hang');
+    //     $listSP = $hangValue == 0 ? $sanPham->getAllModels() : $sanPham->searchByHang($hangValue);
+    // } elseif (request()->has(['hang', 'lsp'])) {
+    //     $lspValue = request('lsp');
+    //     $hangValue = request('hang');
+    //     $listSP = $sanPham->searchByLSPAndHang($lspValue, $hangValue);
+    // }
     if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
         $keyword = $_GET['keyword'];
         $listSP = $sanPham->searchModel($keyword, []);
-    } elseif (isset($_GET['lsp']) || !empty($_GET['lsp'])) {
+        } elseif (isset($_GET['lsp']) || !empty($_GET['lsp'])) {
         $lsp = $_GET['lsp'];
         if ($lsp == 0) {
-            $listSP = $sanPham->getAllModels();
+        $listSP = $sanPham->getAllModels();
         } else {
-            $listSP = $sanPham->searchByLoaiSanPham($lsp);
+        $listSP = $sanPham->searchByLoaiSanPham($lsp);
         }
-    } else if (isset($_GET['hang']) || !empty($_GET['hang'])) {
+        } else if (isset($_GET['hang']) || !empty($_GET['hang'])) {
         $hang = $_GET['hang'];
         if ($hang == 0) {
-            $listSP = $sanPham->getAllModels();
+        $listSP = $sanPham->getAllModels();
         } else {
-            $listSP = $sanPham->searchByHang($hang);
+        $listSP = $sanPham->searchByHang($hang);
         }
-    } else if ((isset($_GET['hang']) || !empty($_GET['hang'])) && isset($_GET['lsp']) || !empty($_GET['lsp'])) {
+        } else if ((isset($_GET['hang']) || !empty($_GET['hang'])) && isset($_GET['lsp']) || !empty($_GET['lsp'])) {
         $lsp = $_GET['lsp'];
         $hang = $_GET['hang'];
         $listSP = $sanPham->searchByLSPAndHang($lsp,$hang);
-    }
+        }
 
+    // Phân trang
     $current_page = request()->query('page', 1);
     $limit = 8;
     $total_record = count($listSP ?? []);
     $total_page = ceil($total_record / $limit);
     $current_page = max(1, min($current_page, $total_page));
     $start = ($current_page - 1) * $limit;
-    if(empty($listSP)) {
-        $tmp = [];
-    } else {
-        $tmp = array_slice($listSP, $start, $limit);
-    }
+    $tmp = empty($listSP) ? [] : array_slice($listSP, $start, $limit);
+    
+    // Kiểm tra đăng nhập
     $isLogin = app(Auth_BUS::class)->isAuthenticated();
     $email = app(Auth_BUS::class)->getEmailFromToken();
     $user = app(TaiKhoan_BUS::class)->getModelById($email);
     
+    // Trả về view
     return view('client.index', [
         'listSP' => $listSP,
         'listLSP' => $listLSP,
@@ -83,10 +166,18 @@ Route::get('/', function() {
         'top4Product' => $top4Product,
         'sanPham' => $sanPham
     ]);
-}); 
-Route::view('/index', 'client.index'); 
+});
 Route::view('/login', 'client.Login-Register');
-Route::view('/yourcart', 'client.userCart');
+Route::get('/yourcart', function() {
+    $email = $_GET['email'];
+    $gh = app(GioHang_BUS::class)->getByEmail($email);
+    $listCTGH = app(CTGH_BUS::class)->getByIDGH($gh->getIdGH());
+    if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
+        $keyword = $_GET['keyword'];
+        $listCTGH = app(CTGH_BUS::class)->searchCTGHByKeyword($gh->getIdGH(), $keyword);
+    }
+    return view('client.userCart', ['listCTGH'=>$listCTGH]);
+});
 Route::get('/register', function() {
     $listTinh = app(Tinh_BUS::class)->getAllModels();
     $nguoidung = null;
@@ -116,6 +207,7 @@ Route::post('/admin/nguoidung/update', [NguoiDungController::class, 'update'])->
 Route::post('/admin/nguoidung/controldelete', [NguoiDungController::class, 'controlDelete'])->name('admin.nguoidung.controlDelete');
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GioHangController;
 
 Route::post('/login', function (\Illuminate\Http\Request $request) {
     $email = $request->input('email-login');
@@ -132,4 +224,7 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/register/register', [AuthController::class, 'register'])->name('register.register');
 
+Route::post('/yourcart/update', [GioHangController::class, 'updateQuantity'])->name('cart.update');
+Route::post('/yourcart/delete', [GioHangController::class, 'deleteCTGH'])->name('cart.delete');
+// Route::get('/yourcart/search', [GioHangController::class, 'search'])->name('cart.search');
 ?>

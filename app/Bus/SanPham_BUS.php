@@ -26,13 +26,7 @@ class SanPham_BUS implements BUSInterface {
     }
 
     public function getModelById($id) {
-        $models = $this->sanPhamDAO->getById($id);
-        foreach ($models as $model) {
-            if ($model->getId() === $id) {
-                return $model;
-            }
-        }
-        return null;
+        return $this->sanPhamDAO->getById($id);
     }
 
     public function addModel($model): int {

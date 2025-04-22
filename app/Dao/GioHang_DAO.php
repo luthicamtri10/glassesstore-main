@@ -63,14 +63,15 @@ class GioHang_DAO
     }
     public function getByEmail($email)
     {
-        $list = [];
         $query = "SELECT * FROM GIOHANG WHERE email = ?";
         $result = database_connection::executeQuery($query, $email);
-        while ($row = $result->fetch_assoc()) {
-            $model = $this->createGioHangModel($row);
-            $list[] = $model;
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if ($row) {
+                return $this->createGioHangModel($row);
+            }
         }
-        return $list;
+        return null;
     }
 
     /**

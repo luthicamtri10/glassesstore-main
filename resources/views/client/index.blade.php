@@ -6,55 +6,94 @@
     <link rel="stylesheet" href="{{ asset('css/client/Login-Register.css') }}">
     <link rel="stylesheet" href="{{ asset('css/client/HomePageClient.css') }}">
     <link rel="stylesheet" href="{{ asset('css/client/AcctInfoOH.css') }}">
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        
-  const searchForms = document.querySelectorAll('form[role="search"]');
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchForms = document.querySelectorAll('form[role="search"]');
+    const searchForms = document.querySelectorAll('form[role="search"]');
 
-  searchForms.forEach(function (searchForm) {
-    searchForm.addEventListener('submit', function (e) {
-      e.preventDefault();
+    searchForms.forEach(function (searchForm) {
+      searchForm.addEventListener('submit', function (e) {
+        e.preventDefault(); // Ngăn chặn hành động gửi form mặc định
 
-      const currentUrl = new URL(window.location.href);
-      const keywordInput = searchForm.querySelector('#keyword');
+        const currentUrl = new URL(window.location.href);
+        const keywordInput = searchForm.querySelector('input[name="keyword"]');
+        const lspSelect = searchForm.querySelector('select[name="lsp"]');
+        const hangSelect = searchForm.querySelector('select[name="hang"]');
+
+        // Xóa tất cả tham số trước khi thêm mới
+        currentUrl.searchParams.delete('keyword');
+        currentUrl.searchParams.delete('lsp');
+        currentUrl.searchParams.delete('hang');
+
+        // Thêm tham số dựa trên giá trị đã chọn
+        if (keywordInput && keywordInput.value.trim()) {
+          currentUrl.searchParams.set('keyword', keywordInput.value.trim());
+        }
+        if (lspSelect && lspSelect.value && lspSelect.value !== "0") {
+          currentUrl.searchParams.set('lsp', lspSelect.value);
+        }
+        if (hangSelect && hangSelect.value && hangSelect.value !== "0") {
+          currentUrl.searchParams.set('hang', hangSelect.value);
+        }
+
+        // Chuyển hướng đến URL mới với các tham số đã thêm
+        window.location.href = currentUrl.toString();
+      });
+
+      // Thêm sự kiện cho select để gửi form khi thay đổi
       const lspSelect = searchForm.querySelector('select[name="lsp"]');
-      const hangSelect = searchForm.querySelector('select[name="hang"]')
-      if ((keywordInput && keywordInput.value.trim()) && (keywordInput && keywordInput.value.trim())) {
-        currentUrl.searchParams.set('keyword', keywordInput.value.trim());
-        currentUrl.searchParams.delete('lsp');
-        currentUrl.searchParams.delete('hang');
-      } else if (lspSelect && lspSelect.value && lspSelect.value !== "0") {
-        currentUrl.searchParams.set('lsp', lspSelect.value);
-        currentUrl.searchParams.delete('hang');
-        currentUrl.searchParams.delete('keyword');
-      } else if (hangSelect && hangSelect.value && hangSelect.value !== "0") {
-        currentUrl.searchParams.set('hang', hangSelect.value);
-        currentUrl.searchParams.delete('lsp');
-        currentUrl.searchParams.delete('keyword');
-      } else {
-        currentUrl.searchParams.delete('keyword');
-        currentUrl.searchParams.delete('hang');
-        currentUrl.searchParams.delete('lsp');
+      if (lspSelect) {
+        lspSelect.addEventListener('change', function () {
+          searchForm.dispatchEvent(new Event('submit'));
+        });
       }
-
-      currentUrl.searchParams.delete('page');
-
-      window.location.href = currentUrl.toString();
+      const hangSelect = searchForm.querySelector('select[name="hang"]');
+      if (hangSelect) {
+        hangSelect.addEventListener('change', function () {
+          searchForm.dispatchEvent(new Event('submit'));
+        });
+      }
     });
+  // searchForms.forEach(function (searchForm) {
+  //   searchForm.addEventListener('submit', function (e) {
+  //     e.preventDefault();
 
-    const lspSelect = searchForm.querySelector('select[name="lsp"]');
-    if (lspSelect) {
-      lspSelect.addEventListener('change', function () {
-        searchForm.dispatchEvent(new Event('submit'));
-      });
-    }
-    const hangSelect = searchForm.querySelector('select[name="hang"]');
-    if (hangSelect) {
-      hangSelect.addEventListener('change', function () {
-        searchForm.dispatchEvent(new Event('submit'));
-      });
-    }
-  });
+  //     const currentUrl = new URL(window.location.href);
+  //     const keywordInput = searchForm.querySelector('#keyword');
+  //     const lspSelect = searchForm.querySelector('select[name="lsp"]');
+  //     const hangSelect = searchForm.querySelector('select[name="hang"]');
+
+  //     // Xóa tất cả tham số trước khi thêm mới
+  //     currentUrl.searchParams.delete('lsp');
+  //     currentUrl.searchParams.delete('hang');
+  //     currentUrl.searchParams.delete('keyword');
+
+  //     if (keywordInput && keywordInput.value.trim()) {
+  //       currentUrl.searchParams.set('keyword', keywordInput.value.trim());
+  //     } else if (lspSelect && lspSelect.value && lspSelect.value !== "0") {
+  //       currentUrl.searchParams.set('lsp', lspSelect.value);
+  //     } else if (hangSelect && hangSelect.value && hangSelect.value !== "0") {
+  //       currentUrl.searchParams.set('hang', hangSelect.value);
+  //     }
+
+  //     currentUrl.searchParams.delete('page');
+
+  //     window.location.href = currentUrl.toString();
+  //   });
+
+  //   const lspSelect = searchForm.querySelector('select[name="lsp"]');
+  //   if (lspSelect) {
+  //     lspSelect.addEventListener('change', function () {
+  //       searchForm.dispatchEvent(new Event('submit'));
+  //     });
+  //   }
+  //   const hangSelect = searchForm.querySelector('select[name="hang"]');
+  //   if (hangSelect) {
+  //     hangSelect.addEventListener('change', function () {
+  //       searchForm.dispatchEvent(new Event('submit'));
+  //     });
+  //   }
+  // });
   const userBtn = document.getElementById('userDropdownBtn');
   const dropdownMenu = document.getElementById('userDropdownMenu');
 
@@ -95,8 +134,7 @@
     document.getElementById("productDetailModal").style.display = "none";
   });
 });
-
-  </script>
+</script>
 
     <!-- Nội dung trang chính ở đây -->
      <header>
@@ -138,7 +176,9 @@
             <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}"><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555; padding: 10px"></i></li>
             <!-- <li class="nav-item fw-medium my-2" id="item-xemthem"><a href="" class="nav-link text-white">Xem Thêm <i class="fa-regular fa-angle-up"></i></a></li> -->
             <!-- <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li> -->
-            <li class="nav-item fw-medium my-2" id="item-giohang"><a href="/yourcart" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;"><small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small></i></a></li>
+            @if($isLogin)
+              <li class="nav-item fw-medium my-2" id="item-giohang"><a href="{{ url('/yourcart?email=' . $user->getEmail()) }}" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;"><small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small></i></a></li>
+            @endif
           </ul>
         </form>
         
@@ -204,22 +244,22 @@
     <div class="ctn-danhmucsanpham" style="background-color: #f6f2f2;padding-bottom: 30px;">
       <div class="type-product-items flex flex-row justify-between">
         <h1 style="font-family: Sigmar;font-weight: 800;color: #555;width: 40%;">BỘ SƯU TẬP MỚI NHẤT</h1>
-        <form action="" method="get" class="d-flex flex-row-reverse w-50 g-10" role="search">
-            <select class="form-select w-15" name="lsp" id="lsp">
-              <option disabled {{ request('lsp') ? '' : 'selected' }}>Lọc theo loại</option>
-              <option value="0">Xem tất cả</option>
-              @foreach($listLSP as $lsp)
-              <option value="{{ $lsp->getId() }}" {{ request('lsp') == $lsp->getId() ? 'selected' : '' }}>{{$lsp->gettenLSP()}}</option>
-              @endforeach
-            </select>
-            <select class="form-select w-15" name="hang" id="hang">
-              <option disabled {{ request('hang') ? '' : 'selected' }}>Lọc theo hãng</option>
-              <option value="0">Xem tất cả</option>
-              @foreach($listHang as $h)
-              <option value="{{ $h->getId() }}" {{ request('hang') == $h->getId() ? 'selected' : '' }}>{{$h->gettenHang()}}</option>
-              @endforeach
-            </select>
-          </form>
+        <form action="" method="get" role="search" class="d-flex flex-row-reverse w-50 g-10">
+    <select class="form-select w-15" name="lsp" id="lsp">
+        <option disabled {{ request('lsp') ? '' : 'selected' }}>Lọc theo loại</option>
+        <option value="0">Xem tất cả</option>
+        @foreach($listLSP as $lsp)
+        <option value="{{ $lsp->getId() }}" {{ request('lsp') == $lsp->getId() ? 'selected' : '' }}>{{$lsp->gettenLSP()}}</option>
+        @endforeach
+    </select>
+    <select class="form-select w-15" name="hang" id="hang">
+        <option disabled {{ request('hang') ? '' : 'selected' }}>Lọc theo hãng</option>
+        <option value="0">Xem tất cả</option>
+        @foreach($listHang as $h)
+        <option value="{{ $h->getId() }}" {{ request('hang') == $h->getId() ? 'selected' : '' }}>{{$h->gettenHang()}}</option>
+        @endforeach
+    </select>
+</form>
       </div>
 
       <div class="content-prd " style="margin: 0 5% 0;display: flex;">

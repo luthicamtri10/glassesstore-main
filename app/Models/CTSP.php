@@ -4,21 +4,22 @@ namespace App\Models;
 
 class CTSP
 {
-    private $idSP, $soSeri;
+    private SanPham $idSP;
+    private $soSeri;
 
-    public function __construct($idSP, $soSeri)
+    public function __construct(SanPham $idSP, $soSeri)
     {
         $this->idSP = $idSP;
         $this->soSeri = $soSeri;
     }
 
     // Getter và Setter cho ID
-    public function getIdSP()
+    public function getIdSP() : SanPham
     {
         return $this->idSP;
     }
 
-    public function setIdSP($idSP)
+    public function setIdSP(SanPham $idSP)
     {
         $this->idSP = $idSP;
     }
