@@ -9,51 +9,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const searchForms = document.querySelectorAll('form[role="search"]');
-    const searchForms = document.querySelectorAll('form[role="search"]');
-
-    searchForms.forEach(function (searchForm) {
-      searchForm.addEventListener('submit', function (e) {
-        e.preventDefault(); // Ngăn chặn hành động gửi form mặc định
-
-        const currentUrl = new URL(window.location.href);
-        const keywordInput = searchForm.querySelector('input[name="keyword"]');
-        const lspSelect = searchForm.querySelector('select[name="lsp"]');
-        const hangSelect = searchForm.querySelector('select[name="hang"]');
-
-        // Xóa tất cả tham số trước khi thêm mới
-        currentUrl.searchParams.delete('keyword');
-        currentUrl.searchParams.delete('lsp');
-        currentUrl.searchParams.delete('hang');
-
-        // Thêm tham số dựa trên giá trị đã chọn
-        if (keywordInput && keywordInput.value.trim()) {
-          currentUrl.searchParams.set('keyword', keywordInput.value.trim());
-        }
-        if (lspSelect && lspSelect.value && lspSelect.value !== "0") {
-          currentUrl.searchParams.set('lsp', lspSelect.value);
-        }
-        if (hangSelect && hangSelect.value && hangSelect.value !== "0") {
-          currentUrl.searchParams.set('hang', hangSelect.value);
-        }
-
-        // Chuyển hướng đến URL mới với các tham số đã thêm
-        window.location.href = currentUrl.toString();
-      });
-
-      // Thêm sự kiện cho select để gửi form khi thay đổi
-      const lspSelect = searchForm.querySelector('select[name="lsp"]');
-      if (lspSelect) {
-        lspSelect.addEventListener('change', function () {
-          searchForm.dispatchEvent(new Event('submit'));
-        });
-      }
-      const hangSelect = searchForm.querySelector('select[name="hang"]');
-      if (hangSelect) {
-        hangSelect.addEventListener('change', function () {
-          searchForm.dispatchEvent(new Event('submit'));
-        });
-      }
-    });
+    
   // searchForms.forEach(function (searchForm) {
   //   searchForm.addEventListener('submit', function (e) {
   //     e.preventDefault();
@@ -116,7 +72,6 @@
       
       const modal = document.querySelector('#productDetailModal');
       if (!modal) return;
-
       modal.querySelector('div[name="tensp"]').textContent = productDiv.dataset.tensp;
       modal.querySelector('div[name="hang"]').textContent = productDiv.dataset.hang;
       modal.querySelector('div[name="lsp"]').textContent = productDiv.dataset.lsp;
@@ -125,7 +80,6 @@
       modal.querySelector('div[name="tgbh"]').textContent = productDiv.dataset.tgbh;
       modal.querySelector('img[name="img"]').src = productDiv.dataset.img;
       modal.querySelector('div[name="stock"]').textContent = productDiv.dataset.stock;
-
       // Hiển thị modal
       document.getElementById("productDetailModal").style.display = "block";
     });
@@ -246,22 +200,22 @@
     <div class="ctn-danhmucsanpham" style="background-color: #f6f2f2;padding-bottom: 30px;">
       <div class="type-product-items flex flex-row justify-between">
         <h1 style="font-family: Sigmar;font-weight: 800;color: #555;width: 40%;">BỘ SƯU TẬP MỚI NHẤT</h1>
-        <form action="" method="get" role="search" class="d-flex flex-row-reverse w-50 g-10">
-    <select class="form-select w-15" name="lsp" id="lsp">
-        <option disabled {{ request('lsp') ? '' : 'selected' }}>Lọc theo loại</option>
-        <option value="0">Xem tất cả</option>
-        @foreach($listLSP as $lsp)
-        <option value="{{ $lsp->getId() }}" {{ request('lsp') == $lsp->getId() ? 'selected' : '' }}>{{$lsp->gettenLSP()}}</option>
-        @endforeach
-    </select>
-    <select class="form-select w-15" name="hang" id="hang">
-        <option disabled {{ request('hang') ? '' : 'selected' }}>Lọc theo hãng</option>
-        <option value="0">Xem tất cả</option>
-        @foreach($listHang as $h)
-        <option value="{{ $h->getId() }}" {{ request('hang') == $h->getId() ? 'selected' : '' }}>{{$h->gettenHang()}}</option>
-        @endforeach
-    </select>
-</form>
+        <form action="" method="get" class="d-flex flex-row-reverse w-50 g-10">
+            <select class="form-select w-15" name="lsp" id="lsp">
+              <option disabled {{ request('lsp') ? '' : 'selected' }}>Lọc theo loại</option>
+              <option value="0">Xem tất cả</option>
+              @foreach($listLSP as $lsp)
+              <option value="{{ $lsp->getId() }}" {{ request('lsp') == $lsp->getId() ? 'selected' : '' }}>{{$lsp->gettenLSP()}}</option>
+              @endforeach
+            </select>
+            <select class="form-select w-15" name="hang" id="hang">
+              <option disabled {{ request('hang') ? '' : 'selected' }}>Lọc theo hãng</option>
+              <option value="0">Xem tất cả</option>
+              @foreach($listHang as $h)
+              <option value="{{ $h->getId() }}" {{ request('hang') == $h->getId() ? 'selected' : '' }}>{{$h->gettenHang()}}</option>
+              @endforeach
+            </select>
+          </form>
       </div>
 
       <div class="content-prd " style="margin: 0 5% 0;display: flex;">

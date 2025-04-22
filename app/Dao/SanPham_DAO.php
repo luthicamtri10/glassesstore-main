@@ -22,7 +22,7 @@ class SanPham_DAO implements DAOInterface{
     }
 
     public function getById($id) {
-        $query = "SELECT * FROM sanpham WHERE email = ?";
+        $query = "SELECT * FROM sanpham WHERE id = ?";
         $result = database_connection::executeQuery($query, $id);
         if($result->num_rows > 0) {
             $row = $result->fetch_assoc();
@@ -141,16 +141,42 @@ class SanPham_DAO implements DAOInterface{
         return $list;
     }
 
-    // public function getTop4ProductWasHigestSale() {
-    //     $list = [];
-    //     $query = "SELECT * FROM SANPHAM WHERE IDLSP = ? AND IDHANG = ?";
-    //     $rs = database_connection::executeQuery($query, $lsp, $hang);
-    //     while($row = $rs->fetch_assoc()) {
-    //         $model = $this->createSanPhamModel($row);
-    //         array_push($list, $model);
-    //     }
-    //     return $list;
-    // }
-    
+    public function getTop4ProductWasHigestSale() {
+        $list = [];
+        $query = "SELECT 
+                        sp.ID AS IDSanPham,
+                        sp.TENSANPHAM,
+                        COUNT(cthd.SOSERI) AS SoLanXuatHien
+                    FROM cthd
+                    JOIN hoadon hd ON cthd.IDHD = hd.ID
+                    JOIN ctsp ON cthd.SOSERI = ctsp.SOSERI
+                    JOIN sanpham sp ON ctsp.IDSP = sp.ID
+                    WHERE hd.TRANGTHAI = 'PAID'
+                    GROUP BY sp.ID, sp.TENSANPHAM
+                    ORDER BY SoLanXuatHien DESC
+                    LIMIT 4";
+        $rs = database_connection::executeQuery($query);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->getById($row['IDSanPham']);
+            array_push($list, $model);
+        }
+        return $list;
+    }
+
+    public function getStock($idPd) {
+        $query = "SELECT sp.ID, COUNT(ctsp.SOSERI) AS SoLuongSoSeri
+                    FROM sanpham sp
+                    JOIN ctsp ON sp.ID = ctsp.IDSP
+                    WHERE sp.ID = ? AND ctsp.trangThaiHD = 1
+                    GROUP BY sp.ID";
+        $result = database_connection::executeQuery($query, $idPd);
+        if($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if($row) {
+                return $row["SoLuongSoSeri"];
+            }
+        }
+        return null;
+    }
 
 }

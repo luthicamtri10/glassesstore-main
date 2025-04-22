@@ -2,7 +2,7 @@
 <aside id="sidebar" class="expand">
 <div class="d-flex justify-content-between p-4">
     <div class="sidebar-logo">
-      <a href="#">Web2</a>
+      <a href="/">Web2</a>
     </div>
   </div>
   <ul class="sidebar-nav">
