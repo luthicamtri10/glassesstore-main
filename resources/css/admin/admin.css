@@ -103,3 +103,7 @@ a.sidebar-link:hover {
     position: relative;
 }
 
+.pagination-summary, .small.text-muted {
+    display: none !important;
+}
+

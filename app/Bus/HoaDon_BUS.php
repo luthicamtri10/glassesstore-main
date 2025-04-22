@@ -3,22 +3,25 @@ namespace App\Bus;
 use App\Dao\HoaDon_DAO;
 
 use App\Interface\BUSInterface;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 class HoaDon_BUS{
 
     private $hoaDonDAO;
+    private $listHoaDon = array();
 
     public function __construct(HoaDon_DAO $hoaDonDAO)
     {
         $this->hoaDonDAO = $hoaDonDAO;
+        $this->refreshData();
     }
 
     public function getAllModels() {
-        return $this->hoaDonDAO->readDatabase();
+        return $this->listHoaDon;
     }
 
     public function refreshData(): void {
-       $this->hoaDonDAO->getAll();
+       $this->listHoaDon = $this->hoaDonDAO->getAll();
     }
 
     public function getModelById(int $id) {

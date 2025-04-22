@@ -17,9 +17,16 @@
         <div class="main bg-light" id="content">
         @include('admin.includes.navbar')
             <?php
-                use App\Bus\NguoiDung_BUS;
-                use App\Bus\Quyen_BUS;
-                use App\Bus\TaiKhoan_BUS;
+
+use App\Bus\DVVC_BUS;
+use App\Bus\Hang_BUS;
+use App\Bus\HoaDon_BUS;
+use App\Bus\LoaiSanPham_BUS;
+use App\Bus\NguoiDung_BUS;
+use App\Bus\PTTT_BUS;
+use App\Bus\Quyen_BUS;
+use App\Bus\SanPham_BUS;
+use App\Bus\TaiKhoan_BUS;
                 use App\Bus\Tinh_BUS;
                 use Illuminate\Support\Facades\View as FacadesView;
 
@@ -93,11 +100,136 @@
                             'total_page' => $total_page
                         ])->render();
                         break;
+                    
                     case 'quyen':
                         include base_path('resources/views/admin/quyen.blade.php');
                         break;
                     case 'thongke':
                         include base_path('resources/views/admin/thongke.blade.php');
+                        break;
+                    case 'loaisanpham':
+                        $bus = app(LoaiSanPham_BUS::class);
+                        $list = $bus->getAllModels();
+
+                        $keyword = trim(request('keyword'));
+                        if ($keyword === '') {
+                            $list = $bus->getAllModels();
+                        } else {
+                            $list = $bus->searchModel($keyword, []);
+                        }
+
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($list ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if(empty($list)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($list, $start, $limit);
+                        }
+
+                        echo FacadesView::make('admin.loaisanpham', [
+                            'listLSP' => $tmp,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page
+              
+                        ])->render();
+                
+                        break;  
+                    case 'sanpham':
+                        $loaiSanPhamBUS = app(LoaiSanPham_BUS::class);
+                        $hangBUS = app(Hang_BUS::class);
+                        $sanPhamBUS = app(SanPham_BUS::class);
+                        $listLSP = $loaiSanPhamBUS->getAllModels();
+                        $listHang = $hangBUS->getAllModels();
+                        $listSP = $sanPhamBUS->getAllModels();
+
+                        $mapTenHang = [];
+                        foreach ($listHang as $hang){
+                            $mapTenHang[$hang->getId()] = $hang->gettenHang();
+                        }
+
+                        $mapTenLoaiSP = [];
+                        foreach ($listLSP as $loaiSP) {
+                            $mapTenLoaiSP[$loaiSP->getId()] = $loaiSP->getTenLSP();
+                        }
+
+                        $keyword = trim(request('keyword'));
+                        if ($keyword === '') {
+                            $listSP = $sanPhamBUS->getAllModels();
+                        } else {
+                            $listSP = $sanPhamBUS->searchModel($keyword, []);
+                        }
+
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($listSP ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if(empty($listSP)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listSP, $start, $limit);            
+                        }
+
+                        echo FacadesView::make('admin.sanpham', [
+                            'listSP' => $tmp,
+                            'listHang' => $listHang,
+                            'listLSP' => $listLSP,
+                            'mapTenLoaiSP' => $mapTenLoaiSP, 
+                            'mapTenHang' => $mapTenHang,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page
+                        ])->render();
+                        break;
+                    case 'hoadon':
+                        $hoaDonBUS = app(HoaDon_BUS::class);
+                        $listHoaDon = $hoaDonBUS->getAllModels();
+                        $nguoiDungBUS = app(NguoiDung_BUS::class);
+                        $listNguoiDung = $nguoiDungBUS->getAllModels();
+                        $pttBUS = app(PTTT_BUS::class);
+                        $listpttt = $pttBUS->getAllModels();
+                        $dvvcBUS = app(DVVC_BUS::class);
+                        $listdvvc = $dvvcBUS->getAllModels();
+
+                        $mapNguoiDung = [];
+                        foreach ($listNguoiDung as $nguoiDung){
+                            $mapNguoiDung[$nguoiDung->getId()] = $nguoiDung->getHoTen();
+                        }
+
+                        $mapPTTT = [];
+                        foreach ($listpttt as $pttt) {
+                            $mapPTTT[$pttt->getId()] = $pttt->gettenPTTT();
+                        }
+
+                        $mapDVVC = [];
+                        foreach ($listdvvc as $dvvc) {
+                            $mapPTTT[$dvvc->getIdDVVC()] = $dvvc->getTenDV();
+                        }
+
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($listHoaDon ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if(empty($listHoaDon)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listHoaDon, $start, $limit);            
+                        }
+                        
+                        echo FacadesView::make('admin.hoadon', [
+                            'listHoaDon' => $tmp,
+                            'mapNguoiDung' => $mapNguoiDung, 
+                            'mapPTTT' => $mapPTTT,
+                            'mapDVVC' => $mapDVVC,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page
+                        ])->render();
                         break;
                     default:
                         include base_path('resources/views/admin/nguoidung.blade.php');

@@ -116,6 +116,7 @@
       
       const modal = document.querySelector('#productDetailModal');
       if (!modal) return;
+
       modal.querySelector('div[name="tensp"]').textContent = productDiv.dataset.tensp;
       modal.querySelector('div[name="hang"]').textContent = productDiv.dataset.hang;
       modal.querySelector('div[name="lsp"]').textContent = productDiv.dataset.lsp;
@@ -124,6 +125,7 @@
       modal.querySelector('div[name="tgbh"]').textContent = productDiv.dataset.tgbh;
       modal.querySelector('img[name="img"]').src = productDiv.dataset.img;
       modal.querySelector('div[name="stock"]').textContent = productDiv.dataset.stock;
+
       // Hiển thị modal
       document.getElementById("productDetailModal").style.display = "block";
     });

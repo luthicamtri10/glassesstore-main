@@ -7,6 +7,7 @@ use App\Bus\ChiTietBaoHanh_BUS;
 use App\Bus\ChucNang_BUS;
 use App\Bus\ChucNangDVVC_BUS;
 use App\Bus\CPVC_BUS;
+use App\Bus\CTGH_BUS;
 use App\Bus\CTQ_BUS;
 use App\Bus\DVVC_BUS;
 use App\Bus\GioHang_BUS;
@@ -45,12 +46,12 @@ use App\Dao\CTHD_DAO;
 use App\Bus\CTSP_BUS;
 use App\Dao\CTSP_DAO;
 use App\Bus\HoaDon_BUS;
+use App\Dao\CTGH_DAO;
 use App\Dao\HoaDon_DAO;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TaiKhoanController;
-use App\Bus\CTGH_BUS;
-use App\Dao\CTGH_DAO;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -136,6 +137,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // 
+        Paginator::useBootstrapFive();
     }
 }

@@ -9,6 +9,7 @@ use App\Bus\NguoiDung_BUS;
 use App\Bus\SanPham_BUS;
 use App\Bus\TaiKhoan_BUS;
 use App\Bus\Tinh_BUS;
+use App\Http\Controllers\LoaiSanPhamController;
 use App\Http\Controllers\NguoiDungController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -194,9 +195,14 @@ Route::get('/register', function() {
     ]);
 });
 Route::view('/admin', 'layout.admin');
-Route::get('/sanpham', [SanPhamController::class, 'index'])->name('sanpham.index');
-Route::post('/sanpham', [SanPhamController::class, 'store'])->name('sanpham.store');
-Route::delete('/sanpham/{id}', [SanPhamController::class, 'destroy'])->name('sanpham.destroy');
+
+Route::post('admin/sanpham/store', [SanPhamController::class, 'store'])->name('admin.sanpham.store');
+Route::post('admin/sanpham/update', [SanPhamController::class, 'store'])->name('admin.sanpham.update');
+Route::delete('admin/sanpham/delete', [SanPhamController::class, 'delete'])->name('admin.sanpham.delete');
+
+Route::post('/admin/loaisanpham/store', [LoaiSanPhamController::class, 'store'])->name('admin.loaisanpham.store');
+Route::post('/admin/loaisanpham/update', [LoaiSanPhamController::class, 'update'])->name('admin.loaisanpham.update');
+Route::post('/admin/loaisanpham/delete', [LoaiSanPhamController::class, 'delete'])->name('admin.loaisanpham.delete');
 
 Route::post('/admin/taikhoan/store', [TaiKhoanController::class, 'store'])->name('admin.taikhoan.store');
 Route::post('/admin/taikhoan/update', [TaiKhoanController::class, 'update'])->name('admin.taikhoan.update');

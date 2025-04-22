@@ -35,9 +35,9 @@ class PTTT_DAO implements DAOInterface {
         );
     }
 
-    public function getById($id): ?PTTT {
+    public function getById($id) {
         $query = "SELECT * FROM pttt WHERE ID = ?";
-        $result = database_connection::executeQuery($query, [$id]);
+        $result = database_connection::executeQuery($query, $id);
         if ($result && $result->num_rows > 0) {
             return $this->createPTTTModel($result->fetch_assoc());
         }

@@ -32,16 +32,16 @@ class DVVC_DAO implements DAOInterface {
     }
 
     public function createDVVCModel($rs) {
-        $idDVVC = $rs['idDVVC'];
-        $tenDV = $rs['tenDV'];
-        $moTa = $rs['moTa'];
-        $trangThaiHD = $rs['trangThaiHD'];
+        $idDVVC = $rs['ID'];
+        $tenDV = $rs['TENDV'];
+        $moTa = $rs['MOTA'];
+        $trangThaiHD = $rs['TRANGTHAIHD'];
         return new DVVC($idDVVC, $tenDV, $moTa, $trangThaiHD);
     }
 
     public function getAll(): array {
         $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM DVVC");
+        $rs = database_connection::executeQuery("SELECT * FROM dvvc");
         while ($row = $rs->fetch_assoc()) {
             $model = $this->createDVVCModel($row);
             array_push($list, $model);
@@ -50,7 +50,7 @@ class DVVC_DAO implements DAOInterface {
     }
 
     public function getById($id) {
-        $query = "SELECT * FROM DVVC WHERE idDVVC = ?";
+        $query = "SELECT * FROM dvvc WHERE ID = ?";
         $result = database_connection::executeQuery($query, $id);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
@@ -62,7 +62,7 @@ class DVVC_DAO implements DAOInterface {
     }
 
     public function insert($model): int {
-        $query = "INSERT INTO DVVC (tenDV, moTa, trangThaiHD) VALUES (?, ? ,?)";
+        $query = "INSERT INTO dvvc (TENDV, MOTA, TRANGTHAIHD) VALUES (?, ? ,?)";
         $args = [$model->getTenDV(), $model->getMoTa(), $model->getTrangThaiHD()];
         return database_connection::executeQuery($query, ...$args);
     }
