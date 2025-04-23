@@ -8,9 +8,11 @@ use App\Bus\GioHang_BUS;
 use App\Bus\SanPham_BUS;
     if (isset($_GET['email']) || !empty($_GET['email'])) {
         $email = $_GET['email'];
+    } else {
+        echo 'NULL';
     }
     $gh = app(GioHang_BUS::class)->getByEmail($email);
-    $listCTGH = app(CTGH_BUS::class)->getByIDGH(14);
+    $listCTGH = app(CTGH_BUS::class)->getByIDGH($gh->getIdGH());
 ?>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -79,7 +81,7 @@ use App\Bus\SanPham_BUS;
             $limitSP = app(CTSP_BUS::class)->getCTSPIsNotSoldByIDSP($it->getIdSP()->getId());
         @endphp
 
-        @if ($it->getSoLuong() == count($limitSP))
+        @if ($it->getSoLuong() >= count($limitSP))
             <div class="alert alert-warning d-flex align-items-center" id="errorAlert" role="alert" style="height: 50px;">
                 <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:">
                     <use xlink:href="#exclamation-triangle-fill"/>

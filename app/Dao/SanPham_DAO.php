@@ -7,6 +7,7 @@ use App\Interface\DAOInterface;
 use App\Models\Hang;
 use App\Models\SanPham;
 use App\Services\database_connection;
+use InvalidArgumentException;
 
 class SanPham_DAO implements DAOInterface{
 
@@ -57,23 +58,195 @@ class SanPham_DAO implements DAOInterface{
         return is_int($result)? $result : 0;
     }
 
+    // public function search(string $condition, array $columnNames): array
+    // {
+    //     // $column = $columnNames[0];
+    //     // $query = "SELECT * FROM SanPham WHERE $column LIKE ?";
+    //     // $args = ["%" . $condition . "%"];
+    //     // $rs = database_connection::executeQuery($query, ...$args);
+    //     // $cartsList = [];
+    //     // while ($row = $rs->fetch_assoc()) {
+    //     //     $cartsModel = $this->createSanPhamModel($row);
+    //     //     array_push($cartsList, $cartsModel);
+    //     // }
+    //     // if (count($cartsList) === 0) {
+    //     //     return [];
+    //     // }
+    //     // return $cartsList;
+    //     if (empty($condition)) {
+    //         throw new InvalidArgumentException("Search condition cannot be empty or null");
+    //     }
+    //     // $query = "";
+    //     $query = "
+    //     SELECT *
+    //         FROM sanpham
+    //         JOIN hang ON hang.ID = sanpham.IDHANG
+    //         JOIN loaisanpham ON loaisanpham.ID = sanpham.IDLSP
+    //         WHERE (
+    //             sanpham.mota = ?
+    //             sanpham.TENSANPHAM LIKE ?
+    //             OR hang.TENHANG LIKE ?
+    //             OR loaisanpham.TENLSP LIKE ?
+    //         );
+    //     ";
+    //     $args = array_fill(0,  4, "%" . $condition . "%");
+    //     $rs = database_connection::executeQuery($query, ...$args);
+    //     $list = [];
+    //     while ($row = $rs->fetch_assoc()) {
+    //         $model = $this->createSanPhamModel($row);
+    //         array_push($list, $model);
+    //     }
+    //     if (count($list) === 0) {
+    //         return [];
+    //     }
+    //     return $list;
+    // }
+
     public function search(string $condition, array $columnNames): array
     {
-        $column = $columnNames[0];
-        $query = "SELECT * FROM SanPham WHERE $column LIKE ?";
-        $args = ["%" . $condition . "%"];
+        if (empty($condition)) {
+            throw new InvalidArgumentException("Search condition cannot be empty or null");
+        }
+
+        $query = "
+            SELECT *
+                FROM sanpham
+                JOIN hang ON hang.ID = sanpham.IDHANG
+                JOIN loaisanpham ON loaisanpham.ID = sanpham.IDLSP
+                WHERE (
+                    sanpham.MOTA LIKE CONCAT('%', ?, '%')
+                    OR sanpham.TENSANPHAM LIKE CONCAT('%', ?, '%')
+                    OR hang.TENHANG LIKE CONCAT('%', ?, '%')
+                    OR loaisanpham.TENLSP LIKE CONCAT('%', ?, '%')
+                );
+        ";
+
+        $args = array_fill(0, 4, "%" . $condition . "%"); // Chỉ ba tham số
         $rs = database_connection::executeQuery($query, ...$args);
-        $cartsList = [];
+        $list = [];
+        
         while ($row = $rs->fetch_assoc()) {
-            $cartsModel = $this->createSanPhamModel($row);
-            array_push($cartsList, $cartsModel);
+            $model = $this->createSanPhamModel($row);
+            array_push($list, $model);
         }
-        if (count($cartsList) === 0) {
-            return [];
+        
+        return $list; // Không cần kiểm tra count ở đây, trả về mảng rỗng nếu không có kết quả
+    }
+    public function searchByKhoangGia($startPrice, $endPrice) {
+        $list = [];
+        $query = "
+        SELECT *
+            FROM sanpham
+            WHERE DONGIA BETWEEN ? AND ?;
+        ";
+        $args = [$startPrice, $endPrice];
+        $rs = database_connection::executeQuery($query, ...$args);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createSanPhamModel($row);
+            array_push($list, $model);
         }
-        return $cartsList;
+        return $list;
     }
 
+    public function searchByLSPAndModel($keyword,$idlsp) {
+        $list = [];
+        $query = "
+            SELECT *
+                FROM sanpham
+                JOIN hang ON hang.ID = sanpham.IDHANG
+                JOIN loaisanpham ON loaisanpham.ID = sanpham.IDLSP
+                WHERE (
+                    (
+                        sanpham.MOTA LIKE CONCAT('%', ?, '%')
+                        OR sanpham.TENSANPHAM LIKE CONCAT('%', ?, '%')
+                        OR hang.TENHANG LIKE CONCAT('%', ?, '%')
+                        OR loaisanpham.TENLSP LIKE CONCAT('%', ?, '%')
+                    )
+                    AND sanpham.IDLSP = ?
+                )
+        ";
+        $args = [$keyword, $keyword, $keyword, $keyword, $idlsp];
+        $rs = database_connection::executeQuery($query, ...$args);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createSanPhamModel($row);
+            array_push($list, $model);
+        }
+        return $list;
+    }
+
+    public function searchByKhoangGiaAndLSP($idlsp,$startprice,$endprice) {
+        $list = [];
+        $query = "
+            SELECT *
+                FROM sanpham
+                JOIN hang ON hang.ID = sanpham.IDHANG
+                JOIN loaisanpham ON loaisanpham.ID = sanpham.IDLSP
+                WHERE (
+                    (DONGIA BETWEEN ? AND ?)
+                    AND sanpham.IDLSP = ?
+                )
+        ";
+        $args = [$startprice, $endprice, $idlsp];
+        $rs = database_connection::executeQuery($query, ...$args);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createSanPhamModel($row);
+            array_push($list, $model);
+        }
+        return $list;
+    }
+
+    public function searchByKhoangGiaAndModel($keyword,$startprice,$endprice) {
+        $list = [];
+        $query = "
+            SELECT *
+                FROM sanpham
+                JOIN hang ON hang.ID = sanpham.IDHANG
+                JOIN loaisanpham ON loaisanpham.ID = sanpham.IDLSP
+                WHERE (
+                    (DONGIA BETWEEN ? AND ?)
+                    AND (
+                        sanpham.MOTA LIKE CONCAT('%', ?, '%')
+                        OR sanpham.TENSANPHAM LIKE CONCAT('%', ?, '%')
+                        OR hang.TENHANG LIKE CONCAT('%', ?, '%')
+                        OR loaisanpham.TENLSP LIKE CONCAT('%', ?, '%')LIKE ?
+                    )
+                )
+        ";
+        $args = [$startprice, $endprice, $keyword, $keyword, $keyword, $keyword];
+        $rs = database_connection::executeQuery($query, ...$args);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createSanPhamModel($row);
+            array_push($list, $model);
+        }
+        return $list;
+    }
+
+    public function searchByKhoangGiaAndLSPAndModel($keyword,$idlsp,$startprice,$endprice) {
+        $list = [];
+        $query = "
+            SELECT *
+                FROM sanpham
+                JOIN hang ON hang.ID = sanpham.IDHANG
+                JOIN loaisanpham ON loaisanpham.ID = sanpham.IDLSP
+                WHERE (
+                    (DONGIA BETWEEN ? AND ?)
+                    AND (
+                        sanpham.MOTA LIKE CONCAT('%', ?, '%')
+                        OR sanpham.TENSANPHAM LIKE CONCAT('%', ?, '%')
+                        OR hang.TENHANG LIKE CONCAT('%', ?, '%')
+                        OR loaisanpham.TENLSP LIKE CONCAT('%', ?, '%')
+                    )
+                    AND sanpham.IDLSP = ?
+                )
+        ";
+        $args = [$startprice, $endprice, $keyword, $keyword, $keyword, $keyword, $idlsp];
+        $rs = database_connection::executeQuery($query, ...$args);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createSanPhamModel($row);
+            array_push($list, $model);
+        }
+        return $list;
+    }
 
 
     public function createSanPhamModel($rs) {
