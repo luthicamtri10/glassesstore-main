@@ -83,6 +83,7 @@
                           <span class="badge bg-danger">Ngừng kinh doanh</span>
                       @endif
                   </td>
+                  <td><button class="btn btn-warning btn-sm">Chi tiết</button></td>
                 </tr>
                 @endforeach
             </tbody>

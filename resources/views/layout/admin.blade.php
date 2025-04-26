@@ -17,16 +17,17 @@
         <div class="main bg-light" id="content">
         @include('admin.includes.navbar')
             <?php
-
-use App\Bus\DVVC_BUS;
-use App\Bus\Hang_BUS;
-use App\Bus\HoaDon_BUS;
-use App\Bus\LoaiSanPham_BUS;
-use App\Bus\NguoiDung_BUS;
-use App\Bus\PTTT_BUS;
-use App\Bus\Quyen_BUS;
-use App\Bus\SanPham_BUS;
-use App\Bus\TaiKhoan_BUS;
+                use App\Enum\HoaDonEnum;
+                use App\Bus\SanPham_BUS;
+                use App\Bus\CTHD_BUS;
+                use App\Bus\DVVC_BUS;
+                use App\Bus\Hang_BUS;
+                use App\Bus\HoaDon_BUS;
+                use App\Bus\LoaiSanPham_BUS;
+                use App\Bus\NguoiDung_BUS;
+                use App\Bus\PTTT_BUS;
+                use App\Bus\Quyen_BUS;
+                use App\Bus\TaiKhoan_BUS;
                 use App\Bus\Tinh_BUS;
                 use Illuminate\Support\Facades\View as FacadesView;
 
@@ -186,18 +187,45 @@ use App\Bus\TaiKhoan_BUS;
                         ])->render();
                         break;
                     case 'hoadon':
+                        $cthdBUS = app(CTHD_BUS::class);
                         $hoaDonBUS = app(HoaDon_BUS::class);
                         $listHoaDon = $hoaDonBUS->getAllModels();
+
+                        $mapCTHD = [];
+                        foreach ($listHoaDon as $hoaDon) {
+                            $mapCTHD[$hoaDon->getId()] = $cthdBUS->getCTHTbyIDHD($hoaDon->getId());
+                            $cthdData = $cthdBUS->getCTHTbyIDHD($hoaDon->getId());
+                            echo "<script>console.log('CTHD data for ID {$hoaDon->getId()}:', " . json_encode($cthdData) . ");</script>";
+                        }
+                        
                         $nguoiDungBUS = app(NguoiDung_BUS::class);
                         $listNguoiDung = $nguoiDungBUS->getAllModels();
                         $pttBUS = app(PTTT_BUS::class);
                         $listpttt = $pttBUS->getAllModels();
                         $dvvcBUS = app(DVVC_BUS::class);
                         $listdvvc = $dvvcBUS->getAllModels();
+                        $taiKhoanBUS = app(TaiKhoan_BUS::class);
+                        $listtaiKhoan = $taiKhoanBUS->getAllModels();
+
+                        $sanPhamBUS = app(SanPham_BUS::class);
+                        $listSanPham = $sanPhamBUS->getAllModels();
+                        
+                        $mapSanPham = [];
+                        foreach ($listSanPham as $sanpham){
+                            $mapSanPham[$sanpham->getId()] = $sanpham->getTenSanPham();
+                        }
 
                         $mapNguoiDung = [];
                         foreach ($listNguoiDung as $nguoiDung){
                             $mapNguoiDung[$nguoiDung->getId()] = $nguoiDung->getHoTen();
+                        }
+
+                        $mapHoTenByEmail = [];
+                        foreach ($listtaiKhoan as $taiKhoan) {
+                            $nguoiDung = $taiKhoan->getIdNguoiDung(); // Trả về đối tượng NguoiDung
+                            $email = $taiKhoan->getEmail();
+                        
+                            $mapHoTenByEmail[$email] = $nguoiDung->getHoTen(); // Lấy trực tiếp
                         }
 
                         $mapPTTT = [];
@@ -221,14 +249,19 @@ use App\Bus\TaiKhoan_BUS;
                         } else {
                             $tmp = array_slice($listHoaDon, $start, $limit);            
                         }
+
+                        // $hoaDonStatuses = HoaDonEnum::cases();
                         
                         echo FacadesView::make('admin.hoadon', [
                             'listHoaDon' => $tmp,
+                            'mapCTHD' => $mapCTHD,
+                            'mapHoTenByEmail' => $mapHoTenByEmail,
                             'mapNguoiDung' => $mapNguoiDung, 
                             'mapPTTT' => $mapPTTT,
                             'mapDVVC' => $mapDVVC,
                             'current_page' => $current_page,
-                            'total_page' => $total_page
+                            'total_page' => $total_page,
+                            'hoaDonStatuses' => HoaDonEnum::cases(),
                         ])->render();
                         break;
                     default:

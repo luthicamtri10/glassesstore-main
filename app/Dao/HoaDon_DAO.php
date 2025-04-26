@@ -4,6 +4,7 @@ namespace App\Dao;
 use App\Bus\DVVC_BUS;
 use App\Bus\NguoiDung_BUS;
 use App\Bus\PTTT_BUS;
+use App\Bus\TaiKhoan_BUS;
 use App\Enum\HoaDonEnum;
 use App\Interface\DAOInterface;
 use App\Models\HoaDon;
@@ -25,9 +26,9 @@ class HoaDon_DAO{
 
     public function insert($e): int
     {
-        $sql = "INSERT INTO HoaDon (idKhachHang, idNhanVien, tongTien, idPTTT, ngayTao, idDVVC, trangThai)
+        $sql = "INSERT INTO HoaDon (idKhachHang, email, tongTien, idPTTT, ngayTao, idDVVC, trangThai)
         VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $args = [$e->getIdKhachHang()->getId(), $e->getIdNhanVien()->getId(), $e->getTongTien(), $e->getTongTien(), $e->getIdPTTT()->getId(), $e->getNgayTao(), $e->getIdDVVC()->getId(), $e->getTrangThai()];
+        $args = [$e->getIdKhachHang()->getId(), $e->getEmail()->getEmail(), $e->getTongTien(), $e->getTongTien(), $e->getIdPTTT()->getId(), $e->getNgayTao(), $e->getIdDVVC()->getId(), $e->getTrangThai()];
         return database_connection::executeQuery($sql, ...$args);
     }
 
@@ -60,7 +61,7 @@ class HoaDon_DAO{
 
     public function createHoaDonModel($rs) {
         $id = $rs['ID'];
-        $idKhachHang = app(NguoiDung_BUS::class)->getModelById($rs['IDKHACHHANG']);
+        $email = app(TaiKhoan_BUS::class)->getModelById($rs['EMAIL']);
         $idNhanVien = app(NguoiDung_BUS::class)->getModelById($rs['IDNHANVIEN']);
         $tongTien = $rs['TONGTIEN'];
         $idPTTT = app(PTTT_BUS::class)->getModelById($rs['IDPTTT']);
@@ -91,7 +92,7 @@ class HoaDon_DAO{
                 break;
         }
         
-        return new HoaDon($id, $idKhachHang, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $trangThai);
+        return new HoaDon($id, $email, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $trangThai);
     }
 
     public function getAll() : array {

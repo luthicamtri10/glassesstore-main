@@ -7,14 +7,15 @@ use App\Enum\HoaDonEnum;
 class HoaDon
 {
     private $id, $tongTien, $ngayTao, $idDVVC;
-    private NguoiDung $idKhachHang, $idNhanVien;
+    private TaiKhoan $email;
+    private NguoiDung $idNhanVien;
     private PTTT $idPTTT;
     private HoaDonEnum $trangThai;
 
-    public function __construct($id = null, $idKhachHang, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC,HoaDonEnum $trangThai)
+    public function __construct($id = null, $email, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC,HoaDonEnum $trangThai)
     {
         $this->id = $id;
-        $this->idKhachHang = $idKhachHang;
+        $this->email = $email;
         $this->idNhanVien = $idNhanVien;
         $this->tongTien = $tongTien;
         $this->idPTTT = $idPTTT;
@@ -35,14 +36,14 @@ class HoaDon
      }
  
      // Getter và Setter cho idKhachHang
-     public function getIdKhachHang()
+     public function getEmail()
      {
-         return $this->idKhachHang;
+         return $this->email;
      }
  
-     public function setIdKhachHang($idKhachHang)
+     public function setEmail($email)
      {
-         $this->idKhachHang = $idKhachHang;
+         $this->email = $email;
      }
  
      // Getter và Setter cho idNhanVien
