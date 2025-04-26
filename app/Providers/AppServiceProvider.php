@@ -47,7 +47,7 @@ use App\Dao\CTSP_DAO;
 use App\Bus\HoaDon_BUS;
 use App\Dao\HoaDon_DAO;
 use App\Http\Controllers\TaiKhoanController;
-use AuthController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

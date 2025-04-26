@@ -6,6 +6,7 @@ use App\Bus\LoaiSanPham_BUS;
 use App\Bus\NguoiDung_BUS;
 use App\Bus\SanPham_BUS;
 use App\Bus\TaiKhoan_BUS;
+use App\Bus\ThongKe_BUS;
 use App\Bus\Tinh_BUS;
 use App\Http\Controllers\NguoiDungController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\SanPhamController;
 use App\Http\Controllers\TaiKhoanController;
+use App\Http\Controllers\ThongKeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -131,5 +133,9 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
 })->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/register/register', [AuthController::class, 'register'])->name('register.register');
+// Route trong Laravel web.php
+// routes/web.php
+Route::post('/admin/ajaxGetDonHang', [ThongKeController::class, 'ajaxGetDonHang'])->name('admin.ajaxGetDonHang');
+
 
 ?>
