@@ -44,6 +44,7 @@ class ThongKe_DAO {
     
         $query = "
             SELECT 
+                hd.ID,
                 ndnv.HOTEN AS TENNV,
                 hd.EMAIL,
                 hd.TONGTIEN AS TONGTIEN,

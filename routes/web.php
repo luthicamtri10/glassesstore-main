@@ -133,9 +133,9 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
 })->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/register/register', [AuthController::class, 'register'])->name('register.register');
-// Route trong Laravel web.php
-// routes/web.php
-Route::post('/admin/ajaxGetDonHang', [ThongKeController::class, 'ajaxGetDonHang'])->name('admin.ajaxGetDonHang');
 
-
+Route::get('/admin/thongke', [ThongKeController::class, 'index'])->name('admin.thongke');
+Route::post('/admin/thongke/top', [ThongKeController::class, 'getTopCustomers'])->name('admin.thongke.top');
+Route::post('/admin/thongke/orders', [ThongKeController::class, 'getCustomerOrders'])->name('admin.thongke.orders');
+Route::get('/admin/thongke/details/{orderId}', [ThongKeController::class, 'getOrderDetails'])->name('admin.thongke.details');
 ?>

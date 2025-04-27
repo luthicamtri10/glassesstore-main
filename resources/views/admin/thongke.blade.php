@@ -1,72 +1,83 @@
 <?php
 use App\Bus\ThongKe_BUS;
-
-// Nếu không có dữ liệu post lên thì lấy mặc định
-$to = $_POST['to'] ?? date('Y-m-d');
-$from = $_POST['from'] ?? date('Y-m-d', strtotime('-1 year'));
-
-$bus = new ThongKe_BUS();
-$topCustomers = $bus->getTop5KhachHang($from, $to);
-
-$hoaDonHang = $bus->getListDonHang(1, $from, $to);
-$CTHDList = $bus->getCTHD(1);
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Thống Kê Khách Hàng</title>
+</head>
+<body>
 <div class="container mt-5">
-    <h2 class="mb-4 text-center">Thống Kê Khách Hàng</h2>
-
-    <!-- Form lọc thời gian -->
-    <form action="{{ route('admin.thongke') }}" method="POST" class="row g-3 mb-5">
-    <div class="col-md-4">
-        <label for="from" class="form-label">Từ ngày:</label>
-        <input type="date" id="from" name="from" class="form-control" value="<?= $from ?>" required>
-    </div>
-    <div class="col-md-4">
-        <label for="to" class="form-label">Đến ngày:</label>
-        <input type="date" id="to" name="to" class="form-control" value="<?= $to ?>" required>
-    </div>
-    <div class="col-md-4 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary w-100">Thống kê</button>
-    </div>
-</form>
-
+    <h2 class="mb-4 text-center">Top Khách Hàng Mua Kính</h2>
 
     <div class="row">
-        <!-- Bên trái: Top khách hàng -->
+        <!-- Bên trái: Biểu đồ top khách hàng -->
         <div class="col-md-5 mb-5">
             <h5 class="mb-4">Top 5 khách hàng có tổng tiền mua cao nhất</h5>
-                           <!-- Biểu đồ cột -->
-            <canvas id="topCustomersChart" height="250"></canvas>
-            <?php if ($topCustomers && count($topCustomers) > 0): ?>
-                <div class="table-responsive mb-4">
-                    <table class="table table-hover text-center align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Họ Tên</th>
-                                <th>SĐT</th>
-                                <th>Tổng Mua</th>
-                                <th>Đơn Hàng</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($topCustomers as $customer): ?>
-                                <tr>
-                                <td><?= htmlspecialchars($customer['HOTEN'] . '-' . $customer['ID']) ?></td>
-                                    <td><?= htmlspecialchars($customer['SODIENTHOAI']) ?></td>
-                                    <td><?= number_format($customer['TONGMUA']) ?> VNĐ</td>
-                                    <td>
-                                        <button class="btn btn-outline-primary btn-sm" onclick="showDsHD(<?= $customer['ID'] ?>)">Xem đơn hàng</button>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
- 
+            <canvas id="topCustomersChart" height="230"></canvas>
+        </div>
 
-            <?php else: ?>
-                <div class="alert alert-info">Không có dữ liệu khách hàng trong khoảng thời gian đã chọn.</div>
-            <?php endif; ?>
+        <!-- Bên phải: Form và bảng top khách hàng -->
+        <div class="col-md-7 mb-5">
+            <form id="filterForm" class="row g-3 mb-5">
+                <div class="col-md-4">
+                    <label for="from" class="form-label">Từ ngày:</label>
+                    <input type="date" id="from" name="from" class="form-control" value="<?= $from ?>" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="to" class="form-label">Đến ngày:</label>
+                    <input type="date" id="to" name="to" class="form-control" value="<?= $to ?>" required>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Thống kê</button>
+                </div>
+            </form>
+            <div id="topCustomersTable">
+                <?php if ($topCustomers && count($topCustomers) > 0): ?>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-hover text-center align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mã</th>
+                                    <th>Họ Tên</th>
+                                    <th>SĐT</th>
+                                    <th>Tổng Mua</th>
+                                    <th>Đơn Hàng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($topCustomers as $customer): ?>
+                                    <tr>
+                                    <td><?= htmlspecialchars($customer['ID']) ?></td>
+                                        <td><?= htmlspecialchars($customer['HOTEN'] ) ?></td>
+                                        <td><?= htmlspecialchars($customer['SODIENTHOAI']) ?></td>
+                                        <td><?= number_format($customer['TONGMUA']) ?> VNĐ</td>
+                                        <td>
+                                            <button class="btn btn-outline-primary btn-sm" onclick="showCustomerOrders(<?= $customer['ID'] ?>)">Xem đơn hàng</button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php else: ?>
+                    <div class="alert alert-info">Không có dữ liệu khách hàng trong khoảng thời gian đã chọn.</div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Bên trái: Tiêu đề và biểu đồ tròn -->
+        <div class="col-md-5 mb-5">
+            <div id="orderPieChartContainer" style="display: none;">
+                <h5 class="mb-4">Phần trăm tổng tiền các đơn hàng</h5>
+                <canvas id="orderPieChart" height="280"></canvas>
+            </div>
         </div>
 
         <!-- Bên phải: Danh sách hóa đơn -->
@@ -94,6 +105,7 @@ $CTHDList = $bus->getCTHD(1);
                 <table class="table table-hover text-center align-middle" id="hoaDonTable">
                     <thead class="table-light">
                         <tr>
+                            <th>Mã</th>
                             <th>Email TK</th>
                             <th>Ngày Hoàn Thành</th>
                             <th>Tổng Tiền</th>
@@ -102,68 +114,12 @@ $CTHDList = $bus->getCTHD(1);
                         </tr>
                     </thead>
                     <tbody id="hoaDonTableBody">
-                        <?php if (!$hoaDonHang || count($hoaDonHang) <= 0): ?>
-                            <tr>
-                                <td colspan="5" class="text-center">Không có dữ liệu hiển thị</td>
-                            </tr>
-                        <?php else: ?>
-                            <?php foreach ($hoaDonHang as $hoaDon): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($hoaDon['EMAIL']) ?></td>
-                                    <td><?= htmlspecialchars($hoaDon['NGAYTAO']) ?></td>
-                                    <td><?= number_format($hoaDon['TONGTIEN']) ?> VNĐ</td>
-                                    <td><?= htmlspecialchars($hoaDon['TENNV']) ?></td>
-                                    <td>
-                                        <button class="btn btn-outline-primary btn-sm">Xem chi tiết</button>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                        <tr>
+                            <td colspan="5" class="text-center">Không có dữ liệu hiển thị</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
-
-    <!-- Chi tiết đơn hàng -->
-    <div class="row">
-        <h5 class="mb-4">Chi tiết đơn hàng</h5>
-
-        <div class="table-responsive">
-            <table class="table table-hover text-center align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>Loại SP</th>
-                        <th>Tên SP</th>
-                        <th>Series</th>
-                        <th>Số Lượng</th>
-                        <th>Đơn Giá Gốc</th>
-                        <th>Giá Lúc Đặt</th>
-                        <th>Tổng Giá Gốc</th>
-                        <th>Thành Tiền</th>
-                    </tr>
-                </thead>
-                <tbody id="CTHDTableBody">
-                    <?php if (!$CTHDList || count($CTHDList) <= 0): ?>
-                        <tr>
-                            <td colspan="8" class="text-center">Không có dữ liệu hiển thị</td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($CTHDList as $CTHD): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($CTHD['TENLSP']) ?></td>
-                                <td><?= htmlspecialchars($CTHD['TENSANPHAM']) ?></td>
-                                <td><?= htmlspecialchars($CTHD['SERIS']) ?></td>
-                                <td><?= htmlspecialchars($CTHD['SOLUONG']) ?></td>
-                                <td><?= number_format($CTHD['DONGIA']) ?> VNĐ</td>
-                                <td><?= number_format($CTHD['GIALUCDAT']) ?> VNĐ</td>
-                                <td><?= number_format($CTHD['TONGTIEN']) ?> VNĐ</td>
-                                <td><?= number_format($CTHD['THANHTIEN']) ?> VNĐ</td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
         </div>
     </div>
 </div>
@@ -171,60 +127,10 @@ $CTHDList = $bus->getCTHD(1);
 <!-- Script -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const hoaDonTableBody = document.getElementById('hoaDonTableBody');
-    const sortSelect = document.getElementById('sortSelect');
+    let topCustomersChart = null;
+    let orderPieChart = null;
 
-    function showDsHD(customerId) {
-    console.log('Đang load đơn hàng cho khách ID:', customerId);
-
-    fetch('<?= route('admin.ajaxGetDonHang') ?>', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '<?= csrf_token() ?>' // Nếu bạn dùng Laravel
-        },
-        body: JSON.stringify({ customerId: customerId })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Đã nhận dữ liệu:', data);
-        renderHoaDonTable(data);
-    })
-    .catch(error => {
-        console.error('Lỗi khi load đơn hàng:', error);
-    });
-}
-
-function renderHoaDonTable(hoaDons) {
-    const hoaDonTableBody = document.getElementById('hoaDonTableBody');
-    hoaDonTableBody.innerHTML = ''; // Clear bảng cũ
-
-    if (hoaDons.length === 0) {
-        hoaDonTableBody.innerHTML = `
-            <tr>
-                <td colspan="6" class="text-center text-muted">Không có đơn hàng nào</td>
-            </tr>
-        `;
-        return;
-    }
-
-    hoaDons.forEach(hoaDon => {
-        const row = `
-            <tr>
-                <td>${hoaDon.EMAIL}</td>
-                <td>${hoaDon.NGAYTAO}</td>
-                <td>${parseInt(hoaDon.TONGTIEN).toLocaleString()} VNĐ</td>
-                <td>${hoaDon.TENNV}</td>
-                <td>
-                    <button class="btn btn-outline-primary btn-sm" onclick="xemChiTietDon(${hoaDon.ID})">Xem chi tiết</button>
-                </td>
-            </tr>
-        `;
-        hoaDonTableBody.insertAdjacentHTML('beforeend', row);
-    });
-}
-
-
+    // Hàm tìm kiếm bảng
     function searchTable() {
         const input = document.getElementById('searchInput').value.toLowerCase();
         const rows = document.querySelectorAll('#hoaDonTable tbody tr');
@@ -240,32 +146,33 @@ function renderHoaDonTable(hoaDons) {
         });
     }
 
+    // Hàm sắp xếp bảng
+    const sortSelect = document.getElementById('sortSelect');
     sortSelect.addEventListener('change', function() {
         const order = this.value;
-        const rows = Array.from(hoaDonTableBody.querySelectorAll('tr'));
+        const rows = Array.from(document.getElementById('hoaDonTableBody').querySelectorAll('tr'));
 
         rows.sort((a, b) => {
-            const tongTienA = parseInt(a.children[2].textContent.replace(/[^\d]/g, ''));
-            const tongTienB = parseInt(b.children[2].textContent.replace(/[^\d]/g, ''));
+            const tongTienA = parseInt(a.children[2]?.textContent.replace(/[^\d]/g, '') || 0);
+            const tongTienB = parseInt(b.children[2]?.textContent.replace(/[^\d]/g, '') || 0);
             return order === 'asc' ? tongTienA - tongTienB : tongTienB - tongTienA;
         });
 
+        const hoaDonTableBody = document.getElementById('hoaDonTableBody');
         hoaDonTableBody.innerHTML = '';
         rows.forEach(row => hoaDonTableBody.appendChild(row));
     });
 
-    // Biểu đồ Top 5 khách hàng
+    // Vẽ biểu đồ cột ban đầu
     <?php if ($topCustomers && count($topCustomers) > 0): ?>
     const ctx = document.getElementById('topCustomersChart').getContext('2d');
-    const customerNames = <?= json_encode(array_column($topCustomers, 'HOTEN')) ?>;
-    const totalPurchases = <?= json_encode(array_column($topCustomers, 'TONGMUA')) ?>;
-    new Chart(ctx, {
+    topCustomersChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: customerNames,
+            labels: <?= json_encode(array_column($topCustomers, 'HOTEN')) ?>,
             datasets: [{
                 label: 'Tổng Mua (VNĐ)',
-                data: totalPurchases,
+                data: <?= json_encode(array_column($topCustomers, 'TONGMUA')) ?>,
                 backgroundColor: 'rgba(54, 162, 235, 0.7)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1
@@ -288,4 +195,231 @@ function renderHoaDonTable(hoaDons) {
         }
     });
     <?php endif; ?>
+
+    // Xử lý submit form bằng AJAX
+    document.getElementById('filterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        fetch('{{ route("admin.thongke.top") }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Cập nhật ô input
+                document.getElementById('from').value = data.from;
+                document.getElementById('to').value = data.to;
+
+                // Cập nhật bảng top khách hàng
+                const topCustomersTable = document.getElementById('topCustomersTable');
+                if (data.topCustomers && data.topCustomers.length > 0) {
+                    let tableHtml = `
+                        <div class="table-responsive mb-4">
+                            <table class="table table-hover text-center align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Họ Tên</th>
+                                        <th>SĐT</th>
+                                        <th>Tổng Mua</th>
+                                        <th>Đơn Hàng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+                    data.topCustomers.forEach(customer => {
+                        tableHtml += `
+                            <tr>
+                                <td>${customer.HOTEN}-${customer.ID}</td>
+                                <td>${customer.SODIENTHOAI}</td>
+                                <td>${Number(customer.TONGMUA).toLocaleString()} VNĐ</td>
+                                <td>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="showCustomerOrders(${customer.ID})">Xem đơn hàng</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    tableHtml += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                    topCustomersTable.innerHTML = tableHtml;
+                } else {
+                    topCustomersTable.innerHTML = `
+                        <div class="alert alert-info">Không có dữ liệu khách hàng trong khoảng thời gian đã chọn.</div>
+                    `;
+                }
+
+                // Cập nhật biểu đồ top khách hàng
+                if (topCustomersChart) {
+                    topCustomersChart.destroy();
+                }
+                const ctx = document.getElementById('topCustomersChart').getContext('2d');
+                topCustomersChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.topCustomers.map(customer => customer.HOTEN),
+                        datasets: [{
+                            label: 'Tổng Mua (VNĐ)',
+                            data: data.topCustomers.map(customer => customer.TONGMUA),
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value.toLocaleString() + ' VNĐ';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+
+                // Ẩn biểu đồ tròn khi lọc thời gian
+                document.getElementById('orderPieChartContainer').style.display = 'none';
+                if (orderPieChart) {
+                    orderPieChart.destroy();
+                    orderPieChart = null;
+                }
+            } else {
+                alert('Có lỗi xảy ra, vui lòng thử lại.');
+            }
+        })
+        .then(() => {
+            // Reset bảng đơn hàng khi lọc thời gian
+            const hoaDonTableBody = document.getElementById('hoaDonTableBody');
+            hoaDonTableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center">Không có dữ liệu hiển thị</td>
+                </tr>
+            `;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra, vui lòng thử lại.');
+        });
+    });
+
+    // Hàm xem đơn hàng của khách hàng bằng AJAX
+   // Hàm xem đơn hàng của khách hàng bằng AJAX
+function showCustomerOrders(customerId) {
+    const from = document.getElementById('from').value;
+    const to = document.getElementById('to').value;
+
+    const formData = new FormData();
+    formData.append('customer_id', customerId);
+    formData.append('from', from);
+    formData.append('to', to);
+
+    fetch('{{ route("admin.thongke.orders") }}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+
+                
+            window.scrollTo(0, 1000);
+
+
+
+            // Cập nhật bảng danh sách đơn hàng
+            const hoaDonTableBody = document.getElementById('hoaDonTableBody');
+            if (data.hoaDonHang && data.hoaDonHang.length > 0) {
+                let tableHtml = '';
+                data.hoaDonHang.forEach(hoaDon => {
+                    tableHtml += `
+                        <tr>
+                            <td>${hoaDon.ID}</td>
+                            <td>${hoaDon.EMAIL}</td>
+                            <td>${hoaDon.NGAYTAO}</td>
+                            <td>${Number(hoaDon.TONGTIEN).toLocaleString()} VNĐ</td>
+                            <td>${hoaDon.TENNV}</td>
+                            <td>
+                                <a href="{{ route('admin.thongke.details', '') }}/${hoaDon.ID}" class="btn btn-outline-primary btn-sm">Xem chi tiết</a>
+                            </td>
+                        </tr>
+                    `;
+                });
+                hoaDonTableBody.innerHTML = tableHtml;
+            } else {
+                hoaDonTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center">Không có dữ liệu hiển thị</td>
+                    </tr>
+                `;
+            }
+
+            // Cập nhật biểu đồ tròn
+            const pieChartContainer = document.getElementById('orderPieChartContainer');
+            if (data.orderPercentages && data.orderPercentages.labels.length > 0) {
+                pieChartContainer.style.display = 'block';
+                if (orderPieChart) {
+                    orderPieChart.destroy();
+                }
+                const ctxPie = document.getElementById('orderPieChart').getContext('2d');
+                orderPieChart = new Chart(ctxPie, {
+                    type: 'pie',
+                    data: {
+                        labels: data.orderPercentages.labels,
+                        datasets: [{
+                            label: 'Phần trăm tổng tiền',
+                            data: data.orderPercentages.data,
+                            backgroundColor: data.orderPercentages.backgroundColors,
+                            borderColor: 'rgba(255, 255, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.raw}%`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                pieChartContainer.style.display = 'none';
+                if (orderPieChart) {
+                    orderPieChart.destroy();
+                    orderPieChart = null;
+                }
+            }
+            
+        } else {
+            alert('Có lỗi xảy ra, vui lòng thử lại.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Có lỗi xảy ra, vui lòng thử lại.');
+    });
+}
 </script>
+</body>
+</html>
