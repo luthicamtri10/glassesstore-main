@@ -26,12 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Hiển thị chi tiết sản phẩm
         const cthd = JSON.parse(button.getAttribute("data-cthd"));
-        // const cthdData = button.getAttribute("data-cthd");
-        // console.log("Raw CTHD Data: ", cthdData); 
-        // const cthd = JSON.parse(cthdData);
-        // console.log("Parsed CTHD Data: ", cthd); 
-
-
         const tbody = modal.querySelector(".cthd-body");
         tbody.innerHTML = "";
 
@@ -58,8 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <div class="p-4 bg-light">
     <div class="col-md-12 d-flex flex-wrap align-items-center gap-3">
-        <form class="d-flex flex-wrap w-100 gap-2">
-            <select class="form-select" aria-label="Chọn trạng thái" style="max-width: 200px;">
+        <form class="d-flex flex-wrap w-100 gap-2" method="GET">
+            <select name="trangthai" class="selectpicker" title="Chọn trạng thái" style="max-width: 200px;" data-live-search="true" data-size="5">
                 <option selected disabled>Chọn trạng thái</option>
                 @foreach ($hoaDonStatuses as $status)
                 <option value="{{ $status->value }}">
@@ -86,15 +80,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 @endforeach
     
             </select>
-            <input type="text" placeholder="Nhập mã đơn hàng..." class="form-control" style="max-width: 300px;">
-            
+
+            <select name="tinh" class="selectpicker" data-live-search="true" data-size="5" title="Chọn tỉnh/thành phố" style="max-width: 200px;">
+                <option selected disabled>Chọn tỉnh/thành phố</option>
+                @foreach($listTinh as $tinh)
+                <option value="{{ $tinh->getId() }}" {{ request('keywordTinh') == $tinh->getId() ? 'selected' : '' }}>{{ $tinh->getTenTinh() }}</option>
+                @endforeach
+            </select>
             <div class="d-flex align-items-center gap-2">
                 <label for="calendarStart" class="fw-bold">Ngày:</label>
-                <input type="date" id="calendarStart" class="form-control" style="max-width: 140px;">
+                <input name="ngaybatdau" type="date" id="calendarStart" class="form-control" style="max-width: 140px;">
                 <span class="fw-bold">-</span>
-                <input type="date" id="calendarEnd" class="form-control" style="max-width: 140px;">
+                <input name="ngayketthuc" type="date" id="calendarEnd" class="form-control" style="max-width: 140px;">
             </div>
-            
             <div class="d-flex align-items-center gap-2">
                 <span class="fw-bold">Tiền:</span>
                 <button class="btn btn-outline-primary">
@@ -104,7 +102,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <i class="fa-solid fa-arrow-down-wide-short"></i>
                 </button>
             </div>
-            <button class="btn btn-success">Tìm kiếm</button>
+            <button class="btn btn-success" type="submit">Tìm kiếm</button>
+            <button class="btn btn-info" id="refreshBtn" type="button">Làm mới</button>
         </form>
     </div>
     
@@ -132,8 +131,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>{{ $hoaDon->getTongTien() }}</td>
                     <td>{{ $mapPTTT[$hoaDon->getIdPTTT()->getId()] }}</td>
                     <td>{{ $hoaDon->getNgayTao() }}</td>
-                    <td>{{ $mapPTTT[$hoaDon->getIdDVVC()->getIdDVVC()] }}</td>
-                    <td>{{ $hoaDon->getTrangThai() }}</td>
+                    <td>{{ $mapDVVC[$hoaDon->getIdDVVC()->getIdDVVC()] }}</td>
+                    <td>
+                        @if($hoaDon->getTrangThai() == \App\Enum\HoaDonEnum::PAID)
+                            <span class="badge bg-success">Đã thanh toán</span>
+                        @elseif($hoaDon->getTrangThai() == \App\Enum\HoaDonEnum::PENDING)
+                            <span class="badge bg-warning text-dark">Đang xử lý</span>
+                        @elseif($hoaDon->getTrangThai() == \App\Enum\HoaDonEnum::EXPIRED)
+                            <span class="badge bg-secondary">Hết hạn</span>
+                        @elseif($hoaDon->getTrangThai() == \App\Enum\HoaDonEnum::CANCELLED)
+                            <span class="badge bg-secondary">Đã hủy</span>
+                        @elseif($hoaDon->getTrangThai() == \App\Enum\HoaDonEnum::CANCELLED)
+                            <span class="badge bg-success">Đã hoàn tiền</span>
+                        @endif
+                    </td>
                     <td>
                     <button class="btn btn-warning btn-sm"
                         data-bs-toggle="modal"
@@ -306,6 +317,22 @@ document.addEventListener("DOMContentLoaded", function () {
                           </div>
                         </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<!-- <script src="../../js/"></script> -->
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<!-- jQuery (cần thiết cho Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap-select CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+
+<!-- jQuery (nếu chưa có) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap-select JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
+
 
 

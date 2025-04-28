@@ -124,5 +124,15 @@ class database_connection {
             error_log("Error rolling back transaction: " . $e->getMessage());
         }
     }
+
+    public static function getLastInsertId() {
+        try {
+            $connection = self::getInstance()->getConnection();
+            return $connection->insert_id;
+        } catch (Exception $e) {
+            error_log("Error getting last insert ID: " . $e->getMessage());
+        }
+        return null; // Trả về null nếu không lấy được ID
+    }
 }
 ?>

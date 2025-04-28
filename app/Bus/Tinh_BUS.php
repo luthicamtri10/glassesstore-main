@@ -14,7 +14,7 @@ class Tinh_BUS implements BUSInterface{
         $this->tinhDao = $tinhDao;
         $this->refreshData();
     }
-    public function refreshData(): void
+    public function refreshData(): void 
     {
         $this->tinhList = $this->tinhDao->getAll();
     }

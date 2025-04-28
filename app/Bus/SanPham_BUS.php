@@ -41,7 +41,9 @@ class SanPham_BUS implements BUSInterface {
         //     'thoiGianBaoHanh' => 'nullable|string|max:50',
         // ]);
          
-        return $this->sanPhamDAO->insert($model);
+        // Thêm sản phẩm vào cơ sở dữ liệu và lấy ID mới
+        $sanPhamId = $this->sanPhamDAO->insert($model);
+        return $sanPhamId;
     }
 
     public function updateModel($model): int {

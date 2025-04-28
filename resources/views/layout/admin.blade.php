@@ -195,9 +195,10 @@
                         foreach ($listHoaDon as $hoaDon) {
                             $mapCTHD[$hoaDon->getId()] = $cthdBUS->getCTHTbyIDHD($hoaDon->getId());
                             $cthdData = $cthdBUS->getCTHTbyIDHD($hoaDon->getId());
-                            echo "<script>console.log('CTHD data for ID {$hoaDon->getId()}:', " . json_encode($cthdData) . ");</script>";
                         }
-                        
+
+                        $tinhBUS = app(Tinh_BUS::class);
+                        $listTinh = $tinhBUS->getAllModels();
                         $nguoiDungBUS = app(NguoiDung_BUS::class);
                         $listNguoiDung = $nguoiDungBUS->getAllModels();
                         $pttBUS = app(PTTT_BUS::class);
@@ -235,7 +236,40 @@
 
                         $mapDVVC = [];
                         foreach ($listdvvc as $dvvc) {
-                            $mapPTTT[$dvvc->getIdDVVC()] = $dvvc->getTenDV();
+                            $mapDVVC[$dvvc->getIdDVVC()] = $dvvc->getTenDV();
+                        }
+
+                        // $trangthai = request()->query('trangthai');
+                        // $tinh_id = request()->query('tinh');
+                        // $ngaybatdau = request()->query('ngaybatdau');
+                        // $ngayketthuc = request()->query('ngayketthuc');
+
+                        // // Bắt đầu lọc
+                        // if (!empty($trangthai)) {
+                        //     $listHoaDon = array_filter($listHoaDon, function($hoaDon) use ($trangthai) {
+                        //         return $hoaDon->getTrangThai() == $trangthai;
+                        //     });
+                        // }
+
+                        // if (!empty($tinh_id)) {
+                        //     $listHoaDon = array_filter($listHoaDon, function($hoaDon) use ($tinh_id) {
+                        //         return $hoaDon->getTinh()->getId() == $tinh_id;
+                        //     });
+                        // }
+
+                        // if (!empty($ngaybatdau) && !empty($ngayketthuc)) {
+                        //     $startDate = strtotime($ngaybatdau);
+                        //     $endDate = strtotime($ngayketthuc);
+
+                        //     $listHoaDon = array_filter($listHoaDon, function($hoaDon) use ($startDate, $endDate) {
+                        //         $hoaDonDate = strtotime($hoaDon->getNgayTao());
+                        //         return $hoaDonDate >= $startDate && $hoaDonDate <= $endDate;
+                        //     });
+                        // }
+
+                        if (isset($_GET['keywordTinh']) || !empty($_GET['keywordTinh'])) {
+                            $keywordTinh = $_GET['keywordTinh'];
+                            $listHoaDon = $hoaDonBUS->searchByTinh($keywordTinh);
                         }
 
                         $current_page = request()->query('page', 1);
@@ -259,6 +293,7 @@
                             'mapNguoiDung' => $mapNguoiDung, 
                             'mapPTTT' => $mapPTTT,
                             'mapDVVC' => $mapDVVC,
+                            'listTinh' => $listTinh,
                             'current_page' => $current_page,
                             'total_page' => $total_page,
                             'hoaDonStatuses' => HoaDonEnum::cases(),

@@ -104,4 +104,15 @@ class HoaDon_DAO{
         }
         return $list;
     }
+
+    public function searchByTinh($idTinh) {
+        $list = [];
+        $query = "SELECT * FROM NguoiDung WHERE IDTINH = ?";
+        $rs = database_connection::executeQuery($query, $idTinh);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createHoaDonModel($row);
+            array_push($list, $model);
+        }
+        return $list;
+    }
 }

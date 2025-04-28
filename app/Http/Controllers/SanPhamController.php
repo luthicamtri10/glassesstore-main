@@ -7,6 +7,12 @@ use App\Bus\LoaiSanPham_BUS;
 use Illuminate\Http\Request;
 use App\Bus\SanPham_BUS;
 use App\Models\SanPham;
+use Intervention\Image\ImageManager;
+
+
+
+
+
 
 class SanPhamController extends Controller
 {
@@ -30,6 +36,10 @@ class SanPhamController extends Controller
         $moTa = $request->input('moTa');
         $donGia = $request->input('donGia');
         $thoiGianBaoHanh = $request->input('thoiGianBaoHanh');
+
+        $anhSanPham = $request->file('anhSanPham');
+
+        // Tạo sản phẩm mới
         $sanPham = new SanPham(
             null,
             $tenSanPham,
@@ -41,9 +51,22 @@ class SanPhamController extends Controller
             1
         );
 
-        $this->sanPhamBUS->addModel($sanPham);
+        // Thêm sản phẩm vào database và lấy ID mới
+        $newSanPham = $this->sanPhamBUS->addModel($sanPham);
+
+        // Nếu có ảnh, di chuyển ảnh vào thư mục lưu trữ
+        if ($anhSanPham) {
+            $tenAnh = $newSanPham . '.' . $anhSanPham->getClientOriginalExtension();
+            $anhSanPham->move(public_path('productImg'), $tenAnh); // Di chuyển ảnh
+        } else {
+            dd('Không có file ảnh nào được gửi');
+        }
+
+        // Trả về thông báo thành công
         return redirect()->back()->with('success', 'Thêm sản phẩm thành công!');
     }
+
+
 
     // Xử lý xóa sản phẩm
     public function destroy($id)
