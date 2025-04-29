@@ -9,7 +9,7 @@ use InvalidArgumentException;
 
 use function Laravel\Prompts\alert;
 
-class DVVC_DAO implements DAOInterface {
+class DVVC_DAO {
     private static $instance;
 
     public static function getInstance()
@@ -67,15 +67,15 @@ class DVVC_DAO implements DAOInterface {
         return database_connection::executeQuery($query, ...$args);
     }
 
-    public function update($model): int {
-        $query = "UPDATE DVVC SET tenDV = ?, moTa = ?, trangThaiHD = ? WHERE idDVVC = ?";
+    public function update($model){
+        $query = "UPDATE `dvvc` SET `TENDV`= ?,`MOTA`= ?,`TRANGTHAIHD`= ? WHERE ID = ?";
         $args = [$model->getTenDV(), $model->getMoTa(), $model->getTrangThaiHD(), $model->getIdDVVC()];
         $result = database_connection::executeUpdate($query, ...$args);
-        return is_int($result) ? $result : 0;
+        return is_int($result) ? $result : 0;  
     }
 
     public function delete($id): int {
-        $query = "UPDATE DVVC SET trangThaiHD = false WHERE idDVVC = ?";
+        $query = "UPDATE DVVC SET trangThaiHD = false WHERE id = ?";
         $result = database_connection::executeUpdate($query, ...[$id]);
         return is_int($result) ? $result : 0;
     }
@@ -86,7 +86,7 @@ class DVVC_DAO implements DAOInterface {
         }
         $query = "";
         if ($columnNames === null || count($columnNames) === 0) {
-            $query = "SELECT * FROM DVVC WHERE idDVVC LIKE ? OR tenDV LIKE ? OR moTa LIKE ? OR trangThaiHD LIKE ?";
+            $query = "SELECT * FROM DVVC WHERE id LIKE ? OR tenDV LIKE ? OR moTa LIKE ? OR trangThaiHD LIKE ?";
             $args = array_fill(0, 4, "%" . $condition . "%");
         } else if (count($columnNames) === 1) {
             $column = $columnNames[0];

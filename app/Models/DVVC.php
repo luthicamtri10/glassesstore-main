@@ -6,7 +6,7 @@ class DVVC
 {
     private $idDVVC, $tenDV, $moTa, $trangThaiHD;
 
-    public function __construct($idDVVC, $tenDV, $moTa, $trangThaiHD)
+    public function __construct($idDVVC = null, $tenDV, $moTa, $trangThaiHD)
     {
         $this->idDVVC = $idDVVC;
         $this->tenDV = $tenDV;

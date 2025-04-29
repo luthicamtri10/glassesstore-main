@@ -24,7 +24,7 @@ class DVVC_BUS implements BUSInterface {
         return $this->ChucNangDVVCList;
     }
 
-    public function getModelById(int $id) {
+    public function getModelById($id) {
         return $this->dvvcDAO->getById($id);
     }
 

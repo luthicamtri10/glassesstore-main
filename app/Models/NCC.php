@@ -5,11 +5,12 @@ namespace App\Models;
 class NCC
 {
     private $idNCC, $tenNCC, $sdtNCC, $moTa, $diachi, $trangthaiHD;
-    public function __construct($idNCC, $tenNCC, $sdtNCC, $diachi, $trangthaiHD)
+    public function __construct($idNCC, $tenNCC, $sdtNCC, $moTa, $diachi, $trangthaiHD)
     {
         $this->idNCC = $idNCC;
         $this->tenNCC = $tenNCC;
         $this->sdtNCC = $sdtNCC;
+        $this->moTa = $moTa;
         $this->diachi = $diachi;
         $this->trangthaiHD = $trangthaiHD;
     }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Bus\Auth_BUS;
+use App\Bus\CPVC_BUS;
 use App\Bus\CTGH_BUS;
 use App\Bus\CTQ_BUS;
 use App\Bus\GioHang_BUS;
@@ -10,8 +11,12 @@ use App\Bus\NguoiDung_BUS;
 use App\Bus\SanPham_BUS;
 use App\Bus\TaiKhoan_BUS;
 use App\Bus\Tinh_BUS;
+use App\Http\Controllers\CPVCController;
+use App\Http\Controllers\DonViVanChuyenController;
 use App\Http\Controllers\LoaiSanPhamController;
+use App\Http\Controllers\NccController;
 use App\Http\Controllers\NguoiDungController;
+use App\Http\Controllers\PhieuNhapController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -298,6 +303,26 @@ Route::post('/admin/taikhoan/controldelete', [TaiKhoanController::class, 'contro
 Route::post('/admin/nguoidung/store', [NguoiDungController::class, 'store'])->name('admin.nguoidung.store');
 Route::post('/admin/nguoidung/update', [NguoiDungController::class, 'update'])->name('admin.nguoidung.update');
 Route::post('/admin/nguoidung/controldelete', [NguoiDungController::class, 'controlDelete'])->name('admin.nguoidung.controlDelete');
+
+Route::post('/admin/donvivanchuyen/store', [DonViVanChuyenController::class, 'store'])->name('admin.donvivanchuyen.store');
+Route::post('/admin/donvivanchuyen/update', [DonViVanChuyenController::class, 'update'])->name('admin.donvivanchuyen.update');
+Route::post('/admin/donvivanchuyen/controldelete', [DonViVanChuyenController::class, 'controlDelete'])->name('admin.donvivanchuyen.controlDelete');
+
+Route::prefix('admin')->group(function () {
+    Route::get('/phieunhap', [PhieuNhapController::class, 'index'])->name('admin.phieunhap.index');
+    Route::post('/phieunhap', [PhieuNhapController::class, 'store'])->name('admin.phieunhap.store');
+    Route::get('/phieunhap/search', [PhieuNhapController::class, 'search'])->name('admin.phieunhap.search');
+    Route::get('/phieunhap/{id}/chitiet', [PhieuNhapController::class, 'getChiTiet'])->name('admin.phieunhap.chitiet');
+});
+
+Route::post('/admin/nhacungcap/controldelete', [NccController::class, 'controlDelete'])->name('admin.nhacungcap.controlDelete');
+Route::post('/admin/nhacungcap/store', [NccController::class, 'store'])->name('admin.nhacungcap.store');
+Route::post('/admin/nhacungcap/update', [NccController::class, 'update'])->name('admin.nhacungcap.update');
+
+Route::post('/admin/chiphivanchuyen/store', [CPVCController::class, 'store'])->name('admin.chiphivanchuyen.store');
+Route::post('/admin/chiphivanchuyen/update', [CPVCController::class, 'update'])->name('admin.chiphivanchuyen.update');
+Route::post('/admin/chiphivanchuyen/controldelete', [CPVCController::class, 'controlDelete'])->name('admin.chiphivanchuyen.controlDelete');
+
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GioHangController;

@@ -29,10 +29,13 @@
                 use App\Bus\Quyen_BUS;
                 use App\Bus\TaiKhoan_BUS;
                 use App\Bus\Auth_BUS;
-                use App\Bus\CTQ_BUS;
-
-                use App\Bus\Tinh_BUS;
-                use Illuminate\Support\Facades\View as FacadesView;
+use App\Bus\CPVC_BUS;
+use App\Bus\CTQ_BUS;
+use App\Bus\NCC_BUS;
+use App\Bus\PhieuNhap_BUS;
+use App\Bus\Tinh_BUS;
+use App\Models\DVVC;
+use Illuminate\Support\Facades\View as FacadesView;
 
                 $page = $_GET['modun'] ?? 'nguoidung';
                 switch ($page) {
@@ -276,6 +279,112 @@
                             'current_page' => $current_page,
                             'total_page' => $total_page,
                             'hoaDonStatuses' => HoaDonEnum::cases(),
+                        ])->render();
+                        break;
+                    case 'donvivanchuyen':
+                        $donviBUS = app(DVVC_BUS::class);
+                        $listDVVC = $donviBUS->getAllModels();
+                        if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
+                            $keyword = $_GET['keyword'];
+                            $listDVVC = $donviBUS->searchModel($keyword, []);
+                        }
+    
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($listDVVC ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if (empty($listDVVC)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listDVVC, $start, $limit);
+                        }
+    
+                        echo FacadesView::make('admin.donvivanchuyen', [
+                            'listDVVC' => $tmp,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page
+                        ])->render();
+                        break;
+                    case 'kho':
+                        $phieuNhapBUS = app(PhieuNhap_BUS::class);
+                    
+                        $listPhieuNhap = $phieuNhapBUS->getAllModels();
+                        
+                        if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
+                            $keyword = $_GET['keyword'];
+                            $listPhieuNhap = $phieuNhapBUS->searchModel($keyword, []);
+                        }
+    
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($listPhieuNhap ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if (empty($listPhieuNhap)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listPhieuNhap, $start, $limit);
+                        }
+    
+                        echo FacadesView::make('admin.phieunhap', [
+                            'listPhieuNhap' => $tmp,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page
+                        ])->render();
+                        break;
+                    case 'nhacungcap':
+                        $nccBUS = app(NCC_BUS::class);
+                        $listNCC = $nccBUS->getAllModels();
+                        if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
+                            $keyword = $_GET['keyword'];
+                            $listNCC = $nccBUS->searchModel($keyword, []);
+                        }
+    
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($listNCC ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if (empty($listNCC)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listNCC, $start, $limit);
+                        }
+    
+                        echo FacadesView::make('admin.nhacungcap', [
+                            'listNCC' => $tmp,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page
+                        ])->render();
+                        break;
+                    case 'chiphivanchuyen':
+                        $cpvcBUS = app(CPVC_BUS::class);
+                        $listCPVC = $cpvcBUS->getAllModels();
+                        if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
+                            $keyword = $_GET['keyword'];
+                            $listCPVC = $cpvcBUS->searchModel($keyword, []);
+                        }
+    
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($listCPVC ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if (empty($listCPVC)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listCPVC, $start, $limit);
+                        }
+    
+                        echo FacadesView::make('admin.chiphivanchuyen', [
+                            'listCPVC' => $tmp,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page
                         ])->render();
                         break;
                     default:

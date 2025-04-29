@@ -31,7 +31,7 @@ class NCC_DAO implements DAOInterface
 
     public function getById($id)
     {
-        $query = "SELECT * FROM NCC WHERE idNCC = ?";
+        $query = "SELECT * FROM NCC WHERE id = ?";
         $result = database_connection::executeQuery($query, $id);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
@@ -49,14 +49,14 @@ class NCC_DAO implements DAOInterface
 
     public function update($model): int
     {
-        $query = "UPDATE NCC SET tenNCC = ?, sdtNCC = ?, diachi = ?, trangthaiHD = ? WHERE idNCC = ?";
+        $query = "UPDATE NCC SET tenNCC = ?, sdtNCC = ?, diachi = ?, trangthaiHD = ? WHERE id = ?";
         $args = [$model->getTenNCC(), $model->getSdtNCC(), $model->getDiachi(), $model->getTrangthaiHD(), $model->getIdNCC()];
         return database_connection::executeQuery($query, ...$args);
     }
 
     public function delete($id): int
     {
-        $query = "DELETE FROM NCC WHERE idNCC = ?";
+        $query = "DELETE FROM NCC WHERE id = ?";
         return database_connection::executeQuery($query, $id);
     }
 
@@ -77,11 +77,12 @@ class NCC_DAO implements DAOInterface
     private function createNCCModel($row): NCC
     {
         return new NCC(
-            $row['idNCC'],
-            $row['tenNCC'],
-            $row['sdtNCC'],
-            $row['diachi'],
-            $row['trangthaiHD']
+            $row['ID'],
+            $row['TENNCC'],
+            $row['SODIENTHOAI'],
+            $row['MOTA'],
+            $row['DIACHI'],
+            $row['TRANGTHAIHD']
         );
     }
     public function readDatabase(): array
