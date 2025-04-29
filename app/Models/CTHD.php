@@ -1,16 +1,15 @@
 <?php
 
 namespace App\Models;
+use JsonSerializable;
 
-class CTHD
+class CTHD implements JsonSerializable
 {
-    private $idHD, $idSP, $soLuong, $giaLucDat, $trangThaiHD, $soSeri;
+    private $idHD, $giaLucDat, $trangThaiHD, $soSeri;
 
-    public function __construct($idHD, $idSP, $soLuong, $giaLucDat, $soSeri, $trangThaiHD)
+    public function __construct($idHD, $giaLucDat, $soSeri, $trangThaiHD)
     {
         $this->idHD = $idHD;
-        $this->idSP = $idSP;
-        $this->soLuong = $soLuong;
         $this->giaLucDat = $giaLucDat;
         $this->soSeri = $soSeri;
         $this->trangThaiHD = $trangThaiHD;
@@ -27,27 +26,6 @@ class CTHD
         $this->idHD = $idHD;
     }
 
-    // Getter và Setter cho idSP
-    public function getIdSP()
-    {
-        return $this->idSP;
-    }
-
-    public function setIdSP($idSP)
-    {
-        $this->idSP = $idSP;
-    }
-
-    // Getter và Setter cho soLuong
-    public function getSoLuong()
-    {
-        return $this->soLuong;
-    }
-
-    public function setSoLuong($soLuong)
-    {
-        $this->soLuong = $soLuong;
-    }
 
     // Getter và Setter cho giaLucDat
     public function getGiaLucDat()
@@ -82,5 +60,13 @@ class CTHD
         $this->trangThaiHD = $trangThaiHD;
     }
 
+    public function jsonSerialize(): array {
+        return [
+            'IDHD' => $this->getIDHD(),
+            'SOSERI' => $this->getSOSERI(),
+            'GIALUCDAT' => $this->getGiaLucDat(),
+            'TRANGTHAIBH' => $this->getTrangThaiHD(),
+        ];
+    }
 
 }

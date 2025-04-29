@@ -1,28 +1,47 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // Tìm kiếm: giữ lại tất cả query hiện có và chỉ cập nhật 'keyword' + 'keywordQuyen'
-    const searchForm = document.querySelector('form[role="search"]');
+    const searchForm = document.querySelector('form[method="GET"]');
+
     if (searchForm) {
-    searchForm.addEventListener('submit', function (e) {
-        e.preventDefault();
+        searchForm.addEventListener('submit', function (e) {
+            e.preventDefault();
 
-        const currentUrl = new URL(window.location.href);
-        const keywordInput = document.getElementById('keyword');
+            const formData = new FormData(searchForm);
+            const url = new URL(window.location.href);
 
-        if (keywordInput && keywordInput.value.trim()) {
-            currentUrl.searchParams.set('keyword', keywordInput.value.trim());
-        } else {
-            currentUrl.searchParams.delete('keyword');
+            // Lấy các tham số cũ và thêm vào URL
+            const currentParams = new URLSearchParams(window.location.search);
+
+            // Giữ lại tham số 'modun=hoadon' nếu có
+            if (!currentParams.has('modun')) {
+                currentParams.set('modun', 'hoadon');
+            }
+
+            // Thêm hoặc thay đổi các tham số từ form
+            for (const [key, value] of formData.entries()) {
+                if (value.trim() !== '') {
+                    currentParams.set(key, value);
+                } else {
+                    currentParams.delete(key); // Nếu trường nào trống thì xóa khỏi URL
+                }
+            }
+
+            // Gắn lại các tham số vào URL
+            url.search = currentParams.toString();
+
+            // Chuyển hướng đến URL mới
+            window.location.href = url.toString();
+        });
+
+        // Nếu có chọn 'keywordTinh', sẽ tự động submit
+        const tinhSelect = searchForm.querySelector('select[name="keywordTinh"]');
+        if (tinhSelect) {
+            tinhSelect.addEventListener('change', function () {
+                searchForm.dispatchEvent(new Event('submit'));
+            });
         }
-
-        // Reset về page 1 nếu có param page
-        currentUrl.searchParams.delete('page');
-
-        window.location.href = currentUrl.toString();
-    });
-
     }
-
+    
     const refreshBtn = document.getElementById('refreshBtn');
     refreshBtn.addEventListener('click', function () {
         const url = new URL(window.location.href);

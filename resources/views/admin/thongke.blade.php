@@ -2,6 +2,7 @@
 
 use App\Bus\Auth_BUS;
 use App\Bus\CTGH_BUS;
+use App\Bus\CTHD_BUS;
 use App\Bus\CTPN_BUS;
 use App\Bus\CTQ_BUS;
 use App\Bus\CTSP_BUS;
@@ -42,8 +43,12 @@ use Illuminate\Support\Facades\Auth;
    // foreach($list as $it) {
    //    echo $it->getTenSanPham() . '<br>';
    // } 
-   // $sp = app(SanPham_BUS::class)->getModelById(1);
-   // echo $sp->getTenSanPham();
+   $sp = app(HoaDon_BUS::class)->searchByTinh(1);
+
+   foreach ($sp as $cthd) {
+      echo $cthd->getId(); 
+
+   }
    // echo app(SanPham_BUS::class)->getStock(1);
    // echo 'tinh: ',app(Tinh_BUS::class)->getModelById(2)->getTenTinh().'<br>';
    // $nd = new NguoiDung(null,'test','2025-04-01',GioiTinhEnum::MALE,'Đường Phú Minh, Hà Nội',app(Tinh_BUS::class)->getModelById(2),'000000000000000','015632897459',1);

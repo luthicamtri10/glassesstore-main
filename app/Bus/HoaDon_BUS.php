@@ -46,4 +46,8 @@ class HoaDon_BUS{
         return $this->hoaDonDAO->search($value, $columns);
     }
 
+    public function searchByTinh($idTinh) {
+        return $this->hoaDonDAO->searchByTinh($idTinh);
+    }
+
 }

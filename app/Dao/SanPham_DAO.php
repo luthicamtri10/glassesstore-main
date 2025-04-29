@@ -39,14 +39,20 @@ class SanPham_DAO implements DAOInterface{
         $sql = "INSERT INTO SanPham (tenSanPham, idHang, idLSP, moTa, donGia, thoiGianBaoHanh, trangThaiHD) 
         VALUES (?, ?, ?, ?, ?, ?, ?)";
         $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD()];
-        return database_connection::executeQuery($sql, ...$args);
+        $result = database_connection::executeUpdate($sql, ...$args);
+        // Lấy ID của sản phẩm vừa được chèn vào
+        if ($result) {
+            return database_connection::getLastInsertId();
+        }
+
+        return 0;
     }
 
     public function update($e): int
     {
-        $sql = "UPDATE SanPham SET tenSanPham = ?, idHang = ?, soLuong = ?, moTa = ?, donGia = ?, thoiGianBaoHanh = ?, trangThaiHD = ?) 
+        $sql = "UPDATE SanPham SET tenSanPham = ?, idHang = ?, idLSP = ?, moTa = ?, donGia = ?, thoiGianBaoHanh = ?, trangThaiHD = ?
         WHERE id = ?";
-        $args = [$e->getTenSanPham(), $e->getIdHang(), $e->getIdLSP(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD(), $e->getId()];
+        $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD(), $e->getId()];
         $result = database_connection::executeUpdate($sql, ...$args);
         return is_int($result)? $result : 0;
     }

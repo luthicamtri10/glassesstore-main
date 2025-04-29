@@ -284,7 +284,7 @@ Route::get('/register', function() {
 // Route::view('/admin', 'layout.admin');
 
 Route::post('admin/sanpham/store', [SanPhamController::class, 'store'])->name('admin.sanpham.store');
-Route::post('admin/sanpham/update', [SanPhamController::class, 'store'])->name('admin.sanpham.update');
+Route::post('admin/sanpham/update', [SanPhamController::class, 'update'])->name('admin.sanpham.update');
 Route::delete('admin/sanpham/delete', [SanPhamController::class, 'delete'])->name('admin.sanpham.delete');
 
 Route::post('/admin/loaisanpham/store', [LoaiSanPhamController::class, 'store'])->name('admin.loaisanpham.store');
