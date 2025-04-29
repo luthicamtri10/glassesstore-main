@@ -41,11 +41,11 @@ use Illuminate\Support\Facades\Auth;
    // foreach($list as $it) {
    //    echo $it->getTenSanPham() . '<br>';
    // } 
-   $sp = app(CTHD_BUS::class)->getCTHTbyIDHD(1);
+   $sp = app(HoaDon_BUS::class)->searchByTinh(1);
 
    foreach ($sp as $cthd) {
-      echo $cthd->getIdHD(); 
-      echo $cthd->getSoSeri();
+      echo $cthd->getId(); 
+
    }
    // echo app(SanPham_BUS::class)->getStock(1);
    // echo 'tinh: ',app(Tinh_BUS::class)->getModelById(2)->getTenTinh().'<br>';

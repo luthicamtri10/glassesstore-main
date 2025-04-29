@@ -75,6 +75,7 @@ class SanPhamController extends Controller
         $moTa = $request->input('moTa');
         $donGia = $request->input('donGia');
         $thoiGianBaoHanh = $request->input('thoiGianBaoHanh');
+        $trangThai = $request->input('trangThai');
 
         $anhSanPham = $request->file('anhSanPham');
 
@@ -87,7 +88,7 @@ class SanPhamController extends Controller
             $moTa,
             $donGia,
             $thoiGianBaoHanh,
-            1
+            $trangThai
         );
 
         // Thêm sản phẩm vào database và lấy ID mới

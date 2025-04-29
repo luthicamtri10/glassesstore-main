@@ -229,6 +229,11 @@
                             $mapHoTenByEmail[$email] = $nguoiDung->getHoTen(); // Lấy trực tiếp
                         }
 
+                        $mapTinh = [];
+                        foreach ($listTinh as $tinh) {
+                            $mapTinh[$tinh->getId()] = $tinh->getTenTinh();
+                        }
+
                         $mapPTTT = [];
                         foreach ($listpttt as $pttt) {
                             $mapPTTT[$pttt->getId()] = $pttt->gettenPTTT();
@@ -239,34 +244,7 @@
                             $mapDVVC[$dvvc->getIdDVVC()] = $dvvc->getTenDV();
                         }
 
-                        // $trangthai = request()->query('trangthai');
-                        // $tinh_id = request()->query('tinh');
-                        // $ngaybatdau = request()->query('ngaybatdau');
-                        // $ngayketthuc = request()->query('ngayketthuc');
-
-                        // // Bắt đầu lọc
-                        // if (!empty($trangthai)) {
-                        //     $listHoaDon = array_filter($listHoaDon, function($hoaDon) use ($trangthai) {
-                        //         return $hoaDon->getTrangThai() == $trangthai;
-                        //     });
-                        // }
-
-                        // if (!empty($tinh_id)) {
-                        //     $listHoaDon = array_filter($listHoaDon, function($hoaDon) use ($tinh_id) {
-                        //         return $hoaDon->getTinh()->getId() == $tinh_id;
-                        //     });
-                        // }
-
-                        // if (!empty($ngaybatdau) && !empty($ngayketthuc)) {
-                        //     $startDate = strtotime($ngaybatdau);
-                        //     $endDate = strtotime($ngayketthuc);
-
-                        //     $listHoaDon = array_filter($listHoaDon, function($hoaDon) use ($startDate, $endDate) {
-                        //         $hoaDonDate = strtotime($hoaDon->getNgayTao());
-                        //         return $hoaDonDate >= $startDate && $hoaDonDate <= $endDate;
-                        //     });
-                        // }
-
+                
                         if (isset($_GET['keywordTinh']) || !empty($_GET['keywordTinh'])) {
                             $keywordTinh = $_GET['keywordTinh'];
                             $listHoaDon = $hoaDonBUS->searchByTinh($keywordTinh);
@@ -283,8 +261,6 @@
                         } else {
                             $tmp = array_slice($listHoaDon, $start, $limit);            
                         }
-
-                        // $hoaDonStatuses = HoaDonEnum::cases();
                         
                         echo FacadesView::make('admin.hoadon', [
                             'listHoaDon' => $tmp,
@@ -293,6 +269,7 @@
                             'mapNguoiDung' => $mapNguoiDung, 
                             'mapPTTT' => $mapPTTT,
                             'mapDVVC' => $mapDVVC,
+                            'mapTinh' => $mapTinh,
                             'listTinh' => $listTinh,
                             'current_page' => $current_page,
                             'total_page' => $total_page,

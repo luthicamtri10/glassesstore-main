@@ -1,6 +1,57 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    const searchForm = document.querySelector('form[method="GET"]');
+
+    if (searchForm) {
+        searchForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(searchForm);
+            const url = new URL(window.location.href);
+
+            // Lấy các tham số cũ và thêm vào URL
+            const currentParams = new URLSearchParams(window.location.search);
+
+            // Giữ lại tham số 'modun=hoadon' nếu có
+            if (!currentParams.has('modun')) {
+                currentParams.set('modun', 'hoadon');
+            }
+
+            // Thêm hoặc thay đổi các tham số từ form
+            for (const [key, value] of formData.entries()) {
+                if (value.trim() !== '') {
+                    currentParams.set(key, value);
+                } else {
+                    currentParams.delete(key); // Nếu trường nào trống thì xóa khỏi URL
+                }
+            }
+
+            // Gắn lại các tham số vào URL
+            url.search = currentParams.toString();
+
+            // Chuyển hướng đến URL mới
+            window.location.href = url.toString();
+        });
+    }
+
+    const refreshBtn = document.getElementById('refreshBtn');
+    refreshBtn.addEventListener('click', function () {
+        const url = new URL(window.location.href);
+
+        // Xóa keyword khỏi URL
+        url.searchParams.delete('keywordTinh');
+
+        // Reset về trang đầu nếu có tham số phân trang
+        url.searchParams.delete('page');
+
+        // Giữ lại 'modun=hoadon'
+        url.searchParams.set('modun', 'hoadon');
+
+        // Chuyển hướng
+        window.location.href = url.toString();
+    });
+
     const modal = document.getElementById("staticBackdropOrderModal");
     modal.addEventListener("show.bs.modal", function (event) {
         const button = event.relatedTarget;
@@ -81,10 +132,13 @@ document.addEventListener("DOMContentLoaded", function () {
     
             </select>
 
-            <select name="tinh" class="selectpicker" data-live-search="true" data-size="5" title="Chọn tỉnh/thành phố" style="max-width: 200px;">
+            <select class="selectpicker" name="keywordTinh" data-live-search="true" data-size="5" title="Chọn tỉnh/thành phố" style="max-width: 200px;">
                 <option selected disabled>Chọn tỉnh/thành phố</option>
                 @foreach($listTinh as $tinh)
-                <option value="{{ $tinh->getId() }}" {{ request('keywordTinh') == $tinh->getId() ? 'selected' : '' }}>{{ $tinh->getTenTinh() }}</option>
+                <option value="{{ $tinh->getId() }}" {{ request('keywordTinh') == $tinh->getId() ? 'selected' : '' }}>
+                    {{ $tinh->getTenTinh() }}
+
+                </option>
                 @endforeach
             </select>
             <div class="d-flex align-items-center gap-2">
@@ -167,23 +221,47 @@ document.addEventListener("DOMContentLoaded", function () {
         </table>
     </div>
     
-    <nav aria-label="Page navigation" class="d-flex justify-content-center mt-3">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+            <ul class="pagination">
+                <!-- Hiển thị PREV nếu không phải trang đầu tiên -->
+                <?php
+                $queryString = isset($_GET['keyword']) ? '&keyword=' . urlencode($_GET['keyword']) : '';
+                $query = $_GET;
+
+                // PREV
+                if ($current_page > 1) {
+                    echo '<li class="page-item">
+                            <a class="page-link" href="?' . http_build_query(array_merge($query, ['page' => $current_page - 1])) . '" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>';
+                }
+
+                // Hiển thị các trang phân trang xung quanh trang hiện tại
+                $page_range = 1; // Hiển thị 1 trang trước và 1 trang sau
+                $start_page = max(1, $current_page - $page_range);
+                $end_page = min($total_page, $current_page + $page_range);
+
+                for ($i = $start_page; $i <= $end_page; $i++) {
+                    if ($i == $current_page) {
+                        echo '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
+                    } else {
+                        echo '<li class="page-item"><a class="page-link" href="?' . http_build_query(array_merge($query, ['page' => $i])) . '">' . $i . '</a></li>';
+                    }
+                }
+                
+                // NEXT
+                
+                if ($current_page < $total_page) {
+                    echo '<li class="page-item">
+                            <a class="page-link" href="?' . http_build_query(array_merge($query, ['page' => $current_page + 1])) . '" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>';
+                }
+                ?>
+            </ul>
+          </nav>
 </div>
 
 <div class="modal fade" id="staticBackdropOrderModal" aria-hidden="true" aria-labelledby="staticBackdropLabelInfoOrder" tabindex="-1">
@@ -248,12 +326,12 @@ document.addEventListener("DOMContentLoaded", function () {
                                                           {{ $mapNguoiDung[$hoaDon->getIdNhanVien()->getId()] }}
                                                           </span>
                                                       </div>
-                                                      <!-- <div class="mt-2 mb-2 small address-css">
+                                                      <div class="mt-2 mb-2 small address-css">
                                                           <div><strong>Địa chỉ giao hàng</strong></div>
                                                           <div class="opacity-50 fw-medium">
-                                                            Đồng khởi,Diên Khánh, Khánh Hòa
-                                                          </DIV>
-                                                      </div> -->
+                                                          {{ $hoaDon->getDiaChi() }} - {{ $mapTinh[$hoaDon->getTinh()->getId()] }}
+                                                          </div>
+                                                      </div>
                                                       
                                                       <div class="mt-2 mb-2 d-flex justify-content-between align-items-center small">
                                                           <strong>Ngày tạo đơn hàng</strong>

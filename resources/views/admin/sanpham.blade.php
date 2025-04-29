@@ -51,6 +51,7 @@
             const donGiaSanPhamInput = modal.querySelector('input[name="donGia"]');
             const thoiGianBaoHanhSanPhamInput = modal.querySelector('input[name="thoiGianBaoHanh"]');
             const moTaSanPhamInput = modal.querySelector('textarea[name="moTa"]');
+            const trangThaiSelect = modal.querySelector('select[name="trangThai"]');
             
             idSanPhamInput.value = this.getAttribute('data-id');
             tenSanPhamInput.value = this.getAttribute('data-tenSanPham');
@@ -59,7 +60,10 @@
             donGiaSanPhamInput.value = this.getAttribute('data-dongia');
             thoiGianBaoHanhSanPhamInput.value = this.getAttribute('data-thoigianbaohanh');
             moTaSanPhamInput.value = this.getAttribute('data-mota');
-
+            
+            if (trangThaiSelect) {
+            trangThaiSelect.value = this.getAttribute('data-trangthai').trim();
+          }
             const idSanPham = this.getAttribute('data-id').trim();
             previewImage.src = '/productImg/' + idSanPham + '.webp';
         });
@@ -150,7 +154,8 @@ setTimeout(function() {
                       data-loaisanpham="{{ $sanPham->getIdLSP()->getId() }}"
                       data-dongia="{{ $sanPham->getDonGia() }}"
                       data-thoigianbaohanh="{{ $sanPham->getThoiGianBaoHanh() }}"
-                      data-mota="{{ $sanPham->getMoTa() }}">
+                      data-mota="{{ $sanPham->getMoTa() }}"
+                      data-trangthai="{{ $sanPham->getTrangThaiHD() }}">
                     
                       Sửa
                    </button>
@@ -316,15 +321,23 @@ setTimeout(function() {
           
           <!-- Hàng 2: Thời gian bảo hành & Mức giá -->
           <div class="row mb-3">           
-            <div class="col-6">
+            <div class="col-4">
               <label class="form-label">Mức giá</label>
               <input type="text" name="donGia" class="form-control" placeholder="Nhập mức giá">
             </div>
-            <div class="col-6">
+            <div class="col-4">
               <label class="form-label">Thời gian bảo hành</label>
               <input type="text" name="thoiGianBaoHanh" class="form-control" placeholder="Nhập thời gian bảo hành">
             </div>
+            <div class="col-4">
+              <label class="form-label">Trạng thái</label>
+              <select id="" class="form-select" name="trangThai">
+                <option value="0">Ngừng kinh doanh</option>
+                <option value="1">Đang kinh doanh</option>
+              </select>
+            </div>
           </div>
+          
 
           <!-- Hàng 3: Mô tả -->
           <div class="mb-3">

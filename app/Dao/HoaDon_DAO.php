@@ -5,6 +5,7 @@ use App\Bus\DVVC_BUS;
 use App\Bus\NguoiDung_BUS;
 use App\Bus\PTTT_BUS;
 use App\Bus\TaiKhoan_BUS;
+use App\Bus\Tinh_BUS;
 use App\Enum\HoaDonEnum;
 use App\Interface\DAOInterface;
 use App\Models\HoaDon;
@@ -70,6 +71,8 @@ class HoaDon_DAO{
         }
         $ngayTao = $rs['NGAYTAO'];
         $idDVVC = app(DVVC_BUS::class)->getModelById($rs['IDDVVC']);
+        $diaChi = $rs['DIACHI'];
+        $tinh = app(Tinh_BUS::class)->getModelById($rs['IDTINH']);
         $trangThai = $rs['TRANGTHAI'];
         switch($trangThai) {
             case 'PAID':
@@ -92,7 +95,7 @@ class HoaDon_DAO{
                 break;
         }
         
-        return new HoaDon($id, $email, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $trangThai);
+        return new HoaDon($id, $email, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $diaChi, $tinh, $trangThai);
     }
 
     public function getAll() : array {
@@ -107,7 +110,7 @@ class HoaDon_DAO{
 
     public function searchByTinh($idTinh) {
         $list = [];
-        $query = "SELECT * FROM NguoiDung WHERE IDTINH = ?";
+        $query = "SELECT * FROM hoadon WHERE IDTINH = ?";
         $rs = database_connection::executeQuery($query, $idTinh);
         while($row = $rs->fetch_assoc()) {
             $model = $this->createHoaDonModel($row);
