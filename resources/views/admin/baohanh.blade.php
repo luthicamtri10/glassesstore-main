@@ -1,4 +1,7 @@
 @include('admin.includes.navbar')
+<?php
+  
+?>
 <div class="p-3">
             <!-- Nút mở Modal -->
             <!-- <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#warehouseModal">

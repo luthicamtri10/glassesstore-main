@@ -28,11 +28,13 @@
                 use App\Bus\PTTT_BUS;
                 use App\Bus\Quyen_BUS;
                 use App\Bus\TaiKhoan_BUS;
+                use App\Bus\Auth_BUS;
+                use App\Bus\CTQ_BUS;
+
                 use App\Bus\Tinh_BUS;
                 use Illuminate\Support\Facades\View as FacadesView;
 
                 $page = $_GET['modun'] ?? 'nguoidung';
-
                 switch ($page) {
                     case 'taikhoan':
                         $taikhoanBUS = app(TaiKhoan_BUS::class);

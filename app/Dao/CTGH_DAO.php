@@ -22,8 +22,8 @@ class CTGH_DAO {
     }
     public function addGH($model) {
         // $list = app(CTSP_BUS::class)->getCTSPByIDSP($model->);
-        $query = "INSERT INTO CTGH (IDGH, IDSP, SOLUONG) VALUES (?,?)";
-        $args = [$model->getIdGH(), $model->getIdSP(), $model->getSoLuong()];
+        $query = "INSERT INTO `ctgh`(`IDGH`, `IDSP`, `SOLUONG`) VALUES (?,?,?)";
+        $args = [$model->getIdGH()->getIdGH(), $model->getIdSP()->getId(), $model->getSoLuong()];
         return database_connection::executeUpdate($query, ...$args);
     }
     public function deleteCTGH($idgh, $idsp) {
@@ -31,35 +31,6 @@ class CTGH_DAO {
         $args = [$idgh, $idsp];
         return database_connection::executeUpdate($query, ...$args);
     }
-    // public function checkSP($idgh, $idsp) {
-    //     $listctgh = $this->getByIDGH($idgh);
-    //     $index = 0;
-    //     foreach($listctgh as $it) {
-    //         $sp = app(CTSP_BUS::class)->getSPBySoSeri($it->getSoSeri());
-    //         if($sp->getId() === $idsp) {
-    //             $index += 1;
-    //         }
-    //     }
-    //     return $index;
-    // }
-    
-    // public function getListSPFromCTGH($idgh) {
-    //     $listctgh = $this->getByIDGH($idgh);
-    //     $result = [];
-    
-    //     foreach ($listctgh as $it) {
-    //         $sp = app(CTSP_BUS::class)->getSPBySoSeri($it->getSoSeri());
-    //         $idsp = $sp->getId();
-    
-    //         if (isset($result[$idsp])) {
-    //             $result[$idsp] += 1;
-    //         } else {
-    //             $result[$idsp] = 1;
-    //         }
-    //     }
-    
-    //     return $result; // mảng có dạng [idsp => soluong, ...]
-    // }
     public function createCTGHModel($row) {
         $idsp = app(SanPham_BUS::class)->getModelById($row['IDSP']);
         $idgh = app(GioHang_BUS::class)->getModelById($row['IDGH']);

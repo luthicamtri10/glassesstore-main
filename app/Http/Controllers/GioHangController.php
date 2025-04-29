@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Bus\CTGH_BUS;
 use App\Bus\CTSP_BUS;
 use App\Bus\GioHang_BUS;
+use App\Bus\SanPham_BUS;
 use App\Http\Controllers\Controller;
 use App\Models\CTGH;
 use Illuminate\Http\Request;
@@ -44,18 +45,33 @@ class GioHangController extends Controller {
         app(CTGH_BUS::class)->deleteCTGH($idgh, $idsp);
         return redirect()->back()->with('success','Xóa khỏi giỏ hàng thành công!');
     }
-    public function search(Request $request) {
+    public function add(Request $request) {
+        // dd($request->all());
         $idgh = $request->input('idgh');
-        $keyword = $request->input('keyword');
-    
-        // Lấy danh sách sản phẩm trong giỏ hàng theo từ khóa
-        $listCTGH = app(CTGH_BUS::class)->searchCTGHByKeyword($idgh, $keyword);
-    
-        // Trả về view với danh sách tìm kiếm
-        return view('client.userCart', [
-            'listCTGH' => $listCTGH,
-            'keyword' => $keyword // Để giữ từ khóa trong input
-        ]);
+        $idsp = $request->input('idsp');
+        
+        if (!$idgh || !$idsp) {
+            return redirect()->back()->with('error','Vui lòng kiểm tra lại dữ liệu');
+        }
+        $ctgh = app(CTGH_BUS::class)->getCTGHByIDGHAndIDSP($idgh, $idsp);
+        $list = app(CTSP_BUS::class)->getCTSPIsNotSoldByIDSP($idsp);
+        if (count($list) >= 1) {
+            if($ctgh == null) {
+                $gh = app(GioHang_BUS::class)->getModelById($idgh);
+                $sp = app(SanPham_BUS::class)->getModelById($idsp);
+                $new = new CTGH($gh,$sp,1);
+                app(CTGH_BUS::class)->addGH($new);
+             } else {
+                $gh = app(GioHang_BUS::class)->getModelById($idgh);
+                $sp = app(SanPham_BUS::class)->getModelById($idsp);
+                $soluong = $ctgh->getSoLuong() + 1;
+                $updated = new CTGH($gh,$sp,$soluong);
+                app(CTGH_BUS::class)->updateCTGH($updated);
+             }
+            return redirect()->back()->with('success', 'Thêm sản phẩm vào giỏ hàng thành công!');
+        } else {
+            return redirect()->back()->with('error', 'Hiện tại sản phẩm đang hết hàng!');
+        }
     }
 }
 ?>

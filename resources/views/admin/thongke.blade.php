@@ -4,6 +4,7 @@ use App\Bus\Auth_BUS;
 use App\Bus\CTGH_BUS;
 use App\Bus\CTHD_BUS;
 use App\Bus\CTPN_BUS;
+use App\Bus\CTQ_BUS;
 use App\Bus\CTSP_BUS;
 use App\Bus\GioHang_BUS;
 use App\Bus\Hang_BUS;
@@ -23,6 +24,7 @@ use App\Dao\SanPham_DAO;
 use App\Enum\GioiTinhEnum;
 use App\Models\CTGH;
 use App\Models\CTPN;
+use App\Models\CTQ;
 use App\Models\CTSP;
 use App\Models\GioHang;
 use App\Models\Hang;
@@ -54,4 +56,38 @@ use Illuminate\Support\Facades\Auth;
    // echo 'add nd: ', app(NguoiDung_BUS::class)->addModel($nd);
    // $tk = new TaiKhoan('khang','please@gmail.com','123456789',$nd,app(Quyen_BUS::class)->getModelById(3), 1);
    // echo app(TaiKhoan_BUS::class)->addModel($tk);
+   // echo app(GioHang_BUS::class)->getByEmail("admin@example.com")->getEmail() .'<br>';
+   // $list = app(CTGH_BUS::class)->getByIDGH(14);
+   // if (empty($list)) {
+   //    echo 'Emty';
+   // } else {
+   //    foreach ($list as $key) {
+   //       # code...
+   //       echo $key->getIdSP()->getTenSanPham() .'<br>';
+   //    }
+   // }
+   // $ctgh = app(CTGH_BUS::class)->addGH($model)
+   // echo app(GioHang_BUS::class)->getModelById(1)->getEmail() .'<br>';
+   // echo app(SanPham_BUS::class)->getModelById(1)->getTenSanPham() .'<br>';
+   // $ctgh = new CTGH(app(GioHang_BUS::class)->getModelById(1), app(SanPham_BUS::class)->getModelById(2),1);
+   // if (app(CTGH_BUS::class)->addGH($ctgh)) {
+   //    echo 'success';
+   // } else {
+   //    echo 'failed';
+   // }
+   // $ctgh = app(CTGH_BUS::class)->getCTGHByIDGHAndIDSP(1,3);
+   // if($ctgh == null) {
+   //    $gh = app(GioHang_BUS::class)->getModelById(1);
+   //    $sp = app(SanPham_BUS::class)->getModelById(3);
+   //    $new = new CTGH($gh,$sp,1);
+   //    app(CTGH_BUS::class)->addGH($new);
+   //    echo 'add success';
+   // } else {
+   //    echo 'existing';
+   // }
+   if(app(CTQ_BUS::class)->checkChucNangExistInQuyen(1,6)) {
+      echo 'found success!';
+   } else {
+      echo 'not found';
+   }
 ?>

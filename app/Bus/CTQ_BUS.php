@@ -64,5 +64,24 @@ class CTQ_BUS implements BUSInterface{
     public function deleteByIdQuyenAndIdChucNang($idQuyen, $idChucNang) {
         return $this->ctqDAO->deleteByIdQuyenAndIdChucNang($idQuyen, $idChucNang);
     }
+    public function checkChucNangExistInListCTQ($listCTQ, $idChucNang) : bool {
+        foreach ($listCTQ as $key) {
+            # code...
+            if($key->getIdChucNang()->getId() == $idChucNang) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public function checkChucNangExistInQuyen($idQuyen,$idChucNang) {
+        $listCTQ = $this->getModelById($idQuyen);
+        foreach ($listCTQ as $key) {
+            # code...
+            if($key->getIdChucNang()->getId() == $idChucNang) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 ?>

@@ -28,5 +28,6 @@ class CTGH_BUS {
         return $this->ctghDAO->searchCTGHByKeyword($idgh, $keyword);
     }
     
+    
 }
 ?>
