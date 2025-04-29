@@ -44,6 +44,7 @@
             const modal = document.querySelector('#updateProductModal');
             if (!modal) return;
 
+            const idSanPhamInput = modal.querySelector('input[name="idSanPham"');
             const tenSanPhamInput = modal.querySelector('input[name="tenSanPham"]');
             const hangSanPhamInput = modal.querySelector('select[name="idHang"]');
             const loaiSanPhamInput = modal.querySelector('select[name="idLSP"]');
@@ -51,6 +52,7 @@
             const thoiGianBaoHanhSanPhamInput = modal.querySelector('input[name="thoiGianBaoHanh"]');
             const moTaSanPhamInput = modal.querySelector('textarea[name="moTa"]');
             
+            idSanPhamInput.value = this.getAttribute('data-id');
             tenSanPhamInput.value = this.getAttribute('data-tenSanPham');
             hangSanPhamInput.value = this.getAttribute('data-hang');
             loaiSanPhamInput.value = this.getAttribute('data-loaisanpham');
@@ -71,6 +73,14 @@ document.querySelector('form').addEventListener('submit', function(event) {
         event.preventDefault(); // Ngừng gửi form nếu không chọn file
     }
 });
+
+setTimeout(function() {
+        var alert = document.getElementById('successAlert');
+        if(alert){
+            var bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        }
+    }, 3000);
 
 </script>
 
@@ -273,8 +283,9 @@ document.querySelector('form').addEventListener('submit', function(event) {
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
       </div>
       <div class="modal-body">
-        <form method="post" action="{{ route('admin.sanpham.store') }}" enctype="multipart/form-data">
+        <form method="post" action="{{ route('admin.sanpham.update') }}" enctype="multipart/form-data">
           @csrf
+          <input type="hidden" name="idSanPham">
           <!-- Hàng 1: Tên sản phẩm & Loại Sản Phẩm & Hãng -->
           <div class="row mb-3">
             <div class="col-4">
@@ -337,13 +348,31 @@ document.querySelector('form').addEventListener('submit', function(event) {
 </div>
 
 @if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
-    {{ session('success') }}
+<div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert" id="successAlert" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    <div>
+      {{ session('success') }}
+    </div>
+    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
+
+<script>
+    // Tự động đóng alert sau 3 giây
+    setTimeout(function() {
+        var alert = document.getElementById('successAlert');
+        if(alert){
+            var bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        }
+    }, 3000);
+</script>
 @endif
+
 @if(session('error'))
 <div class="alert alert-success alert-dismissible fade show" role="alert" id="errorAlert">
     {{ session('error') }}
 </div>
 @endif
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+

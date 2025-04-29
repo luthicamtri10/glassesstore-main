@@ -49,9 +49,9 @@ class SanPham_DAO implements DAOInterface{
 
     public function update($e): int
     {
-        $sql = "UPDATE SanPham SET tenSanPham = ?, idHang = ?, soLuong = ?, moTa = ?, donGia = ?, thoiGianBaoHanh = ?, trangThaiHD = ?) 
+        $sql = "UPDATE SanPham SET tenSanPham = ?, idHang = ?, idLSP = ?, moTa = ?, donGia = ?, thoiGianBaoHanh = ?, trangThaiHD = ?
         WHERE id = ?";
-        $args = [$e->getTenSanPham(), $e->getIdHang(), $e->getIdLSP(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD(), $e->getId()];
+        $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD(), $e->getId()];
         $result = database_connection::executeUpdate($sql, ...$args);
         return is_int($result)? $result : 0;
     }

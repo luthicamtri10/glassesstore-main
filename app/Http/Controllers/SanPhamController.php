@@ -58,12 +58,47 @@ class SanPhamController extends Controller
         if ($anhSanPham) {
             $tenAnh = $newSanPham . '.' . $anhSanPham->getClientOriginalExtension();
             $anhSanPham->move(public_path('productImg'), $tenAnh); // Di chuyển ảnh
-        } else {
-            dd('Không có file ảnh nào được gửi');
-        }
+        } 
+        // else {
+        //     dd('Không có file ảnh nào được gửi');
+        // }
 
         // Trả về thông báo thành công
         return redirect()->back()->with('success', 'Thêm sản phẩm thành công!');
+    }
+
+    public function update(Request $request) {
+        $idSanPham = $request->input('idSanPham');
+        $tenSanPham = $request->input('tenSanPham');
+        $idHang = $this->hangBUS->getModelById($request->input('idHang'));
+        $idLSP = $this->loaiSanPhamBUS->getModelById($request->input('idLSP'));
+        $moTa = $request->input('moTa');
+        $donGia = $request->input('donGia');
+        $thoiGianBaoHanh = $request->input('thoiGianBaoHanh');
+
+        $anhSanPham = $request->file('anhSanPham');
+
+        // Tạo sản phẩm mới
+        $sanPham = new SanPham(
+            $idSanPham,
+            $tenSanPham,
+            $idHang,
+            $idLSP,
+            $moTa,
+            $donGia,
+            $thoiGianBaoHanh,
+            1
+        );
+
+        // Thêm sản phẩm vào database và lấy ID mới
+        $newSanPham = $this->sanPhamBUS->updateModel($sanPham);
+
+        // Xử lý file ảnh nếu có gửi lên
+        if ($anhSanPham) {
+            $tenAnh = $newSanPham . '.' . $anhSanPham->getClientOriginalExtension();
+            $anhSanPham->move(public_path('productImg'), $tenAnh);
+        }
+        return redirect()->back()->with('success', 'Cập nhật thành công!');
     }
 
 
