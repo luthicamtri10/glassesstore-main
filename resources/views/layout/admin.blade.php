@@ -185,8 +185,14 @@
                     break;
                 case 'phieunhap':
                     $phieuNhapBUS = app(PhieuNhap_BUS::class);
+                    $nccBUS = app(NCC_BUS::class);
+                    $sanPhamBUS = app(SanPham_BUS::class);
+                    $ctpnBUS = app(CTPN_BUS::class);
+                    
                
                     $listPhieuNhap = $phieuNhapBUS->getAllModels();
+                    $listNCC = $nccBUS->getAllModels();
+                    $listSanPham = $sanPhamBUS->getAllModels();
                     
                     if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
                         $keyword = $_GET['keyword'];
@@ -207,6 +213,8 @@
 
                     echo FacadesView::make('admin.phieunhap', [
                         'listPhieuNhap' => $tmp,
+                        'listNCC' => $listNCC,
+                        'listSanPham' => $listSanPham,
                         'current_page' => $current_page,
                         'total_page' => $total_page
                     ])->render();

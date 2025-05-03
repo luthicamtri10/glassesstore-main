@@ -53,39 +53,55 @@ class PhieuNhapController extends Controller
 
     public function store(Request $request)
     {
-        // Tạo phiếu nhập
-        $phieuNhap = new PhieuNhap(
-            $request->IDNCC,
-            date('Y-m-d H:i:s'),
-            1,
-            '',
-            0,
-            ReceiptStatus::UNPAID
-        );
+        try {
+            // Lấy ID lớn nhất hiện tại và tăng lên 1
+            $maxId = $this->phieuNhapBus->getMaxId();
+            $newId = $maxId ? $maxId + 1 : 1;
 
-        $this->phieuNhapBus->addModel($phieuNhap);
-
-        // Lấy ID của phiếu nhập vừa tạo
-        $idPhieuNhap = $this->phieuNhapBus->getLastInsertId();
-
-        // Thêm chi tiết phiếu nhập
-        $sanPhamIds = $request->IDSANPHAM;
-        $soLuongs = $request->SOLUONG;
-        $donGias = $request->DONGIA;
-
-        foreach ($sanPhamIds as $index => $idSanPham) {
-            $ctpn = new CTPN(
-                $idPhieuNhap,
-                $idSanPham,
-                $soLuongs[$index],
-                $donGias[$index],
-                null
+            // Tạo phiếu nhập
+            $phieuNhap = new PhieuNhap(
+                $newId,
+                $request->idNCC,
+                0, // Tổng tiền sẽ được tính sau
+                $request->ngayNhap,
+                1, // ID nhân viên mặc định
+                ReceiptStatus::UNPAID
             );
 
-            $this->phieuNhapBus->addCTPN($ctpn);
-        }
+            // Thêm phiếu nhập vào database
+            $idPhieuNhap = $this->phieuNhapBus->addModel($phieuNhap);
+            if (!$idPhieuNhap) {
+                throw new \Exception('Không thể tạo phiếu nhập');
+            }
 
-        return redirect()->back()->with('success', 'Thêm phiếu nhập thành công');
+            // Thêm chi tiết phiếu nhập
+            $tongTien = 0;
+            foreach ($request->chiTiet as $chiTiet) {
+                $ctpn = new CTPN(
+                    $idPhieuNhap,
+                    $chiTiet['id'],
+                    $chiTiet['soLuong'],
+                    $chiTiet['giaNhap'],
+                    $chiTiet['phanTramLN']
+                );
+
+                $result = $this->phieuNhapBus->addCTPN($ctpn);
+                if (!$result) {
+                    throw new \Exception('Không thể thêm chi tiết phiếu nhập');
+                }
+
+                $tongTien += $chiTiet['soLuong'] * $chiTiet['giaNhap'];
+            }
+
+            // Cập nhật tổng tiền cho phiếu nhập
+            $phieuNhap->setId($idPhieuNhap);
+            $phieuNhap->setTongTien($tongTien);
+            $this->phieuNhapBus->updateModel($phieuNhap);
+
+            return response()->json(['success' => true, 'message' => 'Thêm phiếu nhập thành công']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function search(Request $request)
@@ -122,5 +138,27 @@ class PhieuNhapController extends Controller
     {
         $chiTiet = $this->phieuNhapBus->getChiTietPhieuNhap($id);
         return response()->json($chiTiet);
+    }
+
+    public function storeChiTiet(Request $request)
+    {
+        try {
+            $ctpn = new CTPN(
+                $request->idPhieuNhap,
+                $request->idSanPham,
+                $request->soLuong,
+                $request->giaNhap,
+                $request->phanTramLN
+            );
+
+            $result = $this->phieuNhapBus->addCTPN($ctpn);
+            if (!$result) {
+                throw new \Exception('Không thể thêm chi tiết phiếu nhập');
+            }
+
+            return response()->json(['success' => true, 'message' => 'Thêm chi tiết phiếu nhập thành công']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 } 

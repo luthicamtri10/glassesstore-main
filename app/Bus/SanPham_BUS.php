@@ -42,7 +42,7 @@ class SanPham_BUS implements BUSInterface {
             'tenSanPham' => 'required|string|max:255',
             'idHang' => 'required|integer|exists:hangs,id',
             'idLSP' => 'required|integer|exists:loai_san_phams,id',
-            'soLuong' => 'required|integer|min:0',
+            // 'soLuong' => 'required|integer|min:0',
             'moTa' => 'nullable|string',
             'donGia' => 'required|numeric|min:0',
             'thoiGianBaoHanh' => 'nullable|string|max:50',

@@ -10,15 +10,7 @@ use InvalIDArgumentException;
 use function Laravel\Prompts\alert;
 
 class DVVC_DAO implements DAOInterface {
-    private static $instance;
 
-    public static function getInstance()
-    {
-        if (self::$instance == null) {
-            self::$instance = new DVVC_DAO();
-        }
-        return self::$instance;
-    }
 
     public function readDatabase(): array
     {
@@ -71,7 +63,12 @@ class DVVC_DAO implements DAOInterface {
         $query = "UPDATE DVVC SET TENDV = ?, moTa = ?, trangThaiHD = ? WHERE ID = ?";
         $args = [$model->getTENDV(), $model->getMoTa(), $model->getTrangThaiHD(), $model->getID()];
         $result = database_connection::executeUpdate($query, ...$args);
-        return is_int($result) ? $result : 0;
+        
+        if ($result === false) {
+            throw new \Exception("Cập nhật thất bại");
+        }
+        
+        return 1; // Trả về 1 nếu cập nhật thành công
     }
 
     public function delete($ID): int {

@@ -65,22 +65,22 @@ class ChucNang_DAO implements DAOInterface {
         return is_int($result) ? $result : 0;
     }
 
-    public function search(string $condition, $columnNames): array
+    public function search($value,$columns): array
     {
-        if (empty($condition)) {
+        if (empty($value)) {
             throw new InvalidArgumentException("Search condition cannot be empty or null");
         }
         $query = "";
-        if ($columnNames === null || count($columnNames) === 0) {
+        if ($columns === null || count($columns) === 0) {
             $query = "SELECT * FROM ChucNang WHERE id LIKE ? OR tenChucNang LIKE ? OR trangThaiHD LIKE ? ";
-            $args = array_fill(0,  3, "%" . $condition . "%");
-        } else if (count($columnNames) === 1) {
-            $column = $columnNames[0];
+            $args = array_fill(0,  3, "%" . $value . "%");
+        } else if (count($columns) === 1) {
+            $column = $columns[0];
             $query = "SELECT * FROM ChucNang WHERE $column LIKE ?";
-            $args = ["%" . $condition . "%"];
+            $args = ["%" . $value . "%"];
         } else {
-            $query = "SELECT * FROM ChucNang WHERE " . implode(" LIKE ? OR ", $columnNames) . " LIKE ?";
-            $args = array_fill(0, count($columnNames), "%" . $condition . "%");
+            $query = "SELECT * FROM ChucNang WHERE " . implode(" LIKE ? OR ", $columns) . " LIKE ?";
+            $args = array_fill(0, count($columns), "%" . $value . "%");
         }
         $rs = database_connection::executeQuery($query, ...$args);
         $list = [];

@@ -1,45 +1,35 @@
 <?php
 namespace App\Bus;
-
+use Illuminate\Support\Facades\Validator;
 use App\Dao\CPVC_DAO;
 use App\Interface\BUSInterface;
 
 class CPVC_BUS implements BUSInterface
 {
     private $CPVCList = array();
-    private static $instance;
+    private $cpvcDAO;
 
-    public static function getInstance()
+  
+    public function __construct(CPVC_DAO $cpvcDAO)
     {
-        if (self::$instance == null) {
-            self::$instance = new CPVC_BUS();
-        }
-        return self::$instance;
-    }
-
-    public function __construct()
-    {
+        $this->cpvcDAO = $cpvcDAO;
         $this->refreshData();
     }
 
     public function refreshData(): void
     {
-        $this->CPVCList = CPVC_DAO::getInstance()->getAll();
+        $this->CPVCList = $this->cpvcDAO->getAll();
     }
 
     public function getAllModels(): array
     {
-        // Kiểm tra xem có dữ liệu trả về từ DB hay không
-        $result = CPVC_DAO::getInstance()->getAll();
-        
-        // Nếu không có dữ liệu, trả về mảng rỗng
-        return $result ?: [];
+        return $this->CPVCList;
     }
 
 
     public function getModelById(int $id)
     {
-        return CPVC_DAO::getInstance()->getById($id);
+        return $this->cpvcDAO->getById($id);
     }
 
     public function addModel($model)
@@ -47,7 +37,22 @@ class CPVC_BUS implements BUSInterface
         if ($model == null) {
             throw new \InvalidArgumentException("Error when adding a CPVC record.");
         }
-        return CPVC_DAO::getInstance()->insert($model);
+
+        $validator = Validator::make([
+            'IDTINH' => $model->getIDTINH(),
+            'IDVC' => $model->getIDVC(),
+            'CHIPHIVC' => $model->getCHIPHIVC()
+        ], [
+            'IDTINH' => 'required|integer',
+            'IDVC' => 'required|integer',
+            'CHIPHIVC' => 'required|numeric|min:0'
+        ]);
+
+        if ($validator->fails()) {
+            throw new \InvalidArgumentException($validator->errors()->first());
+        }
+
+        return $this->cpvcDAO->insert($model);
     }
 
     public function updateModel($model)
@@ -55,7 +60,22 @@ class CPVC_BUS implements BUSInterface
         if ($model == null) {
             throw new \InvalidArgumentException("Error when updating a CPVC record.");
         }
-        return CPVC_DAO::getInstance()->update($model);
+
+        $validator = Validator::make([
+            'IDTINH' => $model->getIDTINH(),
+            'IDVC' => $model->getIDVC(),
+            'CHIPHIVC' => $model->getCHIPHIVC()
+        ], [
+            'IDTINH' => 'required|integer',
+            'IDVC' => 'required|integer',
+            'CHIPHIVC' => 'required|numeric|min:0'
+        ]);
+
+        if ($validator->fails()) {
+            throw new \InvalidArgumentException($validator->errors()->first());
+        }
+
+        return $this->cpvcDAO->update($model);
     }
 
     public function deleteModel(int $id)
@@ -63,12 +83,22 @@ class CPVC_BUS implements BUSInterface
         if ($id == null || $id == "") {
             throw new \InvalidArgumentException("Error when deleting a CPVC record.");
         }
-        return CPVC_DAO::getInstance()->delete($id);
+        return $this->cpvcDAO->delete($id);
     }
 
     public function searchModel(string $value, array $columns)
     {
-        $list = CPVC_DAO::getInstance()->search($value, $columns);
-        return count($list) > 0 ? $list : null;
+        return $this->cpvcDAO->search($value, $columns);
+    }
+
+    public function search(string $keyword): array
+    {
+        try {
+            $columns = ['IDTINH', 'IDVC', 'CHIPHIVC'];
+            return $this->searchModel($keyword, $columns) ?? [];
+        } catch (\Exception $e) {
+            error_log("Error searching shipping costs: " . $e->getMessage());
+            return [];
+        }
     }
 } 

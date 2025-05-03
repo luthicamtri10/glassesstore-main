@@ -75,7 +75,7 @@
 </script>
 @endif
 <div class="p-3 bg-light flex">
-    <form class="d-flex me-2 mb-3" method="get" role="search">
+    <form class="d-flex me-2 mb-3" method="get" action="{{ route('admin.shipping-cost.search') }}" role="search">
         <input type="hidden" name="modun" value="chiphivanchuyen">
         <input class="form-control me-2 w-25" type="search" placeholder="Tìm kiếm" aria-label="Search" id="keyword" name="keyword" value="{{ request('keyword') }}">
         <button class="btn btn-outline-success me-2" type="submit">Tìm</button>
@@ -116,7 +116,7 @@
                             data-bs-toggle="modal"
                             data-bs-target="#shippingCostUpdateModal">Sửa</button>
 
-                        <form method="POST" action="{{ route('admin.chiphivanchuyen.controlDelete') }}" style="display:inline;">
+                        <form method="POST" action="{{ route('admin.chiphivanchuyen.destroy') }}" style="display:inline;">
                             @csrf
                             <input type="hidden" name="id" value="{{ $cost->getIdVC() }}">
                             <input type="hidden" name="idtinh" value="{{ $cost->getIDTINH() }}">
@@ -188,15 +188,15 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="provinceId" class="form-label">ID Tỉnh</label>
-                        <input type="text" class="form-control" id="provinceId" name="IDTINH" required>
+                        <input type="number" class="form-control" id="provinceId" name="IDTINH" required>
                     </div>
                     <div class="mb-3">
                         <label for="shippingId" class="form-label">ID Vận chuyển</label>
-                        <input type="text" class="form-control" id="shippingId" name="IDVC" required>
+                        <input type="number" class="form-control" id="shippingId" name="IDVC" required>
                     </div>
                     <div class="mb-3">
                         <label for="shippingCost" class="form-label">Chi phí vận chuyển</label>
-                        <input type="number" class="form-control" id="shippingCost" name="CHIPHIVC" required>
+                        <input type="number" class="form-control" id="shippingCost" name="CHIPHIVC" required min="0">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -222,15 +222,15 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="provinceId" class="form-label">ID Tỉnh</label>
-                        <input type="text" class="form-control" id="provinceId" name="IDTINH" required>
+                        <input type="number" class="form-control" id="provinceId" name="IDTINH" required readonly>
                     </div>
                     <div class="mb-3">
                         <label for="shippingId" class="form-label">ID Vận chuyển</label>
-                        <input type="text" class="form-control" id="shippingId" name="IDVC" required>
+                        <input type="number" class="form-control" id="shippingId" name="IDVC" required readonly>
                     </div>
                     <div class="mb-3">
                         <label for="shippingCost" class="form-label">Chi phí vận chuyển</label>
-                        <input type="number" class="form-control" id="shippingCost" name="CHIPHIVC" required>
+                        <input type="number" class="form-control" id="shippingCost" name="CHIPHIVC" required min="0">
                     </div>
                 </div>
                 <div class="modal-footer">

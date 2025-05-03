@@ -294,7 +294,7 @@
                     data-tensp="{{ $sp->getTenSanPham() }}"
                     data-hang="{{ $sp->getIdHang()->getTenHang() }}"
                     data-lsp="{{ $sp->getIdLSP()->getTenLSP() }}"
-                    data-soluong="{{ $sp->getSoLuong() }}"
+              
                     data-mota="{{ $sp->getMoTa() }}"
                     data-dongia="{{ $sp->getDonGia() }}"
                     data-thbg="{{ $sp->getThoiGianBaoHanh() }}"

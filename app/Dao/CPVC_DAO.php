@@ -5,17 +5,20 @@ namespace App\Dao;
 use App\Models\CPVC;
 use App\Services\database_connection;
 use App\Interface\DAOInterface;
+use Exception;
+use InvalidArgumentException;
 
 class CPVC_DAO implements DAOInterface
 {
-    private static $instance;
-
-    public static function getInstance()
+    public function readDatabase(): array
     {
-        if (self::$instance == null) {
-            self::$instance = new CPVC_DAO();
+        $list = [];
+        $rs = database_connection::executeQuery("SELECT * FROM CPVC");
+        while ($row = $rs->fetch_assoc()) {
+            $model = $this->createCPVCModel($row);
+            array_push($list, $model);
         }
-        return self::$instance;
+        return $list;
     }
 
     public function getAll(): array
@@ -30,15 +33,29 @@ class CPVC_DAO implements DAOInterface
     }
     public function search($value, $columns): array
     {
+        if (empty($value)) {
+            throw new InvalidArgumentException("Search condition cannot be empty or null");
+        }
+        $query = "";
+        if ($columns === null || count($columns) === 0) {
+            $query = "SELECT * FROM CPVC WHERE IDTINH LIKE ? OR IDVC LIKE ? OR CHIPHIVC LIKE ?";
+            $args = array_fill(0, 3, "%" . $value . "%");
+        } else if (count($columns) === 1) {
+            $column = $columns[0];
+            $query = "SELECT * FROM CPVC WHERE $column LIKE ?";
+            $args = ["%" . $value . "%"];
+        } else {
+            $query = "SELECT * FROM CPVC WHERE " . implode(" LIKE ? OR ", $columns) . " LIKE ?";
+            $args = array_fill(0, count($columns), "%" . $value . "%");
+        }
+        $rs = database_connection::executeQuery($query, ...$args);
         $list = [];
-        $conditions = implode(" OR ", array_map(fn($col) => "$col LIKE ?", $columns));
-        $query = "SELECT * FROM CPVC WHERE $conditions";
-        $params = array_fill(0, count($columns), "%$value%");
-        $rs = database_connection::executeQuery($query, ...$params);
-        
         while ($row = $rs->fetch_assoc()) {
             $model = $this->createCPVCModel($row);
             array_push($list, $model);
+        }
+        if (count($list) === 0) {
+            return [];
         }
         return $list;
     }
@@ -63,9 +80,15 @@ class CPVC_DAO implements DAOInterface
 
     public function update($model): int
     {
-        $query = "UPDATE CPVC SET IDVC = ?, CHIPHIVC = ? WHERE IDTINH = ?";
-        $args = [$model->getIDVC(), $model->getCHIPHIVC(), $model->getIDTINH()];
-        return database_connection::executeQuery($query, ...$args);
+        $query = "UPDATE CPVC SET CHIPHIVC = ? WHERE IDTINH = ? AND IDVC = ?";
+        $args = [$model->getCHIPHIVC(), $model->getIDTINH(), $model->getIDVC()];
+        $result = database_connection::executeUpdate($query, ...$args);
+        
+        if ($result === false) {
+            throw new \Exception("Cập nhật thất bại");
+        }
+        
+        return 1; // Trả về 1 nếu cập nhật thành công
     }
 
     public function delete($id): int
@@ -82,8 +105,5 @@ class CPVC_DAO implements DAOInterface
             $row['CHIPHIVC']
         );
     }
-    public function readDatabase(): array
-    {
-        return $this->getAll();
-    }
+ 
 }

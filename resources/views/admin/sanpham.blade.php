@@ -13,9 +13,9 @@
                     <th scope="col">Tên</th>
                     <th scope="col">ID hãng</th>
                     <th scope="col">ID loại sản phẩm</th>
-                    <th scope="col">Số lượng</th>
+                  
                     <th scope="col">Đơn giá</th>
-                    <th scope="col">Số lượng</th>
+                   
                     <th scope="col">Thời gian bảo hành</th>
                     <th scope="col">Mô tả</th>
                     <th scope="col">Trạng thái</th>
@@ -29,7 +29,7 @@
                   <td>{{ $sanPham->getTenSanPham() }}</td>
                   <td>{{ $sanPham->getIdHang() }}</td>
                   <td>{{ $sanPham->getIdLSP() }}</td>
-                  <td>{{ $sanPham->getSoLuong() }}</td>
+                 
                   <td>{{ number_format($sanPham->getDonGia()) }} VNĐ</td>
                   <td>{{ $sanPham->getThoiGianBaoHanh() }} tháng</td>
                   <td>{{ Str::limit($sanPham->getMoTa(), 50) }}</td>
@@ -81,10 +81,7 @@
               <label class="form-label">Tên sản phẩm</label>
               <input type="text" class="form-control" placeholder="Nhập tên sản phẩm">
             </div>
-            <div class="col">
-              <label class="form-label">Số lượng</label>
-              <input type="number" class="form-control" placeholder="Nhập số lượng">
-            </div>
+           
             <div class="col">
               <label class="form-label">Loại sản phẩm</label>
               <select id="" class="form-select">

@@ -35,17 +35,17 @@ class SanPham_DAO implements DAOInterface{
 
     public function insert($e): int
     {
-        $sql = "INSERT INTO SanPham (tenSanPham, idHang, idLSP, soLuong, moTa, donGia, thoiGianBaoHanh, trangThaiHD) 
+        $sql = "INSERT INTO SanPham (tenSanPham, idHang, idLSP, moTa, donGia, thoiGianBaoHanh, trangThaiHD) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $args = [$e->getTenSanPham(), $e->getIdHang(), $e->getIdLSP(), $e->getSoLuong(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD()];
+        $args = [$e->getTenSanPham(), $e->getIdHang(), $e->getIdLSP(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD()];
         return database_connection::executeQuery($sql, ...$args);
     }
 
     public function update($e): int
     {
-        $sql = "UPDATE SanPham SET tenSanPham = ?, idHang = ?, idLSP = ?, soLuong = ?, moTa = ?, donGia = ?, thoiGianBaoHanh = ?, trangThaiHD = ?) 
+        $sql = "UPDATE SanPham SET tenSanPham = ?, idHang = ?, idLSP = ?, moTa = ?, donGia = ?, thoiGianBaoHanh = ?, trangThaiHD = ?) 
         WHERE id = ?";
-        $args = [$e->getTenSanPham(), $e->getIdHang(), $e->getIdLSP(), $e->getSoLuong(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD(), $e->getId()];
+        $args = [$e->getTenSanPham(), $e->getIdHang(), $e->getIdLSP(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD(), $e->getId()];
         $result = database_connection::executeUpdate($sql, ...$args);
         return is_int($result)? $result : 0;
     }
@@ -81,12 +81,11 @@ class SanPham_DAO implements DAOInterface{
         $tenSanPham = $rs['TENSANPHAM'];
         $idHang = app(Hang_BUS::class)->getModelById($rs['IDHANG']);
         $idLSP = app(LoaiSanPham_BUS::class)->getModelById($rs['IDLSP']);
-        $soLuong = $rs['SOLUONG'];
         $moTa = $rs['MOTA'];
         $donGia = $rs['DONGIA'];
         $thoiGianBaoHanh = $rs['THOIGIANBAOHANH'];
         $trangThaiHD = $rs['TRANGTHAIHD'];
-        return new SanPham($id, $tenSanPham, $idHang, $idLSP, $soLuong, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD);
+        return new SanPham($id, $tenSanPham, $idHang, $idLSP, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD);
     }
 
     public function getAll() : array {

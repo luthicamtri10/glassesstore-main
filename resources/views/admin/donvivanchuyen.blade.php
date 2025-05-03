@@ -7,6 +7,7 @@
                 const modal = document.querySelector('#transportUpdateModal');
                 if (!modal) return;
 
+                modal.querySelector('input[name="id"]').value = this.dataset.id;
                 modal.querySelector('input[name="TENDV"]').value = this.dataset.name;
                 modal.querySelector('textarea[name="MOTA"]').value = this.dataset.description;
                 modal.querySelector('select[name="TRANGTHAIHD"]').value = this.dataset.status;
@@ -119,7 +120,7 @@
                             data-bs-toggle="modal"
                             data-bs-target="#transportUpdateModal">Sửa</button>
 
-                        <form method="POST" action="{{ route('admin.donvivanchuyen.controlDelete') }}" style="display:inline;">
+                        <form method="POST" action="{{ route('admin.donvivanchuyen.destroy') }}" style="display:inline;">
                             @csrf
                             <input type="hidden" name="id" value="{{ $transport->getId() }}">
                             <input type="hidden" name="tendv" value="{{ $transport->getTenDV() }}">

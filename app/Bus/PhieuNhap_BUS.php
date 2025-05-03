@@ -6,38 +6,34 @@ use App\Interface\BUSInterface;
 use App\Models\PhieuNhap;
 use App\Dao\CTPN_DAO;
 use PhpParser\Node\Stmt\Echo_;
-
+use Illuminate\Support\Facades\Validator;
 use function Laravel\Prompts\error;
+use App\Services\database_connection;
 
 class PhieuNhap_BUS implements BUSInterface
 {
     private $phieuNhapList = array();
-    private static $instance;
+    private $phieuNhapDAO;
     private $ctpnDAO;
 
-    public static function getInstance()
+    public function __construct(PhieuNhap_DAO $phieuNhapDAO, CTPN_DAO $ctpnDAO)
     {
-        if (self::$instance == null) {
-            self::$instance = new PhieuNhap_BUS();
-        }
-        return self::$instance;
-    }
-
-    public function __construct()
-    {
-        $this->ctpnDAO = CTPN_DAO::getInstance();
+        $this->phieuNhapDAO = $phieuNhapDAO;
+        $this->ctpnDAO = $ctpnDAO;
         $this->refreshData();
     }
 
+ 
+
     public function refreshData(): void
     {
-        $this->phieuNhapList = PhieuNhap_DAO::getInstance()->getAll();
-        // if (!empty($this->phieuNhapList)) {
-        //     foreach ($this->phieuNhapList as $phieuNhap) {
-        //         $chiTiet = $this->ctpnDAO->getByPhieuNhapId($phieuNhap->getId());
-        //         $phieuNhap->setChiTietPhieuNhap($chiTiet);
-        //     }
-        // }
+            $this->phieuNhapList = $this->phieuNhapDAO->getAll();
+            // if (!empty($this->phieuNhapList)) {
+            //     foreach ($this->phieuNhapList as $phieuNhap) {
+            //         $chiTiet = $this->ctpnDAO->getByPhieuNhapId($phieuNhap->getId());
+            //         $phieuNhap->setChiTietPhieuNhap($chiTiet);
+            //     }
+            // }
     }
 
     public function getAllModels(): array
@@ -47,13 +43,13 @@ class PhieuNhap_BUS implements BUSInterface
 
     public function getModelById(int $id)
     {
-        $phieuNhap = PhieuNhap_DAO::getInstance()->getById($id);
-        // if ($phieuNhap) {
-        //     $chiTiet = $this->ctpnDAO->getByPhieuNhapId($id);
-        //     $phieuNhap->setChiTietPhieuNhap($chiTiet);
-        // }
-        return $phieuNhap;
-    }
+            $phieuNhap = $this->phieuNhapDAO->getById($id);
+            // if ($phieuNhap) {
+            //     $chiTiet = $this->ctpnDAO->getByPhieuNhapId($id);
+            //     $phieuNhap->setChiTietPhieuNhap($chiTiet);
+            // }
+            return $phieuNhap;
+        }
 
     public function addModel($model)
     {
@@ -61,7 +57,7 @@ class PhieuNhap_BUS implements BUSInterface
             error("Error when adding a PhieuNhap");
             return;
         }
-        return PhieuNhap_DAO::getInstance()->insert($model);
+        return $this->phieuNhapDAO->insert($model);
     }
 
     public function updateModel($model)
@@ -70,7 +66,7 @@ class PhieuNhap_BUS implements BUSInterface
             error("Error when updating a PhieuNhap");
             return;
         }
-        return PhieuNhap_DAO::getInstance()->update($model);
+        return $this->phieuNhapDAO->update($model);
     }
 
     public function deleteModel(int $id)
@@ -79,12 +75,12 @@ class PhieuNhap_BUS implements BUSInterface
             error("Error when deleting a PhieuNhap");
             return;
         }
-        return PhieuNhap_DAO::getInstance()->delete($id);
+        return $this->phieuNhapDAO->delete($id);
     }
 
     public function searchModel(string $value, array $columns)
     {
-        $list = PhieuNhap_DAO::getInstance()->search($value, $columns);
+        $list = $this->phieuNhapDAO->search($value, $columns);
         if (count($list) > 0) {
             return $list;
         } else {
@@ -92,6 +88,23 @@ class PhieuNhap_BUS implements BUSInterface
         }
         return null;
     }
+
+    public function getMaxId(): int
+    {
+        try {
+            $query = "SELECT MAX(ID) as max_id FROM PHIEUNHAP";
+            $rs = database_connection::executeQuery($query);
+            if ($rs && $rs->num_rows > 0) {
+                $row = $rs->fetch_assoc();
+                return (int)$row['max_id'];
+            }
+            return 0;
+        } catch (\Exception $e) {
+            error_log("Error getting max ID: " . $e->getMessage());
+            return 0;
+        }
+    }
+
     public function populationChiTietPhieuNhaps($phieuNhap) {
         $chiTietPhieuNhaps = $this->ctpnDAO->getByPhieuNhapId($phieuNhap->getId());
         $phieuNhap->setChiTietPhieuNhaps($chiTietPhieuNhaps);

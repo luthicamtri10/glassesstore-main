@@ -47,8 +47,11 @@ use App\Dao\CTSP_DAO;
 use App\Bus\HoaDon_BUS;
 use App\Dao\HoaDon_DAO;
 use App\Http\Controllers\TaiKhoanController;
-use AuthController;
+use App\Http\Controllers\AuthController;
+use App\Dao\CTPN_DAO;
 use Illuminate\Support\ServiceProvider;
+use App\Bus\CTPN_BUS;
+use App\Bus\DonViVanChuyen_BUS;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -70,9 +73,9 @@ class AppServiceProvider extends ServiceProvider
         'CTHD' => [CTHD_DAO::class, CTHD_BUS::class],
         'ChiTietBaoHanh' => [ChiTietBaoHanh_DAO::class, ChiTietBaoHanh_BUS::class],
         'CPVC' => [CPVC_DAO::class, CPVC_BUS::class],
-        'CTPN' => [CTSP_DAO::class, CTSP_BUS::class],
+        'CTPN' => [CTPN_DAO::class, CTPN_BUS::class],
         'PhieuNhap' => [PhieuNhap_DAO::class, PhieuNhap_BUS::class],
-        'DVVC' => [DVVC_DAO::class, DVVC_BUS::class],
+        'DVVC' => [DVVC_DAO::class, DonViVanChuyen_BUS::class],
         'GioHang' => [GioHang_DAO::class, GioHang_BUS::class],
         'Hang' => [Hang_DAO::class, Hang_BUS::class],
         'KhuyenMai' => [KhuyenMai_DAO::class, KhuyenMai_BUS::class],
@@ -92,7 +95,20 @@ class AppServiceProvider extends ServiceProvider
             });
 
             $this->app->singleton($classes[1], function ($app) use ($classes) {
-                return new $classes[1]($app->make($classes[0])); // Sử dụng classes[1] đã được truyền vào
+                if ($classes[1] === CTPN_BUS::class) {
+                    return new $classes[1](
+                        $app->make(CTPN_DAO::class),
+                        $app->make(CTSP_DAO::class),
+                        $app->make(SanPham_DAO::class)
+                    );
+                }
+                if ($classes[1] === PhieuNhap_BUS::class) {
+                    return new $classes[1](
+                        $app->make(PhieuNhap_DAO::class),
+                        $app->make(CTPN_DAO::class)
+                    );
+                }
+                return new $classes[1]($app->make($classes[0]));
             });
         }
 

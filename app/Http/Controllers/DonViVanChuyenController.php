@@ -12,29 +12,10 @@ class DonViVanChuyenController extends Controller
 
     public function __construct()
     {
-        $this->dvvcBus = DonViVanChuyen_BUS::getInstance();
+        $this->dvvcBus = app(DonViVanChuyen_BUS::class);
     }
 
-    public function index()
-    {
-        $listDVVC = $this->dvvcBus->getAllModels();
-        $current_page = request()->query('page', 1);
-        $limit = 8;
-        $total_record = count($listDVVC ?? []);
-        $total_page = ceil($total_record / $limit);
-        $current_page = max(1, min($current_page, $total_page));
-        $start = ($current_page - 1) * $limit;
-        if(empty($listDVVC)) {
-            $tmp = [];
-        } else {
-            $tmp = array_slice($listDVVC, $start, $limit);
-        }
-        return view('admin.donvivanchuyen', [
-            'listDVVC' => $tmp,
-            'current_page' => $current_page,
-            'total_page' => $total_page
-        ]);
-    }
+ 
 
     public function store(Request $request)
     {
@@ -48,8 +29,14 @@ class DonViVanChuyenController extends Controller
         return redirect()->back()->with('success', 'Thêm đơn vị vận chuyển thành công');
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
+        $id = (int)$request->input('id');
+        
+        if (!$id) {
+            return redirect()->back()->with('error', 'ID không hợp lệ');
+        }
+        
         $dvvc = $this->dvvcBus->getModelById($id);
         
         if ($dvvc) {
@@ -64,15 +51,14 @@ class DonViVanChuyenController extends Controller
         return redirect()->back()->with('error', 'Không tìm thấy đơn vị vận chuyển');
     }
 
-    public function controlDelete($id)
+    public function destroy(Request $request)
     {
-        $dvvc = $this->dvvcBus->getModelById($id);
-        if ($dvvc) {
-            $dvvc->setTrangThaiHD(0);
-            $this->dvvcBus->updateModel($dvvc);
-        }
-        return redirect()->back()->with('success', 'Đã chuyển đơn vị vận chuyển sang trạng thái không hoạt động');
+        $id = $request->input('id');
+        $isActive = $this->dvvcBus->getModelById($id)?->getTrangThaiHD();
+        $this->dvvcBus->DeleteModel($id, $isActive === 1 ? 0 : 1);
+        return redirect()->back()->with('success', 'Xóa đơn vị vận chuyển thành công');
     }
+
 
     public function search(Request $request)
     {

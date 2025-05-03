@@ -11,6 +11,7 @@ use App\Models\CTSP;
 use App\Models\SanPham;
 use App\Services\database_connection;
 use function Laravel\Prompts\error;
+use Illuminate\Support\Facades\Validator;
 
 class CTPN_BUS implements BUSInterface
 {

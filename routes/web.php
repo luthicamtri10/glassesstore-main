@@ -16,7 +16,8 @@ use App\Http\Controllers\TaiKhoanController;
 use App\Http\Controllers\NccController;
 use App\Http\Controllers\DonViVanChuyenController;
 use App\Http\Controllers\PhieuNhapController;
-use App\Bus\CPVC_BUS;
+
+use App\Http\Controllers\CPVCController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -117,16 +118,21 @@ Route::post('/admin/nguoidung/controldelete', [NguoiDungController::class, 'cont
 
 Route::post('/admin/donvivanchuyen/store', [DonViVanChuyenController::class, 'store'])->name('admin.donvivanchuyen.store');
 Route::post('/admin/donvivanchuyen/update', [DonViVanChuyenController::class, 'update'])->name('admin.donvivanchuyen.update');
-Route::post('/admin/donvivanchuyen/controldelete', [DonViVanChuyenController::class, 'controlDelete'])->name('admin.donvivanchuyen.controlDelete');
+Route::post('/admin/donvivanchuyen/destroy', [DonViVanChuyenController::class, 'destroy'])->name('admin.donvivanchuyen.destroy');
 
 
-Route::post('/admin/nhacungcap/controldelete', [NccController::class, 'controlDelete'])->name('admin.nhacungcap.controlDelete');
+Route::post('/admin/nhacungcap/destroy', [NccController::class, 'destroy'])->name('admin.nhacungcap.destroy');
 Route::post('/admin/nhacungcap/store', [NccController::class, 'store'])->name('admin.nhacungcap.store');
 Route::post('/admin/nhacungcap/update', [NccController::class, 'update'])->name('admin.nhacungcap.update');
 
-Route::post('/admin/chiphivanchuyen/store', [CPVC_BUS::class, 'store'])->name('admin.chiphivanchuyen.store');
-Route::post('/admin/chiphivanchuyen/update', [CPVC_BUS::class, 'update'])->name('admin.chiphivanchuyen.update');
-Route::post('/admin/chiphivanchuyen/controldelete', [CPVC_BUS::class, 'controlDelete'])->name('admin.chiphivanchuyen.controlDelete');
+Route::post('/admin/chiphivanchuyen/store', [CPVCController::class, 'store'])->name('admin.chiphivanchuyen.store');
+Route::post('/admin/chiphivanchuyen/update', [CPVCController::class, 'update'])->name('admin.chiphivanchuyen.update');
+Route::post('/admin/chiphivanchuyen/destroy', [CPVCController::class, 'destroy'])->name('admin.chiphivanchuyen.destroy');
+
+Route::post('/admin/phieunhap/store', [PhieuNhapController::class, 'store'])->name('admin.phieunhap.store');
+Route::post('/admin/phieunhap/chitiet/store', [PhieuNhapController::class, 'storeChiTiet'])->name('admin.phieunhap.chitiet.store');
+Route::post('/admin/phieunhap/chitiet/destroy', [PhieuNhapController::class, 'destroyChiTiet'])->name('admin.phieunhap.chitiet.destroy');
+Route::post('/admin/phieunhap/chitiet/update', [PhieuNhapController::class, 'updateChiTiet'])->name('admin.phieunhap.chitiet.update');
 
 use App\Http\Controllers\AuthController;
 
@@ -168,28 +174,27 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // })->name('chechExistingUserBySDT');
 
 // Routes for transport management
-Route::prefix('admin')->group(function () {
-    Route::get('/transport', [DonViVanChuyenController::class, 'index'])->name('admin.transport.index');
-    Route::post('/transport', [DonViVanChuyenController::class, 'store'])->name('admin.transport.store');
-    Route::put('/transport/{id}', [DonViVanChuyenController::class, 'update'])->name('admin.transport.update');
-    Route::delete('/transport/{id}', [DonViVanChuyenController::class, 'destroy'])->name('admin.transport.destroy');
+// Route::prefix('admin')->group(function () {
+//     Route::get('/transport', [DonViVanChuyenController::class, 'index'])->name('admin.transport.index');
+//     Route::post('/transport', [DonViVanChuyenController::class, 'store'])->name('admin.transport.store');
+//     Route::put('/transport/{id}', [DonViVanChuyenController::class, 'update'])->name('admin.transport.update');
+//     Route::delete('/transport/{id}', [DonViVanChuyenController::class, 'destroy'])->name('admin.transport.destroy');
 
-    // Supplier routes
-    Route::get('/supplier', [NccController::class, 'index'])->name('admin.supplier.index');
-    Route::post('/supplier', [NccController::class, 'store'])->name('admin.supplier.store');
-    Route::put('/supplier/{id}', [NccController::class, 'update'])->name('admin.supplier.update');
-    Route::delete('/supplier/{id}', [NccController::class, 'destroy'])->name('admin.supplier.destroy');
-    Route::get('/supplier/search', [NccController::class, 'search'])->name('admin.supplier.search');
-});
+//     // Supplier routes
+//     Route::get('/supplier', [NccController::class, 'index'])->name('admin.supplier.index');
+//     Route::post('/supplier', [NccController::class, 'store'])->name('admin.supplier.store');
+//     Route::put('/supplier/{id}', [NccController::class, 'update'])->name('admin.supplier.update');
+//     Route::delete('/supplier/{id}', [NccController::class, 'destroy'])->name('admin.supplier.destroy');
+//     Route::get('/supplier/search', [NccController::class, 'search'])->name('admin.supplier.search');
+// });
 
 // Routes for shipping cost management
 Route::prefix('admin')->group(function () {
     Route::get('/shipping-cost', function() {
         $shippingCostBUS = app(\App\Bus\CPVC_BUS::class);
-            
-        $listShippingCost = $shippingCostBUS->getAllModels();
+        $listCPVC = $shippingCostBUS->getAllModels();
         return view('admin.chiphivanchuyen', [
-            'listShippingCost' => $listShippingCost ?? []
+            'listCPVC' => $listCPVC ?? []
         ]);
     })->name('admin.shipping-cost.index');
     // Thêm chi phí vận chuyển
@@ -221,15 +226,25 @@ Route::prefix('admin')->group(function () {
         $shippingCostBUS->deleteModel($id);
         return redirect()->route('admin.shipping-cost.index')->with('success', 'Xóa thành công!');
     })->name('admin.shipping-cost.delete');
-    
+
+    // Tìm kiếm chi phí vận chuyển
+    Route::get('/shipping-cost/search', function(Request $request) {
+        $shippingCostBUS = app(\App\Bus\CPVC_BUS::class);
+        $keyword = $request->input('keyword');
+        $listCPVC = $shippingCostBUS->search($keyword);
+        return view('admin.chiphivanchuyen', [
+            'listCPVC' => $listCPVC ?? []
+        ]);
+    })->name('admin.shipping-cost.search');
 });
 
 // Routes for purchase order management
 Route::prefix('admin')->group(function () {
     Route::get('/phieunhap', [PhieuNhapController::class, 'index'])->name('admin.phieunhap.index');
-    Route::post('/phieunhap', [PhieuNhapController::class, 'store'])->name('admin.phieunhap.store');
+    Route::post('/phieunhap/store', [PhieuNhapController::class, 'store'])->name('admin.phieunhap.store');
     Route::get('/phieunhap/search', [PhieuNhapController::class, 'search'])->name('admin.phieunhap.search');
     Route::get('/phieunhap/{id}/chitiet', [PhieuNhapController::class, 'getChiTiet'])->name('admin.phieunhap.chitiet');
+    Route::post('/phieunhap/chitiet/store', [PhieuNhapController::class, 'storeChiTiet'])->name('admin.phieunhap.chitiet.store');
 });
 
 ?>

@@ -14,21 +14,7 @@ use function Laravel\Prompts\error;
 
 class PhieuNhap_DAO implements DAOInterface
 {
-    private static $instance;
-    private $nccBus;
-
-    public static function getInstance()
-    {
-        if (self::$instance == null) {
-            self::$instance = new PhieuNhap_DAO();
-        }
-        return self::$instance;
-    }
-
-    public function __construct()
-    {
-        $this->nccBus = NCC_BUS::getInstance();
-    }
+   
 
     public function readDatabase(): array
     {

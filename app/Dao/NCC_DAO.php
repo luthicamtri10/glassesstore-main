@@ -5,17 +5,19 @@ namespace App\Dao;
 use App\Models\NCC;
 use App\Services\database_connection;
 use App\Interface\DAOInterface;
+use InvalidArgumentException;
 
 class NCC_DAO implements DAOInterface
 {
-    private static $instance;
-
-    public static function getInstance()
+    public function readDatabase(): array
     {
-        if (self::$instance == null) {
-            self::$instance = new NCC_DAO();
+        $list = [];
+        $rs = database_connection::executeQuery("SELECT * FROM NCC");
+        while ($row = $rs->fetch_assoc()) {
+            $model = $this->createNCCModel($row);
+            array_push($list, $model);
         }
-        return self::$instance;
+        return $list;
     }
 
     public function getAll(): array
@@ -62,14 +64,29 @@ class NCC_DAO implements DAOInterface
 
     public function search($value, $columns): array
     {
+        if (empty($value)) {
+            throw new InvalidArgumentException("Search condition cannot be empty or null");
+        }
+        $query = "";
+        if ($columns === null || count($columns) === 0) {
+            $query = "SELECT * FROM NCC WHERE ID LIKE ? OR TENNCC LIKE ? OR SODIENTHOAI LIKE ? OR DIACHI LIKE ? OR MOTA LIKE ? OR TRANGTHAIHD LIKE ?";
+            $args = array_fill(0, 6, "%" . $value . "%");
+        } else if (count($columns) === 1) {
+            $column = $columns[0];
+            $query = "SELECT * FROM NCC WHERE $column LIKE ?";
+            $args = ["%" . $value . "%"];
+        } else {
+            $query = "SELECT * FROM NCC WHERE " . implode(" LIKE ? OR ", $columns) . " LIKE ?";
+            $args = array_fill(0, count($columns), "%" . $value . "%");
+        }
+        $rs = database_connection::executeQuery($query, ...$args);
         $list = [];
-        $conditions = implode(" OR ", array_map(fn($col) => "$col LIKE ?", $columns));
-        $query = "SELECT * FROM NCC WHERE $conditions";
-        $params = array_fill(0, count($columns), "%$value%");
-        $rs = database_connection::executeQuery($query, ...$params);
         while ($row = $rs->fetch_assoc()) {
             $model = $this->createNCCModel($row);
             array_push($list, $model);
+        }
+        if (count($list) === 0) {
+            return [];
         }
         return $list;
     }
@@ -86,8 +103,5 @@ class NCC_DAO implements DAOInterface
         );
     }
 
-    public function readDatabase(): array
-    {
-        return $this->getAll();
-    }
+  
 }
