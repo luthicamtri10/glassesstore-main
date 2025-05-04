@@ -10,7 +10,7 @@ class PhieuNhap {
     private NguoiDung $idNhanVien;
     private  $trangThaiPN;
 
-    public function __construct(int $id, NCC $idNCC,  $tongTien, string $ngayTao, NguoiDung $idNhanVien, $trangThaiPN) {
+    public function __construct($id = null, NCC $idNCC,  $tongTien = null, string $ngayTao, NguoiDung $idNhanVien, $trangThaiPN) {
         $this->id = $id;
         $this->idNCC = $idNCC;
         $this->tongTien = $tongTien;
@@ -19,7 +19,11 @@ class PhieuNhap {
         $this->trangThaiPN = $trangThaiPN;
     }
 
-    public function getId(): int {
+    public function getId(){
+        return $this->id;
+    }
+
+    public function getIdPN(){
         return $this->id;
     }
 
@@ -65,6 +69,9 @@ class PhieuNhap {
 
     public function setTrangThaiPN( $trangThaiPN): void {
         $this->trangThaiPN = $trangThaiPN;
+    }
+    public function getTrangThai() {
+        return $this->trangThaiPN; // Hoặc tên thuộc tính tương ứng
     }
 }
 

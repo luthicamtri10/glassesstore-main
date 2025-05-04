@@ -309,7 +309,10 @@ use Illuminate\Support\Facades\View as FacadesView;
                         break;
                     case 'kho':
                         $phieuNhapBUS = app(PhieuNhap_BUS::class);
-                    
+                        $nccBUS = app(NCC_BUS::class);
+                        $spBUS = app(SanPham_BUS::class);
+                        $listSanPham = $spBUS->getAllModels();
+                        $listNCC = $nccBUS->getAllModels();
                         $listPhieuNhap = $phieuNhapBUS->getAllModels();
                         
                         if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
@@ -331,6 +334,8 @@ use Illuminate\Support\Facades\View as FacadesView;
     
                         echo FacadesView::make('admin.phieunhap', [
                             'listPhieuNhap' => $tmp,
+                            'listNCC' => $listNCC,
+                            'listSanPham' => $listSanPham,
                             'current_page' => $current_page,
                             'total_page' => $total_page
                         ])->render();

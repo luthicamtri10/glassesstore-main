@@ -3,6 +3,7 @@
 namespace App\Dao;
 
 use App\Bus\CTSP_BUS;
+use App\Bus\PhieuNhap_BUS;
 use App\Bus\SanPham_BUS;
 use App\Interface\DAOInterface;
 use App\Models\CTPN;
@@ -22,13 +23,14 @@ class CTPN_DAO implements DAOInterface {
     }
 
     public function createCTPNModel($rs): CTPN {
-        $idPN = $rs['idPN'];
-        $idSP = $rs['idSP'];
-        $soLuong = $rs['soLuong'];
-        $giaNhap = $rs['giaNhap'];
-        $phanTramLN = $rs['phanTramLN'];
+        $idPN = app(PhieuNhap_BUS::class)->getModelById($rs['IDPN']);
+        $idSP = app(SanPham_BUS::class)->getModelById($rs['IDSP']);
+        $soLuong = $rs['SOLUONG'];
+        $giaNhap = $rs['GIANHAP'];
+        $phanTramLN = $rs['PHANTRAMLN'];
+        $trangThaiPN = $rs['TRANGTHAIHD'];
 
-        return new CTPN($idPN, $idSP, $soLuong, $giaNhap, $phanTramLN);
+        return new CTPN($idPN, $idSP, $soLuong, $giaNhap,$phanTramLN, $trangThaiPN);
     }
 
     public function getAll(): array {
@@ -44,7 +46,7 @@ class CTPN_DAO implements DAOInterface {
         return null;
     }
 
-    public function getByPhieuNhapId($idPN): array {
+    public function getByPhieuNhapId($idPN) {
         $list = [];
         $sql = "SELECT * FROM CTPN WHERE idPN = ?";
         $rs = database_connection::executeQuery($sql, $idPN);
@@ -89,14 +91,14 @@ class CTPN_DAO implements DAOInterface {
         $sql = "INSERT INTO CTPN (idPN, idSP, soLuong, giaNhap, phanTramLN, TRANGTHAIHD) 
         VALUES (?, ?, ?, ?, ?, 1)";
         $args = [
-            $e->getIdPN(), 
-            $e->getIdSP(), 
+            $e->getIdPN()->getId(), 
+            $e->getIdSP()->getId(), 
             $e->getSoLuong(), 
             $e->getGiaNhap(), 
             $e->getPhanTramLN()
         ];
         $rs = database_connection::executeQuery($sql, ...$args);
-        $this->taoCTSPTuDong($e->getIdSP(), $e->getSoLuong());
+        $this->taoCTSPTuDong($e->getIdSP()->getId(), $e->getSoLuong());
         return $rs;
     }
 

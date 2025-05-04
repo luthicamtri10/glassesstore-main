@@ -78,6 +78,9 @@ class PhieuNhap_BUS implements BUSInterface
         }
         return $result;
     }
+    public function getLastPN() {
+        return $this->dao->getLastPN();
+    }
 
     /**
      * Xóa một mô hình PhieuNhap

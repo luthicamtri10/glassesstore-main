@@ -14,7 +14,7 @@ use InvalidArgumentException;
 
 use function Laravel\Prompts\error;
 
-class PhieuNhap_DAO implements DAOInterface
+class PhieuNhap_DAO 
 {
     public function readDatabase(): array
     {
@@ -55,17 +55,31 @@ class PhieuNhap_DAO implements DAOInterface
         }
         return null;
     }
-    public function insert($e): int
+    public function insert($e)
     {
-        $query = "INSERT INTO PHIEUNHAP (id, idNCC, tongTien, ngayTao, idNhanVien, trangThai) VALUES (?,?,?,?,?,?)";
-        $args = [$e->getId(), $e->getIdNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien()->getId(), $e->getTrangThai()];
+        $query = "INSERT INTO PHIEUNHAP (id, idNCC, tongTien, ngayTao, idNhanVien, trangThaiHD) VALUES (?,?,?,?,?,?)";
+        $args = [$e->getId(), $e->getIdNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien()->getId(), $e->getTrangThaiPN()];
         $rs = database_connection::executeQuery($query, ...$args);
-        return is_int($rs) ? $rs : 0;
+        if ($rs) {
+            // Lấy ID của bản ghi vừa được thêm vào (LAST_INSERT_ID)
+            $lastInsertId = database_connection::executeQuery("SELECT LAST_INSERT_ID() AS id")->fetchColumn();
+            return $lastInsertId; // Trả về ID của phiếu nhập vừa thêm
+        }
+    
+        return 0; // Trả về 0 nếu không thành công
+    }
+    public function getLastPN() {
+        $query = "SELECT * FROM PHIEUNHAP ORDER BY id DESC LIMIT 1";
+        $result = database_connection::executeQuery($query);
+        if ($result->num_rows > 0) {
+            return $this->createPhieuNhapModel($result->fetch_assoc());
+        }
+        return null;
     }
     public function update($e): int
     {
-        $query = "UPDATE PHIEUNHAP SET idNCC = ?, tongTien = ?, ngayTao = ?, idNhanVien = ?, trangThai = ? WHERE id = ?";
-        $args = [$e->getIdNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien()->getId(), $e->getTrangThai(), $e->getId()];
+        $query = "UPDATE PHIEUNHAP SET idNCC = ?, tongTien = ?, ngayTao = ?, idNhanVien = ?, trangThaiHD = ? WHERE id = ?";
+        $args = [$e->getIdNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien()->getId(), $e->getTrangThaiPN(), $e->getId()];
         $rs = database_connection::executeUpdate($query, ...$args);
         return is_int($rs) ? $rs : 0;
     }
@@ -91,7 +105,7 @@ class PhieuNhap_DAO implements DAOInterface
 
         // Danh sách cột mặc định nếu không truyền vào
         $columns = empty($columnNames)
-            ? ["id", "idNCC", "tongTien", "idNhanVien", "ngayTao", "trangThai"]
+            ? ["ID", "IDNCC", "TONGTIEN", "IDNHANVIEN", "NGAYTAO", "TRANGTHAIHD"]
             : $columnNames;
 
         // Xây dựng câu lệnh SQL với các cột được chỉ định

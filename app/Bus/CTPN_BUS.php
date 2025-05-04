@@ -148,12 +148,7 @@ class CTPN_BUS
      */
     public function getByPhieuNhapId($idPN)
     {
-        try {
-            return $this->ctpnDAO->getByPhieuNhapId($idPN);
-        } catch (\Exception $e) {
-            error_log("Error getting purchase order details by ID: " . $e->getMessage());
-            return [];
-        }
+        return $this->ctpnDAO->getByPhieuNhapId($idPN);
     }
 
     /**

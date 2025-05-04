@@ -325,6 +325,7 @@ Route::post('/admin/chiphivanchuyen/controldelete', [CPVCController::class, 'con
 
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CTPNController;
 use App\Http\Controllers\GioHangController;
 
 Route::post('/login', function (\Illuminate\Http\Request $request) {
@@ -344,4 +345,8 @@ Route::post('/register/register', [AuthController::class, 'register'])->name('re
 Route::post('/yourcart/update', [GioHangController::class, 'updateQuantity'])->name('cart.update');
 Route::post('/yourcart/delete', [GioHangController::class, 'deleteCTGH'])->name('cart.delete');
 Route::post('/index/addctgh', [GioHangController::class, 'add'])->name('index.addctgh');
+
+Route::get('/getByPhieuNhapId/{id}', [CTPNController::class, 'getByPhieuNhapId']);
+Route::post('/createPhieuNhap', [PhieuNhapController::class, 'store'])->name('phieunhap.store');
+
 ?>

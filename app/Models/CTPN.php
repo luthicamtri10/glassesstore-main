@@ -4,24 +4,27 @@ namespace App\Models;
 
 class CTPN
 {
-    private $idPN, $idSP, $soLuong, $giaNhap, $phanTramLN;
+    private PhieuNhap $idPN;
+    private SanPham $idSP;
+    private $soLuong, $giaNhap, $phanTramLN, $trangThaiHD;
 
-    public function __construct($idPN, $idSP, $soLuong, $giaNhap, $phanTramLN)
+    public function __construct(PhieuNhap $idPN,SanPham $idSP, $soLuong, $giaNhap, $phanTramLN, $trangThaiHD)
     {
         $this->idPN = $idPN;
         $this->idSP = $idSP;
         $this->soLuong = $soLuong;
         $this->giaNhap = $giaNhap;
         $this->phanTramLN = $phanTramLN;
+        $this->trangThaiHD = $trangThaiHD;
     }
 
     // Getters
-    public function getIdPN()
+    public function getIdPN() : PhieuNhap
     {
         return $this->idPN;
     }
 
-    public function getIdSP()
+    public function getIdSP() : SanPham
     {
         return $this->idSP;
     }
@@ -41,13 +44,15 @@ class CTPN
         return $this->phanTramLN;
     }
 
+    public function gettrangThaiHD(){return $this->trangThaiHD;}
+
     // Setters
-    public function setIdPN($idPN)
+    public function setIdPN(PhieuNhap $idPN)
     {
         $this->idPN = $idPN;
     }
 
-    public function setIdSP($idSP)
+    public function setIdSP(SanPham $idSP)
     {
         $this->idSP = $idSP;
     }
@@ -65,5 +70,15 @@ class CTPN
     public function setPhanTramLN($phanTramLN)
     {
         $this->phanTramLN = $phanTramLN;
+    }
+    public function settrangThaiHD($trangThaiHD){$this->trangThaiHD = $trangThaiHD;}
+    public function toArray()
+    {
+        return [
+            'tenSanPham' => $this->getIdSP()->getTenSanPham(), // Đảm bảo phương thức này tồn tại
+            'soLuong' => $this->getSoLuong(),
+            'donGia' => $this->getGiaNhap(),
+            'phanTramLN' => $this->getPhanTramLN()
+        ];
     }
 }
