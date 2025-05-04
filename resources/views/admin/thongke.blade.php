@@ -73,7 +73,7 @@ use App\Bus\ThongKe_BUS;
 
     <div class="row">
         <!-- Bên trái: Tiêu đề và biểu đồ tròn -->
-        <div class="col-md-5 mb-5">
+        <div class="col-md-3 mb-5">
             <div id="orderPieChartContainer" style="display: none;">
                 <h5 class="mb-4">Phần trăm tổng tiền các đơn hàng</h5>
                 <canvas id="orderPieChart" height="280"></canvas>
@@ -81,7 +81,7 @@ use App\Bus\ThongKe_BUS;
         </div>
 
         <!-- Bên phải: Danh sách hóa đơn -->
-        <div class="col-md-7 mb-5">
+        <div class="col-md-9 mb-5">
             <h5 class="mb-4">Danh sách đơn hàng của khách hàng</h5>
 
             <div class="row mb-3 g-3">
