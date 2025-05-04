@@ -8,6 +8,14 @@ use App\Bus\TaiKhoan_BUS;
   $user = app(TaiKhoan_BUS::class)->getModelById($email);
   $ctq = app(CTQ_BUS::class)->getModelById($user->getIdQuyen()->getId());
 ?>
+<style>
+.sidebar-nav {
+    max-height: calc(100vh - 100px); 
+    overflow-y: auto;
+    scrollbar-width: thin; 
+    scrollbar-color: #B0BEC5 #1A2526; 
+}
+</style>
 <aside id="sidebar" class="expand">
 <div class="d-flex justify-content-between p-4">
     <div class="sidebar-logo">

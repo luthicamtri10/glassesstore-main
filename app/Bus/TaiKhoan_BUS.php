@@ -85,7 +85,16 @@ class TaiKhoan_BUS{
         }
         return false;
     }
-
+    public function getModelByEmail($email)
+    {
+        $this->refreshData();
+        foreach ($this->taiKhoanList as $tk) {
+            if ($tk->getEmail() === $email) {
+                return $tk;
+            }
+        }
+        return null;
+    }
     
 }
 ?>

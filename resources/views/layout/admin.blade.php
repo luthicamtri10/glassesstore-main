@@ -28,6 +28,7 @@
                 use App\Bus\PTTT_BUS;
                 use App\Bus\Quyen_BUS;
                 use App\Bus\TaiKhoan_BUS;
+                use App\Bus\KhuyenMai_BUS;
                 use App\Bus\Auth_BUS;
 use App\Bus\CPVC_BUS;
 use App\Bus\CTQ_BUS;
@@ -106,7 +107,146 @@ use Illuminate\Support\Facades\View as FacadesView;
                             'total_page' => $total_page
                         ])->render();
                         break;
-                    
+                        case 'hang':
+                            $hangBUS = app(Hang_BUS::class);
+                        
+                            $keyword = isset($_GET['keyword']) && !empty(trim($_GET['keyword'])) ? trim($_GET['keyword']) : null;
+                            $trangThai = isset($_GET['keywordTrangThai']) && $_GET['keywordTrangThai'] !== '' ? (int)$_GET['keywordTrangThai'] : null;
+                        
+                            // Tạo danh sách trạng thái tĩnh
+                            $listtrangthai = collect([
+                                (object) ['id' => 1, 'trangThaiHD' => 'Đang kinh doanh'],
+                                (object) ['id' => 3, 'trangThaiHD' => 'Ngừng kinh doanh'],
+                            ]);
+                        
+                            // Lấy dữ liệu
+                            $listHang = $hangBUS->getAllModels($keyword, $trangThai);
+                        
+                            $current_page = request()->query('page', 1);
+                            $limit = 8;
+                            $total_record = count($listHang ?? []);
+                            $total_page = ceil($total_record / $limit);
+                            $current_page = max(1, min($current_page, $total_page));
+                            $start = ($current_page - 1) * $limit;
+                        
+                            if (empty($listHang)) {
+                                $tmp = [];
+                            } else {
+                                $tmp = array_slice($listHang, $start, $limit);
+                            }
+                        
+                            echo \Illuminate\Support\Facades\View::make('admin.hang', [
+                                'tmp' => $tmp,
+                                'listtrangthai' => $listtrangthai,
+                                'current_page' => $current_page,
+                                'total_page' => $total_page,
+                                'keyword' => $keyword,
+                                'keywordTrangThai' => $trangThai
+                            ])->render();
+                            break;
+                            case 'khuyenmai':
+                                $khuyenMaiBUS = app(KhuyenMai_BUS::class);
+                                $sanPhamBUS = app(SanPham_BUS::class);
+                            
+                                $keyword = isset($_GET['keyword']) && !empty(trim($_GET['keyword'])) ? trim($_GET['keyword']) : null;
+                                $trangThai = isset($_GET['keywordTrangThai']) && $_GET['keywordTrangThai'] !== '' ? (int)$_GET['keywordTrangThai'] : null;
+                                $ngayBatDau = isset($_GET['ngayBatDau']) && !empty(trim($_GET['ngayBatDau'])) ? trim($_GET['ngayBatDau']) : null;
+                                $ngayKetThuc = isset($_GET['ngayKetThuc']) && !empty(trim($_GET['ngayKetThuc'])) ? trim($_GET['ngayKetThuc']) : null;
+                            
+                                $listtrangthai = collect([
+                                    (object) ['id' => 1, 'trangThaiHD' => 'Đang hoạt động'],
+                                    (object) ['id' => 3, 'trangThaiHD' => 'Ngừng hoạt động'],
+                                ]);
+                            
+                                // Lấy danh sách khuyến mãi
+                                $listKhuyenMai = $khuyenMaiBUS->getAllModels($keyword, $trangThai, $ngayBatDau, $ngayKetThuc);
+                            
+                                // Lấy danh sách sản phẩm đang hoạt động
+                                $listSanPhamActive = $sanPhamBUS->getAllModelsActive();
+                            
+                                $current_page = request()->query('page', 1);
+                                $limit = 8;
+                                $total_record = count($listKhuyenMai ?? []);
+                                $total_page = ceil($total_record / $limit);
+                                $current_page = max(1, min($current_page, $total_page));
+                                $start = ($current_page - 1) * $limit;
+                            
+                                if (empty($listKhuyenMai)) {
+                                    $tmp = [];
+                                } else {
+                                    $tmp = array_slice($listKhuyenMai, $start, $limit);
+                                }
+                            
+                                echo \Illuminate\Support\Facades\View::make('admin.khuyenmai', [
+                                    'tmp' => $tmp,
+                                    'listtrangthai' => $listtrangthai,
+                                    'listSanPhamActive' => $listSanPhamActive,
+                                    'current_page' => $current_page,
+                                    'total_page' => $total_page,
+                                    'keyword' => $keyword,
+                                    'keywordTrangThai' => $trangThai,
+                                    'ngayBatDau' => $ngayBatDau,
+                                    'ngayKetThuc' => $ngayKetThuc
+                                ])->render();
+                                break;
+                                case 'lichsu':
+                                    $hoaDonBUS = app(HoaDon_BUS::class);
+                                    $chiTietHoaDonBUS = app(CTHD_BUS::class);
+                                
+                                    $orders = [];
+                                    $error = null;
+                                    $current_page = request()->query('page', 1);
+                                    $total_page = 1;
+                                
+                                    try {
+                                        // Lấy tất cả hóa đơn (bỏ lọc theo email)
+                                        $hoaDons = $hoaDonBUS->getAllHoaDons(); // Giả định phương thức mới trong HoaDon_BUS
+                                
+                                        if (empty($hoaDons)) {
+                                            $error = "Không tìm thấy đơn hàng nào trong hệ thống.";
+                                        } else {
+                                            foreach ($hoaDons as $hoaDon) {
+                                                $chiTietHoaDonsRaw = $chiTietHoaDonBUS->getCTHTbyIDHD($hoaDon->getId());
+                                                $chiTietHoaDons = [];
+                                                foreach ($chiTietHoaDonsRaw as $cthd) {
+                                                    $chiTietHoaDons[] = [
+                                                        'soSeri' => $cthd->getSoSeri() ?? 'N/A',
+                                                        'giaLucDat' => $cthd->getGiaLucDat() ?? 0,
+                                                        'trangThaiHD' => $cthd->getTrangThaiHD() ?? false,
+                                                    ];
+                                                }
+                                
+                                                $orders[] = [
+                                                    'id' => $hoaDon->getId() ?? 'N/A',
+                                                    'tongTien' => $hoaDon->getTongTien() ?? 0,
+                                                    'ngayTao' => $hoaDon->getNgayTao() ?? null,
+                                                    'trangThai' => $hoaDon->getTrangThai()->name ?? 'Không xác định',
+                                                    'phuongThucThanhToan' => $hoaDon->getIdPTTT()->getTen() ?? 'Không xác định',
+                                                    'donViVanChuyen' => $hoaDon->getIdDVVC()->getTenDV() ?? 'Không xác định',
+                                                    'emailKhachHang' => $hoaDon->getEmail()->getEmail() ?? 'Không xác định',
+                                                    'chiTietHoaDons' => $chiTietHoaDons,
+                                                ];
+                                            }
+                                
+                                            $limit = 8;
+                                            $total_record = count($orders);
+                                            $total_page = ceil($total_record / $limit);
+                                            $current_page = max(1, min($current_page, $total_page));
+                                            $start = ($current_page - 1) * $limit;
+                                
+                                            $tmp = array_slice($orders, $start, $limit);
+                                        }
+                                    } catch (\Exception $e) {
+                                        $error = 'Không thể tải lịch sử đơn hàng. Vui lòng thử lại sau.';
+                                    }
+                                
+                                    return view('client.order-history', [
+                                        'orders' => $tmp ?? [],
+                                        'error' => $error,
+                                        'current_page' => $current_page,
+                                        'total_page' => $total_page,
+                                    ]);
+                                    break;  
                     case 'quyen':
                         include base_path('resources/views/admin/quyen.blade.php');
                         break;

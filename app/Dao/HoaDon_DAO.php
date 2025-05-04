@@ -62,8 +62,11 @@ class HoaDon_DAO{
 
     public function createHoaDonModel($rs) {
         $id = $rs['ID'];
-        $email = app(TaiKhoan_BUS::class)->getModelById($rs['EMAIL']);
-        $idNhanVien = app(NguoiDung_BUS::class)->getModelById($rs['IDNHANVIEN']);
+        $email = app(TaiKhoan_BUS::class)->getModelByEmail($rs['EMAIL']);
+        if (!$email) {
+            throw new \Exception("Không tìm thấy tài khoản với email: " . $rs['EMAIL']);
+        }
+        $idNhanVien = $rs['IDNHANVIEN'] ? app(NguoiDung_BUS::class)->getModelById($rs['IDNHANVIEN']) : null;
         $tongTien = $rs['TONGTIEN'];
         $idPTTT = app(PTTT_BUS::class)->getModelById($rs['IDPTTT']);
         if (!$idPTTT) {
@@ -75,26 +78,13 @@ class HoaDon_DAO{
         $tinh = app(Tinh_BUS::class)->getModelById($rs['IDTINH']);
         $trangThai = $rs['TRANGTHAI'];
         switch($trangThai) {
-            case 'PAID':
-                $trangThai = HoaDonEnum::PAID;
-                break;
-            case 'PENDING':
-                $trangThai = HoaDonEnum::PENDING;
-                break;
-            case 'EXPIRED':
-                $trangThai = HoaDonEnum::EXPIRED;
-                break;
-            case 'CANCELLED':
-                $trangThai = HoaDonEnum::CANCELLED;
-                break;
-            case 'REFUNDED':
-                $trangThai = HoaDonEnum::REFUNDED;
-                break;
-            default:
-                error("Can not create model");
-                break;
+            case 'PAID': $trangThai = HoaDonEnum::PAID; break;
+            case 'PENDING': $trangThai = HoaDonEnum::PENDING; break;
+            case 'EXPIRED': $trangThai = HoaDonEnum::EXPIRED; break;
+            case 'CANCELLED': $trangThai = HoaDonEnum::CANCELLED; break;
+            case 'REFUNDED': $trangThai = HoaDonEnum::REFUNDED; break;
+            default: throw new \Exception("Trạng thái không hợp lệ");
         }
-        
         return new HoaDon($id, $email, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $diaChi, $tinh, $trangThai);
     }
 
@@ -117,5 +107,27 @@ class HoaDon_DAO{
             array_push($list, $model);
         }
         return $list;
+    }
+    public function getHoaDonsByEmail($email): array
+    {
+        $list = [];
+        $query = "SELECT * FROM hoadon WHERE email = ?";
+        $rs = database_connection::executeQuery($query, [$email]); // Sử dụng mảng cho tham số
+        while ($row = $rs->fetch_assoc()) {
+            $model = $this->createHoaDonModel($row);
+            if ($model) {
+                $list[] = $model; // Sử dụng [] để thêm phần tử, ngắn gọn hơn array_push
+            }
+        }
+        return $list;
+    }
+    public function getAllHoaDons() {
+        $query = "SELECT * FROM hoadon";
+        $result = database_connection::executeQuery($query);
+        $hoaDons = [];
+        while ($row = $result->fetch_assoc()) {
+            $hoaDons[] = $this->createHoaDonModel($row);
+        }
+        return $hoaDons;
     }
 }
