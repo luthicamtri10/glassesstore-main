@@ -1,28 +1,29 @@
 <?php
 namespace App\Models;
-
-class Hang {
-    private int $id;
-    private string $tenHang;
-    private string $moTa;
+use Illuminate\Database\Eloquent\Model;
+class Hang extends Model {
+    protected $table = 'hang';
+    private $id;
+    private $tenHang;
+    private $moTa;
     private $trangThaiHD; 
 
-    public function __construct(int $id, string $tenHang, string $moTa, $trangThaiHD) {
+    public function __construct($id, $tenHang, $moTa, $trangThaiHD) {
         $this->id = $id;
         $this->tenHang = $tenHang;
         $this->moTa = $moTa;
         $this->trangThaiHD = $trangThaiHD;
     }
 
-    public function getId(): int {
+    public function getId() {
         return $this->id;
     }
 
-    public function gettenHang(): string {
+    public function gettenHang() {
         return $this->tenHang;
     }
 
-    public function getmoTa(): string {
+    public function getmoTa() {
         return $this->moTa;
     }
 
@@ -30,19 +31,19 @@ class Hang {
         return $this->trangThaiHD;
     }
 
-    public function setId(int $id): void {
+    public function setId($id) {
         $this->id = $id;
     }
 
-    public function settenHang(string $tenHang): void {
+    public function settenHang($tenHang) {
         $this->tenHang = $tenHang;
     }
 
-    public function setmoTa(string $moTa): void {
+    public function setmoTa($moTa) {
         $this->moTa = $moTa;
     }
 
-    public function settrangThaiHD($trangThaiHD): void {
+    public function settrangThaiHD($trangThaiHD) {
         $this->trangThaiHD = $trangThaiHD;
     }
 }

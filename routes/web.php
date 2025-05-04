@@ -323,6 +323,23 @@ Route::post('/admin/chiphivanchuyen/store', [CPVCController::class, 'store'])->n
 Route::post('/admin/chiphivanchuyen/update', [CPVCController::class, 'update'])->name('admin.chiphivanchuyen.update');
 Route::post('/admin/chiphivanchuyen/controldelete', [CPVCController::class, 'controlDelete'])->name('admin.chiphivanchuyen.controlDelete');
 
+use App\Http\Controllers\HangController;
+use App\Http\Controllers\KhuyenMaiController;
+Route::post('/admin/hang/store', [HangController::class, 'store'])->name('admin.hang.store');
+Route::post('/admin/hang/update', [HangController::class, 'update'])->name('admin.hang.update');
+Route::post('/admin/hang/controlDelete', [HangController::class, 'controlDelete'])->name('admin.hang.controlDelete');
+Route::get('/admin/hang/edit/{id}', [HangController::class, 'edit'])->name('admin.hang.edit');
+
+
+
+Route::post('/admin/khuyenmai/store', [KhuyenMaiController::class, 'store'])->name('admin.khuyenmai.store');
+Route::post('/admin/khuyenmai/update', [KhuyenMaiController::class, 'update'])->name('admin.khuyenmai.update');
+Route::post('/admin/khuyenmai/controlDelete', [KhuyenMaiController::class, 'controlDelete'])->name('admin.khuyenmai.controlDelete');
+
+
+use App\Http\Controllers\HistoryController;
+
+Route::get('/lich-su-don-hang', [HistoryController::class, 'showOrderHistory'])->name('order.history');
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CTPNController;

@@ -1,64 +1,118 @@
 <?php
 namespace App\Bus;
-
-use App\Dao\Hang_DAO;
 use App\Interface\BUSInterface;
+use App\Dao\Hang_DAO;
 use App\Models\Hang;
-
 use function Laravel\Prompts\error;
 
-class Hang_BUS implements BUSInterface {
-    private $hangList = array();
+class Hang_BUS implements BUSInterface
+{
+    private $hangList = [];
     private $hangDAO;
-    public function __construct(Hang_DAO $hang_dao) {
+
+    public function __construct(Hang_DAO $hang_dao)
+    {
         $this->hangDAO = $hang_dao;
         $this->refreshData();
     }
 
-    public function refreshData(): void {
+    public function refreshData(): void
+    {
         $this->hangList = $this->hangDAO->getAll();
     }
 
-    public function getAllModels(): array {
-        return $this->hangList;
+   
+    public function getAllModels($keyword = null, $trangThai = null): array
+    {
+        if ($keyword || $trangThai !== null) {
+            $columns = ['tenhang'];
+            $results = $this->searchModel($keyword ?? '', $columns, $trangThai);
+        } else {
+            $results = $this->hangList;
+        }
+
+        return $results ?? [];
     }
 
-    public function getModelById($id) {
+   
+    public function getModelById($id)
+    {
         return $this->hangDAO->getById($id);
     }
 
-    public function addModel($model) {
+    public function addModel($model)
+    {
         if ($model == null) {
             error("Error when adding a Hang");
-            return;
+            return 0;
         }
-        return $this->hangDAO->insert($model);
+        $result = $this->hangDAO->insert($model);
+        $this->refreshData();
+        return $result;
     }
 
-    public function updateModel($model) {
+   
+    public function updateModel($model)
+    {
         if ($model == null) {
             error("Error when updating a Hang");
             return;
         }
-        return $this->hangDAO->update($model);
+        $result = $this->hangDAO->update($model);
+        $this->refreshData();
+        return $result;
     }
 
-    public function deleteModel($id) {
+   
+    public function controlDeleteModel($id, $active)
+    {
         if ($id == null || $id == "") {
             error("Error when deleting a Hang");
             return;
         }
-        return $this->hangDAO->delete($id);
+        $result = $this->hangDAO->controlDelete($id, $active);
+        $this->refreshData();
+        return $result;
     }
 
-    public function searchModel(string $value, array $columns) {
-        $list = $this->hangDAO->search($value, $columns);
-        if (count($list) > 0) {
-            return $list;
-        } else {
-            error("No results found");
+   
+    public function deleteModel($id)
+    {
+        if ($id == null || $id == "") {
+            error("Error when deleting a Hang");
+            return;
         }
-        return null;
+        $result = $this->hangDAO->delete($id);
+        $this->refreshData();
+        return $result;
+    }
+
+   
+    public function searchModel(string $value, array $columns, $trangThai = null)
+    {
+        $results = $this->hangDAO->search($value, $columns);
+
+      
+        if ($trangThai !== null) {
+            $results = array_filter($results, function ($hang) use ($trangThai) {
+                return $hang->getTrangThaiHD() == $trangThai;
+            });
+        }
+
+        if (empty($results)) {
+            echo "Not found";
+            return [];
+        }
+
+        return $results;
+    }
+
+    public function getActiveHangs(): array
+    {
+        $results = array_filter($this->hangList, function ($hang) {
+            return $hang->getTrangThaiHD() == 1;
+        });
+
+        return $results ?? [];
     }
 }
-?>

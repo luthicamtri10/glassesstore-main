@@ -1,18 +1,23 @@
 <?php
 namespace App\Bus;
 use App\Dao\HoaDon_DAO;
-
+use App\Dao\CTHD_DAO;
+use App\Bus\CTHD_BUS;
 use App\Interface\BUSInterface;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 class HoaDon_BUS{
 
     private $hoaDonDAO;
+    private $cthdDAO;
+    private $cthdBUS;
     private $listHoaDon = array();
 
-    public function __construct(HoaDon_DAO $hoaDonDAO)
+    public function __construct(HoaDon_DAO $hoaDonDAO, CTHD_DAO $cthdDAO, CTHD_BUS $cthdBUS)
     {
         $this->hoaDonDAO = $hoaDonDAO;
+        $this->cthdDAO = $cthdDAO;
+        $this->cthdBUS = $cthdBUS;
         $this->refreshData();
     }
 
@@ -49,5 +54,30 @@ class HoaDon_BUS{
     public function searchByTinh($idTinh) {
         return $this->hoaDonDAO->searchByTinh($idTinh);
     }
+    public function getHoaDonsByEmail($email): array
+    {
+        $hoaDons = $this->hoaDonDAO->getHoaDonsByEmail($email);
+        $result = [];
 
+        if (!empty($hoaDons)) {
+            foreach ($hoaDons as $hoaDon) {
+                if ($hoaDon) { // Kiểm tra hóa đơn hợp lệ
+                    $chiTietHoaDons = $this->cthdBUS->getCTHTbyIDHD($hoaDon->getId());
+                    $hoaDonData = [
+                        'hoaDon' => $hoaDon,
+                        'chiTietHoaDons' => $chiTietHoaDons ?? [], // Đảm bảo mảng rỗng nếu không có chi tiết
+                        'quantity' => is_array($chiTietHoaDons) ? count($chiTietHoaDons) : 0
+                    ];
+                    $result[] = $hoaDonData;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    public function getAllHoaDons()
+    {
+        return $this->hoaDonDAO->getAllHoaDons();
+    }
 }
