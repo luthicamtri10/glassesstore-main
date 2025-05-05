@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\SanPhamController;
 use App\Http\Controllers\TaiKhoanController;
 use App\Models\CTQ;
+use App\Http\Controllers\QuyenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -367,5 +368,9 @@ Route::post('/index/addctgh', [GioHangController::class, 'add'])->name('index.ad
 
 Route::get('/getByPhieuNhapId/{id}', [CTPNController::class, 'getByPhieuNhapId']);
 Route::post('/createPhieuNhap', [PhieuNhapController::class, 'store'])->name('phieunhap.store');
+
+Route::post('/admin/quyen/store', [QuyenController::class, 'store'])->name('admin.quyen.store');
+Route::post('/admin/quyen/update', [QuyenController::class, 'update'])->name('admin.quyen.update');
+Route::post('/admin/quyen/destroy', [QuyenController::class, 'destroy'])->name('admin.quyen.destroy');
 
 ?>

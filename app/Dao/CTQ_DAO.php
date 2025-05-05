@@ -49,7 +49,7 @@ class CTQ_DAO implements DAOInterface {
         return $list;
     }
     public function insert($model): int {
-        $query = "INSERT INTO CTQ (idQuyen, idChucNang, trangThaiHD) VALUES (?,?,?)";
+        $query = "INSERT INTO `ctq`(`IDQUYEN`, `IDCHUCNANG`, `TRANGTHAIHD`) VALUES (?,?,?)";
         $args = [$model->getIdQuyen()->getId(), $model->getIdChucNang()->getId(), $model->getTrangThaiHD()];
         return database_connection::executeQuery($query, ...$args);
     }
@@ -70,6 +70,14 @@ class CTQ_DAO implements DAOInterface {
     {
         $query = "UPDATE CTQ SET trangThaiHD = false WHERE idQuyen = ? AND idChucNang = ?";
         $result = database_connection::executeUpdate($query, $idQuyen, $idChucNang);
+        
+        return is_int($result) ? $result : 0;
+    }
+
+    public function deleteByQuyenId($quyenId): int
+    {
+        $query = "UPDATE CTQ SET trangThaiHD = false WHERE idQuyen = ?";
+        $result = database_connection::executeUpdate($query, $quyenId);
         
         return is_int($result) ? $result : 0;
     }

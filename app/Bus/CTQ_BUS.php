@@ -83,5 +83,9 @@ class CTQ_BUS implements BUSInterface{
         }
         return false;
     }
+    public function deleteByQuyenId($quyenId)
+    {
+        return $this->ctqDAO->deleteByQuyenId($quyenId);
+    }
 }
 ?>

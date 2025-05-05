@@ -26,6 +26,14 @@ class Quyen_DAO implements DAOInterface {
         $trangThaiHD = $rs['TRANGTHAIHD'];
         return new Quyen($id, $tenQuyen, $trangThaiHD);
     }
+    public function getLatestQ() {
+        $query = "SELECT * FROM QUYEN ORDER BY id DESC LIMIT 1";
+        $result = database_connection::executeQuery($query);
+        if ($result->num_rows > 0) {
+            return $this->createQuyenModel($result->fetch_assoc());
+        }
+        return null;
+    }
     public function getAll() : array {
         $list = [];
         $rs = database_connection::executeQuery("SELECT * FROM QUYEN");
