@@ -17,6 +17,7 @@
     {{ session('error') }}
 </div>
 @endif
+
 <body>
     <div class="submenu card">
         <div class="card-menu d-flex ">

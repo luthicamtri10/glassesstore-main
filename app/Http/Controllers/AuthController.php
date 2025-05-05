@@ -88,12 +88,14 @@ class AuthController extends Controller {
             $rs2 = app(TaiKhoan_BUS::class)->addModel($account);
     
             if (!$rs2) {
-                return response()->json(['success' => false, 'message' => 'Đăng ký thất bại!']);
+                // return response()->json(['success' => false, 'message' => 'Đăng ký thất bại!']);
+                return redirect()->back()->with('error', 'Đăng ký thất bại!');
             }
         }
         
     
-        return response()->json(['success' => true, 'message' => 'Đăng ký tài khoản thành công!']);
+        // return response()->json(['success' => true, 'message' => 'Đăng ký tài khoản thành công!']);
+        return redirect()->back()->with('success', 'Đăng ký tài khoản thành công!');
     }
     
     

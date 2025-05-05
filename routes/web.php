@@ -363,6 +363,8 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
     $auth = app()->make(AuthController::class);
     
     if ($auth->login($email, $password)) {
+        $user = app(TaiKhoan_BUS::class)->getModelById($email);
+
         return redirect('/'); // hoặc trang dashboard nếu login thành công
     } else {
         // return back()->withErrors(['login' => 'Email hoặc mật khẩu không đúng!']);
