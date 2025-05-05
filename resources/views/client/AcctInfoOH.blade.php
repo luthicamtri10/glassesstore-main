@@ -62,13 +62,17 @@
                     <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
                         Thông tin tài khoản
                         <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal">
-                            <i class="fa fa-edit"></i> Sửa
+                            <i class="fa fa-edit"></i> Chỉnh sửa
                         </button>
                     </div>
                     <div class="card-body">
                         <div class="row mb-2">
-                            <div class="col-md-4 fw-bold">Họ tên:</div>
-                            <div class="col-md-8">{{ $user->getIdNguoiDung()->getHoTen() ?? 'Chưa có tên' }}</div>
+                            <div class="col-md-4 fw-bold">Tên đăng nhập:</div>
+                            <div class="col-md-8">{{ $user->getUsername() }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Họ và tên:</div>
+                            <div class="col-md-8">{{ $user->getIdNguoiDung()->getHoTen() ?? 'Chưa cập nhật' }}</div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-md-4 fw-bold">Email:</div>
@@ -93,12 +97,48 @@
                       <input type="hidden" name="id" value="{{ $user->getIdNguoiDung()->getId() }}">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <h5 class="modal-title" id="editUserModalLabel">Sửa thông tin cá nhân</h5>
+                          <h5 class="modal-title" id="editUserModalLabel">Chỉnh sửa thông tin cá nhân</h5>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                         </div>
                         <div class="modal-body">
                           <div class="mb-3">
-                            <label for="hoTen" class="form-label">Họ tên</label>
+                            <label for="username" class="form-label">Tên đăng nhập</label>
+                            <input type="text" class="form-control" id="username" name="username" value="{{ $user->getUsername() }}" required>
+                            @error('username')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                          </div>
+                          <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ $user->getEmail() }}" required>
+                            @error('email')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                          </div>
+                          <div class="mb-3">
+                            <label for="current_password" class="form-label">Mật khẩu hiện tại</label>
+                            <input type="password" class="form-control" id="current_password" name="current_password" required>
+                            @error('current_password')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                          </div>
+                          <div class="mb-3">
+                            <label for="password" class="form-label">Mật khẩu mới</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <small class="text-muted">Mật khẩu phải có ít nhất 8 ký tự</small>
+                            @error('password')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                          </div>
+                          <div class="mb-3">
+                            <label for="password_confirmation" class="form-label">Xác nhận mật khẩu mới</label>
+                            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+                            @error('password_confirmation')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                          </div>
+                          <div class="mb-3">
+                            <label for="hoTen" class="form-label">Họ và tên</label>
                             <input type="text" class="form-control" id="hoTen" name="hoTen" value="{{ $user->getIdNguoiDung()->getHoTen() }}">
                           </div>
                           <div class="mb-3">

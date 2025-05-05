@@ -124,7 +124,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(Auth_BUS::class, function ($app) {
             return new Auth_BUS($app->make(TaiKhoan_BUS::class), $app->make(JWTUtils::class));
         });
-
+        $this->app->singleton(GioHang_DAO::class, function($app) {
+            return new GioHang_DAO($app->make(TaiKhoan_BUS::class));
+        });
+        $this->app->singleton(CTGH_DAO::class, function($app) {
+            return new CTGH_DAO($app->make(GioHang_BUS::class), $app->make(SanPham_BUS::class));
+        });
         $this->app->singleton(AuthController::class, function ($app) {
             return new AuthController($app->make(Auth_BUS::class));
         });
