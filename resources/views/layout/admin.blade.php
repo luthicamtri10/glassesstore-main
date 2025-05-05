@@ -28,6 +28,7 @@
                 use App\Bus\PTTT_BUS;
                 use App\Bus\Quyen_BUS;
                 use App\Bus\TaiKhoan_BUS;
+                use App\Bus\Tinh_BUS;
                 use App\Bus\KhuyenMai_BUS;
                 use App\Bus\ThongKe_BUS;
                 use App\Bus\Auth_BUS;
@@ -35,7 +36,6 @@ use App\Bus\CPVC_BUS;
 use App\Bus\CTQ_BUS;
 use App\Bus\NCC_BUS;
 use App\Bus\PhieuNhap_BUS;
-use App\Bus\Tinh_BUS;
 use App\Models\DVVC;
 use Illuminate\Support\Facades\View as FacadesView;
 
@@ -292,7 +292,27 @@ use Illuminate\Support\Facades\View as FacadesView;
                         ])->render();
                         break;
                     case 'thongke':
-                        include base_path('resources/views/admin/thongke.blade.php');
+                        $thongkeBUS = app(ThongKe_BUS::class);
+
+                        // Lấy dữ liệu từ POST hoặc mặc định 1 tháng qua
+                        $to = $_POST['to'] ?? date('Y-m-d');
+                        $from = $_POST['from'] ?? date('Y-m-d', strtotime('-1 month', strtotime($to)));
+
+                        // Lấy top 5 khách hàng
+                        $topCustomers = $thongkeBUS->getTop5KhachHang($from, $to);
+
+                        // Không lấy dữ liệu đơn hàng và chi tiết hóa đơn ban đầu
+                        $hoaDonHang = [];
+                        $CTHDList = [];
+
+                        // Render view thongke
+                        echo FacadesView::make('admin.thongke', [
+                            'topCustomers' => $topCustomers,
+                            'hoaDonHang' => $hoaDonHang,
+                            'CTHDList' => $CTHDList,
+                            'from' => $from,
+                            'to' => $to
+                        ])->render();
                         break;
                     case 'loaisanpham':
                         $bus = app(LoaiSanPham_BUS::class);

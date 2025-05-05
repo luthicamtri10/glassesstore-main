@@ -419,15 +419,6 @@
 
 </html>
 <?php
-
-use App\Bus\ChiTietBaoHanh_BUS;
-use App\Bus\CTGH_BUS;
-use App\Bus\GioHang_BUS;
-use App\Models\ChiTietBaoHanh;
-
-// new GioHang(0,"vính@gmail","2025-10-10",);
-$sp = app(ChiTietBaoHanh_BUS::class)->deleteModel('BL003');
-// foreach ($sp as $item) {
-//    echo $item->getSoSeri() . "<br>";
-// }
+use App\Bus\ThongKe_BUS;
 ?>
+
