@@ -24,7 +24,7 @@ class GioHang_DAO implements DAOInterface
         $list = [];
         $query = "SELECT * FROM giohang WHERE TRANGTHAIHD = 1"; // Chỉ lấy các bản ghi có trạng thái hoạt động
         $rs = database_connection::executeQuery($query);
-        
+
         while ($row = $rs->fetch_assoc()) {
             $model = $this->createGioHangModel($row);
             $list[] = $model;
