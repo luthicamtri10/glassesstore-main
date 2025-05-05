@@ -257,7 +257,38 @@ use Illuminate\Support\Facades\View as FacadesView;
                                     ]);
                                     break;  
                     case 'quyen':
-                        include base_path('resources/views/admin/quyen.blade.php');
+                        $quyenBUS = app(Quyen_BUS::class);
+                        $listQuyen = $quyenBUS->getAllModels();
+                        // Lọc chỉ lấy quyền hoạt động
+                        $listQuyen = array_filter($listQuyen, function($quyen) {
+                            return $quyen->getTrangThaiHD() == 1;
+                        });
+                        if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
+                            $keyword = $_GET['keyword'];
+                            $listQuyen = $quyenBUS->searchModel($keyword, []);
+                            // Lọc lại sau khi tìm kiếm
+                            $listQuyen = array_filter($listQuyen, function($quyen) {
+                                return $quyen->getTrangThaiHD() == 1;
+                            });
+                        }
+
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($listQuyen ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if(empty($listQuyen)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listQuyen, $start, $limit);
+                        }
+
+                        echo FacadesView::make('admin.quyen', [
+                            'listQuyen' => $tmp,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page
+                        ])->render();
                         break;
                     case 'thongke':
                         include base_path('resources/views/admin/thongke.blade.php');
