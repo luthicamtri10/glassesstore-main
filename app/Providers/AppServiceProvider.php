@@ -39,12 +39,14 @@ use App\Dao\TaiKhoan_DAO;
 use App\Dao\Tinh_DAO;
 use App\Models\CTGH;
 use App\DAO\CTGH_DAO;
+use App\Bus\CTGH_BUS;
 use App\Models\GioHang;
+use App\Models\SanPham;
 use App\Models\TaiKhoan;
 use CTHD_BUS;
 use CTHD_DAO;
-use CTSP_BUS;
-use CTSP_DAO;
+use App\Bus\CTSP_BUS;
+use App\Dao\CTSP_DAO;
 use HoaDon_BUS;
 use HoaDon_DAO;
 use Illuminate\Support\ServiceProvider;
@@ -78,7 +80,8 @@ class AppServiceProvider extends ServiceProvider
         'KhuyenMai' => [KhuyenMai_DAO::class, KhuyenMai_BUS::class],
         'LoaiSanPham' => [LoaiSanPham_DAO::class, LoaiSanPham_BUS::class],
         'NCC' => [NCC_DAO::class, NCC_BUS::class],
-        'PTTT' => [PTTT_DAO::class, PTTT_BUS::class]
+        'PTTT' => [PTTT_DAO::class, PTTT_BUS::class],
+        'CTGH' => [CTGH_DAO::class, CTGH_BUS::class]
     ];
 
     /**
@@ -103,7 +106,7 @@ class AppServiceProvider extends ServiceProvider
             return new GioHang_DAO($app->make(TaiKhoan_BUS::class));
         });
         $this->app->singleton(CTGH_DAO::class, function($app) {
-            return new CTGH_DAO($app->make(GioHang_BUS::class), $app->make(CTSP_BUS::class));
+            return new CTGH_DAO($app->make(GioHang_BUS::class), $app->make(SanPham_BUS::class));
         });
     }
 

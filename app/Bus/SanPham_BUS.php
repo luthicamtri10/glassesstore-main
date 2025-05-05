@@ -1,50 +1,49 @@
 <?php
 namespace App\Bus;
-use App\Dao\SanPham_DAO;
 use App\Interface\BUSInterface;
 use Illuminate\Support\Facades\Validator;
+use App\Dao\SanPham_DAO;
+
 class SanPham_BUS implements BUSInterface {
-
+    private $listSanPham = array();
     private $sanPhamDAO;
-
     public function __construct(SanPham_DAO $sanPhamDAO)
     {
         $this->sanPhamDAO = $sanPhamDAO;
+        $this->refreshData();
     }
 
     public function getAllModels() {
-        return $this->sanPhamDAO->readDatabase();
+        return $this->listSanPham;
+    }
+
+    public function getAllModelsActive() {
+        return $this->sanPhamDAO->getAllModelsActive();
     }
 
     public function refreshData(): void {
-       $this->sanPhamDAO->getAll();
+       $this->listSanPham = $this->sanPhamDAO->getAll();
     }
 
-    public function getModelById(int $id) {
-        $models = $this->sanPhamDAO->readDatabase();
-        foreach ($models as $model) {
-            if ($model->getId() === $id) {
-                return $model;
-            }
-        }
-        return null;
+    public function getModelById($id) {
+        return $this->sanPhamDAO->getById($id);
     }
 
-    public function addModel($model): int {
+    public function addModel($model) {
         
         // Validate dữ liệu
-        $validator = Validator::make($model->toArray(), [
-            'tenSanPham' => 'required|string|max:255',
-            'idHang' => 'required|integer|exists:hangs,id',
-            'idLSP' => 'required|integer|exists:loai_san_phams,id',
-            'soLuong' => 'required|integer|min:0',
-            'moTa' => 'nullable|string',
-            'donGia' => 'required|numeric|min:0',
-            'thoiGianBaoHanh' => 'nullable|string|max:50',
-            'trangThaiHD' => 'required|boolean',
-        ]);
+        // $validator = Validator::make($model->toArray(), [
+        //     'tenSanPham' => 'required|string|max:255',
+        //     'idHang' => 'required|integer|exists:hangs,id',
+        //     'idLSP' => 'required|integer|exists:loai_san_phams,id',
+        //     'moTa' => 'nullable|string',
+        //     'donGia' => 'required|numeric|min:0',
+        //     'thoiGianBaoHanh' => 'nullable|string|max:50',
+        // ]);
          
-        return $this->sanPhamDAO->insert($model);
+        // Thêm sản phẩm vào cơ sở dữ liệu và lấy ID mới
+        $sanPhamId = $this->sanPhamDAO->insert($model);
+        return $sanPhamId;
     }
 
     public function updateModel($model): int {
@@ -58,5 +57,34 @@ class SanPham_BUS implements BUSInterface {
     public function searchModel(string $value, array $columns): array {
         return $this->sanPhamDAO->search($value, $columns);
     }
-
+    public function searchByLoaiSanPham($idLSP) {
+        return $this->sanPhamDAO->searchByLoaiSanPham($idLSP);
+    }
+    public function searchByHang($idHang) {
+        return $this->sanPhamDAO->searchByHang($idHang);
+    }
+    public function searchByKhoangGia($startPrice, $endPrice) {
+        return $this->sanPhamDAO->searchByKhoangGia($startPrice, $endPrice);
+    }
+    public function searchByLSPAndHang($lsp,$hang) {
+        return $this->sanPhamDAO->searchByLSPAndHang($lsp,$hang);
+    }
+    public function searchByKhoangGiaAndLSPAndModel($keyword,$idlsp,$startprice,$endprice) {
+        return $this->sanPhamDAO->searchByKhoangGiaAndLSPAndModel($keyword,$idlsp,$startprice,$endprice);
+    }
+    public function searchByLSPAndModel($keyword,$idlsp) {
+        return $this->sanPhamDAO->searchByLSPAndModel($keyword,$idlsp);
+    }
+    public function searchByKhoangGiaAndLSP($idlsp,$startprice,$endprice) {
+        return $this->sanPhamDAO->searchByKhoangGiaAndLSP($idlsp,$startprice,$endprice);
+    }
+    public function searchByKhoangGiaAndModel($keyword,$startprice,$endprice) {
+        return $this->sanPhamDAO->searchByKhoangGiaAndModel($keyword,$startprice,$endprice);
+    }
+    public function getTop4ProductWasHigestSale() {
+        return $this->sanPhamDAO->getTop4ProductWasHigestSale();
+    }
+    public function getStock($idPd) {
+        return $this->sanPhamDAO->getStock($idPd);
+    }
 }

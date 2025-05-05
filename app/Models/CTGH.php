@@ -1,37 +1,32 @@
 <?php
-
 namespace App\Models;
-
-class CTGH
-{
-    private GioHang $ghModel;
-    private CTSP $ctspModel;
-    public function __construct(GioHang $ghModel, CTSP $ctspModel)
+class CTGH {
+    private GioHang $gioHang;
+    private SanPham $sanPham;
+    private $soluong;
+    public function __construct($gioHang, $sanPham, $soluong)
     {
-        $this->ghModel = $ghModel;
-        $this->ctspModel = $ctspModel;
-        
+        $this->gioHang = $gioHang;
+        $this->sanPham = $sanPham;
+        $this->soluong = $soluong;
     }
-    // Getter cho ID
-    public function getGioHang(): GioHang
-    {
-        return $this->ghModel;
+    public function getGH() : GioHang {
+        return $this->gioHang;
     }
-
-    // Setter cho ID
-    public function setGioHang(GioHang $ghModel): void
-    {
-        $this->ghModel = $ghModel;
+    public function getSP() : SanPham {
+        return $this->sanPham;
     }
-    // Getter cho soSeri
-    public function getCTSP(): CTSP
-    {
-        return $this->ctspModel;
+    public function getSoLuong() {
+        return $this->soluong;
     }
-
-    // Setter cho soSeri
-    public function setCTSP(CTSP $ctspModel): void
-    {
-        $this->ctspModel = $ctspModel;
+    public function setGH(GioHang $gioHang) {
+        $this->gioHang = $gioHang;
+    }
+    public function setSP(SanPham $sanPham) {
+        $this->sanPham = $sanPham;
+    }
+    public function setSoLuong($soluong) {
+        $this->soluong = $soluong;
     }
 }
+?>

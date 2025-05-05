@@ -1,41 +1,42 @@
 <?php
 namespace App\Models;
 
-class ChiTietBaoHanh {
-    private int $idKhachHang;
-    private float $chiPhiBH;
-    private \DateTime $thoiDiemBH;
-    private string $soSeri;
+use Illuminate\Support\Facades\Date;
 
-    public function __construct(int $idKhachHang, string $soSeri, float $chiPhiBH, string $thoiDiemBH) {
-        $this->idKhachHang = $idKhachHang;
+class ChiTietBaoHanh {
+    private NguoiDung $khachHang;
+    private float $chiPhiBH;
+    private Date $thoiDiemBH;
+    private CTSP $soSeri;
+
+    public function __construct(NguoiDung $khachHang, CTSP $soSeri, float $chiPhiBH, String $thoiDiemBH) {
+        $this->khachHang = $khachHang;
         $this->chiPhiBH = $chiPhiBH;
-        $this->thoiDiemBH = new \DateTime($thoiDiemBH);
+        $this->thoiDiemBH = new Date($thoiDiemBH);
         $this->soSeri = $soSeri;
 
     }
 
-    public function getIdKhachHang(): int {
-        return $this->idKhachHang;
+    public function getKhachHang(): NguoiDung {
+        return $this->khachHang;
     }
 
   
-
     public function getChiPhiBH(): float {
         return $this->chiPhiBH;
     }
 
-    public function getThoiDiemBH(): \DateTime {
+    public function getThoiDiemBH(): Date {
         return $this->thoiDiemBH;
     }
 
-    public function getSoSeri(): string {
+    public function getSoSeri(): CTSP {
         return $this->soSeri;
     }
   
 
-    public function setIdKhachHang(int $idKhachHang): void {
-        $this->idKhachHang = $idKhachHang;
+    public function setKhachHang(NguoiDung $khachHang): void {
+        $this->khachHang = $khachHang;
     }
 
   
@@ -45,10 +46,10 @@ class ChiTietBaoHanh {
     }
 
     public function setThoiDiemBH(string $thoiDiemBH): void {
-        $this->thoiDiemBH = new \DateTime($thoiDiemBH);
+        $this->thoiDiemBH = new Date($thoiDiemBH);
     }
 
-    public function setSoSeri(string $soSeri): void {
+    public function setSoSeri(CTSP $soSeri): void {
         $this->soSeri = $soSeri;
     }
   
