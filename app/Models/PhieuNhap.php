@@ -8,10 +8,10 @@ class PhieuNhap {
     private NguoiDung $ndModel;
     private NCC $nccModel;
     private float $tongTien;
-    private  $ngayTao;
+    private  String $ngayTao;
     private int $trangThaiHD;
 
-    public function __construct(int $id, NCC $nccModel, float $tongTien, string $ngayTao, NguoiDung $ndModel, int $trangThaiHD) {
+    public function __construct(int $id, NCC $nccModel, float $tongTien, String $ngayTao, NguoiDung $ndModel, int $trangThaiHD) {
         $this->id = $id;
         $this->nccModel = $nccModel;
         $this->tongTien = $tongTien;
@@ -33,7 +33,7 @@ class PhieuNhap {
         return $this->tongTien;
     }
 
-    public function getNgayTao() {
+    public function getNgayTao(): String {
         return $this->ngayTao;
     }
 

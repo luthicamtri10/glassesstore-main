@@ -3,7 +3,6 @@ namespace App\Bus;
 use App\Dao\PhieuNhap_DAO;
 use App\Interface\BUSInterface;
 
-use function Laravel\Prompts\error;
 
 class PhieuNhap_BUS implements BUSInterface
 {
@@ -19,7 +18,7 @@ class PhieuNhap_BUS implements BUSInterface
         $this->phieuNhapList = $this->phieuNhapDAO->getAll();
     }
    
-    public function getAllModels() : array
+    public function getAllModels()
     {
         return $this->phieuNhapList;
     }
@@ -28,7 +27,6 @@ class PhieuNhap_BUS implements BUSInterface
         return $this->phieuNhapDAO->getById($id);    }
     public function addModel($model)
     {
-        echo "helo bus";
         return $this->phieuNhapDAO->insert($model);
     }
     public function updateModel($model)

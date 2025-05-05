@@ -32,7 +32,7 @@ class PhieuNhap_DAO implements DAOInterface
         }
         return $list;
     }
-    public function createPhieuNhapModel($rs): PhieuNhap
+    public function createPhieuNhapModel($rs)
     {
         $trangThaiHD = $rs['TRANGTHAIHD'];
         $id = $rs['ID'];
