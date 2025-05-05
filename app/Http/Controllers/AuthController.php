@@ -21,9 +21,11 @@ class AuthController extends Controller {
     public function login($email, $password)
     {
         if($this->auth_bus->login($email, $password)) {
-            return redirect()->back()->with('success','Nguời dùng đăng nhập thành công!');
+            // return redirect()->back()->with('success','Nguời dùng đăng nhập thành công!');
+            return true;
         } else {
-            return redirect()->back()->with('error','Tài khoản đã bị khóa!');
+            // return redirect()->back()->with('error','Tài khoản đã bị khóa!');
+            return false;
         }
         
     }
@@ -86,12 +88,14 @@ class AuthController extends Controller {
             $rs2 = app(TaiKhoan_BUS::class)->addModel($account);
     
             if (!$rs2) {
-                return redirect()->back()->with('error', 'Thêm tài khoản thất bại!');
+                // return response()->json(['success' => false, 'message' => 'Đăng ký thất bại!']);
+                return redirect()->back()->with('error', 'Đăng ký thất bại!');
             }
         }
         
     
-        return redirect()->back()->with('success', 'Đăng kí tài khoản thành công!');
+        // return response()->json(['success' => true, 'message' => 'Đăng ký tài khoản thành công!']);
+        return redirect()->back()->with('success', 'Đăng ký tài khoản thành công!');
     }
     
     

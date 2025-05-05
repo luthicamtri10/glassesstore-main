@@ -1,6 +1,8 @@
 <?php
 namespace App\Dao;
 
+use App\Bus\ChucNang_BUS;
+use App\Bus\Quyen_BUS;
 use App\Interface\DAOInterface;
 use App\Models\CTQ;
 use App\Models\Tinh;
@@ -22,11 +24,10 @@ class CTQ_DAO implements DAOInterface {
         return $list;
     }
     public function createCTQModel($rs) {
-        $idNguoiDung = $rs['IDNGUOIDUNG'];
-        $idQuyen = $rs['IDQUYEN'];
-        $thaoTac = $rs['THAOTAC'];
+        $idChucNang = app(ChucNang_BUS::class)->getModelById($rs['IDCHUCNANG']);
+        $idQuyen = app(Quyen_BUS::class)->getModelById($rs['IDQUYEN']);
         $trangThaiHD = $rs['TRANGTHAIHD'];
-        return new CTQ($idNguoiDung, $idQuyen, $thaoTac, $trangThaiHD);
+        return new CTQ($idQuyen, $idChucNang, $trangThaiHD);
     }
     public function getAll() : array {
         $list = [];
@@ -38,30 +39,29 @@ class CTQ_DAO implements DAOInterface {
         return $list;
     }
     public function getById($id) {
+        $list = [];
         $query = "SELECT * FROM CTQ WHERE idQuyen = ?";
-        $result = database_connection::executeQuery($query, $id);
-        if($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            if($row) {
-                return $this->createCTQModel($row);
-            }
+        $rs = database_connection::executeQuery($query, $id);
+        while($row = $rs->fetch_assoc()) {
+            $model = $this->createCTQModel($row);
+            array_push($list, $model);
         }
-        return null;
+        return $list;
     }
     public function insert($model): int {
-        $query = "INSERT INTO CTQ (idQuyen, idChucNang, thaoTac, trangThaiHD) VALUES (?,?,?,?)";
-        $args = [$model->getIdQuyen(), $model->getIdChucNang(), $model->getThaoTac(), $model->getTrangThaiHD()];
+        $query = "INSERT INTO `ctq`(`IDQUYEN`, `IDCHUCNANG`, `TRANGTHAIHD`) VALUES (?,?,?)";
+        $args = [$model->getIdQuyen()->getId(), $model->getIdChucNang()->getId(), $model->getTrangThaiHD()];
         return database_connection::executeQuery($query, ...$args);
     }
     public function update($model): int {
-        $query = "UPDATE CTQ SET idChucNang = ?, thaoTac = ?, trangThaiHD = ? WHERE idQuyen = ?";
-        $args = [$model->getIdChucNang(), $model->getThaoTac(), $model->getTrangThaiHD(), $model->getIdQuyen()];
+        $query = "UPDATE CTQ SET idChucNang = ?, trangThaiHD = ? WHERE idQuyen = ?";
+        $args = [$model->getIdChucNang()->getId(), $model->getTrangThaiHD(), $model->getIdQuyen()->getId()];
         $result = database_connection::executeUpdate($query, ...$args);
         return is_int($result) ? $result : 0;  
     }
     public function delete(int $id): int
     {
-        $query = "UPDATE CTQ SET trangThaiHD = false WHERE idQuyen = ?";
+        $query = "UPDATE CTQ SET trangThaiHD = 0 WHERE idQuyen = ?";
         $result = database_connection::executeUpdate($query, ...[$id]);
         
         return is_int($result) ? $result : 0;
@@ -70,6 +70,14 @@ class CTQ_DAO implements DAOInterface {
     {
         $query = "UPDATE CTQ SET trangThaiHD = false WHERE idQuyen = ? AND idChucNang = ?";
         $result = database_connection::executeUpdate($query, $idQuyen, $idChucNang);
+        
+        return is_int($result) ? $result : 0;
+    }
+
+    public function deleteByQuyenId($quyenId): int
+    {
+        $query = "UPDATE CTQ SET trangThaiHD = false WHERE idQuyen = ?";
+        $result = database_connection::executeUpdate($query, $quyenId);
         
         return is_int($result) ? $result : 0;
     }

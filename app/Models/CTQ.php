@@ -1,41 +1,34 @@
 <?php
 namespace App\Models;
 class CTQ {
-    private $idQuyen, $idChucNang, $thaoTac, $trangThaiHD;
-    public function __construct($idQuyen, $idChucNang, $thaoTac, $trangThaiHD)
+    private Quyen $idQuyen;
+    private ChucNang $idChucNang;
+    private $trangThaiHD;
+    public function __construct(Quyen $idQuyen,ChucNang $idChucNang, $trangThaiHD)
     {
         $this->idQuyen = $idQuyen;
         $this->idChucNang = $idChucNang;
-        $this->thaoTac = $thaoTac;
         $this->trangThaiHD = $trangThaiHD;
     }
 
-    public function getIdQuyen(){
+    public function getIdQuyen() : Quyen{
         return $this->idQuyen;
     }
 
-    public function getIdChucNang(){
+    public function getIdChucNang() : ChucNang{
         return $this->idChucNang;
-    }
-
-    public function getThaoTac(){
-        return $this->thaoTac;
     }
 
     public function getTrangThaiHD(){
         return $this->trangThaiHD;
     }
 
-    public function setIdQuyen($idQuyen){
+    public function setIdQuyen(Quyen $idQuyen){
         $this->idQuyen = $idQuyen;
     }
 
-    public function setIdChucNang($idChucNang){
+    public function setIdChucNang(ChucNang $idChucNang){
         $this->idChucNang = $idChucNang;
-    }
-
-    public function setThaoTac($thaoTac){
-        $this->thaoTac = $thaoTac;
     }
 
     public function setTrangThaiHD($trangthaiHD){

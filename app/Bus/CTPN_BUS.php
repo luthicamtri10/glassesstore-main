@@ -52,39 +52,42 @@ class CTPN_BUS
         }
     }
 
-    public function addModel($model): int {
-        try {
-            // Thêm CTPN
-            $result = $this->ctpnDAO->insert($model);
-            if ($result <= 0) {
-                return -1;
-            }
+    // public function addModel($model): int {
+    //     try {
+    //         // Thêm CTPN
+    //         $result = $this->ctpnDAO->insert($model);
+    //         if ($result <= 0) {
+    //             return -1;
+    //         }
 
-            // Tạo CTSP cho mỗi sản phẩm
-            $idSP = $model->getIdSP();
-            $soLuong = $model->getSoLuong();
-            $usedSerials = [];
+    //         // Tạo CTSP cho mỗi sản phẩm
+    //         $idSP = $model->getIdSP();
+    //         $soLuong = $model->getSoLuong();
+    //         $usedSerials = [];
 
-            for ($i = 0; $i < $soLuong; $i++) {
-                do {
-                    $soSeri = $this->generateUniqueSerial($idSP);
-                } while (in_array($soSeri, $usedSerials));
+    //         for ($i = 0; $i < $soLuong; $i++) {
+    //             do {
+    //                 $soSeri = $this->generateUniqueSerial($idSP);
+    //             } while (in_array($soSeri, $usedSerials));
 
-                $usedSerials[] = $soSeri;
-                $ctsp = new CTSP($idSP, $soSeri);
-                $this->ctspDAO->insert($ctsp);
-            }
+    //             $usedSerials[] = $soSeri;
+    //             $ctsp = new CTSP($idSP, $soSeri);
+    //             $this->ctspDAO->insert($ctsp);
+    //         }
 
-            // Tính toán và cập nhật giá bán
-            $giaNhapCaoNhat = $this->getHighestPurchasePrice($idSP);
-            $giaBanMoi = $this->calculateSellingPrice($giaNhapCaoNhat);
-            $this->updateProductPrice($idSP, $giaBanMoi);
+    //         // Tính toán và cập nhật giá bán
+    //         $giaNhapCaoNhat = $this->getHighestPurchasePrice($idSP);
+    //         $giaBanMoi = $this->calculateSellingPrice($giaNhapCaoNhat);
+    //         $this->updateProductPrice($idSP, $giaBanMoi);
 
-            return $result;
-        } catch (\Exception $e) {
-            error_log("Error adding purchase order detail: " . $e->getMessage());
-            return -1;
-        }
+    //         return $result;
+    //     } catch (\Exception $e) {
+    //         error_log("Error adding purchase order detail: " . $e->getMessage());
+    //         return -1;
+    //     }
+    // }
+    public function addModel($model) {
+        return $this->ctpnDAO->insert($model);
     }
 
     public function updateModel($model): int {
@@ -145,12 +148,7 @@ class CTPN_BUS
      */
     public function getByPhieuNhapId($idPN)
     {
-        try {
-            return $this->ctpnDAO->getByPhieuNhapId($idPN);
-        } catch (\Exception $e) {
-            error_log("Error getting purchase order details by ID: " . $e->getMessage());
-            return [];
-        }
+        return $this->ctpnDAO->getByPhieuNhapId($idPN);
     }
 
     /**
@@ -227,5 +225,8 @@ class CTPN_BUS
             error_log("Error calculating total amount: " . $e->getMessage());
             return 0;
         }
+    }
+    public function taoCTSPTuDong($idsp, $soLuong = 1) {
+        return $this->ctpnDAO->taoCTSPTuDong($idsp, $soLuong = 1);
     }
 }

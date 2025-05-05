@@ -26,4 +26,8 @@ class CTHD_BUS {
     public function refreshData(): void {
         $this->cthdDAO->getAll();
      }
+
+    public function getCTHTbyIDHD($id) {
+        return $this->cthdDAO->getCTHDbyIDHD($id);
+    }
 }

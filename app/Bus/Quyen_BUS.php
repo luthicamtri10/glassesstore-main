@@ -28,11 +28,10 @@ class Quyen_BUS implements BUSInterface{
         return $this->quyenDAO->getById($id);    }
     public function addModel($model)
     {
-        if($model == null) {
-            error("Error when add a Quyen");
-            return;
-        }
         return $this->quyenDAO->insert($model);
+    }
+    public function getLatestQ() {
+        return $this->quyenDAO->getLatestQ();
     }
     public function updateModel($model)
     {

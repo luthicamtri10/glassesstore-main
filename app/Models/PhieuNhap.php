@@ -1,46 +1,49 @@
 <?php
 namespace App\Models;
 
-use App\Enum\ReceiptStatus;
 
 class PhieuNhap {
-    private int $id;
-    private int $idNCC;
-    private float $tongTien;
-    private \DateTime $ngayTao;
-    private int $idNhanVien;
-    private ReceiptStatus $trangThaiPN;
+    private $id;
+    private NCC $idNCC;
+    private  $tongTien;
+    private $ngayTao;
+    private NguoiDung $idNhanVien;
+    private  $trangThaiPN;
 
-    public function __construct(int $id, int $idNCC, float $tongTien, string $ngayTao, int $idNhanVien, ReceiptStatus $trangThaiPN) {
+    public function __construct($id = null, NCC $idNCC,  $tongTien = null, string $ngayTao, NguoiDung $idNhanVien, $trangThaiPN) {
         $this->id = $id;
         $this->idNCC = $idNCC;
         $this->tongTien = $tongTien;
-        $this->ngayTao = new \DateTime($ngayTao);
+        $this->ngayTao = $ngayTao;
         $this->idNhanVien = $idNhanVien;
         $this->trangThaiPN = $trangThaiPN;
     }
 
-    public function getId(): int {
+    public function getId(){
         return $this->id;
     }
 
-    public function getIdNCC(): int {
+    public function getIdPN(){
+        return $this->id;
+    }
+
+    public function getIdNCC(): NCC {
         return $this->idNCC;
     }
 
-    public function getTongTien(): float {
+    public function getTongTien() {
         return $this->tongTien;
     }
 
-    public function getNgayTao(): \DateTime {
+    public function getNgayTao(){
         return $this->ngayTao;
     }
 
-    public function getIdNhanVien(): int {
+    public function getIdNhanVien(): NguoiDung {
         return $this->idNhanVien;
     }
 
-    public function getTrangThaiPN(): ReceiptStatus {
+    public function getTrangThaiPN() {
         return $this->trangThaiPN;
     }
 
@@ -48,24 +51,27 @@ class PhieuNhap {
         $this->id = $id;
     }
 
-    public function setIdNCC(int $idNCC): void {
+    public function setIdNCC(NCC $idNCC): void {
         $this->idNCC = $idNCC;
     }
 
-    public function setTongTien(float $tongTien): void {
+    public function setTongTien($tongTien): void {
         $this->tongTien = $tongTien;
     }
 
-    public function setNgayTao(string $ngayTao): void {
-        $this->ngayTao = new \DateTime($ngayTao);
+    public function setNgayTao($ngayTao): void {
+        $this->ngayTao = $ngayTao;
     }
 
-    public function setIdNhanVien(int $idNhanVien): void {
+    public function setIdNhanVien(NguoiDung $idNhanVien): void {
         $this->idNhanVien = $idNhanVien;
     }
 
-    public function setTrangThaiPN(ReceiptStatus $trangThaiPN): void {
+    public function setTrangThaiPN( $trangThaiPN): void {
         $this->trangThaiPN = $trangThaiPN;
+    }
+    public function getTrangThai() {
+        return $this->trangThaiPN; // Hoặc tên thuộc tính tương ứng
     }
 }
 

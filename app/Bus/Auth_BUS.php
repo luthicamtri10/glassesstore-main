@@ -19,7 +19,7 @@ class Auth_BUS {
 
     public function login($email, $password) {
         $user = $this->taiKhoanBUS->getModelById($email);
-        if (!$user->getTrangThaiHD()) {
+        if (!$user->getTrangThaiHD() || $user == null) {
             return false;
         } else {
             if ($user && password_verify($password, $user->getPassword())) {

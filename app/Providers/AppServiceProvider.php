@@ -7,6 +7,7 @@ use App\Bus\ChiTietBaoHanh_BUS;
 use App\Bus\ChucNang_BUS;
 use App\Bus\ChucNangDVVC_BUS;
 use App\Bus\CPVC_BUS;
+use App\Bus\CTGH_BUS;
 use App\Bus\CTQ_BUS;
 use App\Bus\DVVC_BUS;
 use App\Bus\GioHang_BUS;
@@ -45,10 +46,12 @@ use App\Dao\CTHD_DAO;
 use App\Bus\CTSP_BUS;
 use App\Dao\CTSP_DAO;
 use App\Bus\HoaDon_BUS;
+use App\Dao\CTGH_DAO;
 use App\Dao\HoaDon_DAO;
-use App\Http\Controllers\TaiKhoanController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TaiKhoanController;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -66,7 +69,7 @@ class AppServiceProvider extends ServiceProvider
         'Tinh' => [Tinh_DAO::class, Tinh_BUS::class],
         'SanPham' => [SanPham_DAO::class, SanPham_BUS::class],
         'CTSP' => [CTSP_DAO::class, CTSP_BUS::class],
-        'HoaDon' => [HoaDon_DAO::class, HoaDon_BUS::class],
+        'HoaDon' => [HoaDon_DAO::class, HoaDon_BUS::class], 
         'CTHD' => [CTHD_DAO::class, CTHD_BUS::class],
         'ChiTietBaoHanh' => [ChiTietBaoHanh_DAO::class, ChiTietBaoHanh_BUS::class],
         'CPVC' => [CPVC_DAO::class, CPVC_BUS::class],
@@ -79,6 +82,7 @@ class AppServiceProvider extends ServiceProvider
         'LoaiSanPham' => [LoaiSanPham_DAO::class, LoaiSanPham_BUS::class],
         'NCC' => [NCC_DAO::class, NCC_BUS::class],
         'PTTT' => [PTTT_DAO::class, PTTT_BUS::class],
+        'CTGH' => [CTGH_DAO::class, CTGH_BUS::class],
     ];
 
     /**
@@ -88,44 +92,55 @@ class AppServiceProvider extends ServiceProvider
     {
         foreach ($this->services as $classes) {
             $this->app->bind($classes[0], function ($app) use ($classes) {
-                return new $classes[0](); // Sử dụng classes[0] đã được truyền vào
+                return new $classes[0]();
             });
 
             $this->app->singleton($classes[1], function ($app) use ($classes) {
-                return new $classes[1]($app->make($classes[0])); // Sử dụng classes[1] đã được truyền vào
+                // Ghi đè binding cho HoaDon_BUS
+                if ($classes[1] === HoaDon_BUS::class) {
+                    return new HoaDon_BUS(
+                        $app->make(HoaDon_DAO::class),
+                        $app->make(CTHD_DAO::class),
+                        $app->make(CTHD_BUS::class)
+                    );
+                }
+                return new $classes[1]($app->make($classes[0]));
             });
         }
 
-        // $this->app->bind(SanPham_DAO::class, function($app) {
-        //     return new SanPham_DAO();
-        // });
-        // $this->
-        $this->app->singleton(validation::class, function($app) {
+        // Các binding khác
+        $this->app->singleton(validation::class, function ($app) {
             return new validation();
         });
+
         $this->app->singleton(GioHang_BUS::class, function ($app) {
             return new GioHang_BUS($app->make(GioHang_DAO::class));
         });
-        
+
         $this->app->singleton(TaiKhoan_DAO::class, function ($app) {
             return new TaiKhoan_DAO($app->make(GioHang_BUS::class));
         });
+
         $this->app->singleton(Auth_BUS::class, function ($app) {
             return new Auth_BUS($app->make(TaiKhoan_BUS::class), $app->make(JWTUtils::class));
         });
-        $this->app->singleton(AuthController::class, function($app) {
-            return new AuthController(($app->make(Auth_BUS::class)));
+        $this->app->singleton(GioHang_DAO::class, function($app) {
+            return new GioHang_DAO($app->make(TaiKhoan_BUS::class));
+        });
+        $this->app->singleton(CTGH_DAO::class, function($app) {
+            return new CTGH_DAO($app->make(GioHang_BUS::class), $app->make(SanPham_BUS::class));
+        });
+        $this->app->singleton(AuthController::class, function ($app) {
+            return new AuthController($app->make(Auth_BUS::class));
         });
 
-       
         $this->app->singleton(TaiKhoanController::class, function ($app) {
             return new TaiKhoanController(
                 $app->make(TaiKhoan_BUS::class),
-                $app->make(NguoiDung_BUS::class),   // đúng vị trí thứ 2
-                $app->make(Quyen_BUS::class)        // đúng vị trí thứ 3
+                $app->make(NguoiDung_BUS::class),
+                $app->make(Quyen_BUS::class)
             );
         });
-        
     }
 
     /**
@@ -133,6 +148,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // 
+        Paginator::useBootstrapFive();
     }
 }

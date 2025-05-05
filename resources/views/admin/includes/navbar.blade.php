@@ -13,7 +13,10 @@
           <li><a class="dropdown-item" href="#">Đổi mật khẩu</a></li>
           <li><hr class="dropdown-divider"></li>
           <li>
-            <a class="dropdown-item d-flex align-items-center" href="#"><i class='bx bx-log-out-circle me-2' ></i>Đăng xuất</a>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="dropdown-item d-flex align-items-center" href=""><i class='bx bx-log-out-circle me-2' ></i>Đăng xuất</button>
+            </form>
             
           </li>
         </ul>

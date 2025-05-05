@@ -26,30 +26,24 @@ class SanPham_BUS implements BUSInterface {
     }
 
     public function getModelById($id) {
-        $models = $this->sanPhamDAO->getById($id);
-        foreach ($models as $model) {
-            if ($model->getId() === $id) {
-                return $model;
-            }
-        }
-        return null;
+        return $this->sanPhamDAO->getById($id);
     }
 
-    public function addModel($model): int {
+    public function addModel($model) {
         
         // Validate dữ liệu
-        $validator = Validator::make($model->toArray(), [
-            'tenSanPham' => 'required|string|max:255',
-            'idHang' => 'required|integer|exists:hangs,id',
-            'idLSP' => 'required|integer|exists:loai_san_phams,id',
-            'soLuong' => 'required|integer|min:0',
-            'moTa' => 'nullable|string',
-            'donGia' => 'required|numeric|min:0',
-            'thoiGianBaoHanh' => 'nullable|string|max:50',
-            'trangThaiHD' => 'required|boolean',
-        ]);
+        // $validator = Validator::make($model->toArray(), [
+        //     'tenSanPham' => 'required|string|max:255',
+        //     'idHang' => 'required|integer|exists:hangs,id',
+        //     'idLSP' => 'required|integer|exists:loai_san_phams,id',
+        //     'moTa' => 'nullable|string',
+        //     'donGia' => 'required|numeric|min:0',
+        //     'thoiGianBaoHanh' => 'nullable|string|max:50',
+        // ]);
          
-        return $this->sanPhamDAO->insert($model);
+        // Thêm sản phẩm vào cơ sở dữ liệu và lấy ID mới
+        $sanPhamId = $this->sanPhamDAO->insert($model);
+        return $sanPhamId;
     }
 
     public function updateModel($model): int {
@@ -69,8 +63,23 @@ class SanPham_BUS implements BUSInterface {
     public function searchByHang($idHang) {
         return $this->sanPhamDAO->searchByHang($idHang);
     }
+    public function searchByKhoangGia($startPrice, $endPrice) {
+        return $this->sanPhamDAO->searchByKhoangGia($startPrice, $endPrice);
+    }
     public function searchByLSPAndHang($lsp,$hang) {
         return $this->sanPhamDAO->searchByLSPAndHang($lsp,$hang);
+    }
+    public function searchByKhoangGiaAndLSPAndModel($keyword,$idlsp,$startprice,$endprice) {
+        return $this->sanPhamDAO->searchByKhoangGiaAndLSPAndModel($keyword,$idlsp,$startprice,$endprice);
+    }
+    public function searchByLSPAndModel($keyword,$idlsp) {
+        return $this->sanPhamDAO->searchByLSPAndModel($keyword,$idlsp);
+    }
+    public function searchByKhoangGiaAndLSP($idlsp,$startprice,$endprice) {
+        return $this->sanPhamDAO->searchByKhoangGiaAndLSP($idlsp,$startprice,$endprice);
+    }
+    public function searchByKhoangGiaAndModel($keyword,$startprice,$endprice) {
+        return $this->sanPhamDAO->searchByKhoangGiaAndModel($keyword,$startprice,$endprice);
     }
     public function getTop4ProductWasHigestSale() {
         return $this->sanPhamDAO->getTop4ProductWasHigestSale();

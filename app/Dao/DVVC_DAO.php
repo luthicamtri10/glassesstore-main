@@ -9,7 +9,7 @@ use InvalidArgumentException;
 
 use function Laravel\Prompts\alert;
 
-class DVVC_DAO implements DAOInterface {
+class DVVC_DAO {
     private static $instance;
 
     public static function getInstance()
@@ -32,16 +32,16 @@ class DVVC_DAO implements DAOInterface {
     }
 
     public function createDVVCModel($rs) {
-        $idDVVC = $rs['idDVVC'];
-        $tenDV = $rs['tenDV'];
-        $moTa = $rs['moTa'];
-        $trangThaiHD = $rs['trangThaiHD'];
+        $idDVVC = $rs['ID'];
+        $tenDV = $rs['TENDV'];
+        $moTa = $rs['MOTA'];
+        $trangThaiHD = $rs['TRANGTHAIHD'];
         return new DVVC($idDVVC, $tenDV, $moTa, $trangThaiHD);
     }
 
     public function getAll(): array {
         $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM DVVC");
+        $rs = database_connection::executeQuery("SELECT * FROM dvvc");
         while ($row = $rs->fetch_assoc()) {
             $model = $this->createDVVCModel($row);
             array_push($list, $model);
@@ -50,7 +50,7 @@ class DVVC_DAO implements DAOInterface {
     }
 
     public function getById($id) {
-        $query = "SELECT * FROM DVVC WHERE idDVVC = ?";
+        $query = "SELECT * FROM dvvc WHERE ID = ?";
         $result = database_connection::executeQuery($query, $id);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
@@ -62,20 +62,20 @@ class DVVC_DAO implements DAOInterface {
     }
 
     public function insert($model): int {
-        $query = "INSERT INTO DVVC (tenDV, moTa, trangThaiHD) VALUES (?, ? ,?)";
+        $query = "INSERT INTO dvvc (TENDV, MOTA, TRANGTHAIHD) VALUES (?, ? ,?)";
         $args = [$model->getTenDV(), $model->getMoTa(), $model->getTrangThaiHD()];
         return database_connection::executeQuery($query, ...$args);
     }
 
-    public function update($model): int {
-        $query = "UPDATE DVVC SET tenDV = ?, moTa = ?, trangThaiHD = ? WHERE idDVVC = ?";
+    public function update($model){
+        $query = "UPDATE `dvvc` SET `TENDV`= ?,`MOTA`= ?,`TRANGTHAIHD`= ? WHERE ID = ?";
         $args = [$model->getTenDV(), $model->getMoTa(), $model->getTrangThaiHD(), $model->getIdDVVC()];
         $result = database_connection::executeUpdate($query, ...$args);
-        return is_int($result) ? $result : 0;
+        return is_int($result) ? $result : 0;  
     }
 
     public function delete($id): int {
-        $query = "UPDATE DVVC SET trangThaiHD = false WHERE idDVVC = ?";
+        $query = "UPDATE DVVC SET trangThaiHD = false WHERE id = ?";
         $result = database_connection::executeUpdate($query, ...[$id]);
         return is_int($result) ? $result : 0;
     }
@@ -86,7 +86,7 @@ class DVVC_DAO implements DAOInterface {
         }
         $query = "";
         if ($columnNames === null || count($columnNames) === 0) {
-            $query = "SELECT * FROM DVVC WHERE idDVVC LIKE ? OR tenDV LIKE ? OR moTa LIKE ? OR trangThaiHD LIKE ?";
+            $query = "SELECT * FROM DVVC WHERE id LIKE ? OR tenDV LIKE ? OR moTa LIKE ? OR trangThaiHD LIKE ?";
             $args = array_fill(0, 4, "%" . $condition . "%");
         } else if (count($columnNames) === 1) {
             $column = $columnNames[0];

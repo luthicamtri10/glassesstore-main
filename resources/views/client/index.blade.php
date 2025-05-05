@@ -6,55 +6,120 @@
     <link rel="stylesheet" href="{{ asset('css/client/Login-Register.css') }}">
     <link rel="stylesheet" href="{{ asset('css/client/HomePageClient.css') }}">
     <link rel="stylesheet" href="{{ asset('css/client/AcctInfoOH.css') }}">
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        
+    <?php
+      use App\Bus\Auth_BUS;
+use App\Bus\CTQ_BUS;
+use App\Bus\TaiKhoan_BUS;
+use App\Bus\SanPham_BUS;
+    $sanPham = app(SanPham_BUS::class);
+    ?>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchForm = document.querySelector('form[role="search"]');
+
+    function loadProducts(params = '') {
+    fetch('/index' + params)
+        .then(response => response.json())
+        .then(data => {
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = ''; // Xóa danh sách cũ
+
+            if (data.listSP.length === 0) {
+                productList.innerHTML = '<h3 class="text-center text-gray w-100">Không có sản phẩm cần tìm</h3>';
+            } else {
+                data.listSP.forEach(function(sp) {
+                    const html = `
+                        <div class="col rounded-5 product" data-idsp="${sp.id}" data-tensp="${sp.tenSanPham}">
+                            <div class="card shadow-sm border-0 h-100">
+                                <img src="${sp.img}" class="card-img-top" alt="${sp.tenSanPham}">
+                                <div class="card-body">
+                                    <h6 class="card-title">${sp.tenSanPham}</h6>
+                                    <p class="card-text">${sp.dongia}</p>
+                                </div>
+                            </div>
+                        </div>`;
+                    productList.insertAdjacentHTML('beforeend', html);
+                });
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+    // Gọi hàm khi trang được tải
+    loadProducts(window.location.search); // Gửi tham số tìm kiếm nếu có
+
+    // Xử lý sự kiện cho form tìm kiếm
+    if (searchForm) {
+        searchForm.addEventListener('submit', function (e) {
+            e.preventDefault(); // Ngăn chặn hành động gửi form mặc định
+            const params = new URLSearchParams(new FormData(searchForm)).toString();
+            loadProducts('?' + params); // Gọi hàm để tải sản phẩm với tham số tìm kiếm
+        });
+    }
   const searchForms = document.querySelectorAll('form[role="search"]');
 
-  searchForms.forEach(function (searchForm) {
-    searchForm.addEventListener('submit', function (e) {
-      e.preventDefault();
+    searchForms.forEach(function (searchForm) {
+      const keywordInput = searchForm.querySelector('input[name="keyword"]');
 
-      const currentUrl = new URL(window.location.href);
-      const keywordInput = searchForm.querySelector('#keyword');
+      searchForm.addEventListener('submit', function (e) {
+        e.preventDefault(); // Ngăn chặn hành động gửi form mặc định
+
+        const currentUrl = new URL(window.location.href);
+        // const keywordInput = searchForm.querySelector('input[name="keyword"]'); 
+        const lspSelect = searchForm.querySelector('select[name="lsp"]');
+        const hangSelect = searchForm.querySelector('select[name="hang"]');
+        const khoangGiaSelect = searchForm.querySelector('select[name="khoanggia"]');
+
+        // Xóa các tham số cũ
+        // currentUrl.searchParams.delete('keyword');
+        // currentUrl.searchParams.delete('lsp');
+        // currentUrl.searchParams.delete('hang');
+        // currentUrl.searchParams.delete('khoanggia');
+
+        // Thêm các tham số mới
+        if (keywordInput && keywordInput.value.trim()) {
+          currentUrl.searchParams.set('keyword', keywordInput.value.trim());
+        }
+        if (lspSelect && lspSelect.value ) {
+          currentUrl.searchParams.set('lsp', lspSelect.value);
+        }
+        if (hangSelect && hangSelect.value ) {
+          currentUrl.searchParams.set('hang', hangSelect.value);
+        }
+        if (khoangGiaSelect && khoangGiaSelect.value) {
+          currentUrl.searchParams.set('khoanggia', khoangGiaSelect.value);
+        }
+
+        // Chuyển hướng đến URL mới
+        window.location.href = currentUrl.toString();
+      });
+
+      // Thêm sự kiện change cho các select
       const lspSelect = searchForm.querySelector('select[name="lsp"]');
-      const hangSelect = searchForm.querySelector('select[name="hang"]')
-      if ((keywordInput && keywordInput.value.trim()) && (keywordInput && keywordInput.value.trim())) {
-        currentUrl.searchParams.set('keyword', keywordInput.value.trim());
-        currentUrl.searchParams.delete('lsp');
-        currentUrl.searchParams.delete('hang');
-      } else if (lspSelect && lspSelect.value && lspSelect.value !== "0") {
-        currentUrl.searchParams.set('lsp', lspSelect.value);
-        currentUrl.searchParams.delete('hang');
-        currentUrl.searchParams.delete('keyword');
-      } else if (hangSelect && hangSelect.value && hangSelect.value !== "0") {
-        currentUrl.searchParams.set('hang', hangSelect.value);
-        currentUrl.searchParams.delete('lsp');
-        currentUrl.searchParams.delete('keyword');
-      } else {
-        currentUrl.searchParams.delete('keyword');
-        currentUrl.searchParams.delete('hang');
-        currentUrl.searchParams.delete('lsp');
+      if (lspSelect) {
+        lspSelect.addEventListener('change', function () {
+          searchForm.dispatchEvent(new Event('submit'));
+        });
       }
 
-      currentUrl.searchParams.delete('page');
-
-      window.location.href = currentUrl.toString();
+      const hangSelect = searchForm.querySelector('select[name="hang"]');
+      if (hangSelect) {
+        hangSelect.addEventListener('change', function () {
+          searchForm.dispatchEvent(new Event('submit'));
+        });
+      }
+      const khoangGiaSelect = searchForm.querySelector('select[name="khoanggia"]');
+      if (khoangGiaSelect) {
+        khoangGiaSelect.addEventListener('change', function () {
+          searchForm.dispatchEvent(new Event('submit'));
+        });
+      }
+      if (keywordInput) {
+        keywordInput.addEventListener('input', function () {
+          searchForm.dispatchEvent(new Event('submit'));
+        });
+      }
     });
-
-    const lspSelect = searchForm.querySelector('select[name="lsp"]');
-    if (lspSelect) {
-      lspSelect.addEventListener('change', function () {
-        searchForm.dispatchEvent(new Event('submit'));
-      });
-    }
-    const hangSelect = searchForm.querySelector('select[name="hang"]');
-    if (hangSelect) {
-      hangSelect.addEventListener('change', function () {
-        searchForm.dispatchEvent(new Event('submit'));
-      });
-    }
-  });
   const userBtn = document.getElementById('userDropdownBtn');
   const dropdownMenu = document.getElementById('userDropdownMenu');
 
@@ -74,9 +139,12 @@
   }
   document.querySelectorAll(".product").forEach((productDiv) => {
     productDiv.addEventListener("click", () => {
-      
+      console.log("Dữ liệu sản phẩm:", productDiv.dataset);
       const modal = document.querySelector('#productDetailModal');
       if (!modal) return;
+      
+      // Cập nhật thông tin modal
+      modal.querySelector('input[name="idsp"]').value = productDiv.dataset.idsp;
       modal.querySelector('div[name="tensp"]').textContent = productDiv.dataset.tensp;
       modal.querySelector('div[name="hang"]').textContent = productDiv.dataset.hang;
       modal.querySelector('div[name="lsp"]').textContent = productDiv.dataset.lsp;
@@ -85,8 +153,12 @@
       modal.querySelector('div[name="tgbh"]').textContent = productDiv.dataset.tgbh;
       modal.querySelector('img[name="img"]').src = productDiv.dataset.img;
       modal.querySelector('div[name="stock"]').textContent = productDiv.dataset.stock;
+
       // Hiển thị modal
+      // const bootstrapModal = new bootstrap.Modal(modal);
+      // bootstrapModal.show();
       document.getElementById("productDetailModal").style.display = "block";
+
     });
   });
 
@@ -94,9 +166,20 @@
   document.querySelector(".btn-close").addEventListener("click", () => {
     document.getElementById("productDetailModal").style.display = "none";
   });
-});
+  const successAlert = document.getElementById('successAlert');
+  if (successAlert) {
+      setTimeout(() => {
+          successAlert.classList.remove('show');
+          successAlert.classList.add('fade');
+          successAlert.style.opacity = 0;
+      }, 3000); // 3 giây
 
-  </script>
+      setTimeout(() => {
+          successAlert.remove(); // Xoá hẳn khỏi DOM
+      }, 4000);
+  }
+});
+</script>
 
     <!-- Nội dung trang chính ở đây -->
      <header>
@@ -104,9 +187,12 @@
       <div class="top-nav">
         <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
         <ul class="list-top-nav d-flex ms-auto gap-2">
-          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill " id="chinhsach"><a href="">Chính sách</a></li>
-          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang"><a href="">Tra cứu đơn hàng</a></li>
-          
+          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill " id="chinhsach"><a href="/yourInfo">Thông tin cá nhân</a></li>
+          @if($isLogin && app(CTQ_BUS::class)->checkChucNangExistInQuyen($user->getIdQuyen()->getId(), 6))
+          <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang">
+              <a href="{{ route('order.history') }}">Tra cứu đơn hàng</a>
+          </li>
+          @endif
           @if($isLogin) 
           @if($user->getIdQuyen()->getId() == 1 || $user->getIdQuyen()->getId() == 2) 
             <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang"><a href="/admin">Trang quản trị</a></li>
@@ -126,7 +212,7 @@
         </ul>
       </div>
       <div class="navbar text-white navbar-expand" id="navbar">
-      <a href="" class="navbar-brand">
+      <a href="/index" class="navbar-brand">
         <img src="https://img.ws.mms.shopee.vn/vn-11134216-7r98o-lq2sgdy60w5uba" 
             alt="Logo" 
             class="img-fluid rounded-5" 
@@ -134,11 +220,19 @@
       </a>
         <form action="" method="get" role="search" class="w-100">
           <ul class="d-flex justify-content-center gap-5 w-100 pt-4" >
-            <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="#product" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a></li>
-            <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}"><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555; padding: 10px"></i></li>
+            <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="#list-product" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a></li>
+            <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}" {{ request('keyword') ? '' : 'selected' }}><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555; padding: 10px"></i></li>
             <!-- <li class="nav-item fw-medium my-2" id="item-xemthem"><a href="" class="nav-link text-white">Xem Thêm <i class="fa-regular fa-angle-up"></i></a></li> -->
             <!-- <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li> -->
-            <li class="nav-item fw-medium my-2" id="item-giohang"><a href="/yourcart" class="nav-link text-white">Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;"><small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small></i></a></li>
+            @if($isLogin && ($user->getIdQuyen()->getId() != 1 || $user->getIdQuyen()->getId() != 2))
+              <li class="nav-item fw-medium my-2" id="item-giohang">
+                <a href="{{ url('/yourcart?email=' . $user->getEmail()) }}" class="nav-link text-white">
+                  Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;">
+                    <small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small>
+                  </i>
+                </a>
+              </li>
+            @endif
           </ul>
         </form>
         
@@ -164,17 +258,17 @@
                   $stock = $sanPham->getStock($sp->getId());
                 @endphp
                 <div class="col rounded-5 product"
-                    data-stock="{{ $stock }}"
-                    data-tensp="{{ $sp->getTenSanPham() }}"
-                    data-hang="{{ $sp->getIdHang()->getTenHang() }}"
-                    data-lsp="{{ $sp->getIdLSP()->getTenLSP() }}"
-                    data-mota="{{ $sp->getMoTa() }}"
-                    data-dongia="{{ number_format($sp->getDonGia(), 0, ',', '.') }}₫"
-                    data-tgbh="{{ $sp->getThoiGianBaoHanh() }}"
-                    data-img="productImg/{{ $sp->getId() }}.webp"
-                    data-bs-toggle="modal"
-                    data-bs-target="#productDetailModal"
-                >
+                      data-stock="{{ $stock }}"
+                      data-idsp="{{ $sp->getId() }}"
+                      data-tensp="{{ $sp->getTenSanPham() }}"
+                      data-hang="{{ $sp->getIdHang()->getTenHang() }}"
+                      data-lsp="{{ $sp->getIdLSP()->getTenLSP() }}"
+                      data-mota="{{ $sp->getMoTa() }}"
+                      data-dongia="{{ number_format($sp->getDonGia(), 0, ',', '.') }}₫"
+                      data-tgbh="{{ $sp->getThoiGianBaoHanh() }}"
+                      data-img="productImg/{{ $sp->getId() }}.webp"
+                      data-bs-toggle="modal"
+                      data-bs-target="#productDetailModal">
                   <div class="card shadow-sm border-0 h-100 col rounded-5 product-item">
                     <div class="ratio ratio-1x1">
                       <img src="productImg/{{ $sp->getId() }}.webp" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
@@ -202,24 +296,35 @@
       <div class="bnsm"><img src="client/img/small-banner2.png" class="img-fluid w-100"></div>
     </div>
     <div class="ctn-danhmucsanpham" style="background-color: #f6f2f2;padding-bottom: 30px;">
-      <div class="type-product-items flex flex-row justify-between">
+      <div class="d-flex justify-content-between p-5">
         <h1 style="font-family: Sigmar;font-weight: 800;color: #555;width: 40%;">BỘ SƯU TẬP MỚI NHẤT</h1>
-        <form action="" method="get" class="d-flex flex-row-reverse w-50 g-10" role="search">
-            <select class="form-select w-15" name="lsp" id="lsp">
-              <option disabled {{ request('lsp') ? '' : 'selected' }}>Lọc theo loại</option>
+        <form method="get" role="search" class="d-flex justify-content-between gap-5" style="width: 70%;">
+          <select class="form-select w-15" name="lsp" id="lsp">
+              <option disabled value="" {{ request('lsp') ? '' : 'selected' }}>Lọc theo loại</option>
               <option value="0">Xem tất cả</option>
               @foreach($listLSP as $lsp)
               <option value="{{ $lsp->getId() }}" {{ request('lsp') == $lsp->getId() ? 'selected' : '' }}>{{$lsp->gettenLSP()}}</option>
               @endforeach
-            </select>
-            <select class="form-select w-15" name="hang" id="hang">
-              <option disabled {{ request('hang') ? '' : 'selected' }}>Lọc theo hãng</option>
+          </select>
+          <select class="form-select w-15" name="hang" id="hang">
+              <option disabled value="" {{ request('hang') ? '' : 'selected' }}>Lọc theo hãng</option>
               <option value="0">Xem tất cả</option>
               @foreach($listHang as $h)
               <option value="{{ $h->getId() }}" {{ request('hang') == $h->getId() ? 'selected' : '' }}>{{$h->gettenHang()}}</option>
               @endforeach
-            </select>
-          </form>
+          </select>
+          <select class="form-select w-15" name="khoanggia">
+              <option value="" disabled {{ request('khoanggia') ? '' : 'selected' }}>Chọn khoảng giá</option>
+              <option value="0" {{ request('khoanggia') == '0' ? 'selected' : '' }}>Xem tất cả</option>
+              <option value="[0-500000]" {{ request('khoanggia') == '[0-500000]' ? 'selected' : '' }}>0 - 500.000đ</option>
+              <option value="[500000-1000000]" {{ request('khoanggia') == '[500000-1000000]' ? 'selected' : '' }}>500.000đ - 1.000.000đ</option>
+              <option value="[1000000-1500000]" {{ request('khoanggia') == '[1000000-1500000]' ? 'selected' : '' }}>1.000.000đ - 1.500.000đ</option>
+              <option value="[1500000-2000000]" {{ request('khoanggia') == '[1500000-2000000]' ? 'selected' : '' }}>1.500.000đ - 2.000.000đ</option>
+              <option value="[2000000-3000000]" {{ request('khoanggia') == '[2000000-3000000]' ? 'selected' : '' }}>2.000.000đ - 3.000.000đ</option>
+              <option value="[3000000-5000000]" {{ request('khoanggia') == '[3000000-5000000]' ? 'selected' : '' }}>3.000.000đ - 5.000.000đ</option>
+              <option value="[5000000-...]" {{ request('khoanggia') == '[5000000-...]' ? 'selected' : '' }}>5.000.000đ - ...</option>
+          </select>
+        </form>
       </div>
 
       <div class="content-prd " style="margin: 0 5% 0;display: flex;">
@@ -276,7 +381,7 @@
             </ul>
           </div>
         </div>
-        <div class="dmsp w-100" id="product">
+        <div class="dmsp w-100" id="list-product">
           <div class="container-rows" style="width: 100%;display: block;" id="product-list">
           @if(empty($listSP))
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 my-5 w-100">
@@ -291,17 +396,17 @@
                   $stock = $sanPham->getStock($sp->getId());
                 @endphp
                 <div class="col rounded-5 product"
-                    data-stock="{{ $stock }}"
-                    data-tensp="{{ $sp->getTenSanPham() }}"
-                    data-hang="{{ $sp->getIdHang()->getTenHang() }}"
-                    data-lsp="{{ $sp->getIdLSP()->getTenLSP() }}"
-                    data-mota="{{ $sp->getMoTa() }}"
-                    data-dongia="{{ number_format($sp->getDonGia(), 0, ',', '.') }}₫"
-                    data-tgbh="{{ $sp->getThoiGianBaoHanh() }}"
-                    data-img="productImg/{{ $sp->getId() }}.webp"
-                    data-bs-toggle="modal"
-                    data-bs-target="#productDetailModal"
-                >
+                      data-stock="{{ $stock }}"
+                      data-idsp="{{ $sp->getId() }}"
+                      data-tensp="{{ $sp->getTenSanPham() }}"
+                      data-hang="{{ $sp->getIdHang()->getTenHang() }}"
+                      data-lsp="{{ $sp->getIdLSP()->getTenLSP() }}"
+                      data-mota="{{ $sp->getMoTa() }}"
+                      data-dongia="{{ number_format($sp->getDonGia(), 0, ',', '.') }}₫"
+                      data-tgbh="{{ $sp->getThoiGianBaoHanh() }}"
+                      data-img="productImg/{{ $sp->getId() }}.webp"
+                      data-bs-toggle="modal"
+                      data-bs-target="#productDetailModal">
                   <div class="card shadow-sm border-0 h-100 col rounded-5 product-item">
                     <div class="ratio ratio-1x1">
                       <img src="productImg/{{ $sp->getId() }}.webp" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
@@ -475,7 +580,6 @@
   <!-- modal chi tiết sản phẩm -->
   <div class="modal fade " id="productDetailModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl"> <!-- modal-lg để modal to hơn -->
-    <form action="" method="get" >
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title text-center" id="userModalLabel">Thông tin sản phẩm</h5>
@@ -494,21 +598,35 @@
             <div class="fs-2 fw-bold" style="color: #55d5d2;" name="dongia"></div>
             <div class="fs-6 fw-semibold d-flex flex-row gap-3 align-center" style="color: #413f3f;">Thương hiệu: <div class=" fw-bold" style="color: red;" name="hang"></div></div>
             <div class="fs-6 fw-semibold d-flex flex-row gap-3 align-center" style="color: #413f3f;">Mô tả: <div name="mota"></div></div>
-            <div class="fs-6 fw-semibold d-flex flex-row gap-3 align-center" style="color: #413f3f;">Thời gian bảo hành: <div name="tgbh"></div></div>
+            <div class="fs-6 fw-semibold d-flex flex-row gap-3 align-center" style="color: #413f3f;">Thời gian bảo hành: <div name="tgbh"></div> tháng</div>
             <div class="fs-6 fw-semibold d-flex flex-row gap-3 align-center" style="color: #413f3f;">Số lượng tồn kho: <div name="stock"> </div></div>
             
           </div>
         </div>
         <div class="p-5 d-flex flex-row-reverse gap-5" style="height: 20%;">
-          <button type="button" class="btn btn-danger" style="width: 150px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
-          <button type="button" class="btn btn-light" style="width: 200px;">Thêm vào giỏ hàng</button>
-          <button type="button" class="btn btn-light" style="width: 150px;">Mua ngay</button>
-          
+          @if($isLogin)
+            @if($user->getIdQuyen()->getId() != 1 || $user->getIdQuyen()->getId() != 2)
+              <button type="button" class="btn btn-danger" style="width: 150px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
+              <form action="{{ route('index.addctgh') }}" method="post">
+                  @csrf
+                  <input type="hidden" name="idgh" value="{{$gh->getIdGH()}}">
+                  <input type="hidden" name="idsp" value="">
+                  <button type="submit" class="btn btn-light" style="width: 200px;">Thêm vào giỏ hàng</button>
+              </form>
+              <button type="button" class="btn btn-light" style="width: 150px;">Mua ngay</button>
+            @else
+              <button type="button" class="btn btn-danger" style="width: 150px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
+            @endif
+          @endif
         </div>
       </div>
       
     </div>
-    </form>
   </div>
 </div>
+@if(session('error'))
+    <div class="alert alert-danger successAlert">{{ session('error') }}</div>
+@elseif(session('success'))
+    <div class="alert alert-success successAlert">{{ session('success') }}</div>        
+@endif
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

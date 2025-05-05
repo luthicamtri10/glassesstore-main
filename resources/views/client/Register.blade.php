@@ -4,19 +4,41 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         
-    });
-</script>
-@if(session('success') || session('error'))
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const updateModal = bootstrap.Modal.getInstance(document.getElementById('accountUpdateModal'));
-        if (updateModal) updateModal.hide();
+        // const form = document.querySelector('form[name="information-user"]');
 
-        const addModal = bootstrap.Modal.getInstance(document.getElementById('accountAddModal'));
-        if (addModal) addModal.hide();
+        // form.addEventListener('submit', function (e) {
+        //     e.preventDefault(); // Ngăn chặn hành động gửi form mặc định
+            
+        //     const formData = new FormData(form);
+        //     const params = new URLSearchParams(formData).toString();
+
+        //     fetch("{{ route('register.register') }}", {
+        //         method: 'POST',
+        //         headers: {
+        //             'X-CSRF-TOKEN': '{{ csrf_token() }}', // Thêm CSRF token
+        //             'Content-Type': 'application/x-www-form-urlencoded',
+        //         },
+        //         body: params,
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         // Xử lý phản hồi
+        //         if (data.success) {
+        //             // Nếu thành công, có thể chuyển hướng hoặc hiển thị thông báo
+        //             alert(data.message || 'Đăng ký thành công!');
+        //             console.log(data.message);
+        //             window.location.href = '/login'; // Chuyển hướng đến trang đăng nhập
+        //         } else {
+        //             // Hiển thị thông báo lỗi
+        //             console.log(data.message);
+        //             alert(data.message || 'Đăng ký thất bại!');
+        //         }
+        //     })
+        //     .catch(error => console.error('Error:', error));
+        // });
     });
 </script>
-@endif
+
 <div class="w-100 align-items-center bg-body-secondary"  >
     <div class="bg-white shadow rounded p-3 d-flex flex-column mb-3 align-items-center gap-4" style="width: 70%; margin: auto;">
         <h2>Thông tin đăng kí</h2>
@@ -145,7 +167,7 @@
     <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
         {{ session('success') }}
     </div>
-    @else
+    @elseif(session('error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert" id="successAlert">
         {{ session('error') }}
     </div>

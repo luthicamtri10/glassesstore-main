@@ -12,13 +12,17 @@
 
     <title>Login/Register</title>
 </head>
+@if(session('error'))
+<div class="alert alert-danger">
+    {{ session('error') }}
+</div>
+@endif
 
 <body>
     <div class="submenu card">
         <div class="card-menu d-flex ">
 
         </div>
-
     </div>
     <div class="content-ctn">
         <div class="content-left w-50" style="z-index: 1;">
@@ -124,11 +128,7 @@
             <p style="margin: 0;">Anna 2018-2023. Design by OKHUB Viet Nam</p>
         </div>
     </footer>
-@if($errors->has('login'))
-<div class="alert alert-danger">
-    {{ $errors->first('login') }}
-</div>
-@endif
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="../../js/client/include/navbar.js"></script>
