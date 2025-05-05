@@ -1,33 +1,26 @@
 <?php
 namespace App\Dao;
 
-use App\Bus\NguoiDung_BUS;
-use App\Bus\TaiKhoan_BUS;
 use App\Interface\DAOInterface;
 use App\Models\GioHang;
 use App\Services\database_connection;
 use InvalidArgumentException;
+use PhpParser\Node\Expr\List_;
+use SanPham_BUS;
+use SanPham_DAO;
 
-class GioHang_DAO implements DAOInterface
+class GioHang_DAO
 {
     /**
      * Đọc toàn bộ dữ liệu từ bảng GIOHANG
      */
-    private $tkBUS;
-    public function __construct(TaiKhoan_BUS $tkBUS)
-    {
-        $this->tkBUS = $tkBUS;
-        
-    }
     public function readDatabase(): array
     {
         $list = [];
-        $query = "SELECT * FROM giohang WHERE TRANGTHAIHD = 1"; // Chỉ lấy các bản ghi có trạng thái hoạt động
-        $rs = database_connection::executeQuery($query);
-
+        $rs = database_connection::executeQuery("SELECT * FROM GIOHANG");
         while ($row = $rs->fetch_assoc()) {
             $model = $this->createGioHangModel($row);
-            $list[] = $model;
+            array_push($list, $model);
         }
         return $list;
     }
@@ -35,14 +28,14 @@ class GioHang_DAO implements DAOInterface
     /**
      * Tạo mô hình GioHang từ dữ liệu cơ sở dữ liệu
      */
-    private function createGioHangModel(array $rs): GioHang
+    private function createGioHangModel($row): GioHang
     {
-        $id = $rs['ID'];
-        $taiKhoan = $this->tkBUS->getModelById($rs['EMAIL']) ; // Cột EMAIL là một chuỗi, không cần gọi NguoiDung_BUS
-        $createdAt = $rs['CREATEDAT'];
-        $trangThaiHD = $rs['TRANGTHAIHD'];
-        
-        return new GioHang($id, $taiKhoan, $createdAt, $trangThaiHD);
+        return new GioHang(
+            $row['ID'],
+            $row['EMAIL'],
+            $row['CREATEDAT'],
+            $row['TRANGTHAIHD']
+        );
     }
 
     /**
@@ -54,15 +47,29 @@ class GioHang_DAO implements DAOInterface
     }
 
     /**
-     * Lấy một bản ghi theo ID
+     * Lấy một bản ghi theo email và idSanPham (giả sử đây là khóa chính)
      */
-    public function getById($id)
-    {
-        $query = "SELECT * FROM giohang WHERE ID = ? AND TRANGTHAIHD = 1";
+    public function getById($id) {
+        $query = "SELECT * FROM GIOHANG WHERE ID = ?";
         $result = database_connection::executeQuery($query, $id);
         
         if ($result->num_rows > 0) {
-            return $this->createGioHangModel($result->fetch_assoc());
+            $row = $result->fetch_assoc();
+            if ($row) {
+                return $this->createGioHangModel($row);
+            }
+        }
+        return null;
+    }
+    public function getByEmail($email)
+    {
+        $query = "SELECT * FROM GIOHANG WHERE email = ?";
+        $result = database_connection::executeQuery($query, $email);
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if ($row) {
+                return $this->createGioHangModel($row);
+            }
         }
         return null;
     }
@@ -70,13 +77,16 @@ class GioHang_DAO implements DAOInterface
     /**
      * Thêm một bản ghi vào bảng GIOHANG
      */
-    public function insert($e): int
+    public function insert($e)
     {
-        $query = "INSERT INTO giohang (EMAIL, CREATEDAT, TRANGTHAIHD) VALUES (?,?,?)";
-        $args = [ $e->getTaiKhoan()->getEmail(), $e->getCreatedAt(), $e->getTrangThaiHD()];
-        $rs = database_connection::executeQuery($query, ...$args);
+        // if (!$e instanceof GioHang) {
+        //     throw new InvalidArgumentException("Tham số phải là instance của GioHang");
+        // }
+
+        $query = "INSERT INTO `giohang`(`EMAIL`, `CREATEDAT`, `TRANGTHAIHD`) VALUES (?, ?, ?)";
+        $args = [$e->getEmail(), $e->getCreatedAt(), $e->getTrangThaiHD()];
+        $rs = database_connection::executeUpdate($query, ...$args);
         return is_int($rs) ? $rs : 0;
-        return 0;
     }
 
     /**
@@ -84,59 +94,39 @@ class GioHang_DAO implements DAOInterface
      */
     public function update($e): int
     {
-        $query = "UPDATE giohang SET EMAIL = ?, CREATEDAT = ? WHERE ID = ?";
-        $args = [$e->getTaiKhoan()->getEmail(), $e->getCreatedAt(), $e->getId()];
+        $query = "UPDATE GIOHANG SET createdAt = ? and trangThaiHD = ? WHERE email = ?";
+        $args = [$e->getCreatedAt(), $e->getTrangThaiHD(), $e->getEmail()];
         $rs = database_connection::executeUpdate($query, ...$args);
         return is_int($rs) ? $rs : 0;
     }
 
     /**
-     * Xóa một bản ghi từ bảng GIOHANG (xóa mềm)
+     * Xóa một bản ghi từ bảng GIOHANG
      */
-    public function delete(int $id): int
+    public function controlDelete($e, $active): int
     {
-        $query = "UPDATE giohang SET TRANGTHAIHD = 0 WHERE ID = ?";
-        $rs = database_connection::executeUpdate($query, $id);
+        $query = "UPDATE GIOHANG SET trangThaiHD = ? WHERE ID = ?";
+        $args = [$active, $e];
+        $rs = database_connection::executeUpdate($query,...$args);
         return is_int($rs) ? $rs : 0;
     }
 
     /**
      * Kiểm tra xem một bản ghi có tồn tại không
      */
-    public function exists(int $id): bool
-    {
-        if (empty($id) || !is_numeric($id)) {
-            throw new InvalidArgumentException("ID phải là một số nguyên hợp lệ");
-        }
-
-        $query = "SELECT COUNT(*) as count FROM giohang WHERE ID = ? AND TRANGTHAIHD = 1";
-        $rs = database_connection::executeQuery($query, [$id]);
-        $row = $rs->fetch_assoc();
-        
-        return $row['count'] > 0;
-    }
 
     /**
      * Tìm kiếm bản ghi theo điều kiện
      */
     public function search(string $condition, array $columnNames = []): array
     {
-        if (empty($condition)) {
-            throw new InvalidArgumentException("Điều kiện tìm kiếm không được để trống");
-        }
-
-        // Chỉ sử dụng các cột có trong bảng giohang
         $columns = empty($columnNames)
-            ? ['EMAIL']
-            : array_intersect($columnNames, ['ID','EMAIL', 'CREATEDAT', 'TRANGTHAIHD']);
+            ? ['email', 'idSanPham', 'soSeri']
+            : $columnNames;
 
-        if (empty($columns)) {
-            throw new InvalidArgumentException("Không có cột hợp lệ để tìm kiếm");
-        }
-
-        $query = "SELECT * FROM giohang WHERE " . implode(" LIKE ? OR ", $columns) . " LIKE ? AND TRANGTHAIHD = 1";
+        $query = "SELECT * FROM GIOHANG WHERE " . implode(" LIKE ? OR ", $columns) . " LIKE ?";
         $args = array_fill(0, count($columns), "%" . $condition . "%");
-        $rs = database_connection::executeQuery($query, $args);
+        $rs = database_connection::executeQuery($query, ...$args);
 
         $list = [];
         while ($row = $rs->fetch_assoc()) {

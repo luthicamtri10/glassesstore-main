@@ -1,67 +1,53 @@
 <?php
-
 namespace App\Models;
 
-class GioHang
-{
-    private TaiKhoan $tkModel;
-    private int $id, $trangThaiHD;
-    private string $createdAt;
+use App\Bus\TaiKhoan_BUS;
 
+class GioHang {
+    private $idGH, $email, $createdAt, $trangthaiHD;
 
-    public function __construct(int $id, TaiKhoan $tkModel, string $createdAt, int $trangThaiHD)
-    {
-        $this->id = $id;
-        $this->tkModel = $tkModel;
+    public function __construct($idGH = null, $email, $createdAt, $trangThaiHD) {
+        $this->email = $email;
+        $this->idGH = $idGH;
         $this->createdAt = $createdAt;
-        $this->trangThaiHD = $trangThaiHD;
+        $this->trangthaiHD = $trangThaiHD;
     }
 
-    // Getter cho ID
-    public function getId(): int
-    {
-        return $this->id;
+    public function getEmail(): string {
+        return $this->email;
     }
 
-    // Setter cho ID
-    public function setId(int $id): void
-    {
-        $this->id = $id;
+    public function getIdGH() {
+        return $this->idGH;
     }
 
-    // Getter cho tk
-    public function getTaiKhoan(): TaiKhoan
-    {
-        return $this->tkModel;
-    }
-
-    // Setter cho tk
-    public function setTaiKhoan(TaiKhoan $tkModel): void
-    {
-        $this->tkModel = $tkModel;
-    }
-
-    // Getter cho CREATEDAT
-    public function getCreatedAt(): string
-    {
+    public function getCreatedAt() {
         return $this->createdAt;
     }
 
-    // Setter cho CREATEDAT
-    public function setCreatedAt(string $createdAt): void
-    {
+    public function getTrangThaiHD() {
+        return $this->trangthaiHD;
+    }
+
+    public function setIDGH($idGh) { 
+        $this->idGH = $idGh;
+    } 
+
+    public function setEmail(string $email){
+        if (app(TaiKhoan_BUS::class)->checkExistingEmail($email)) {
+            $this->email = $email;
+            return;
+        }
+        return "This email is not existing, please set a existing email!";
+    }
+
+    public function setCreatedAt($createdAt) {
         $this->createdAt = $createdAt;
     }
 
-    // Getter cho TRANGTHAIID
-    public function getTrangThaiHD(): int
-    {
-        return $this->trangThaiHD;
-    }
-
-    // Setter cho TRANGTHAIID
-    public function setTrangThaiHD(int $trangThaiHD): void
-    {
-        $this->trangThaiHD = $trangThaiHD;
+    public function setTrangThaiHD($trangThaiHD) {
+        $this->trangthaiHD = $trangThaiHD;
     }
 }
+
+?>
