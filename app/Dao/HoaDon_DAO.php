@@ -99,7 +99,7 @@ class HoaDon_DAO{
         $tinh = app(Tinh_BUS::class)->getModelById($rs['IDTINH']);
         $trangThai = strtoupper(trim($rs['TRANGTHAI'] ?? ''));
 
-        if (!in_array($trangThai, ['PAID', 'PENDING', 'EXPIRED', 'CANCELLED', 'REFUNDED'])) {
+        if (!in_array($trangThai, ['PAID', 'PENDING', 'EXPIRED', 'CANCELLED', 'REFUNDED', 'DANGGIAO', 'DAGIAO'])) {
             throw new \Exception("Trạng thái không hợp lệ (ID={$rs['ID']}): '$trangThai'");
         }
 
@@ -171,6 +171,54 @@ class HoaDon_DAO{
         }
         return null;
     }
+    
+    public function getHoaDonsByTrangThai($trangThai)
+    {
+        
+        $list = [];
+        $query = "SELECT * FROM hoadon WHERE TRANGTHAI = ?";
+        $rs = database_connection::executeQuery($query, ...[$trangThai]);
+        while ($row = $rs->fetch_assoc()) {
+            $model = $this->createHoaDonModel($row);
+            if ($model) {
+                $list[] = $model; 
+            }
+        }
+        return $list;
+    }
+
+    public function getHoaDonsByNgay($ngayBatDau, $ngayKetThuc)
+    {
+        $list = [];
+        $query = "SELECT * FROM hoadon WHERE NGAYTAO BETWEEN ? AND ?";
+        $rs = database_connection::executeQuery($query, $ngayBatDau, $ngayKetThuc);
+        
+        while ($row = $rs->fetch_assoc()) {
+            $model = $this->createHoaDonModel($row);
+            if ($model) {
+                $list[] = $model;
+            }
+        }
+
+        return $list;
+    }
+
+    public function getHoaDonsOrderByTongTien(string $order = 'ASC')
+    {
+        $order = strtoupper($order) === 'DESC' ? 'DESC' : 'ASC'; // Bảo vệ injection
+        $list = [];
+        $query = "SELECT * FROM hoadon ORDER BY TONGTIEN $order";
+        $rs = database_connection::executeQuery($query); // Không cần tham số
+        while ($row = $rs->fetch_assoc()) {
+            $model = $this->createHoaDonModel($row);
+            if ($model) {
+                $list[] = $model;
+            }
+        }
+        return $list;
+    }
+
+
 
 
 }

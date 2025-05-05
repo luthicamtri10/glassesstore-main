@@ -84,4 +84,22 @@ class HoaDon_BUS{
     public function getByOrderCode(int $orderCode) {
         return $this->hoaDonDAO->getByOrderCode($orderCode);
     }
+
+    public function getHoaDonsByTrangThai($trangThai) {
+        $hoaDons = $this->hoaDonDAO->getHoaDonsByTrangThai($trangThai);
+
+        return $hoaDons;
+    }
+
+    public function getHoaDonsByNgay($ngayBatDau, $ngayKetThuc) {
+        $hoaDons = $this->hoaDonDAO->getHoaDonsByNgay($ngayBatDau, $ngayKetThuc);
+
+        return $hoaDons;
+    }
+
+    public function getHoaDonsOrderByTongTien(string $order = 'ASC')
+    {
+        return $this->hoaDonDAO->getHoaDonsOrderByTongTien($order);
+    }
+
 }

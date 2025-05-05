@@ -37,6 +37,7 @@ use App\Models\Hang;
 use App\Models\LoaiSanPham;
 use App\Models\ChucNang;
 use App\Dao\CTQ_DAO;
+use App\Enum\HoaDonEnum;
 use App\Models\NguoiDung;
 use App\Models\PhieuNhap;
 use App\Models\Quyen;
@@ -103,7 +104,9 @@ use Illuminate\Support\Facades\Auth;
 // echo 'Kết quả insert CTQ: ' . $result . '<br>';
    // $email = app(Auth_BUS::class)->getEmailFromToken();
    // $user = app(TaiKhoan_BUS::class)->getModelById($email);
-   $sp = app(HoaDon_BUS::class)->getByOrderCode(400335);
+   // dd(HoaDonEnum::PAID);
+   $sp = app(HoaDon_BUS::class)->getHoaDonsByTrangThai(HoaDonEnum::PAID->value);
+
    dd($sp);
 
 ?>
