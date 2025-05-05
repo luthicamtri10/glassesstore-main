@@ -34,7 +34,7 @@ class ChiTietBaoHanh_DAO implements DAOInterface
     private function createModel(array $rs): ChiTietBaoHanh
     {
         $idKhachHang = $this->ndBUS->getModelById($rs['IDKHACHHANG']);
-        $soSeri = $this->ctspBUS->getModelById($rs['SOSERI']);
+        $soSeri = $this->ctspBUS->getSPBySoSeri($rs['SOSERI']);
 
         if (!$idKhachHang || !$soSeri) {
             throw new RuntimeException("Dữ liệu không hợp lệ trong ChiTietBaoHanh_DAO::createModel");
