@@ -359,7 +359,7 @@ Route::get('/yourInfo', function() {
     ]);
 });
 
-Route::get('/pay', function (Request $request) {
+Route::get('/pay', function () {
     $email = app(Auth_BUS::class)->getEmailFromToken();
     // dd($email);
     $taikhoan = app(TaiKhoan_BUS::class)->getModelById($email);
@@ -367,8 +367,6 @@ Route::get('/pay', function (Request $request) {
     $user = $taikhoan->getIdNguoiDung();
 
     $listTinh = app(Tinh_BUS::class)->getAllModels();
-
-    $selectedProducts = json_decode($_POST['products']);
 
     // dd($user);
     

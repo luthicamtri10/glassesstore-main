@@ -82,10 +82,6 @@
           <strong class="text-success">0</strong>
         </div>
 
-        <!-- Nút thanh toán -->
-        <!-- <div class="mt-4 d-grid">
-          <button class="btn btn-success">Thanh toán với PayOS</button>
-        </div> -->
       </div>
     </div>
   </div>
