@@ -384,4 +384,5 @@ Route::post('/admin/quyen/store', [QuyenController::class, 'store'])->name('admi
 Route::post('/admin/quyen/update', [QuyenController::class, 'update'])->name('admin.quyen.update');
 Route::post('/admin/quyen/destroy', [QuyenController::class, 'destroy'])->name('admin.quyen.destroy');
 
+Route::post('/user/update-info', [NguoiDungController::class, 'updateInfo'])->name('user.updateInfo');
 ?>

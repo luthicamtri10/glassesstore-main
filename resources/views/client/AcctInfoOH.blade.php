@@ -24,7 +24,7 @@
                     <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="taikhoan"><a href="../../views/client/Login-Register.php">Tài khoản</a></li>
                 </ul>
             </div>
-            <div class="navbar text-white navbar-expand" id="navbar">  
+            <!-- <div class="navbar text-white navbar-expand" id="navbar">  
                 <a href="" class="navbar-brand">Logo</a>
                 <ul class="navbar-nav gap-5">
                     <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a></li>
@@ -34,7 +34,7 @@
                     <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li>
                     <li class="nav-item fw-medium my-2"><a href="#" class="nav-link text-white">Giỏ Hàng</a> <i class="fa-light fa-bag-shopping"></i></li>
                 </ul>
-            </div>
+            </div> -->
         </div>
     </header>
     <div class="submenu card" style="z-index: 100;">
@@ -45,40 +45,86 @@
         <div class="container">
             <!-- Sidebar -->
             <div class="sidebar">
-                <div class="avatar">
+                <!-- <div class="avatar">
                     <img src="./img/itxt1.jpeg" alt="Avatar">
-                </div>
-                <h2>Quang Vinh Bui Gia</h2>
+                </div> -->
+                <h2>{{ $user->getIdNguoiDung()->getHoTen() ?? 'Chưa có tên' }}</h2>
                 <ul>
-                    <li id="list-product"><span class="icon"><i class="fa-light fa-square-list"></i></span> Danh sách sản phẩm</li>
-                    <li id="information-account"><span class="icon"><i class="fa-light fa-user"></i></span> Thông tin tài khoản</li>
-                    <li id="infomation-location"><span class="icon"><i class="fa-light fa-location-dot"></i></span> Thông tin địa chỉ</li>
-                    <li id="logout"><span class="icon"><i class="fa-light fa-arrow-right-from-bracket"></i></span> Đăng xuất</li>
+                    <li><span class="icon"><i class="fa-light fa-envelope"></i></span> Email: {{ $user->getEmail() }}</li>
+                    <li><span class="icon"><i class="fa-light fa-phone"></i></span> SĐT: {{ $user->getIdNguoiDung()->getSoDienThoai() ?? 'Chưa cập nhật' }}</li>
+                    <li><span class="icon"><i class="fa-light fa-location-dot"></i></span> Địa chỉ: {{ $user->getIdNguoiDung()->getDiaChi() ?? 'Chưa cập nhật' }}</li>
                 </ul>
             </div>
 
             <!-- Main Content -->
             <div class="main-content">
                 <!-- Top Buttons -->
-                <div class="top-buttons">
-                    <div class="circle-btn-container active">
-                        <div class="circle-btn">
-                            <span class="icon">🛒</span>
-                            <span class="count">0</span>
-                        </div>
-                        <p>Sản phẩm đã mua</p>
+                <!-- Đã xóa phần Sản phẩm đã mua và Sản phẩm yêu thích -->
+
+                <!-- Thông tin tài khoản -->
+                <div class="card mb-4 mt-4">
+                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                        Thông tin tài khoản
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal">
+                            <i class="fa fa-edit"></i> Sửa
+                        </button>
                     </div>
-                    <div class="circle-btn-container">
-                        <div class="circle-btn">
-                            <span class="icon">❤️</span>
-                            <span class="count">0</span>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Họ tên:</div>
+                            <div class="col-md-8">{{ $user->getIdNguoiDung()->getHoTen() ?? 'Chưa có tên' }}</div>
                         </div>
-                        <p>Sản phẩm yêu thích</p>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Email:</div>
+                            <div class="col-md-8">{{ $user->getEmail() }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Số điện thoại:</div>
+                            <div class="col-md-8">{{ $user->getIdNguoiDung()->getSoDienThoai() ?? 'Chưa cập nhật' }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 fw-bold">Địa chỉ:</div>
+                            <div class="col-md-8">{{ $user->getIdNguoiDung()->getDiaChi() ?? 'Chưa cập nhật' }}</div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Modal Sửa thông tin người dùng -->
+                <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <form method="POST" action="{{ route('user.updateInfo') }}">
+                      @csrf
+                      <input type="hidden" name="id" value="{{ $user->getIdNguoiDung()->getId() }}">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="editUserModalLabel">Sửa thông tin cá nhân</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="mb-3">
+                            <label for="hoTen" class="form-label">Họ tên</label>
+                            <input type="text" class="form-control" id="hoTen" name="hoTen" value="{{ $user->getIdNguoiDung()->getHoTen() }}">
+                          </div>
+                          <div class="mb-3">
+                            <label for="soDienThoai" class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control" id="soDienThoai" name="soDienThoai" value="{{ $user->getIdNguoiDung()->getSoDienThoai() }}">
+                          </div>
+                          <div class="mb-3">
+                            <label for="diaChi" class="form-label">Địa chỉ</label>
+                            <input type="text" class="form-control" id="diaChi" name="diaChi" value="{{ $user->getIdNguoiDung()->getDiaChi() }}">
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                          <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
                 <!-- Purchase History Table -->
-                <div class="purchase-history">
+                <!-- <div class="purchase-history">
                     <h3>Sản phẩm đã mua</h3>
                     <table>
                         <thead>
@@ -97,7 +143,7 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
