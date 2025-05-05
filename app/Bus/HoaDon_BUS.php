@@ -80,4 +80,8 @@ class HoaDon_BUS{
     {
         return $this->hoaDonDAO->getAllHoaDons();
     }
+
+    public function getByOrderCode(int $orderCode) {
+        return $this->hoaDonDAO->getByOrderCode($orderCode);
+    }
 }

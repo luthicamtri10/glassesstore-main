@@ -83,9 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
         cthd.forEach(item => {
             const row = `
                 <tr>
-                    <td>
-                     ${item.IDHD}
-                    </td>
                     <td>${item.SOSERI}</td>
                     <td>${item.GIALUCDAT}đ</td>
                     <td>${item.TRANGTHAIBH}</td>
@@ -103,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <div class="p-4 bg-light">
     <div class="col-md-12 d-flex flex-wrap align-items-center gap-3">
-        <form class="d-flex flex-wrap w-100 gap-2" method="GET">
+        <form class="d-flex flex-wrap w-100 gap-2" method="GET" role="search">
             <select name="trangthai" class="selectpicker" title="Chọn trạng thái" style="max-width: 200px;" data-live-search="true" data-size="5">
                 <option selected disabled>Chọn trạng thái</option>
                 @foreach ($hoaDonStatuses as $status)
@@ -281,7 +278,6 @@ document.addEventListener("DOMContentLoaded", function () {
                                                 <table class="table">
                                                     <thead>
                                                         <tr>
-                                                        <th scope="col" class="text-dark">Sản phẩm</th>
                                                         <th scope="col" class="text-dark">Seri</th>
                                                         <th scope="col" class="text-dark">Đơn giá</th>
                                                         <th scope="col" class="text-dark">Trạng thái bảo Hành</th>
@@ -339,37 +335,13 @@ document.addEventListener("DOMContentLoaded", function () {
                                                           {{ $hoaDon->getNgayTao() }}
                                                           </span>
                                                       </div>
-                                                      <!-- <div class="mb-2 d-flex justify-content-between align-items-center small">
-                                                          <strong>Ngày cập nhật</strong>
-                                                          <span class="opacity-50 fw-medium">
-                                                              2025-01-07
-                                                          </span >
-                                                      </div> -->
-                                                      
+                                
                                                       <div class="mb-2 d-flex justify-content-between align-items-center small ">
                                                           <strong>Phương thức thanh toán</strong>
                                                           <span class="pttt opacity-50 fw-medium">
                                                           {{ $mapPTTT[$hoaDon->getIdPTTT()->getId()] }}
                                                           </span>
-                                                      </div>
-                                                      <!-- <div class="mb-2 d-flex justify-content-between align-items-center small ">
-                                                          <strong>Tổng số lượng sản phẩm</strong>
-                                                          <span class="opacity-50 fw-medium">
-                                                              6
-                                                          </span>
-                                                      </div> -->
-                                                      <!-- <div class="mb-2 d-flex justify-content-between align-items-center small">
-                                                          <strong>Tổng tiền sản phẩm</strong>
-                                                          <span class="opacity-50 fw-medium">
-                                                          {{ $hoaDon->getTongTien() }}
-                                                          </span>
-                                                      </div> -->
-                                                      <!-- <div class="mb-2 d-flex justify-content-between align-items-center small">
-                                                          <strong>Phí giao hàng</strong>
-                                                          <span class="opacity-50 fw-medium">
-                                                              41.000đ
-                                                          </span>
-                                                      </div> -->
+                                                      </div>                                               
                                                     </li>
                                                     <li class="list-group-item py-2">
                                                       <div class="mt-2 mb-2 d-flex justify-content-between align-items-center small ">
