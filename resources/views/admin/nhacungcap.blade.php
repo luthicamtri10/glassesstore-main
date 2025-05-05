@@ -128,7 +128,7 @@
                             data-bs-toggle="modal"
                             data-bs-target="#supplierUpdateModal">Sửa</button>
 
-                        <form method="POST" action="{{ route('admin.nhacungcap.controlDelete') }}" style="display:inline;">
+                        <form method="POST" action="{{ route('admin.nhacungcap.destroy') }}" style="display:inline;">
                             @csrf
                             <input type="hidden" name="id" value="{{ $supplier->getIdNCC() }}">
                             <input type="hidden" name="tenncc" value="{{ $supplier->getTenNCC() }}">
@@ -274,6 +274,24 @@
                     <button type="submit" class="btn btn-primary">Lưu</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Xóa nhà cung cấp -->
+<div class="modal fade" id="supplierDeleteModal" tabindex="-1" aria-labelledby="supplierDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="supplierDeleteModalLabel">Xóa nhà cung cấp</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa nhà cung cấp này không?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-danger">Xóa</button>
+            </div>
         </div>
     </div>
 </div>

@@ -313,11 +313,13 @@ Route::prefix('admin')->group(function () {
     Route::post('/phieunhap', [PhieuNhapController::class, 'store'])->name('admin.phieunhap.store');
     Route::get('/phieunhap/search', [PhieuNhapController::class, 'search'])->name('admin.phieunhap.search');
     Route::get('/phieunhap/{id}/chitiet', [PhieuNhapController::class, 'getChiTiet'])->name('admin.phieunhap.chitiet');
+    
+    // Supplier (Nhà cung cấp) routes
+    Route::post('/nhacungcap/store', [NccController::class, 'store'])->name('admin.nhacungcap.store');
+    Route::post('/nhacungcap/update', [NccController::class, 'update'])->name('admin.nhacungcap.update');
+    Route::post('/nhacungcap/destroy', [NccController::class, 'destroy'])->name('admin.nhacungcap.destroy');
+    Route::get('/nhacungcap/search', [NccController::class, 'search'])->name('admin.nhacungcap.search');
 });
-
-Route::post('/admin/nhacungcap/controldelete', [NccController::class, 'controlDelete'])->name('admin.nhacungcap.controlDelete');
-Route::post('/admin/nhacungcap/store', [NccController::class, 'store'])->name('admin.nhacungcap.store');
-Route::post('/admin/nhacungcap/update', [NccController::class, 'update'])->name('admin.nhacungcap.update');
 
 Route::post('/admin/chiphivanchuyen/store', [CPVCController::class, 'store'])->name('admin.chiphivanchuyen.store');
 Route::post('/admin/chiphivanchuyen/update', [CPVCController::class, 'update'])->name('admin.chiphivanchuyen.update');
