@@ -39,124 +39,7 @@ use App\Http\Controllers\QuyenController;
 Route::get('/', function() {
     return redirect('/index' );
 });
-// Route::get('/index', function() {
-//     $sanPham = app(SanPham_BUS::class);
-//     $lsp = app(LoaiSanPham_BUS::class);
-//     $hang = app(Hang_BUS::class);
-    
-//     // Lấy danh sách sản phẩm
-//     $listSP = $sanPham->getAllModelsActive();
-//     $listLSP = $lsp->getAllModels();
-//     $listHang = $hang->getAllModels();
-//     $top4Product = $sanPham->getTop4ProductWasHigestSale();
 
-//     if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
-//         $keyword = $_GET['keyword'];
-//         $listSP = $sanPham->searchModel($keyword, []);
-//     } else if (isset($_GET['lsp']) || !empty($_GET['lsp'])) {
-//         $lsp = $_GET['lsp'];
-//         if ($lsp == 0) {
-//             $listSP = $sanPham->getAllModels();
-//         } else {
-//             $listSP = $sanPham->searchByLoaiSanPham($lsp);
-//         }
-//     } else if (isset($_GET['hang']) || !empty($_GET['hang'])) {
-//         $hang = $_GET['hang'];
-//         if ($hang == 0) {
-//             $listSP = $sanPham->getAllModels();
-//         } else {
-//             $listSP = $sanPham->searchByHang($hang);
-//         }
-//     } else if (isset($_GET['khoanggia']) || !empty($_GET['khoanggia'])) {
-//         $khoanggia = $_GET['khoanggia'];
-//         if($khoanggia == 0) {
-//             $listSP = $sanPham->getAllModels();
-//         } else {
-//             // Tách startPrice và endPrice
-//             $khoanggia = trim($khoanggia, '[]'); // Loại bỏ dấu ngoặc vuông
-//             list($startPrice, $endPrice) = explode('-', $khoanggia);
-            
-//             // Kiểm tra nếu endPrice là '...'
-//             if ($endPrice === '...') {
-//                 $endPrice = 1000000000; // Gán giá trị lớn cho endPrice
-//             } else {
-//                 $endPrice = (float)$endPrice; // Chuyển đổi sang kiểu số nếu không phải là '...'
-//             }
-            
-//             $startPrice = (float)$startPrice; // Chuyển đổi sang kiểu số
-            
-//             // Gọi hàm tìm kiếm theo khoảng giá
-//             $listSP = $sanPham->searchByKhoangGia($startPrice, $endPrice);
-//         }
-//     } else if ((isset($_GET['hang']) || !empty($_GET['hang'])) && isset($_GET['lsp']) || !empty($_GET['lsp'])) {
-//         $lsp = $_GET['lsp'];
-//         $hang = $_GET['hang'];
-//         if($lsp == 0) {
-//             $listSP = $sanPham->searchByHang($hang);
-//         } else if ($hang == 0) {
-//             $listSP = $sanPham->searchByLoaiSanPham($lsp);
-//         } else if ($lsp == 0 && $hang == 0){
-//             $listSP = $sanPham->getAllModels();
-//         }
-//         $listSP = $sanPham->searchByLSPAndHang($lsp,$hang);
-//     } else if ((isset($_GET['keyword']) || !empty($_GET['keyword'])) && (isset($_GET['khoanggia']) || !empty($_GET['khoanggia'])) && (isset($_GET['lsp']) || !empty($_GET['lsp']))) {
-//         // searchByKhoangGiaAndHangAndModel($keyword,$idlsp,$startprice,$endprice)
-//         $lsp = $_GET['lsp'];
-//         $keyword = $_GET['keyword'];
-//         $khoanggia = $_GET['khoanggia'];
-//         $khoanggia = trim($khoanggia, '[]'); // Loại bỏ dấu ngoặc vuông
-//         list($startPrice, $endPrice) = explode('-', $khoanggia);
-        
-//         // Kiểm tra nếu endPrice là '...'
-//         if ($endPrice === '...') {
-//             $endPrice = 1000000000; // Gán giá trị lớn cho endPrice
-//         } else {
-//             $endPrice = (float)$endPrice; // Chuyển đổi sang kiểu số nếu không phải là '...'
-//         }
-        
-//         $startPrice = (float)$startPrice; // Chuyển đổi sang kiểu số
-//         if ($lsp == 0 && $khoanggia == 0) {
-//             $listSP = $sanPham->searchModel($keyword, []);
-//         }
-//         if($khoanggia == 0) {
-//             $listSP = $sanPham->searchByLSPAndModel($keyword,$lsp);
-//         }
-//         if($lsp == 0) {
-//             $listSP = $sanPham->searchByKhoangGiaAndModel($keyword,$startPrice,$endPrice);
-//         }
-//         $listSP = $sanPham->searchByKhoangGiaAndLSPAndModel($keyword,$lsp,$startPrice,$endPrice);
-//     }
-
-//     // Phân trang
-//     $current_page = request()->query('page', 1);
-//     $limit = 8;
-//     $total_record = count($listSP ?? []);
-//     $total_page = ceil($total_record / $limit);
-//     $current_page = max(1, min($current_page, $total_page));
-//     $start = ($current_page - 1) * $limit;
-//     $tmp = empty($listSP) ? [] : array_slice($listSP, $start, $limit);
-    
-//     // Kiểm tra đăng nhập
-//     $isLogin = app(Auth_BUS::class)->isAuthenticated();
-//     $email = app(Auth_BUS::class)->getEmailFromToken();
-//     $user = app(TaiKhoan_BUS::class)->getModelById($email);
-//     // $ctq = app(CTQ_BUS::class)->getModelById($user->getIdQuyen()->getId());
-    
-//     // Trả về view
-//     return view('client.index', [
-//         'listSP' => $listSP,
-//         'listLSP' => $listLSP,
-//         'listHang' => $listHang,
-//         'tmp' => $tmp,
-//         'current_page' => $current_page,
-//         'total_page' => $total_page,
-//         'isLogin' => $isLogin,
-//         'user' => $user,
-//         'top4Product' => $top4Product,
-//         'sanPham' => $sanPham,
-//         // 'ctq' => $ctq
-//     ]);
-// });
 Route::get('/index', function() {
     $sanPham = app(SanPham_BUS::class);
     $lsp = app(LoaiSanPham_BUS::class);
@@ -235,7 +118,7 @@ Route::get('/index', function() {
     $gh = app(GioHang_BUS::class)->getByEmail($email);
     // $ctq = app(CTQ_BUS::class)->getModelById($user->getIdQuyen()->getId());
     // Trả về view
-    $products = array_map(function($sp) {
+    $products = array_map(function($sp) { 
         return [
             'id' => $sp->getId(),
             'tenSanPham' => $sp->getTenSanPham(),
@@ -261,6 +144,114 @@ Route::get('/index', function() {
         'gh' => $gh
     ]);
 });
+Route::get('/index/quantri', function() {
+    $sanPham = app(SanPham_BUS::class);
+    $lsp = app(LoaiSanPham_BUS::class);
+    $hang = app(Hang_BUS::class);
+
+    // Lấy danh sách sản phẩm
+    $listSP = $sanPham->getAllModelsActive();
+    $listLSP = $lsp->getAllModels();
+    $listHang = $hang->getAllModels();
+    $top4Product = $sanPham->getTop4ProductWasHigestSale();
+
+    $keyword = $_GET['keyword'] ?? null;
+    $idLSP = $_GET['lsp'] ?? null;
+    $idHang = $_GET['hang'] ?? null;
+    $khoanggia = $_GET['khoanggia'] ?? null;
+
+    // Khởi tạo danh sách sản phẩm
+    $filteredSP = $listSP;
+
+    // Lọc theo keyword
+    if ($keyword) {
+        $filteredSP = $sanPham->searchModel($keyword, []);
+    }
+
+    // Lọc theo loại sản phẩm (LSP)
+    if ($idLSP && $idLSP != 0) {
+        $filteredSP = $sanPham->searchByLoaiSanPham($idLSP);
+    }
+
+    // Lọc theo hãng
+    if ($idHang && $idHang != 0) {
+        $filteredSP = $sanPham->searchByHang($idHang);
+    }
+
+    if ($idLSP && $idHang) {
+        $filteredSP = $sanPham->searchByLSPAndHang($idLSP,$idHang);
+    }
+
+    // Lọc theo khoảng giá
+    if ($khoanggia && $khoanggia != 0) {
+        $khoanggia = trim($khoanggia, '[]');
+        list($startPrice, $endPrice) = explode('-', $khoanggia);
+        if ($endPrice === '...') {
+            $endPrice = 1000000000;
+        }
+        $startPrice = (float)$startPrice;
+        $endPrice = (float)$endPrice;
+
+        $filteredSP = $sanPham->searchByKhoangGia($startPrice, $endPrice);
+    }
+
+    // Kết hợp các điều kiện lọc
+    if ($keyword && $idLSP && $khoanggia) {
+        $filteredSP = $sanPham->searchByKhoangGiaAndLSPAndModel($keyword, $idLSP, $startPrice, $endPrice);
+    } elseif ($keyword && $idLSP) {
+        $filteredSP = $sanPham->searchByLSPAndModel($keyword, $idLSP);
+    } elseif ($keyword && $khoanggia) {
+        $filteredSP = $sanPham->searchByKhoangGiaAndModel($keyword, $startPrice, $endPrice);
+    } elseif ($idLSP && $khoanggia) {
+        $filteredSP = $sanPham->searchByKhoangGiaAndLSP($idLSP, $startPrice, $endPrice);
+    }
+
+    // Phân trang
+    $current_page = request()->query('page', 1);
+    $limit = 8;
+    $total_record = count($filteredSP ?? []);
+    $total_page = ceil($total_record / $limit);
+    $current_page = max(1, min($current_page, $total_page));
+    $start = ($current_page - 1) * $limit;
+    $tmp = empty($filteredSP) ? [] : array_slice($filteredSP, $start, $limit);
+
+    // Kiểm tra đăng nhập
+    $isLogin = app(Auth_BUS::class)->isAuthenticated();
+    $email = app(Auth_BUS::class)->getEmailFromToken();
+    $user = app(TaiKhoan_BUS::class)->getModelById($email);
+    $gh = app(GioHang_BUS::class)->getByEmail($email);
+    // $ctq = app(CTQ_BUS::class)->getModelById($user->getIdQuyen()->getId());
+    // Trả về view
+    $products = array_map(function($sp) { 
+        return [
+            'id' => $sp->getId(),
+            'tenSanPham' => $sp->getTenSanPham(),
+            'moTa' => $sp->getMoTa(),
+            'donGia' => number_format($sp->getDonGia(), 0, ',', '.'),
+            'thoiGianBaoHanh' => $sp->getThoiGianBaoHanh(),
+            'img' => "productImg/{$sp->getId()}.webp", // Đường dẫn hình ảnh
+            'hang' => $sp->getIdHang()->getTenHang(), // Tên hãng
+            'lsp' => $sp->getIdLSP()->getTenLSP() // Tên loại sản phẩm
+        ];
+    }, $filteredSP);
+    return view('client.index', [
+        'listSP' => $filteredSP,
+        'listLSP' => $listLSP,
+        'listHang' => $listHang,
+        'tmp' => $tmp,
+        'current_page' => $current_page,
+        'total_page' => $total_page,
+        'isLogin' => $isLogin,
+        'user' => $user,
+        'top4Product' => $top4Product,
+        'sanPham' => $sanPham,
+        'gh' => $gh
+    ]);
+});
+// Route::get('/index/quantri', function() {
+//     return view('admin.index'); // view dành riêng cho quyền 1, 2
+// });
+
 Route::view('/admin', 'layout.admin')->middleware('admin.access');
 Route::view('/login', 'client.Login-Register');
 Route::get('/yourcart', function() {
@@ -292,7 +283,10 @@ Route::get('/register', function() {
 
 Route::post('admin/sanpham/store', [SanPhamController::class, 'store'])->name('admin.sanpham.store');
 Route::post('admin/sanpham/update', [SanPhamController::class, 'update'])->name('admin.sanpham.update');
-Route::delete('admin/sanpham/delete', [SanPhamController::class, 'delete'])->name('admin.sanpham.delete');
+Route::post('admin/sanpham/delete', [SanPhamController::class, 'delete'])->name('admin.sanpham.delete');
+Route::post('admin/sanpham/check-is-sold', [SanPhamController::class, 'checkIsSold'])->name('admin.sanpham.check');
+Route::post('admin/sanpham/controlActive', [SanPhamController::class, 'controlActive']);
+
 
 Route::post('/admin/loaisanpham/store', [LoaiSanPhamController::class, 'store'])->name('admin.loaisanpham.store');
 Route::post('/admin/loaisanpham/update', [LoaiSanPhamController::class, 'update'])->name('admin.loaisanpham.update');
@@ -381,8 +375,6 @@ Route::post('/hoadon', [HoaDonController::class, 'store'])->name('hoadon.store')
 
 Route::get('client/paymentsuccess', [HoaDonController::class, 'paymentSuccess'])->name('payment.success');
 
-
-
 Route::post('/login', function (\Illuminate\Http\Request $request) {
     $email = $request->input('email-login');
     $password = $request->input('password-login');
@@ -390,7 +382,13 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
     $auth = app()->make(AuthController::class);
     
     if ($auth->login($email, $password)) {
-        return redirect('/'); // hoặc trang dashboard nếu login thành công
+        $account = app(TaiKhoan_BUS::class)->getModelById($email);
+        if($account->getIdQuyen()->getId() == 1 || $account->getIdQuyen()->getId() == 2) {
+            return redirect('/index/quantri'); 
+        } else {
+            return redirect('/'); 
+        }
+        // hoặc trang dashboard nếu login thành công
     } else {
         // return back()->withErrors(['login' => 'Email hoặc mật khẩu không đúng!']);
         return redirect()->back()->with('error','Tài khoản đã bị khóa!');
@@ -410,6 +408,6 @@ Route::post('/admin/quyen/update', [QuyenController::class, 'update'])->name('ad
 Route::post('/admin/quyen/destroy', [QuyenController::class, 'destroy'])->name('admin.quyen.destroy');
 
 
-
+Route::post('/user/update-info', [NguoiDungController::class, 'updateInfo'])->name('user.updateInfo');
 
 ?>

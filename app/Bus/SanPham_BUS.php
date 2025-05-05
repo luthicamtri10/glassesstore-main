@@ -53,6 +53,14 @@ class SanPham_BUS implements BUSInterface {
     public function deleteModel(int $id): int {
         return $this->sanPhamDAO->delete($id);
     }
+    public function controlActive($id) {
+        $sp = $this->getModelById($id);
+        if($sp->getTrangThaiHD() == 1) {
+            return $this->sanPhamDAO->controlActive($id,0);
+        } else {
+            return $this->sanPhamDAO->controlActive($id,1);
+        }
+    }
 
     public function searchModel(string $value, array $columns): array {
         return $this->sanPhamDAO->search($value, $columns);

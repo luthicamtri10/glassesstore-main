@@ -59,8 +59,14 @@ class SanPham_DAO implements DAOInterface{
 
     public function delete(int $id): int
     {
-        $sql = "UPDATE SanPham SET trangThaiHD = false WHERE id = ?";
+        $sql = "DELETE FROM `sanpham` WHERE ID = ?";
         $result = database_connection::executeUpdate($sql, ...[$id]);
+        return is_int($result)? $result : 0;
+    }
+    public function controlActive($id,$active) {
+        $sql = "UPDATE SanPham SET trangThaiHD = ? WHERE id = ?";
+        $args = [$active, $id];
+        $result = database_connection::executeUpdate($sql, ...$args);
         return is_int($result)? $result : 0;
     }
 

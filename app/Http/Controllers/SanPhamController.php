@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Bus\CTHD_BUS;
 use App\Bus\Hang_BUS;
 use App\Bus\LoaiSanPham_BUS;
 use Illuminate\Http\Request;
@@ -9,10 +10,7 @@ use App\Bus\SanPham_BUS;
 use App\Models\SanPham;
 use Intervention\Image\ImageManager;
 
-
-
-
-
+use function Laravel\Prompts\alert;
 
 class SanPhamController extends Controller
 {
@@ -105,12 +103,45 @@ class SanPhamController extends Controller
 
 
     // Xử lý xóa sản phẩm
-    public function destroy($id)
+    public function delete(Request $request)
     {
-        $this->sanPhamBUS->deleteModel($id);
-        return redirect()->route('sanpham.index')->with('success', 'Xóa sản phẩm thành công!');
+        // dd($request->all());
+        $id = $request->input('product_id');
+        if(app(CTHD_BUS::class)->checkSPIsSold($id)) {
+            app(SanPham_BUS::class)->controlActive($id);
+            return redirect()->back()->with('success','Cập nhật trạng thái sản phẩm thành công!');
+        } else {
+            app(SanPham_BUS::class)->deleteModel($id);
+            // alert('Sản phẩm đã được bán, không thể xóa!');
+            return redirect()->back()->with('success','Xóa sản phẩm thành công!');
+        }
+        return redirect()->back()->with('error','Xóa sản phẩm thất bại!');
     }
-    public function stock(Request $request) {
+    public function checkIsSold(Request $request)
+    {
+        // dd($request->all());
+        $productId = $request->input('product_id');
         
-    } 
+        $sanpham = app(SanPham_BUS::class)->getModelById($productId);
+        // dd($sanpham);
+        $isSold = app(CTHD_BUS::class)->checkSPIsSold($sanpham->getId()); 
+        if($isSold) {
+            app(SanPham_BUS::class)->controlActive($productId);
+            return redirect()->back()->with('success','Cập nhật trạng thái sản phẩm thành công!');
+        } else {
+            // return redirect()->back()->with('error','Sản phẩm chưa được bán không được xóa!');
+            return redirect()->back()->with('confirm_delete', $productId);
+        }
+    }
+    // public function delete(Request $request) {
+    //     $id = $request->input('id');
+    //     app(SanPham_BUS::class)->deleteModel($id);
+    //     return redirect()->back()->with('success','Xóa sản phẩm thành công!');
+    // }
+    // public function controlActive(Request $request) {
+    //     $id = $request->input('id');
+    //     app(SanPham_BUS::class)->controlActive($id);
+    //     return redirect()->back()->with('success','Cập nhật trạng thái sản phẩm thành công!');
+    // }
+    
 }

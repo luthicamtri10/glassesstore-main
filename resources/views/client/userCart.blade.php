@@ -84,7 +84,7 @@ use App\Bus\SanPham_BUS;
             </div>
         </form>
 </div>
-<div class="bg-light d-flex flex-column p-5 gap-3" style="width: 100%;height: 100%;">
+<div class="bg-light d-flex flex-column p-5 gap-3 " style="width: 100%;height: 100%;margin-bottom: 200px;">
     @if (empty($listCTGH))
         <p class="text-center">Không tìm thấy sản phẩm nào phù hợp với từ khóa "{{ request('keyword') }}"</p>
     @else

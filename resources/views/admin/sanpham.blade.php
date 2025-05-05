@@ -1,5 +1,26 @@
 <script>
+  const deleteButtons = document.querySelectorAll(".btn-delete");
+  const deleteModal = document.getElementById("confirmDeleteModal");
+  const inputIdsp = document.getElementById("deleteIdsp");
+
+  // Mở modal khi nhấn nút "Xóa"
+  deleteButtons.forEach(button => {
+    button.addEventListener("click", function (event) {
+      event.preventDefault();  // Ngừng gửi form ngay lập tức
+      const idsp = this.getAttribute("data-product_id");
+      inputIdsp.value = idsp;
+
+      // Hiển thị modal
+      deleteModal.style.display = 'flex';
+    });
+  });
+
+  // Đóng modal
+  function closeModal() {
+    deleteModal.style.display = 'none';
+  }
   document.addEventListener('DOMContentLoaded', function () {
+    
     // Tìm kiếm: giữ lại tất cả query hiện có và chỉ cập nhật 'keyword' + 'keywordQuyen'
     const searchForm = document.querySelector('form[role="search"]');
     if (searchForm) {
@@ -68,9 +89,10 @@
             previewImage.src = '/productImg/' + idSanPham + '.webp';
         });
     });
+    
 })
 
-document.querySelector('form').addEventListener('submit', function(event) {
+document.querySelector('#addForm').addEventListener('submit', function(event) {
     var fileInput = document.querySelector('input[name="anhSanPham"]');
     if (!fileInput.files.length) {
         alert('Vui lòng chọn ảnh sản phẩm.');
@@ -85,7 +107,7 @@ setTimeout(function() {
             bsAlert.close();
         }
     }, 3000);
-
+   
 </script>
 
 @if(session('success'))
@@ -159,6 +181,13 @@ setTimeout(function() {
                     
                       Sửa
                    </button>
+                   <form id="deleteForm" method="POST" action="{{ route('admin.sanpham.check') }}" style="display:inline;">
+                      @csrf
+                      <meta name="csrf-token" content="{{ csrf_token() }}">
+                      <input type="hidden" name="product_id"  id="product_id" value="{{ $sanPham->getId() }}">
+                      <button type="submit" data-product_id="{{ $sanPham->getId() }}" class="btn btn-danger btn-sm btn-delete">Xóa</button>
+                  </form>
+                  
                   </td>
                 </tr>
                 @endforeach
@@ -381,11 +410,20 @@ setTimeout(function() {
 </script>
 @endif
 
-@if(session('error'))
-<div class="alert alert-success alert-dismissible fade show" role="alert" id="errorAlert">
-    {{ session('error') }}
+@if(session('confirm_delete') > 0)
+<div id="confirmDeleteModal" style="display:flex; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index: 9999;">
+  <div style="background:#fff; padding:20px; border-radius:8px; text-align:center; width: 300px;">
+    <p>Bạn có chắc chắn muốn xóa sản phẩm này không?</p>
+    <form action="{{ route('admin.sanpham.delete') }}" method="POST">
+        @csrf
+        <input type="hidden" name="product_id" id="deleteIdsp" value="{{ session('confirm_delete') }}">
+        <button type="submit" class="btn btn-danger">Xóa</button>
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('confirmDeleteModal').style.display='none'">Hủy</button>
+    </form>
+  </div>
 </div>
 @endif
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
