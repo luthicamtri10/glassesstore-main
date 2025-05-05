@@ -5,6 +5,7 @@ use App\Dao\NguoiDung_DAO;
 use App\Interface\BUSInterface;
 use App\Models\NguoiDung;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class NguoiDung_BUS{
     private $nguoiDungList = array();
@@ -67,12 +68,9 @@ class NguoiDung_BUS{
         return $this->nguoiDungDAO->searchByTinh($idTinh);
     }
     public function checkExistingUser($sdt) {
-        foreach($this->nguoiDungList as $it) {
-            if($it->getSoDienThoai() == $sdt) {
-                return true;
-            }
-        }
-        return false;
+        return DB::table('NGUOIDUNG')
+            ->where('SODIENTHOAI', $sdt)
+            ->exists();
     }
     public function getModelBySDT($sdt) {
         return $this->nguoiDungDAO->getBySDT($sdt);

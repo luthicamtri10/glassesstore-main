@@ -7,14 +7,14 @@
                 const modal = document.querySelector('#userUpdateModal');
                 if (!modal) return;
                 modal.querySelector('input[name="id"]').value = this.dataset.id;
-                modal.querySelector('input[name="fullname"]').value = this.dataset.fullname;
-                modal.querySelector('input[name="birthdate"]').value = this.dataset.birthdate;
-                modal.querySelector('select[name="gender"]').value = this.dataset.gender;
-                modal.querySelector('input[name="address"]').value = this.dataset.address;
-                modal.querySelector('select[name="tinh"]').value = this.dataset.tinh;
-                modal.querySelector('input[name="sdt"]').value = this.dataset.sdt;
-                modal.querySelector('input[name="cccd"]').value = this.dataset.cccd;
-                modal.querySelector('input[name="active"]').value = this.dataset.active;
+                modal.querySelector('input[name="HOTEN"]').value = this.dataset.fullname;
+                modal.querySelector('input[name="NGAYSINH"]').value = this.dataset.birthdate;
+                modal.querySelector('select[name="GIOITINH"]').value = this.dataset.gender;
+                modal.querySelector('input[name="DIACHI"]').value = this.dataset.address;
+                modal.querySelector('select[name="IDTINH"]').value = this.dataset.tinh;
+                modal.querySelector('input[name="SODIENTHOAI"]').value = this.dataset.sdt;
+                modal.querySelector('input[name="CCCD"]').value = this.dataset.cccd;
+                modal.querySelector('select[name="TRANGTHAIHD"]').value = this.dataset.active;
             });
         });
         const successAlert = document.getElementById('successAlert');
@@ -53,15 +53,17 @@
                 const keywordInput = document.getElementById('keyword');
                 const tinhSelect = searchForm.querySelector('select[name="keywordTinh"]');
 
+                // Luôn cập nhật keyword nếu có
                 if (keywordInput && keywordInput.value.trim()) {
                     currentUrl.searchParams.set('keyword', keywordInput.value.trim());
-                    currentUrl.searchParams.delete('keywordTinh'); // Nếu có keyword thì xoá lọc theo quyền
-                } else if (tinhSelect && tinhSelect.value) {
-                    currentUrl.searchParams.set('keywordTinh', tinhSelect.value);
-                    currentUrl.searchParams.delete('keyword'); // Nếu có lọc quyền thì xoá keyword
                 } else {
-                    // Nếu cả hai đều không có gì thì xóa cả hai
                     currentUrl.searchParams.delete('keyword');
+                }
+
+                // Luôn cập nhật tinh nếu có
+                if (tinhSelect && tinhSelect.value) {
+                    currentUrl.searchParams.set('keywordTinh', tinhSelect.value);
+                } else {
                     currentUrl.searchParams.delete('keywordTinh');
                 }
 
@@ -71,7 +73,7 @@
                 window.location.href = currentUrl.toString();
             });
 
-            // Khi chọn lọc quyền => submit form (auto giữ lại URL như ở trên)
+            // Khi chọn lọc tỉnh => submit form (auto giữ lại URL như ở trên)
             const tinhSelect = searchForm.querySelector('select[name="keywordTinh"]');
             if (tinhSelect) {
                 tinhSelect.addEventListener('change', function () {
@@ -297,52 +299,56 @@
       </div>
       <div class="modal-body">
         <form class="row g-3" method="post" action="{{ route('admin.nguoidung.update') }}">
-        @csrf  <!-- Thêm csrf token để bảo vệ bảo mật -->
+        @csrf
+        <input type="hidden" name="id">
         <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">Họ tên</label>
-              <input type="text" class="form-control" name="fullname">
-          </div>
-          <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">Ngày sinh</label>
-              <input type="date" class="form-control" name="birthdate">
-          </div>
-          <div class="col-md-6">
-              <label for="inputPassword4" class="form-label">Giới tính</label>
-              <select name="gender" id="inputGroup" class="form-select" >
+            <label for="inputEmail4" class="form-label">Họ tên</label>
+            <input type="text" class="form-control" name="HOTEN">
+        </div>
+        <div class="col-md-6">
+            <label for="inputEmail4" class="form-label">Ngày sinh</label>
+            <input type="date" class="form-control" name="NGAYSINH">
+        </div>
+        <div class="col-md-6">
+            <label for="inputPassword4" class="form-label">Giới tính</label>
+            <select name="GIOITINH" id="inputGroup" class="form-select">
                 <option selected disabled>Chọn giới tính</option>
                 <option value="MALE">Nam</option>
                 <option value="FEMALE">Nữ</option>
                 <option value="UNDEFINED">Khác</option>
-              </select>
-          </div>
-          <div class="col-md-6">
-              <label for="inputGroup" class="form-label">Địa chỉ</label>
-              <input type="text" class="form-control" name="address">
-          </div>
-          <div class="col-md-6">
-              <label for="inputGroup" class="form-label">Tỉnh</label>
-              <select id="inputGroup" class="form-select" name="tinh">
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="inputGroup" class="form-label">Địa chỉ</label>
+            <input type="text" class="form-control" name="DIACHI">
+        </div>
+        <div class="col-md-6">
+            <label for="inputGroup" class="form-label">Tỉnh</label>
+            <select id="inputGroup" class="form-select" name="IDTINH">
                 <option selected disabled>Chọn tỉnh</option>
                 @foreach($listTinh as $it)
                     <option value="{{ $it->getId() }}">
                         {{ $it->getId() }} - {{ $it->getTenTinh() }}
                     </option>
                 @endforeach
-              </select>
-          </div>
-          <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">Số điện thoại</label>
-              <input type="text" class="form-control" name="sdt">
-          </div>
-          <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">CCCD</label>
-              <input type="text" class="form-control" name="cccd">
-          </div>
-          <div class="col-md-6">
-              <!-- <label for="inputEmail4" class="form-label">CCCD</label> -->
-              <input type="hidden" class="form-control" name="active">
-          </div>
-          <div class="modal-footer">
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="inputEmail4" class="form-label">Số điện thoại</label>
+            <input type="text" class="form-control" name="SODIENTHOAI">
+        </div>
+        <div class="col-md-6">
+            <label for="inputEmail4" class="form-label">CCCD</label>
+            <input type="text" class="form-control" name="CCCD">
+        </div>
+        <div class="col-md-6">
+            <label for="inputStatus" class="form-label">Trạng thái</label>
+            <select class="form-select" name="TRANGTHAIHD">
+                <option value="1">Hoạt động</option>
+                <option value="0">Không hoạt động</option>
+            </select>
+        </div>
+        <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lưu</button>
         </div>
         </form>

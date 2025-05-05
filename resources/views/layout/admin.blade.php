@@ -80,14 +80,24 @@ use Illuminate\Support\Facades\View as FacadesView;
                         $tinhBUS = app(Tinh_BUS::class);
                         $listND = $ndBUS->getAllModels();
                         $listTinh = $tinhBUS->getAllModels();
-                        if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
-                            $keyword = $_GET['keyword'];
-                            $listND = $ndBUS->searchModel($keyword, []);
-                        } elseif (isset($_GET['keywordTinh']) || !empty($_GET['keywordTinh'])) {
-                            $keywordTinh = $_GET['keywordTinh'];
+                        $keyword = isset($_GET['keyword']) && !empty(trim($_GET['keyword'])) ? trim($_GET['keyword']) : null;
+                        $keywordTinh = isset($_GET['keywordTinh']) && !empty(trim($_GET['keywordTinh'])) ? trim($_GET['keywordTinh']) : null;
+                        if ($keywordTinh) {
                             $listND = $ndBUS->searchByTinh($keywordTinh);
                         }
-
+                        if ($keyword) {
+                            // Lọc keyword trên tập đã lọc tỉnh (nếu có)
+                            $columns = ['HOTEN', 'DIACHI', 'SODIENTHOAI', 'CCCD'];
+                            $listND = array_filter($listND, function($nd) use ($keyword, $columns) {
+                                foreach ($columns as $col) {
+                                    $getter = 'get' . ucfirst(strtolower($col));
+                                    if (method_exists($nd, $getter) && stripos($nd->$getter(), $keyword) !== false) {
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            });
+                        }
                         $current_page = request()->query('page', 1);
                         $limit = 8;
                         $total_record = count($listND ?? []);
@@ -99,7 +109,6 @@ use Illuminate\Support\Facades\View as FacadesView;
                         } else {
                             $tmp = array_slice($listND, $start, $limit);
                         }
-
                         echo FacadesView::make('admin.nguoidung', [
                             'tmp' => $tmp,
                             'listTinh' => $listTinh,

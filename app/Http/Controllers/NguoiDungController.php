@@ -53,31 +53,36 @@ class NguoiDungController extends Controller
     }
     public function update(Request $request) {
         $id = $request->input('id');
-        $fullname = $request->input('fullname');
-        $birthdate = $request->input('birthdate');
-        $address = $request->input('address');  
-        $gioiTinh = $request->input('gender');
-        switch($gioiTinh) {
+        $hoten = $request->input('HOTEN');
+        $ngaysinh = $request->input('NGAYSINH');
+        $gioitinh = $request->input('GIOITINH');
+        switch($gioitinh) {
             case 'MALE':
-                $gioiTinh = GioiTinhEnum::MALE;
+                $gioitinh = GioiTinhEnum::MALE;
                 break;
             case 'FEMALE':
-                $gioiTinh = GioiTinhEnum::FEMALE;
+                $gioitinh = GioiTinhEnum::FEMALE;
                 break;
             case 'UNDEFINED':
-                $gioiTinh = GioiTinhEnum::UNDEFINED;
+                $gioitinh = GioiTinhEnum::UNDEFINED;
                 break;
             default:
-                error("Can not create NGUOIDUNG model");
-                break;
+                return redirect()->back()->with('error', 'Giới tính không hợp lệ');
         }
-        $tinh = $this->tinhBUS->getModelById($request->input('tinh'));
-        $sdt = $request->input('sdt');
-        $cccd = $request->input('cccd');  
-        $active = $request->input('active');
-        $nguoidung = new NguoiDung($id, $fullname, $birthdate, $gioiTinh, $address, $tinh, $sdt, $cccd, $active);
-        $this->nguoiDungBUS->updateModel($nguoidung);
-        return redirect()->back()->with('success', 'Nguời dùng đã được cập nhật thành công!');
+        $diachi = $request->input('DIACHI');
+        $tinh = $this->tinhBUS->getModelById($request->input('IDTINH'));
+        $sdt = $request->input('SODIENTHOAI');
+        $cccd = $request->input('CCCD');
+        $trangthaihd = $request->input('TRANGTHAIHD');
+
+        $nguoidung = new NguoiDung($id, $hoten, $ngaysinh, $gioitinh, $diachi, $tinh, $sdt, $cccd, $trangthaihd);
+        $result = $this->nguoiDungBUS->updateModel($nguoidung);
+        
+        if (!$result) {
+            return redirect()->back()->with('error', 'Cập nhật người dùng thất bại');
+        }
+
+        return redirect()->back()->with('success', 'Người dùng đã được cập nhật thành công!');
     }
     public function controlDelete(Request $request) {
         $id = $request->input('id');
