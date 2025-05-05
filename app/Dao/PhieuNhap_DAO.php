@@ -1,12 +1,10 @@
 <?php
 
 namespace App\Dao;
-
-use App\Bus\NCC_BUS;
 use App\Bus\NguoiDung_BUS;
+use App\Bus\NCC_BUS;
 use App\Enum\ReceiptStatus;
 use App\Interface\DAOInterface;
-use App\Models\NCC;
 use App\Models\PhieuNhap;
 use App\Services\database_connection;
 use Illuminate\Support\Arr;
@@ -14,79 +12,80 @@ use InvalidArgumentException;
 
 use function Laravel\Prompts\error;
 
-class PhieuNhap_DAO 
+class PhieuNhap_DAO implements DAOInterface
 {
+    private $nccBUS;
+    private $ndBUS;
+    public function __construct(NCC_BUS $ncc_bus, NguoiDung_BUS $nguoi_dung_bus)
+    {
+        $this->nccBUS = $ncc_bus;
+        $this->ndBUS = $nguoi_dung_bus;
+        
+    }
     public function readDatabase(): array
     {
         $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM PHIEUNHAP");
+        $rs = database_connection::executeQuery("SELECT * FROM phieunhap");
         while ($row = $rs->fetch_assoc()) {
             $model = $this->createPhieuNhapModel($row);
             $list[] = $model;
         }
         return $list;
     }
-    public function createPhieuNhapModel($rs): PhieuNhap
-    {        
+    public function createPhieuNhapModel($rs)
+    {
+        $trangThaiHD = $rs['TRANGTHAIHD'];
         $id = $rs['ID'];
-        $idNCC = app(NCC_BUS::class)->getModelById($rs['IDNCC']);
+        $NCC = $this->nccBUS->getModelById($rs['IDNCC']);
         $tongTien = $rs['TONGTIEN'];
         $ngayTao = $rs['NGAYTAO'];
-        $idNhanVien = app(NguoiDung_BUS::class)->getModelById($rs['IDNHANVIEN']);
-        $trangThaiHD = $rs['TRANGTHAIHD'];
-        return new PhieuNhap($id, $idNCC, $tongTien, $ngayTao, $idNhanVien, $trangThaiHD);
+        $NhanVien = $this->ndBUS->getModelById($rs['IDNHANVIEN']);
+        return new PhieuNhap($id,$NCC,$tongTien,$ngayTao,$NhanVien,$trangThaiHD);
     }
     public function getAll(): array
     {
         $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM PHIEUNHAP");
+        $rs = database_connection::executeQuery("SELECT * FROM phieunhap WHERE TRANGTHAIHD <> 0");
         while ($row = $rs->fetch_assoc()) {
             $model = $this->createPhieuNhapModel($row);
             array_push($list, $model);
         }
         return $list;
     }
-    public function getById($id)
+    public function getById($id): ?PhieuNhap
     {
-        $query = "SELECT * FROM PHIEUNHAP WHERE ID = ?";
+        $query = "SELECT * FROM phieunhap WHERE ID = ?";
         $result = database_connection::executeQuery($query, $id);
         if ($result->num_rows > 0) {
             return $this->createPhieuNhapModel($result->fetch_assoc());
         }
         return null;
     }
-    public function insert($e)
+   
+    public function insert($e): int
     {
-        $query = "INSERT INTO PHIEUNHAP (id, idNCC, tongTien, ngayTao, idNhanVien, trangThaiHD) VALUES (?,?,?,?,?,?)";
-        $args = [$e->getId(), $e->getIdNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien()->getId(), $e->getTrangThaiPN()];
+        $query = "INSERT INTO phieunhap (IDNCC, TONGTIEN, NGAYTAO, IDNHANVIEN, TRANGTHAIHD) VALUES (?,?,?,?,?)";
+        $args = [ $e->getNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getNhanVien()->getId(), $e->getTrangThaiHD()];
         $rs = database_connection::executeQuery($query, ...$args);
         return is_int($rs) ? $rs : 0;
-
-    }
-    public function getLastPN() {
-        $query = "SELECT * FROM PHIEUNHAP ORDER BY id DESC LIMIT 1";
-        $result = database_connection::executeQuery($query);
-        if ($result->num_rows > 0) {
-            return $this->createPhieuNhapModel($result->fetch_assoc());
-        }
-        return null;
+        return 0;
     }
     public function update($e): int
     {
-        $query = "UPDATE PHIEUNHAP SET idNCC = ?, tonHDgTien = ?, ngayTao = ?, idNhanVien = ?, trangThai = ? WHERE id = ?";
-        $args = [$e->getIdNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien()->getId(), $e->getTrangThaiPN(), $e->getId()];
+        $query = "UPDATE phieunhap SET IDNCC = ?, TONGTIEN = ?, NGAYTAO = ?, IDNHANVIEN = ?, TRANGTHAIHD = ? WHERE ID = ?";
+        $args = [$e->getNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getNhanVien()->getId(), $e->getTrangThaiHD(), $e->getId()];
         $rs = database_connection::executeUpdate($query, ...$args);
         return is_int($rs) ? $rs : 0;
     }
     public function delete(int $id): int
     {
-        $query = "DELETE FROM PHIEUNHAP WHERE id = ?";
+        $query = "UPDATE phieunhap SET TRANGTHAIHD = 0 WHERE ID = ?";
         $rs = database_connection::executeUpdate($query, $id);
         return is_int($rs) ? $rs : 0;
     }
     public function exists(int $id): bool
     {
-        $query = "SELECT COUNT(*) as count FROM PHIEUNHAP WHERE id = ?";
+        $query = "SELECT COUNT(*) as count FROM phieunhap WHERE ID = ?";
         $rs = database_connection::executeQuery($query, $id);
         $row = $rs->fetch_assoc();
         return $row['count'] > 0;
@@ -94,17 +93,14 @@ class PhieuNhap_DAO
 
     public function search(string $condition, array $columnNames = []): array
     {
-        if (empty($condition)) {
-            throw new InvalidArgumentException("Search condition cannot be empty or null");
-        }
-
+        
         // Danh sách cột mặc định nếu không truyền vào
         $columns = empty($columnNames)
             ? ["ID", "IDNCC", "TONGTIEN", "IDNHANVIEN", "NGAYTAO", "TRANGTHAIHD"]
             : $columnNames;
 
         // Xây dựng câu lệnh SQL với các cột được chỉ định
-        $query = "SELECT * FROM PHIEUNHAP WHERE " . implode(" LIKE ? OR ", $columns) . " LIKE ?";
+        $query = "SELECT * FROM phieunhap WHERE " . implode(" LIKE ? OR ", $columns) . " LIKE ?";
 
         // Mảng chứa các tham số tìm kiếm
         $args = array_fill(0, count($columns), "%" . $condition . "%");

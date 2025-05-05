@@ -1,79 +1,73 @@
 <?php
 namespace App\Models;
 
+use App\Enum\ReceiptStatus;
 
 class PhieuNhap {
-    private $id;
-    private NCC $idNCC;
-    private  $tongTien;
-    private $ngayTao;
-    private NguoiDung $idNhanVien;
-    private  $trangThaiPN;
+    private int $id;
+    private NguoiDung $ndModel;
+    private NCC $nccModel;
+    private float $tongTien;
+    private  String $ngayTao;
+    private int $trangThaiHD;
 
-    public function __construct($id = null, NCC $idNCC,  $tongTien = null, string $ngayTao, NguoiDung $idNhanVien, $trangThaiPN) {
+    public function __construct(int $id, NCC $nccModel, float $tongTien, String $ngayTao, NguoiDung $ndModel, int $trangThaiHD) {
         $this->id = $id;
-        $this->idNCC = $idNCC;
+        $this->nccModel = $nccModel;
         $this->tongTien = $tongTien;
         $this->ngayTao = $ngayTao;
-        $this->idNhanVien = $idNhanVien;
-        $this->trangThaiPN = $trangThaiPN;
+        $this->ndModel = $ndModel;
+        $this->trangThaiHD = $trangThaiHD;
     }
+   
 
-    public function getId(){
+    public function getId(): int {
         return $this->id;
     }
 
-    public function getIdPN(){
-        return $this->id;
+    public function getNCC(): NCC {
+        return $this->nccModel;
     }
 
-    public function getIdNCC(): NCC {
-        return $this->idNCC;
-    }
-
-    public function getTongTien() {
+    public function getTongTien(): float {
         return $this->tongTien;
     }
 
-    public function getNgayTao(){
+    public function getNgayTao(): String {
         return $this->ngayTao;
     }
 
-    public function getIdNhanVien(): NguoiDung {
-        return $this->idNhanVien;
+    public function getNhanVien(): NguoiDung {
+        return $this->ndModel;
     }
 
-    public function getTrangThaiPN() {
-        return $this->trangThaiPN;
+    public function getTrangThaiHD(): int {
+        return $this->trangThaiHD;
     }
 
     public function setId(int $id): void {
         $this->id = $id;
     }
 
-    public function setIdNCC(NCC $idNCC): void {
-        $this->idNCC = $idNCC;
+    public function setNCC(NCC $nccModel): void {
+        $this->nccModel = $nccModel;
     }
 
-    public function setTongTien($tongTien): void {
+    public function setTongTien(float $tongTien): void {
         $this->tongTien = $tongTien;
     }
 
-    public function setNgayTao($ngayTao): void {
-        $this->ngayTao = $ngayTao;
+    public function setNgayTao(string $ngayTao): void {
+        $this->ngayTao = ($ngayTao);
     }
 
-    public function setIdNhanVien(NguoiDung $idNhanVien): void {
-        $this->idNhanVien = $idNhanVien;
+    public function setIdNhanVien(NguoiDung $ndModel): void {
+        $this->ndModel = $ndModel;
     }
 
-    public function setTrangThaiPN( $trangThaiPN): void {
-        $this->trangThaiPN = $trangThaiPN;
-    }
-    public function getTrangThai() {
-        return $this->trangThaiPN; // Hoặc tên thuộc tính tương ứng
+    public function setTrangThaiHD(int $trangThaiHD): void {
+        $this->trangThaiHD = $trangThaiHD;
     }
 }
 
 ?>
-

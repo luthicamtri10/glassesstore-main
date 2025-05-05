@@ -113,14 +113,13 @@ class AppServiceProvider extends ServiceProvider
             return new validation();
         });
 
-        $this->app->singleton(GioHang_BUS::class, function ($app) {
-            return new GioHang_BUS($app->make(GioHang_DAO::class));
-        });
 
         $this->app->singleton(TaiKhoan_DAO::class, function ($app) {
             return new TaiKhoan_DAO($app->make(GioHang_BUS::class));
         });
-
+        $this->app->singleton(GioHang_DAO::class, function($app) {
+            return new GioHang_DAO();
+        });
         $this->app->singleton(Auth_BUS::class, function ($app) {
             return new Auth_BUS($app->make(TaiKhoan_BUS::class), $app->make(JWTUtils::class));
         });
@@ -128,7 +127,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(AuthController::class, function ($app) {
             return new AuthController($app->make(Auth_BUS::class));
         });
-
+        $this->app->singleton(PhieuNhap_DAO::class, function($app) {
+            return new PhieuNhap_DAO($app->make(NCC_BUS::class), $app->make(NguoiDung_BUS::class));
+        });
+        
         $this->app->singleton(TaiKhoanController::class, function ($app) {
             return new TaiKhoanController(
                 $app->make(TaiKhoan_BUS::class),
@@ -136,6 +138,10 @@ class AppServiceProvider extends ServiceProvider
                 $app->make(Quyen_BUS::class)
             );
         });
+        $this->app->singleton(CTGH_DAO::class, function($app) {
+            return new CTGH_DAO($app->make(GioHang_BUS::class), $app->make(SanPham_BUS::class));
+        });
+       
     }
 
     /**

@@ -607,7 +607,7 @@ use App\Bus\SanPham_BUS;
               <button type="button" class="btn btn-danger" style="width: 150px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
               <form action="{{ route('index.addctgh') }}" method="post">
                   @csrf
-                  <input type="hidden" name="idgh" value="{{$gh->getIdGH()}}">
+                  <input type="hidden" name="idgh" value="">
                   <input type="hidden" name="idsp" value="">
                   <button type="submit" class="btn btn-light" style="width: 200px;">Thêm vào giỏ hàng</button>
               </form>
