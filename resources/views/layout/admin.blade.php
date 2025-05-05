@@ -456,6 +456,23 @@ use Illuminate\Support\Facades\View as FacadesView;
                             $listHoaDon = $hoaDonBUS->searchByTinh($keywordTinh);
                         }
 
+                        if (isset($_GET['trangthai']) || !empty($_GET['trangthai'])) {
+                            $trangThai = $_GET['trangthai'];
+                            $listHoaDon = $hoaDonBUS->getHoaDonsByTrangThai($trangThai);
+                        }
+
+                        if (isset($_GET['ngaybatdau']) && !empty($_GET['ngaybatdau']) && isset($_GET['ngayketthuc']) && !empty($_GET['ngayketthuc'])) {
+                            $ngayBatDau = $_GET['ngaybatdau'];
+                            $ngayKetThuc = $_GET['ngayketthuc'];
+                        
+                            // Lọc hóa đơn theo ngày
+                            $listHoaDon = $hoaDonBUS->getHoaDonsByNgay($ngayBatDau, $ngayKetThuc);
+                        } 
+                        
+                       
+
+                        
+
                         $current_page = request()->query('page', 1);
                         $limit = 8;
                         $total_record = count($listHoaDon ?? []);
@@ -467,6 +484,7 @@ use Illuminate\Support\Facades\View as FacadesView;
                         } else {
                             $tmp = array_slice($listHoaDon, $start, $limit);            
                         }
+                        
                         
                         echo FacadesView::make('admin.hoadon', [
                             'listHoaDon' => $tmp,

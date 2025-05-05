@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Bus\Auth_BUS;
 use App\Bus\DVVC_BUS;
 use App\Bus\HoaDon_BUS;
 use App\Bus\NguoiDung_BUS;
@@ -133,6 +134,48 @@ class HoaDonController extends Controller {
         return redirect($returnUrl);
     }
 
+    public function updateStatus(Request $request)
+    {
+        // Validate input
+        $request->validate([
+            'id' => 'required|integer',
+            'trangthai' => 'required|in:' . implode(',', array_column(HoaDonEnum::cases(), 'value'))
+        ]);
+
+        try {
+            $hoaDon = $this->hoaDonBUS->getModelById($request->id);
+            if (!$hoaDon) {
+                return redirect()->back()->with('error', 'Không tìm thấy hóa đơn.');
+            }
+
+            // Chuyển chuỗi thành HoaDonEnum
+            $trangThaiEnum = HoaDonEnum::from($request->trangthai);
+            $hoaDon->setTrangThai($trangThaiEnum);
+            $this->hoaDonBUS->updateModel($hoaDon);
+
+            return redirect()->back()->with('success', 'Cập nhật trạng thái thành công.');
+        } catch (\ValueError $e) {
+            // Xử lý trường hợp chuỗi không khớp với bất kỳ giá trị enum nào
+            return redirect()->back()->with('error', 'Trạng thái không hợp lệ.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Cập nhật trạng thái thất bại: ' . $e->getMessage());
+        }
+
+    public function createdPayMent(Request $request)  {
+        // dd($request->all());
+        $listSP = $request->input('listSP');
+        $email = app(Auth_BUS::class)->getEmailFromToken();
+        $user = app(TaiKhoan_BUS::class)->getModelById($email);
+        $isLogin = app(Auth_BUS::class)->isAuthenticated();
+        $listPTTT = app(PTTT_BUS::class)->getAllModels();
+        return view('client.CreatePayMent', [
+            'listSP' => $listSP,
+            'user' => $user,
+            'isLogin' => $isLogin,
+            'listPTTT' => $listPTTT
+        ]);
+
+    }
 
 
 }
