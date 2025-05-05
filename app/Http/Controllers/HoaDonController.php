@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Bus\Auth_BUS;
 use App\Bus\DVVC_BUS;
 use App\Bus\HoaDon_BUS;
 use App\Bus\NguoiDung_BUS;
@@ -132,7 +133,20 @@ class HoaDonController extends Controller {
         $returnUrl = url("/?orderCode={$orderCode}&status={$status}");
         return redirect($returnUrl);
     }
-
+    public function createdPayMent(Request $request)  {
+        // dd($request->all());
+        $listSP = $request->input('listSP');
+        $email = app(Auth_BUS::class)->getEmailFromToken();
+        $user = app(TaiKhoan_BUS::class)->getModelById($email);
+        $isLogin = app(Auth_BUS::class)->isAuthenticated();
+        $listPTTT = app(PTTT_BUS::class)->getAllModels();
+        return view('client.CreatePayMent', [
+            'listSP' => $listSP,
+            'user' => $user,
+            'isLogin' => $isLogin,
+            'listPTTT' => $listPTTT
+        ]);
+    }
 
 
 }

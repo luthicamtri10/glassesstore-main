@@ -372,8 +372,8 @@ Route::get('/pay', function () {
 })->name('pay');
 
 Route::post('/hoadon', [HoaDonController::class, 'store'])->name('hoadon.store');
-
 Route::get('client/paymentsuccess', [HoaDonController::class, 'paymentSuccess'])->name('payment.success');
+Route::post('/createdPayMent', [HoaDonController::class, 'createdPayment'])->name('payment.create');
 
 Route::post('/login', function (\Illuminate\Http\Request $request) {
     $email = $request->input('email-login');

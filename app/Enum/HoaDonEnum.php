@@ -7,4 +7,6 @@ enum HoaDonEnum : String
     case EXPIRED = 'EXPIRED';
     case CANCELLED = 'CANCELLED';
     case REFUNDED = 'REFUNDED';
+    case DANGGIAO = 'DANGGIAO';
+    case DAGIAO = 'DAGIAO';
 }

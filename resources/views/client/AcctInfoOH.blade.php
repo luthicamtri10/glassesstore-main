@@ -68,7 +68,7 @@
                     <div class="card-body">
                         <div class="row mb-2">
                             <div class="col-md-4 fw-bold">Tên đăng nhập:</div>
-                            <div class="col-md-8">{{ $user->getUsername() }}</div>
+                            <div class="col-md-8">{{ $user->getTenTK() }}</div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-md-4 fw-bold">Họ và tên:</div>
@@ -103,7 +103,7 @@
                         <div class="modal-body">
                           <div class="mb-3">
                             <label for="username" class="form-label">Tên đăng nhập</label>
-                            <input type="text" class="form-control" id="username" name="username" value="{{ $user->getUsername() }}" required>
+                            <input type="text" class="form-control" id="username" name="username" value="{{ $user->getTenTK() }}" required>
                             @error('username')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
