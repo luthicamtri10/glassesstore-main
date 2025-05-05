@@ -1,40 +1,33 @@
 <?php
-
 namespace App\Bus;
-
 use App\Dao\CTGH_DAO;
-use App\Models\CTGH;
 
 class CTGH_BUS {
-    protected $dao;
+    private $ctghDAO;
 
-    public function __construct(CTGH_DAO $dao) {
-        $this->dao = $dao;
+    public function __construct(CTGH_DAO $ctgh_dao)
+    {
+        $this->ctghDAO = $ctgh_dao;
     }
-
-    public function getByIDGH($idgh) {
-        return $this->dao->getByIDGH($idgh);
+    public function getByIDGH ($idgh) {
+        return $this->ctghDAO->getByIDGH($idgh);
     }
-
-    public function addCTGH(CTGH $model) {
-        return $this->dao->addCTGH($model);
+    public function addGH($model){
+        return $this->ctghDAO->addGH($model);
     }
-
     public function deleteCTGH($idgh, $idsp) {
-        return $this->dao->deleteCTGH($idgh, $idsp);
+        return $this->ctghDAO->deleteCTGH($idgh, $idsp);
     }
-
-    public function getCTGHByIDGHAndIDSP($idGH, $idSP) {
-        return $this->dao->getCTGHByIDGHAndIDSP($idGH, $idSP);
+    public function updateCTGH($model) {
+        return $this->ctghDAO->updateCTGH($model);
     }
-
-    public function updateCTGH(CTGH $model) {
-        return $this->dao->updateCTGH($model);
+    public function getCTGHByIDGHAndIDSP($idGH, $idsp) {
+        return $this->ctghDAO->getCTGHByIDGHAndIDSP($idGH, $idsp);
     }
-
-    // public function searchCTGHByKeyword($idgh, $keyword) {
-    //     // Thêm dấu % để LIKE hoạt động chính xác
-    //     $keyword = '%' . $keyword . '%';
-    //     return $this->dao->searchCTGHByKeyword($idgh, $keyword);
-    // }
+    public function searchCTGHByKeyword($idgh, $keyword) {
+        return $this->ctghDAO->searchCTGHByKeyword($idgh, $keyword);
+    }
+    
+    
 }
+?>

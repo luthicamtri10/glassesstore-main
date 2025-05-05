@@ -1,29 +1,29 @@
 <?php
 namespace App\Models;
 class CTGH {
-    private GioHang $gioHang;
-    private SanPham $sanPham;
+    private GioHang $idGH;
+    private SanPham $idsp;
     private $soluong;
-    public function __construct($gioHang, $sanPham, $soluong)
+    public function __construct($idGH, $idsp, $soluong)
     {
-        $this->gioHang = $gioHang;
-        $this->sanPham = $sanPham;
+        $this->idGH = $idGH;
+        $this->idsp = $idsp;
         $this->soluong = $soluong;
     }
-    public function getGH() : GioHang {
-        return $this->gioHang;
+    public function getIdGH() : GioHang {
+        return $this->idGH;
     }
-    public function getSP() : SanPham {
-        return $this->sanPham;
+    public function getIdSP() : SanPham {
+        return $this->idsp;
     }
     public function getSoLuong() {
         return $this->soluong;
     }
-    public function setGH(GioHang $gioHang) {
-        $this->gioHang = $gioHang;
+    public function setIdGH(GioHang $idgh) {
+        $this->idGH = $idgh;
     }
-    public function setSP(SanPham $sanPham) {
-        $this->sanPham = $sanPham;
+    public function setIdSP(SanPham $idsp) {
+        $this->idsp = $idsp;
     }
     public function setSoLuong($soluong) {
         $this->soluong = $soluong;
