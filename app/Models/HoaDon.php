@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
+use App\Bus\TaiKhoan_BUS;
 use App\Enum\HoaDonEnum;
 
 class HoaDon
 {
-    private $id, $tongTien, $ngayTao, $idDVVC, $diaChi;
+    private $id, $tongTien, $ngayTao, $idDVVC, $diaChi, $orderCode;
     private Tinh $tinh;
     private TaiKhoan $email;
     private NguoiDung $idNhanVien;
     private PTTT $idPTTT;
     private HoaDonEnum $trangThai;
 
-    public function __construct($id = null, $email, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $diaChi, Tinh $tinh, HoaDonEnum $trangThai)
+    public function __construct($id = null,TaiKhoan $email, NguoiDung $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $diaChi, Tinh $tinh, HoaDonEnum $trangThai, $orderCode = null)
     {
         $this->id = $id;
         $this->email = $email;
@@ -25,6 +26,7 @@ class HoaDon
         $this->diaChi = $diaChi;
         $this->tinh = $tinh;
         $this->trangThai = $trangThai;
+        $this->orderCode = $orderCode;
     }
 
     // Getter và Setter cho ID
@@ -130,5 +132,16 @@ class HoaDon
      {
          $this->trangThai = $trangThai;
      }
+
+     // Getter và Setter cho orderCode
+    public function getOrderCode()
+    {
+        return $this->orderCode;
+    }
+
+    public function setOrderCode($orderCode)
+    {
+        $this->orderCode = $orderCode;
+    }
 
 }

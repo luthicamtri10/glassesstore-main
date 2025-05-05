@@ -33,16 +33,29 @@ use App\Bus\SanPham_BUS;
             document.getElementById('selected-count').innerText = selectedCount;
 
             let totalAmount = 0;
+            const selectedProducts = [];
             const checkboxes = document.querySelectorAll('input[name="product_selection[]"]:checked');
 
             checkboxes.forEach(function(checkedCheckbox) {
+                const productId = checkedCheckbox.getAttribute('data-id');
                 const price = parseInt(checkedCheckbox.getAttribute('data-price'));
                 const quantity = parseInt(checkedCheckbox.getAttribute('data-quantity'));
+                console.log('Sản phẩm ID:', productId);
                 totalAmount += price*quantity; // Cộng dồn giá trị
+
+                selectedProducts.push({
+                    product_id: productId,
+                    price: price,
+                    quantity: quantity
+                });
             });
+
+            
 
             // Cập nhật tổng tiền trong footer
             document.getElementById('total-amount').innerText = formatCurrency(totalAmount);
+
+            // document.getElementById('selected-products').value = JSON.stringify(selectedProducts);
         }
         function formatCurrency(number) {
             return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + 'đ';
@@ -93,7 +106,12 @@ use App\Bus\SanPham_BUS;
         @endif
             <div class="bg-white p-4 d-flex justify-content-between align-items-center gap-5 rounded" style="width: 100%;">
                 <div class="form-check">
-                    <input class="form-check-input" style="height: 20px; width: 20px;" type="checkbox" name="product_selection[]" data-price="{{ $it->getIdSP()->getDonGia() }}" data-quantity="{{ $it->getSoLuong() }}" onclick="updateSelectedProducts(this)">
+                    <input class="form-check-input" style="height: 20px; width: 20px;"
+                            type="checkbox" name="product_selection[]"
+                            data-id="{{ $it->getIdSP()->getId() }}" 
+                            data-price="{{ $it->getIdSP()->getDonGia() }}"
+                            data-quantity="{{ $it->getSoLuong() }}"
+                            onclick="updateSelectedProducts(this)">
                 </div>
                 <div class="">
                     <img src="productImg/{{ $it->getIdSP()->getId() }}.webp" style="height: 130px; width: 130px;" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
@@ -156,8 +174,14 @@ use App\Bus\SanPham_BUS;
     <div class="d-flex justify-content-start gap-5">
         <div>Chọn <span id="selected-count">0</span> sản phẩm</div> <!-- Hiển thị số lượng sản phẩm đã chọn -->
         <div>Tổng tiền: <span id="total-amount">0</span></div></div>
-    <button type="button" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</button>
+    <!-- <button type="button" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</button> -->
+    <a href="{{ route('pay') }}" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</a>
+
+
+    
 </div>
+
+
 @if(session('success'))
 <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
     {{ session('success') }}

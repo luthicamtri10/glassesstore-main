@@ -6,6 +6,7 @@ use App\Bus\CTGH_BUS;
 use App\Bus\CTQ_BUS;
 use App\Bus\GioHang_BUS;
 use App\Bus\Hang_BUS;
+use App\Bus\HoaDon_BUS;
 use App\Bus\LoaiSanPham_BUS;
 use App\Bus\NguoiDung_BUS;
 use App\Bus\SanPham_BUS;
@@ -347,6 +348,7 @@ Route::get('/lich-su-don-hang', [HistoryController::class, 'showOrderHistory'])-
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CTPNController;
 use App\Http\Controllers\GioHangController;
+use App\Http\Controllers\HoaDonController;
 
 use function Laravel\Prompts\alert;
 Route::get('/yourInfo', function() {
@@ -356,6 +358,33 @@ Route::get('/yourInfo', function() {
         'user'=>$user
     ]);
 });
+
+Route::get('/pay', function (Request $request) {
+    $email = app(Auth_BUS::class)->getEmailFromToken();
+    // dd($email);
+    $taikhoan = app(TaiKhoan_BUS::class)->getModelById($email);
+
+    $user = $taikhoan->getIdNguoiDung();
+
+    $listTinh = app(Tinh_BUS::class)->getAllModels();
+
+    $selectedProducts = json_decode($_POST['products']);
+
+    // dd($user);
+    
+    return view('client/pay', [
+        'taikhoan' => $taikhoan,
+        'user' => $user,
+        'listTinh' => $listTinh,
+    ]);
+})->name('pay');
+
+Route::post('/hoadon', [HoaDonController::class, 'store'])->name('hoadon.store');
+
+Route::get('client/paymentsuccess', [HoaDonController::class, 'paymentSuccess'])->name('payment.success');
+
+
+
 Route::post('/login', function (\Illuminate\Http\Request $request) {
     $email = $request->input('email-login');
     $password = $request->input('password-login');
@@ -381,5 +410,8 @@ Route::post('/createPhieuNhap', [PhieuNhapController::class, 'store'])->name('ph
 Route::post('/admin/quyen/store', [QuyenController::class, 'store'])->name('admin.quyen.store');
 Route::post('/admin/quyen/update', [QuyenController::class, 'update'])->name('admin.quyen.update');
 Route::post('/admin/quyen/destroy', [QuyenController::class, 'destroy'])->name('admin.quyen.destroy');
+
+
+
 
 ?>

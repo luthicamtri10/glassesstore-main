@@ -27,17 +27,39 @@ class HoaDon_DAO{
 
     public function insert($e): int
     {
-        $sql = "INSERT INTO HoaDon (idKhachHang, email, tongTien, idPTTT, ngayTao, idDVVC, trangThai)
-        VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $args = [$e->getIdKhachHang()->getId(), $e->getEmail()->getEmail(), $e->getTongTien(), $e->getTongTien(), $e->getIdPTTT()->getId(), $e->getNgayTao(), $e->getIdDVVC()->getId(), $e->getTrangThai()];
-        return database_connection::executeQuery($sql, ...$args);
+        $sql = "INSERT INTO hoadon (EMAIL, IDNHANVIEN, TONGTIEN, IDPTTT, NGAYTAO, IDDVVC, DIACHI, IDTINH, TRANGTHAI)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // $args = [$e->getEmail()->getEmail(), $e->getIdNhanVien()->getId(), $e->getTongTien(), $e->getIdPTTT()->getId(), $e->getNgayTao(), $e->getIdDVVC()->getId(), $e->getDiaChi(), $e->getTinh()->getId(), $e->getTrangThai()];
+        $args = [
+            $e->getEmail()->getEmail(),                  // TaiKhoan
+            $e->getIdNhanVien()->getId(),               // NguoiDung
+            $e->getTongTien(),
+            $e->getIdPTTT()->getId(),                   // PTTT
+            $e->getNgayTao()->format('Y-m-d H:i:s'),
+            $e->getIdDVVC(),                            // <- trả về int, không cần ->getId()
+            $e->getDiaChi(),
+            $e->getTinh()->getId(),                     // Tinh
+            $e->getTrangThai()->value,
+        ];
+        
+        $result = database_connection::executeUpdate($sql, ...$args);
+
+        if ($result) {
+            return database_connection::getLastInsertId();
+        }
+    
+        return 0;
     }
 
     public function update($e): int
     {
-        $sql = "UPDATE HoaDon SET trangThai = ?) 
-        WHERE id = ?";
-        $result = database_connection::executeUpdate($sql, ...[$e]);
+        $sql = "UPDATE hoadon SET TRANGTHAI = ?, ORDERCODE = ? WHERE id = ?";
+        $args = [
+            $e->getTrangThai()->value,
+            $e->getOrderCode(),
+            $e->getId()
+        ];
+        $result = database_connection::executeUpdate($sql, ...$args);
         return is_int($result)? $result : 0;
     }
 
@@ -76,7 +98,12 @@ class HoaDon_DAO{
         $idDVVC = app(DVVC_BUS::class)->getModelById($rs['IDDVVC']);
         $diaChi = $rs['DIACHI'];
         $tinh = app(Tinh_BUS::class)->getModelById($rs['IDTINH']);
-        $trangThai = $rs['TRANGTHAI'];
+        $trangThai = strtoupper(trim($rs['TRANGTHAI'] ?? ''));
+
+        if (!in_array($trangThai, ['PAID', 'PENDING', 'EXPIRED', 'CANCELLED', 'REFUNDED'])) {
+            throw new \Exception("Trạng thái không hợp lệ (ID={$rs['ID']}): '$trangThai'");
+        }
+
         switch($trangThai) {
             case 'PAID': $trangThai = HoaDonEnum::PAID; break;
             case 'PENDING': $trangThai = HoaDonEnum::PENDING; break;
@@ -130,4 +157,19 @@ class HoaDon_DAO{
         }
         return $hoaDons;
     }
+
+    public function getByOrderCode(int $orderCode)
+    {
+        $sql = "SELECT * FROM hoadon WHERE ORDERCODE = ?";
+        $result = database_connection::executeQuery($sql, $orderCode);
+        if($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if($row) {
+                return $this->createHoaDonModel($row);
+            }
+        }
+        return null;
+    }
+
+
 }

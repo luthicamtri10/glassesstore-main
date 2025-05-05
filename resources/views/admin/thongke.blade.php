@@ -88,18 +88,22 @@ use Illuminate\Support\Facades\Auth;
    //    echo 'FAILED!' .'<br>';
    // }
    // Tạo đối tượng Quyen và ChucNang mẫu (giả sử đã có quyền ID=1, chức năng ID=2)
-$quyen = app(Quyen_BUS::class)->getModelById(7);
-$chucNang = app(ChucNang_BUS::class)->getModelById(1);
-echo $quyen->getTenQuyen().'<br>';
-echo $chucNang->getTenChucNang().'<br>';
-// // Tạo đối tượng CTQ
-$ctq = new CTQ($quyen, $chucNang, 1);
+// $quyen = app(Quyen_BUS::class)->getModelById(7);
+// $chucNang = app(ChucNang_BUS::class)->getModelById(1);
+// echo $quyen->getTenQuyen().'<br>';
+// echo $chucNang->getTenChucNang().'<br>';
+// // // Tạo đối tượng CTQ
+// $ctq = new CTQ($quyen, $chucNang, 1);
 
-// // Gọi hàm insert
-// $ctqDAO = app(CTQ_DAO::class);
-$result = app(CTQ_BUS::class)->addModel($ctq);
+// // // Gọi hàm insert
+// // $ctqDAO = app(CTQ_DAO::class);
+// $result = app(CTQ_BUS::class)->addModel($ctq);
 
-// In ra kết quả
-echo 'Kết quả insert CTQ: ' . $result . '<br>';
+// // In ra kết quả
+// echo 'Kết quả insert CTQ: ' . $result . '<br>';
+   // $email = app(Auth_BUS::class)->getEmailFromToken();
+   // $user = app(TaiKhoan_BUS::class)->getModelById($email);
+   $sp = app(HoaDon_BUS::class)->getByOrderCode(400335);
+   dd($sp);
 
 ?>
