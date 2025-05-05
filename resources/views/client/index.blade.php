@@ -188,11 +188,9 @@ use App\Bus\SanPham_BUS;
         <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
         <ul class="list-top-nav d-flex ms-auto gap-2">
           <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill " id="chinhsach"><a href="/yourInfo">Thông tin cá nhân</a></li>
-          @if($isLogin && app(CTQ_BUS::class)->checkChucNangExistInQuyen($user->getIdQuyen()->getId(), 6))
           <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang">
               <a href="{{ route('order.history') }}">Tra cứu đơn hàng</a>
           </li>
-          @endif
           @if($isLogin) 
           @if($user->getIdQuyen()->getId() == 1 || $user->getIdQuyen()->getId() == 2) 
             <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang"><a href="/admin">Trang quản trị</a></li>
@@ -246,7 +244,7 @@ use App\Bus\SanPham_BUS;
 
   </div>
   <div class="ctn-content">
-  <img src="{{ asset('client/img/bannner.png') }}" class="img-fluid w-100">
+  <img src="{{ asset('/client/img/bannner.png') }}" class="img-fluid w-100">
 
     <div class="main justify-content-center d-flex">
       <div class="best-seller text-center">
@@ -266,12 +264,12 @@ use App\Bus\SanPham_BUS;
                       data-mota="{{ $sp->getMoTa() }}"
                       data-dongia="{{ number_format($sp->getDonGia(), 0, ',', '.') }}₫"
                       data-tgbh="{{ $sp->getThoiGianBaoHanh() }}"
-                      data-img="productImg/{{ $sp->getId() }}.webp"
+                      data-img="/productImg/{{ $sp->getId() }}.webp"
                       data-bs-toggle="modal"
                       data-bs-target="#productDetailModal">
                   <div class="card shadow-sm border-0 h-100 col rounded-5 product-item">
                     <div class="ratio ratio-1x1">
-                      <img src="productImg/{{ $sp->getId() }}.webp" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
+                      <img src="/productImg/{{ $sp->getId() }}.webp" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
                     </div>
                     <div class=" card-body d-flex flex-column justify-content-between h-60 p-3">
                       <h6 class="card-title text-truncate text-center w-100" title="{{ $sp->getTenSanPham() }}">{{ $sp->getTenSanPham() }}</h6>
@@ -292,8 +290,8 @@ use App\Bus\SanPham_BUS;
 
     </div>
     <div class="banner-small " style="margin-top: 150px;">
-      <div class="bnsm"><img src="client/img/small-banner1.png" class="img-fluid w-100"></div>
-      <div class="bnsm"><img src="client/img/small-banner2.png" class="img-fluid w-100"></div>
+      <div class="bnsm"><img src="/client/img/small-banner1.png" class="img-fluid w-100"></div>
+      <div class="bnsm"><img src="/client/img/small-banner2.png" class="img-fluid w-100"></div>
     </div>
     <div class="ctn-danhmucsanpham" style="background-color: #f6f2f2;padding-bottom: 30px;">
       <div class="d-flex justify-content-between p-5">
@@ -404,12 +402,12 @@ use App\Bus\SanPham_BUS;
                       data-mota="{{ $sp->getMoTa() }}"
                       data-dongia="{{ number_format($sp->getDonGia(), 0, ',', '.') }}₫"
                       data-tgbh="{{ $sp->getThoiGianBaoHanh() }}"
-                      data-img="productImg/{{ $sp->getId() }}.webp"
+                      data-img="/productImg/{{ $sp->getId() }}.webp"
                       data-bs-toggle="modal"
                       data-bs-target="#productDetailModal">
                   <div class="card shadow-sm border-0 h-100 col rounded-5 product-item">
                     <div class="ratio ratio-1x1">
-                      <img src="productImg/{{ $sp->getId() }}.webp" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
+                      <img src="/productImg/{{ $sp->getId() }}.webp" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
                     </div>
                     <div class=" card-body d-flex flex-column justify-content-between h-60 p-3">
                       <h6 class="card-title text-truncate text-center w-100" title="{{ $sp->getTenSanPham() }}">{{ $sp->getTenSanPham() }}</h6>
@@ -487,7 +485,7 @@ use App\Bus\SanPham_BUS;
     </a>
   </div>
   <div class="d-flex " style="padding: 0 5%;">
-    <div style="width: 40%;"><img src="client/img/traidep.png" alt="" class="img-fluid w-100"></div>
+    <div style="width: 40%;"><img src="/client/img/traidep.png" alt="" class="img-fluid w-100"></div>
     <div style="padding-left: 50px;width: 60%;">
       <h2 style="padding: 30px;background-color: #e4f4f4;border-top-left-radius: 30px;border-top-right-radius: 30px;border-bottom-right-radius: 30px;color: #55d5d2;font-weight: 800;">CHỌN KÍNH PHÙ HỢP VỚI BẠN</h2>
       <div class="choiceglasses" >
@@ -524,7 +522,7 @@ use App\Bus\SanPham_BUS;
     <div class="footer-container d-flex">
       <div class="footer-left">
         <div class="logo">
-          <img src="client/img/logo.svg" alt="Anna Logo">
+          <img src="/client/img/logo.svg" alt="Anna Logo">
         </div>
         <div class="newsletter">
           <p>Đăng kí để nhận tin mới nhất</p>

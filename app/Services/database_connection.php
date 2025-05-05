@@ -6,8 +6,8 @@ class database_connection {
     private $connection = null;
     private static $instance;
     private static $host = "localhost";
-    private static $port = "3306";
-    private static $dbname = "glas";
+    private static $port = "3307";
+    private static $dbname = "glassesstore";
     private static $user = "root";
     private static $pass = "";
 

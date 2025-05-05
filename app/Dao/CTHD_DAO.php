@@ -1,6 +1,7 @@
 <?php
 namespace App\Dao;
 
+use App\Bus\CTSP_BUS;
 use App\Interface\DAOInterface;
 use App\Models\CTHD;
 use App\Models\SanPham;
@@ -52,6 +53,18 @@ class CTHD_DAO{
             array_push($list, $model);
         }
         return $list;
+    }
+
+    public function checkSPIsSold($idSP) {
+        $list = $this->getAll();
+        foreach ($list as $key) {
+            # code...
+            $sp = app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri());
+            if($sp->getId() == $idSP) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getCTHDbyIDHD($id) {

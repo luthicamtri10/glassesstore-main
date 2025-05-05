@@ -23,6 +23,10 @@ class CTHD_BUS {
         return $this->cthdDAO->readDatabase();
     }
 
+    public function checkSPIsSold($idSP) { 
+        return $this->cthdDAO->checkSPIsSold($idSP);
+    }
+
     public function refreshData(): void {
         $this->cthdDAO->getAll();
      }

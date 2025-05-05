@@ -59,7 +59,6 @@ class HoaDon_DAO{
     }
 
 
-
     public function createHoaDonModel($rs) {
         $id = $rs['ID'];
         $email = app(TaiKhoan_BUS::class)->getModelByEmail($rs['EMAIL']);
