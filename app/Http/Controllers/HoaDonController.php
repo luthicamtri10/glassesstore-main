@@ -133,6 +133,33 @@ class HoaDonController extends Controller {
         return redirect($returnUrl);
     }
 
+    public function updateStatus(Request $request)
+    {
+        // Validate input
+        $request->validate([
+            'id' => 'required|integer',
+            'trangthai' => 'required|in:' . implode(',', array_column(HoaDonEnum::cases(), 'value'))
+        ]);
+
+        try {
+            $hoaDon = $this->hoaDonBUS->getModelById($request->id);
+            if (!$hoaDon) {
+                return redirect()->back()->with('error', 'Không tìm thấy hóa đơn.');
+            }
+
+            // Chuyển chuỗi thành HoaDonEnum
+            $trangThaiEnum = HoaDonEnum::from($request->trangthai);
+            $hoaDon->setTrangThai($trangThaiEnum);
+            $this->hoaDonBUS->updateModel($hoaDon);
+
+            return redirect()->back()->with('success', 'Cập nhật trạng thái thành công.');
+        } catch (\ValueError $e) {
+            // Xử lý trường hợp chuỗi không khớp với bất kỳ giá trị enum nào
+            return redirect()->back()->with('error', 'Trạng thái không hợp lệ.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Cập nhật trạng thái thất bại: ' . $e->getMessage());
+        }
+    }
 
 
 }
