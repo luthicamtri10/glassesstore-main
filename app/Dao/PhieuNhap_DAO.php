@@ -60,13 +60,8 @@ class PhieuNhap_DAO
         $query = "INSERT INTO PHIEUNHAP (id, idNCC, tongTien, ngayTao, idNhanVien, trangThaiHD) VALUES (?,?,?,?,?,?)";
         $args = [$e->getId(), $e->getIdNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien()->getId(), $e->getTrangThaiPN()];
         $rs = database_connection::executeQuery($query, ...$args);
-        if ($rs) {
-            // Lấy ID của bản ghi vừa được thêm vào (LAST_INSERT_ID)
-            $lastInsertId = database_connection::executeQuery("SELECT LAST_INSERT_ID() AS id")->fetchColumn();
-            return $lastInsertId; // Trả về ID của phiếu nhập vừa thêm
-        }
-    
-        return 0; // Trả về 0 nếu không thành công
+        return is_int($rs) ? $rs : 0;
+
     }
     public function getLastPN() {
         $query = "SELECT * FROM PHIEUNHAP ORDER BY id DESC LIMIT 1";
@@ -78,7 +73,7 @@ class PhieuNhap_DAO
     }
     public function update($e): int
     {
-        $query = "UPDATE PHIEUNHAP SET idNCC = ?, tongTien = ?, ngayTao = ?, idNhanVien = ?, trangThaiHD = ? WHERE id = ?";
+        $query = "UPDATE PHIEUNHAP SET idNCC = ?, tonHDgTien = ?, ngayTao = ?, idNhanVien = ?, trangThai = ? WHERE id = ?";
         $args = [$e->getIdNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien()->getId(), $e->getTrangThaiPN(), $e->getId()];
         $rs = database_connection::executeUpdate($query, ...$args);
         return is_int($rs) ? $rs : 0;

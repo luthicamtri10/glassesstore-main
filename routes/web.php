@@ -347,6 +347,14 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CTPNController;
 use App\Http\Controllers\GioHangController;
 
+use function Laravel\Prompts\alert;
+Route::get('/yourInfo', function() {
+    $email = app(Auth_BUS::class)->getEmailFromToken();
+    $user = app(TaiKhoan_BUS::class)->getModelById($email);
+    return view('client.AcctInfoOH', [
+        'user'=>$user
+    ]);
+});
 Route::post('/login', function (\Illuminate\Http\Request $request) {
     $email = $request->input('email-login');
     $password = $request->input('password-login');
@@ -356,7 +364,8 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
     if ($auth->login($email, $password)) {
         return redirect('/'); // hoặc trang dashboard nếu login thành công
     } else {
-        return back()->withErrors(['login' => 'Email hoặc mật khẩu không đúng!']);
+        // return back()->withErrors(['login' => 'Email hoặc mật khẩu không đúng!']);
+        return redirect()->back()->with('error','Tài khoản đã bị khóa!');
     }
 })->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
