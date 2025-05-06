@@ -50,19 +50,19 @@
                                 @foreach($listPhieuNhap as $phieuNhap)
                                 <tr>
                                     <td>{{ $phieuNhap->getId() }}</td>
-                                    <td>{{ $phieuNhap->getIdNCC()->getIdNCC() }}</td>
+                                    <td>{{ $phieuNhap->getNCC()->getIdNCC() }}</td>
                                     <td>{{ $phieuNhap->getNgayTao() }}</td>
                                     <td>{{ number_format($phieuNhap->getTongTien(), 0, ',', '.') }} đ</td>
 
                                     <td>
                                         <i class="fas fa-eye btn btn-info btn-sm btn-ctpn"
                                             data-id="{{ $phieuNhap->getId() }}"
-                                            data-idncc="{{ $phieuNhap->getIdNCC()->getTenNCC() }}"
+                                            data-idncc="{{ $phieuNhap->getNCC()->getTenNCC() }}"
                                             data-tongtien="{{ number_format($phieuNhap->getTongTien(), 0, ',', '.') }} đ"
                                             data-ngaytao="{{ $phieuNhap->getNgayTao() }}"
-                                            data-idnhanvien="{{ $phieuNhap->getIdNhanVien()->getId() }}"
-                                            data-tennhanvien="{{$phieuNhap->getIdNhanVien()->getHoTen() }}"
-                                            data-trangthai="{{ $phieuNhap->getTrangThaiPN() == 1 ? 'Đã thanh toán' : 'Chưa thanh toán' }}"
+                                            data-idnhanvien="{{ $phieuNhap->getNhanVien()->getId() }}"
+                                            data-tennhanvien="{{$phieuNhap->getNhanVien()->getHoTen() }}"
+                                            data-trangthai="{{ $phieuNhap->getTrangThaiHD() == 1 ? 'Đã thanh toán' : 'Chưa thanh toán' }}"
                                             ></i>
                                             
                                     </td>

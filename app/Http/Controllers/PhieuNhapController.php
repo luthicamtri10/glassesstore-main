@@ -139,7 +139,7 @@ class PhieuNhapController extends Controller
         $ngayNhap = $request->input("ngayNhap");
     
         // Tạo phiếu nhập mới
-        $phieuNhap = new PhieuNhap(null, $ncc_id, null, $ngayNhap, $nv, 1);
+        $phieuNhap = new PhieuNhap(0, $ncc_id, 0, $ngayNhap, $nv, 1);
         $tmp = app(PhieuNhap_BUS::class)->addModel($phieuNhap);
         $phieuNhap = app(PhieuNhap_BUS::class)->getLastPN();
         $total = 0;

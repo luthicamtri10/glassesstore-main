@@ -114,4 +114,18 @@ class PhieuNhap_DAO implements DAOInterface
 
         return $list;
     }
+  // PhieuNhap_DAO.php
+
+  public function getLastPN()
+  {
+      // Dùng câu lệnh SQL để lấy phiếu nhập mới nhất theo ID
+      $sql = "SELECT * FROM phieunhap ORDER BY ID DESC LIMIT 1";  // Đảm bảo tên bảng và cột đúng
+      $rs = database_connection::executeQuery($sql);  // Sử dụng database_connection để thực hiện truy vấn
+      if ($rs && $row = $rs->fetch_assoc()) {
+          return $this->createPhieuNhapModel($row);  // Tạo và trả về đối tượng PhieuNhap
+      }
+      return null;  // Trả về null nếu không tìm thấy dữ liệu
+  }
+  
+
 }

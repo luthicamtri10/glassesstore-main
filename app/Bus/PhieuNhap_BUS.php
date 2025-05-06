@@ -48,6 +48,8 @@ class PhieuNhap_BUS implements BUSInterface
         }
         return null;
     }
-    
+    public function getLastPN(){
+        return $this->phieuNhapDAO->getLastPN();
+    }
 }
 ?>
