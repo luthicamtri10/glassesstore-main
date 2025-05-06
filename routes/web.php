@@ -11,6 +11,7 @@ use App\Bus\LoaiSanPham_BUS;
 use App\Bus\NguoiDung_BUS;
 use App\Bus\SanPham_BUS;
 use App\Bus\TaiKhoan_BUS;
+use App\Bus\ThongKe_BUS;
 use App\Bus\Tinh_BUS;
 use App\Http\Controllers\CPVCController;
 use App\Http\Controllers\DonViVanChuyenController;
@@ -23,6 +24,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\SanPhamController;
 use App\Http\Controllers\TaiKhoanController;
+use App\Http\Controllers\ThongKeController;
 use App\Models\CTQ;
 use App\Http\Controllers\QuyenController;
 
@@ -403,6 +405,10 @@ Route::post('/yourcart/update', [GioHangController::class, 'updateQuantity'])->n
 Route::post('/yourcart/delete', [GioHangController::class, 'deleteCTGH'])->name('cart.delete');
 Route::post('/index/addctgh', [GioHangController::class, 'add'])->name('index.addctgh');
 
+Route::get('/admin/thongke', [ThongKeController::class, 'index'])->name('admin.thongke');
+Route::post('/admin/thongke/top', [ThongKeController::class, 'getTopCustomers'])->name('admin.thongke.top');
+Route::post('/admin/thongke/orders', [ThongKeController::class, 'getCustomerOrders'])->name('admin.thongke.orders');
+Route::get('/admin/thongke/details/{orderId}', [ThongKeController::class, 'getOrderDetails'])->name('admin.thongke.details');
 Route::get('/getByPhieuNhapId/{id}', [CTPNController::class, 'getByPhieuNhapId']);
 Route::post('/createPhieuNhap', [PhieuNhapController::class, 'store'])->name('phieunhap.store');
 
@@ -412,5 +418,10 @@ Route::post('/admin/quyen/destroy', [QuyenController::class, 'destroy'])->name('
 
 
 Route::post('/user/update-info', [NguoiDungController::class, 'updateInfo'])->name('user.updateInfo');
+// Trang thống kê chính
+Route::get('/admin/thongke', [ThongKeController::class, 'index'])->name('admin.thongke');
+Route::post('/admin/thongke/top', [ThongKeController::class, 'getTopCustomers'])->name('admin.thongke.top');
+Route::post('/admin/thongke/orders', [ThongKeController::class, 'getCustomerOrders'])->name('admin.thongke.orders');
+Route::get('/admin/thongke/details/{orderId}', [ThongKeController::class, 'getOrderDetails'])->name('admin.thongke.details');
 
 ?>

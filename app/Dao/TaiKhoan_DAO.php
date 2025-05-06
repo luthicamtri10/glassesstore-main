@@ -70,7 +70,7 @@ class TaiKhoan_DAO{
             $result = database_connection::executeUpdate($query, ...$args);
             // $tmp = 0;
             if ($result >= 1) {
-                $gh = new GioHang(null, $model->getEmail(), date('Y-m-d'), 1);
+                $gh = new GioHang(0, $model->getEmail(), date('Y-m-d'), 1);
                 $this->gioHangBus->addModel($gh);
             }
             return $result;
@@ -103,7 +103,7 @@ class TaiKhoan_DAO{
             $list = $this->gioHangBus->getByEmail($email);
             foreach($list as $it) {
                 // $it->setEmail($email);
-                $this->gioHangBus->controlDeleteModel($it->getIdGH(), $active);
+                $this->gioHangBus->controlDeleteModel($it->getId(), $active);
             }
         }
         return is_int($result) ? $result : 0;
