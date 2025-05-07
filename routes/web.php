@@ -26,6 +26,7 @@ use App\Http\Controllers\TaiKhoanController;
 use App\Models\CTQ;
 use App\Http\Controllers\QuyenController;
 use App\Http\Controllers\ThongKeController;
+use App\Http\Controllers\TinhController;
 
 /*
 |--------------------------------------------------------------------------
@@ -429,6 +430,9 @@ Route::post('/admin/quyen/store', [QuyenController::class, 'store'])->name('admi
 Route::post('/admin/quyen/update', [QuyenController::class, 'update'])->name('admin.quyen.update');
 Route::post('/admin/quyen/destroy', [QuyenController::class, 'destroy'])->name('admin.quyen.destroy');
 
+Route::get('/admin/thanhpho', [TinhController::class, 'index'])->name('admin.thanhpho');
+Route::post('/admin/thanhpho', [TinhController::class, 'store'])->name('admin.thanhpho.store');
+Route::delete('/admin/thanhpho/{id}', [TinhController::class, 'destroy'])->name('admin.thanhpho.destroy');
 
 Route::post('/user/update-info', [NguoiDungController::class, 'updateInfo'])->name('user.updateInfo');
 
