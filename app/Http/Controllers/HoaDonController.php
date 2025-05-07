@@ -160,6 +160,7 @@ class HoaDonController extends Controller {
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Cập nhật trạng thái thất bại: ' . $e->getMessage());
         }
+    }
 
     public function createdPayMent(Request $request)  {
         // dd($request->all());
