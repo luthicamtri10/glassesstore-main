@@ -109,6 +109,7 @@ class HoaDon_DAO{
             case 'EXPIRED': $trangThai = HoaDonEnum::EXPIRED; break;
             case 'CANCELLED': $trangThai = HoaDonEnum::CANCELLED; break;
             case 'REFUNDED': $trangThai = HoaDonEnum::REFUNDED; break;
+            case 'DADAT' : $trangThai = HoaDonEnum::DADAT; break;
             case 'DANGGIAO': $trangThai = HoaDonEnum::DANGGIAO; break;
             case 'DAGIAO': $trangThai = HoaDonEnum::DAGIAO; break;
             default: throw new \Exception("Trạng thái không hợp lệ");
