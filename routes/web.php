@@ -25,6 +25,7 @@ use App\Http\Controllers\SanPhamController;
 use App\Http\Controllers\TaiKhoanController;
 use App\Models\CTQ;
 use App\Http\Controllers\QuyenController;
+use App\Http\Controllers\ThongKeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -431,4 +432,8 @@ Route::post('/admin/quyen/destroy', [QuyenController::class, 'destroy'])->name('
 
 Route::post('/user/update-info', [NguoiDungController::class, 'updateInfo'])->name('user.updateInfo');
 
+Route::get('/admin/thongke', [ThongKeController::class, 'index'])->name('admin.thongke');
+Route::post('/admin/thongke/top', [ThongKeController::class, 'getTopCustomers'])->name('admin.thongke.top');
+Route::post('/admin/thongke/orders', [ThongKeController::class, 'getCustomerOrders'])->name('admin.thongke.orders');
+Route::get('/admin/thongke/details/{orderId}', [ThongKeController::class, 'getOrderDetails'])->name('admin.thongke.details');
 ?>
