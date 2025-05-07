@@ -589,6 +589,24 @@ use Illuminate\Support\Facades\View as FacadesView;
                             'total_page' => $total_page
                         ])->render();
                         break;
+                case 'thanhpho':
+                    $tinhBUS = app(Tinh_BUS::class);
+                    $listTinh = $tinhBUS->getAllModels();
+                    if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
+                        $keyword = $_GET['keyword'];
+                        $listTinh = $tinhBUS->searchModel($keyword, []);
+                    }
+                    $limit = 8;
+                    $total_record = count($listTinh ?? []);
+                    $total_page = ceil($total_record / $limit);
+                    $current_page = 1;
+                    $tmp = array_slice($listTinh, 0, $limit);
+                    echo FacadesView::make('admin.thanhpho', [
+                        'listTinh' => $tmp,
+                        'current_page' => $current_page,
+                        'total_page' => $total_page
+                    ])->render();
+                    break;
                 case 'thongke':
                     $thongkeBUS = app(ThongKe_BUS::class);
                 
