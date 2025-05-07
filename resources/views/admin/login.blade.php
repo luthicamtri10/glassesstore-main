@@ -89,10 +89,6 @@
                 </div>
                 <button type="submit" class="btn btn-login">Đăng nhập</button>
             </form>
-
-            <div class="back-to-home">
-                <a href="/">← Quay lại trang chủ</a>
-            </div>
         </div>
     </div>
 </body>

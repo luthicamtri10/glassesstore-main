@@ -418,6 +418,3 @@
 </body>
 
 </html>
-<?php
-use App\Bus\ThongKe_BUS;
-?>
