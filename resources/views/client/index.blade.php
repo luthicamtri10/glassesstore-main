@@ -182,8 +182,8 @@ use App\Bus\SanPham_BUS;
 </script>
 
     <!-- Nội dung trang chính ở đây -->
-     <header>
-    <div class="text-white" id="navbar-ctn">
+     <header >
+    <div class="text-white" id="navbar-ctn" style="background-color: #dddd; padding: 10px 10%;border-radius: 0 0 20px 20px;">
       <div class="top-nav">
         <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
         <ul class="list-top-nav d-flex ms-auto gap-2">
@@ -274,7 +274,7 @@ use App\Bus\SanPham_BUS;
                     <div class=" card-body d-flex flex-column justify-content-between h-60 p-3">
                       <h6 class="card-title text-truncate text-center w-100" title="{{ $sp->getTenSanPham() }}">{{ $sp->getTenSanPham() }}</h6>
                       <div class="d-flex align-items-center justify-content-between mt-auto rounded-4 bg-blue-500">
-                        <span class="fw-bold text-primary fs-5 text-center w-100 text-white rounded-4 flex justify-center p-2" style="background-color: #55d5d2;height: 50px;">
+                        <span class="fw-bold text-primary fs-5 text-center w-100 text-white rounded-4 flex justify-center p-2 txtgia" style="background-color: #55d5d2;height: 50px;cursor: pointer;">
                           {{ number_format($sp->getDonGia(), 0, ',', '.') }}₫
                         </span>
                         <i class="fa-solid fa-arrow-up-right text-success"></i>
@@ -411,8 +411,8 @@ use App\Bus\SanPham_BUS;
                     </div>
                     <div class=" card-body d-flex flex-column justify-content-between h-60 p-3">
                       <h6 class="card-title text-truncate text-center w-100" title="{{ $sp->getTenSanPham() }}">{{ $sp->getTenSanPham() }}</h6>
-                      <div class="d-flex align-items-center justify-content-between mt-auto rounded-4 bg-blue-500">
-                        <span class="fw-bold text-primary fs-5 text-center w-100 text-white rounded-4 flex justify-center p-2" style="background-color: #55d5d2;height: 50px;">
+                      <div class="d-flex align-items-center justify-content-between mt-auto rounded-4 bg-blue-500 ">
+                        <span class="fw-bold text-primary fs-5 text-center w-100 text-white rounded-4 flex justify-center p-2 txtgia" style="background-color: #55d5d2;height: 50px;cursor: pointer;">
                           {{ number_format($sp->getDonGia(), 0, ',', '.') }}₫
                         </span>
                         <i class="fa-solid fa-arrow-up-right text-success"></i>
@@ -628,3 +628,18 @@ use App\Bus\SanPham_BUS;
     <div class="alert alert-success successAlert">{{ session('success') }}</div>        
 @endif
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const txtgia = document.querySelectorAll(".txtgia");
+  txtgia.forEach(item => {
+    item.addEventListener('mouseenter', () => {
+       
+      item.style.backgroundColor = "#fb923c"
+
+    })
+    item.addEventListener('mouseleave', () => {
+        
+      item.style.backgroundColor = "#55d5d2"
+
+    })
+});
+  </script>
