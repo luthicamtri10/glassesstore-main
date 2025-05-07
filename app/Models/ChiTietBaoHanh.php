@@ -1,60 +1,58 @@
 <?php
 namespace App\Models;
 
+use Illuminate\Support\Facades\Date;
+
 class ChiTietBaoHanh {
-    private int $idKhachHang;
-    private int $idSanPham;
+    private int $idkh;
     private float $chiPhiBH;
-    private \DateTime $thoiDiemBH;
-    private string $soSeri;
+    private Date $thoiDiemBH;
+    private String $soSeri;
 
-    public function __construct(int $idKhachHang, int $idSanPham, float $chiPhiBH, string $thoiDiemBH, string $soSeri) {
-        $this->idKhachHang = $idKhachHang;
-        $this->idSanPham = $idSanPham;
+    public function __construct(int $idkh, String $soSeri, float $chiPhiBH, String $thoiDiemBH) {
+        $this->idkh = $idkh;
         $this->chiPhiBH = $chiPhiBH;
-        $this->thoiDiemBH = new \DateTime($thoiDiemBH);
+        $this->thoiDiemBH = new Date($thoiDiemBH);
         $this->soSeri = $soSeri;
+
     }
 
-    public function getIdKhachHang(): int {
-        return $this->idKhachHang;
+    public function getidKH(): int {
+        return $this->idkh;
     }
 
-    public function getIdSanPham(): int {
-        return $this->idSanPham;
-    }
-
+  
     public function getChiPhiBH(): float {
         return $this->chiPhiBH;
     }
 
-    public function getThoiDiemBH(): \DateTime {
+    public function getThoiDiemBH(): Date {
         return $this->thoiDiemBH;
     }
 
-    public function getSoSeri(): string {
+    public function getSoSeri(): String {
         return $this->soSeri;
     }
+  
 
-    public function setIdKhachHang(int $idKhachHang): void {
-        $this->idKhachHang = $idKhachHang;
+    public function setKhachHang(int $khachHang): void {
+        $this->idkh = $khachHang;
     }
 
-    public function setIdSanPham(int $idSanPham): void {
-        $this->idSanPham = $idSanPham;
-    }
+  
 
     public function setChiPhiBH(float $chiPhiBH): void {
         $this->chiPhiBH = $chiPhiBH;
     }
 
     public function setThoiDiemBH(string $thoiDiemBH): void {
-        $this->thoiDiemBH = new \DateTime($thoiDiemBH);
+        $this->thoiDiemBH = new Date($thoiDiemBH);
     }
 
-    public function setSoSeri(string $soSeri): void {
+    public function setSoSeri(String $soSeri): void {
         $this->soSeri = $soSeri;
     }
+  
 }
 
 ?>

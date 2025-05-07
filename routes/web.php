@@ -25,6 +25,7 @@ use App\Http\Controllers\SanPhamController;
 use App\Http\Controllers\TaiKhoanController;
 use App\Models\CTQ;
 use App\Http\Controllers\QuyenController;
+use App\Http\Controllers\ThongKeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -254,6 +255,7 @@ Route::get('/index/quantri', function() {
 
 Route::view('/admin', 'layout.admin')->middleware('admin.access');
 Route::view('/login', 'client.Login-Register');
+Route::view('/admin/login', 'admin.login')->name('admin.login');
 Route::get('/yourcart', function() {
     $email = $_GET['email'];
     $gh = app(GioHang_BUS::class)->getByEmail($email);
@@ -372,6 +374,9 @@ Route::get('/pay', function () {
 })->name('pay');
 
 Route::post('/hoadon', [HoaDonController::class, 'store'])->name('hoadon.store');
+
+Route::post('/admin/hoadon/update-status', [HoaDonController::class, 'updateStatus'])->name('admin.hoadon.update');
+
 Route::get('client/paymentsuccess', [HoaDonController::class, 'paymentSuccess'])->name('payment.success');
 Route::post('/createdPayMent', [HoaDonController::class, 'createdPayment'])->name('payment.create');
 
@@ -384,16 +389,33 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
     if ($auth->login($email, $password)) {
         $account = app(TaiKhoan_BUS::class)->getModelById($email);
         if($account->getIdQuyen()->getId() == 1 || $account->getIdQuyen()->getId() == 2) {
-            return redirect('/index/quantri'); 
+            return redirect('/admin/login')->with('error', 'Vui lòng đăng nhập qua trang quản trị!');
         } else {
             return redirect('/'); 
         }
-        // hoặc trang dashboard nếu login thành công
     } else {
-        // return back()->withErrors(['login' => 'Email hoặc mật khẩu không đúng!']);
         return redirect()->back()->with('error','Tài khoản đã bị khóa!');
     }
 })->name('login');
+
+Route::post('/admin/login', function (\Illuminate\Http\Request $request) {
+    $email = $request->input('email-login');
+    $password = $request->input('password-login');
+    
+    $auth = app()->make(AuthController::class);
+    
+    if ($auth->login($email, $password)) {
+        $account = app(TaiKhoan_BUS::class)->getModelById($email);
+        if($account->getIdQuyen()->getId() == 1 || $account->getIdQuyen()->getId() == 2) {
+            return redirect('/admin'); 
+        } else {
+            return redirect('/admin/login')->with('error', 'Bạn không có quyền truy cập trang quản trị!');
+        }
+    } else {
+        return redirect()->back()->with('error','Tài khoản đã bị khóa!');
+    }
+})->name('admin.login.submit');
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/register/register', [AuthController::class, 'register'])->name('register.register');
 Route::post('/yourcart/update', [GioHangController::class, 'updateQuantity'])->name('cart.update');
@@ -410,4 +432,8 @@ Route::post('/admin/quyen/destroy', [QuyenController::class, 'destroy'])->name('
 
 Route::post('/user/update-info', [NguoiDungController::class, 'updateInfo'])->name('user.updateInfo');
 
+Route::get('/admin/thongke', [ThongKeController::class, 'index'])->name('admin.thongke');
+Route::post('/admin/thongke/top', [ThongKeController::class, 'getTopCustomers'])->name('admin.thongke.top');
+Route::post('/admin/thongke/orders', [ThongKeController::class, 'getCustomerOrders'])->name('admin.thongke.orders');
+Route::get('/admin/thongke/details/{orderId}', [ThongKeController::class, 'getOrderDetails'])->name('admin.thongke.details');
 ?>
