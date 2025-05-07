@@ -13,9 +13,10 @@ class CheckAdmin
         $isLogin = app(Auth_BUS::class)->isAuthenticated();
         $email = app(Auth_BUS::class)->getEmailFromToken();
         $user = app(TaiKhoan_BUS::class)->getModelById($email);
-        // Kiểm tra xem người dùng đã đăng nhập và có quyền = 1
+        
+        // Kiểm tra xem người dùng đã đăng nhập và có quyền = 1 hoặc 2
         if (!$isLogin || ($user->getIdQuyen()->getId() != 1 && $user->getIdQuyen()->getId() != 2)) {
-            return redirect('/')->with('error', 'Bạn không có quyền truy cập vào trang này.');
+            return redirect('/admin/login')->with('error', 'Bạn không có quyền truy cập vào trang này.');
         }
 
         return $next($request);
