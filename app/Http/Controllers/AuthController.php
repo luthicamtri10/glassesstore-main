@@ -32,7 +32,7 @@ class AuthController extends Controller {
    
     public function logout() {
         $this->auth_bus->logout();
-        return redirect()->back()->with('success','Nguời dùng đăng xuất thành công!');
+        return redirect('/admin/login');
     } 
 
     public function register(Request $request) {
