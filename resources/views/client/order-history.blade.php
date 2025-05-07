@@ -482,9 +482,24 @@ main {
                                 <div class="col-1">{{ $orderData['id'] }}</div>
                                 <div class="col-2">{{ $quantity }}</div>
                                 <div class="col-2">
-                                    <span class="badge {{ ($orderData['trangThai'] ?? 'PENDING') == 'PAID' ? 'bg-success' : (($orderData['trangThai'] ?? 'PENDING') == 'PENDING' ? 'bg-warning' : 'bg-danger') }}">
-                                        {{ $orderData['trangThai'] ?? 'Không xác định' }}
-                                    </span>
+                                @php
+                                // Định nghĩa mảng trạng thái
+                                $statuses = [
+                                    'PENDING' => ['label' => 'Đang xử lý', 'class' => 'bg-warning'],
+                                    'PAID' => ['label' => 'Đã thanh toán', 'class' => 'bg-success'],
+                                    'EXPIRED' => ['label' => 'Hết hạn', 'class' => 'bg-danger'],
+                                    'CANCELLED' => ['label' => 'Đã hủy', 'class' => 'bg-danger'],
+                                    'REFUNDED' => ['label' => 'Đã hoàn tiền', 'class' => 'bg-info'],
+                                    'DANGGIAO' => ['label' => 'Đang giao', 'class' => 'bg-primary'],
+                                    'DAGIAO' => ['label' => 'Đã giao', 'class' => 'bg-success'],
+                                ];
+
+                                // Lấy trạng thái hiện tại, mặc định là PENDING nếu không có
+                                $trangThai = $orderData['trangThai'] ?? 'PENDING';
+
+                                // Lấy thông tin trạng thái, mặc định nếu không tìm thấy
+                                $statusInfo = $statuses[$trangThai] ?? ['label' => 'Không xác định', 'class' => 'bg-secondary'];
+                                @endphp
                                 </div>
                                 <div class="col-2">{{ $orderData['ngayTao'] ? \Carbon\Carbon::parse($orderData['ngayTao'])->format('d/m/Y H:i') : 'N/A' }}</div>
                                 <div class="col-2">{{ number_format($orderData['tongTien'] ?? 0, 0, ',', '.') }} VNĐ</div>
