@@ -280,8 +280,10 @@
                         const viewChitiet = modal.querySelector("#view-chitiet");
                         viewChitiet.innerHTML = ''; // Xóa nội dung cũ
                         console.log("listCTPN:", data);
+                        let totalAmount = 0;
                         data.forEach(ctpn => {
                             const total = ctpn.donGia * ctpn.soLuong;
+                            totalAmount += total;
                             viewChitiet.innerHTML += `
                                 <tr>
                                     <td>${ctpn.tenSanPham}</td>
@@ -292,6 +294,13 @@
                                 </tr>
                             `;
                         });
+                        // Add total row
+                        viewChitiet.innerHTML += `
+                            <tr>
+                                <td colspan="4" class="text-right"><strong>Tổng tiền:</strong></td>
+                                <td><strong>${totalAmount.toLocaleString()} đ</strong></td>
+                            </tr>
+                        `;
                     })
                     .catch(error => console.error('Error fetching details:', error));
                 // Hiển thị modal
@@ -362,7 +371,7 @@
             let total = 0;
 
             Array.from(tableBody.querySelectorAll('tr')).forEach(row => {
-                const thanhTien = parseFloat(row.cells[3].textContent.replace(/ đ/g, '').replace(/,/g, ''));
+                const thanhTien = parseFloat(row.cells[4].textContent.replace(/ đ/g, '').replace(/,/g, ''));
                 total += thanhTien;
             });
 
@@ -370,6 +379,18 @@
         }
         document.getElementById("savePhieuNhapBtn").addEventListener("click", function () {
             const form = document.getElementById("addPhieuNhapForm");
+            const nccSelect = document.getElementById('ncc-select');
+            const ngayNhap = document.getElementById('ngayNhap');
+
+            // Validate required fields
+            if (!nccSelect.value) {
+                alert("Vui lòng chọn nhà cung cấp.");
+                return;
+            }
+            if (!ngayNhap.value) {
+                alert("Vui lòng chọn ngày nhập.");
+                return;
+            }
 
             // Xoá input ẩn cũ nếu có
             const oldHiddenInputs = form.querySelectorAll(".product-hidden-input");
