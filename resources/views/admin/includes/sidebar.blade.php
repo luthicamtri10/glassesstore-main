@@ -40,22 +40,7 @@ use App\Bus\TaiKhoan_BUS;
 </div>
 
   <ul class="sidebar-nav">
-    @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 9))
-    <li class="sidebar-item" id="quyen">
-      <a href="/admin?modun=quyen" class="sidebar-link">
-        <i class='bx bx-bug'></i>
-        <span>Quyền</span>
-      </a>
-    </li>
-    @endif
-    @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 12))
-    <li class="sidebar-item" id="nguoidung">
-      <a href="/admin?modun=nguoidung" class="sidebar-link">
-        <i class='bx bx-user'></i>
-        <span>Người dùng</span>
-      </a>
-    </li>
-    @endif
+    
     @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 5))
     <li class="sidebar-item" id="taikhoan">
       <a href="/admin?modun=taikhoan" class="sidebar-link">
@@ -104,14 +89,14 @@ use App\Bus\TaiKhoan_BUS;
       </a>
     </li>
     @endif
-    @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 15))
+    <!-- @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 15))
     <li class="sidebar-item" id="thanhpho">
       <a href="/admin?modun=thanhpho" class="sidebar-link" >
         <i class='bx bxs-truck'></i>
         <span>Thành phố</span>
       </a>
     </li>
-    @endif
+    @endif -->
     @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 3))
     <li class="sidebar-item" id="ncc">
       <a href="/admin?modun=nhacungcap" class="sidebar-link"  >
@@ -157,6 +142,22 @@ use App\Bus\TaiKhoan_BUS;
       <a href="/admin?modun=thongke" class="sidebar-link"  >
         <i class='bx bx-bar-chart'></i>
         <span>Thống kê</span>
+      </a>
+    </li>
+    @endif
+    @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 9))
+    <li class="sidebar-item" id="quyen">
+      <a href="/admin?modun=quyen" class="sidebar-link">
+        <i class='bx bx-bug'></i>
+        <span>Quyền</span>
+      </a>
+    </li>
+    @endif
+    @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 12))
+    <li class="sidebar-item" id="nguoidung">
+      <a href="/admin?modun=nguoidung" class="sidebar-link">
+        <i class='bx bx-user'></i>
+        <span>Người dùng</span>
       </a>
     </li>
     @endif
