@@ -82,8 +82,9 @@ class GioHangController extends Controller {
             if(count($list) > $ctgh->getSoLuong()) {
                 $gh = app(GioHang_BUS::class)->getModelById($idgh);
                 $sp = app(SanPham_BUS::class)->getModelById($idsp);
-                $new = new CTGH($gh,$sp,1);
-                app(CTGH_BUS::class)->addGH($new);
+                $soluong = $ctgh->getSoLuong() + 1;
+                $updated = new CTGH($gh,$sp,$soluong);
+                app(CTGH_BUS::class)->updateCTGH($updated);
                 return redirect()->back()->with('success', 'Thêm sản phẩm vào giỏ hàng thành công!');
             } else {
                 return redirect()->back()->with('error', 'Hiện tại sản phẩm đang hết hàng!');
