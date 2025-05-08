@@ -7,13 +7,15 @@ class SanPham
     private $id, $tenSanPham, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD;
     private Hang $idHang;
     private LoaiSanPham $idLSP;
+    private KieuDang $idKieuDang;
 
-    public function __construct($id = null, $tenSanPham,Hang $idHang,LoaiSanPham $idLSP, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD)
+    public function __construct($id = null, $tenSanPham, Hang $idHang, LoaiSanPham $idLSP, KieuDang $idKieuDang, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD)
     {
         $this->id = $id;
         $this->tenSanPham = $tenSanPham;
         $this->idHang = $idHang;
         $this->idLSP = $idLSP;
+        $this->idKieuDang = $idKieuDang;
         $this->moTa = $moTa;
         $this->donGia = $donGia;
         $this->thoiGianBaoHanh = $thoiGianBaoHanh;
@@ -63,6 +65,17 @@ class SanPham
     {
         $this->idLSP = $idLSP;
     }
+
+    public function getIdKieuDang() : KieuDang
+    {
+        return $this->idKieuDang;
+    }
+
+    public function setIdKieuDang(KieuDang $idKieuDang)
+    {
+        $this->idKieuDang = $idKieuDang;
+    }
+
   
     // Getter và Setter cho moTa
     public function getMoTa()

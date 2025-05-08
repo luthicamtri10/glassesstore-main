@@ -32,6 +32,7 @@
                 use App\Bus\Auth_BUS;
 use App\Bus\CPVC_BUS;
 use App\Bus\CTQ_BUS;
+use App\Bus\KieuDang_BUS;
 use App\Bus\NCC_BUS;
 use App\Bus\PhieuNhap_BUS;
 use App\Bus\Tinh_BUS;
@@ -328,9 +329,11 @@ use Illuminate\Support\Facades\View as FacadesView;
                         $loaiSanPhamBUS = app(LoaiSanPham_BUS::class);
                         $hangBUS = app(Hang_BUS::class);
                         $sanPhamBUS = app(SanPham_BUS::class);
+                        $kieuDangBUS = app(KieuDang_BUS::class);
                         $listLSP = $loaiSanPhamBUS->getAllModels();
                         $listHang = $hangBUS->getAllModels();
                         $listSP = $sanPhamBUS->getAllModels();
+                        $listKieuDang = $kieuDangBUS->getAllModels();
 
                         $mapTenHang = [];
                         foreach ($listHang as $hang){
@@ -340,6 +343,11 @@ use Illuminate\Support\Facades\View as FacadesView;
                         $mapTenLoaiSP = [];
                         foreach ($listLSP as $loaiSP) {
                             $mapTenLoaiSP[$loaiSP->getId()] = $loaiSP->getTenLSP();
+                        }
+
+                        $mapTenKieuDang = [];
+                        foreach ($listKieuDang as $kieuDang) {
+                            $mapTenKieuDang[$kieuDang->getId()] = $kieuDang->getTenKieuDang();
                         }
 
                         $keyword = trim(request('keyword'));
@@ -365,8 +373,10 @@ use Illuminate\Support\Facades\View as FacadesView;
                             'listSP' => $tmp,
                             'listHang' => $listHang,
                             'listLSP' => $listLSP,
+                            'listKieuDang' => $listKieuDang,
                             'mapTenLoaiSP' => $mapTenLoaiSP, 
                             'mapTenHang' => $mapTenHang,
+                            'mapTenKieuDang' => $mapTenKieuDang,
                             'current_page' => $current_page,
                             'total_page' => $total_page
                         ])->render();

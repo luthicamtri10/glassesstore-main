@@ -2,6 +2,7 @@
 namespace App\Dao;
 
 use App\Bus\Hang_BUS;
+use App\Bus\KieuDang_BUS;
 use App\Bus\LoaiSanPham_BUS;
 use App\Interface\DAOInterface;
 use App\Models\Hang;
@@ -36,9 +37,9 @@ class SanPham_DAO implements DAOInterface{
 
     public function insert($e): int
     {
-        $sql = "INSERT INTO SanPham (tenSanPham, idHang, idLSP, moTa, donGia, thoiGianBaoHanh, trangThaiHD) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD()];
+        $sql = "INSERT INTO SanPham (tenSanPham, idHang, idLSP, idKieuDang, moTa, donGia, thoiGianBaoHanh, trangThaiHD) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getIdKieuDang()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD()];
         $result = database_connection::executeUpdate($sql, ...$args);
         // Lấy ID của sản phẩm vừa được chèn vào
         if ($result) {
@@ -50,9 +51,9 @@ class SanPham_DAO implements DAOInterface{
 
     public function update($e): int
     {
-        $sql = "UPDATE SanPham SET tenSanPham = ?, idHang = ?, idLSP = ?, moTa = ?, donGia = ?, thoiGianBaoHanh = ?, trangThaiHD = ?
+        $sql = "UPDATE SanPham SET tenSanPham = ?, idHang = ?, idLSP = ?, idKieuDang = ?, moTa = ?, donGia = ?, thoiGianBaoHanh = ?, trangThaiHD = ?
         WHERE id = ?";
-        $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD(), $e->getId()];
+        $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getIdKieuDang()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD(), $e->getId()];
         $result = database_connection::executeUpdate($sql, ...$args);
         return is_int($result)? $result : 0;
     }
@@ -266,11 +267,12 @@ class SanPham_DAO implements DAOInterface{
         $tenSanPham = $rs['TENSANPHAM'];
         $idHang = app(Hang_BUS::class)->getModelById($rs['IDHANG']);
         $idLSP = app(LoaiSanPham_BUS::class)->getModelById($rs['IDLSP']);
+        $idKieuDang = app(KieuDang_BUS::class)->getModelById($rs['IDKIEUDANG']);
         $moTa = $rs['MOTA'];
         $donGia = $rs['DONGIA'];
         $thoiGianBaoHanh = $rs['THOIGIANBAOHANH'];
         $trangThaiHD = $rs['TRANGTHAIHD'];
-        return new SanPham($id, $tenSanPham, $idHang, $idLSP, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD);
+        return new SanPham($id, $tenSanPham, $idHang, $idLSP, $idKieuDang, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD);
     }
 
     public function getAll() : array {

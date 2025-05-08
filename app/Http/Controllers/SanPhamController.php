@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Bus\CTHD_BUS;
 use App\Bus\Hang_BUS;
+use App\Bus\KieuDang_BUS;
 use App\Bus\LoaiSanPham_BUS;
 use Illuminate\Http\Request;
 use App\Bus\SanPham_BUS;
@@ -17,12 +18,14 @@ class SanPhamController extends Controller
     private $sanPhamBUS;
     private $loaiSanPhamBUS;
     private $hangBUS;
+    private $kieuDangBUS;
 
-    public function __construct(SanPham_BUS $sanPhamBUS, LoaiSanPham_BUS $loaiSanPhamBUS, Hang_BUS $hangBUS)
+    public function __construct(SanPham_BUS $sanPhamBUS, LoaiSanPham_BUS $loaiSanPhamBUS, Hang_BUS $hangBUS, KieuDang_BUS $kieuDangBUS)
     {
         $this->sanPhamBUS = $sanPhamBUS;
         $this->loaiSanPhamBUS = $loaiSanPhamBUS;
         $this->hangBUS = $hangBUS;
+        $this->kieuDangBUS = $kieuDangBUS;
     }
 
     // Xử lý thêm sản phẩm
@@ -31,6 +34,7 @@ class SanPhamController extends Controller
         $tenSanPham = $request->input('tenSanPham');
         $idHang = $this->hangBUS->getModelById($request->input('idHang'));
         $idLSP = $this->loaiSanPhamBUS->getModelById($request->input('idLSP'));
+        $idKieuDang = $this->kieuDangBUS->getModelById($request->input('idKieuDang'));
         $moTa = $request->input('moTa');
         $donGia = $request->input('donGia');
         $thoiGianBaoHanh = $request->input('thoiGianBaoHanh');
@@ -43,6 +47,7 @@ class SanPhamController extends Controller
             $tenSanPham,
             $idHang,
             $idLSP,
+            $idKieuDang,
             $moTa,
             $donGia,
             $thoiGianBaoHanh,
@@ -70,10 +75,11 @@ class SanPhamController extends Controller
         $tenSanPham = $request->input('tenSanPham');
         $idHang = $this->hangBUS->getModelById($request->input('idHang'));
         $idLSP = $this->loaiSanPhamBUS->getModelById($request->input('idLSP'));
+        $idKieuDang = $this->kieuDangBUS->getModelById($request->input('idKieuDang'));
         $moTa = $request->input('moTa');
         $donGia = $request->input('donGia');
         $thoiGianBaoHanh = $request->input('thoiGianBaoHanh');
-        $trangThai = $request->input('trangThai');
+        // $trangThai = $request->input('trangThai');
 
         $anhSanPham = $request->file('anhSanPham');
 
@@ -83,10 +89,11 @@ class SanPhamController extends Controller
             $tenSanPham,
             $idHang,
             $idLSP,
+            $idKieuDang,
             $moTa,
             $donGia,
             $thoiGianBaoHanh,
-            $trangThai
+            1
         );
 
         // Thêm sản phẩm vào database và lấy ID mới
