@@ -13,6 +13,11 @@ use App\Bus\TaiKhoan_BUS;
 use App\Bus\SanPham_BUS;
     $sanPham = app(SanPham_BUS::class);
     ?>
+    @if(session('error'))
+    <div class="alert alert-danger successAlert">{{ session('error') }}</div>
+@elseif(session('success'))
+    <div class="alert alert-success successAlert">{{ session('success') }}</div>        
+@endif
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const searchForm = document.querySelector('form[role="search"]');
@@ -226,7 +231,7 @@ use App\Bus\SanPham_BUS;
               <li class="nav-item fw-medium my-2" id="item-giohang">
                 <a href="{{ url('/yourcart?email=' . $user->getEmail()) }}" class="nav-link text-white">
                   Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;">
-                    <small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small>
+                    <small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">{{$totalSPinGH}}</small>
                   </i>
                 </a>
               </li>

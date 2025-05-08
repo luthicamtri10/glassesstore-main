@@ -118,6 +118,13 @@ Route::get('/index', function() {
     $email = app(Auth_BUS::class)->getEmailFromToken();
     $user = app(TaiKhoan_BUS::class)->getModelById($email);
     $gh = app(GioHang_BUS::class)->getByEmail($email);
+    $total = 0;
+    if($isLogin) {
+        $listCTGH = app(CTGH_BUS::class)->getByIDGH ($gh->getIdGH());
+        foreach($listCTGH as $ct) {
+            $total += $ct->getSoLuong();
+        }
+    }
     // $ctq = app(CTQ_BUS::class)->getModelById($user->getIdQuyen()->getId());
     // Trả về view
     $products = array_map(function($sp) { 
@@ -143,7 +150,8 @@ Route::get('/index', function() {
         'user' => $user,
         'top4Product' => $top4Product,
         'sanPham' => $sanPham,
-        'gh' => $gh
+        'gh' => $gh,
+        'totalSPinGH' => $total
     ]);
 });
 Route::get('/index/quantri', function() {
@@ -222,6 +230,13 @@ Route::get('/index/quantri', function() {
     $email = app(Auth_BUS::class)->getEmailFromToken();
     $user = app(TaiKhoan_BUS::class)->getModelById($email);
     $gh = app(GioHang_BUS::class)->getByEmail($email);
+    $total = 0;
+    if($isLogin) {
+        $listCTGH = app(CTGH_BUS::class)->getByIDGH ($gh->getIdGH());
+        foreach($listCTGH as $ct) {
+            $total += $ct->getSoLuong();
+        }
+    }
     // $ctq = app(CTQ_BUS::class)->getModelById($user->getIdQuyen()->getId());
     // Trả về view
     $products = array_map(function($sp) { 
@@ -247,7 +262,9 @@ Route::get('/index/quantri', function() {
         'user' => $user,
         'top4Product' => $top4Product,
         'sanPham' => $sanPham,
-        'gh' => $gh
+        'gh' => $gh,
+        'totalSPinGH' => $total
+
     ]);
 });
 // Route::get('/index/quantri', function() {
