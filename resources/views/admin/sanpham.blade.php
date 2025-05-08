@@ -69,8 +69,9 @@
             const tenSanPhamInput = modal.querySelector('input[name="tenSanPham"]');
             const hangSanPhamInput = modal.querySelector('select[name="idHang"]');
             const loaiSanPhamInput = modal.querySelector('select[name="idLSP"]');
+            const kieuDangInput = modal.querySelector('select[name="idKieuDang"]')
             const donGiaSanPhamInput = modal.querySelector('input[name="donGia"]');
-            const thoiGianBaoHanhSanPhamInput = modal.querySelector('input[name="thoiGianBaoHanh"]');
+            const thoiGianBaoHanhSanPhamInput = modal.querySelector('input[name="thoiGianBaoHanh');
             const moTaSanPhamInput = modal.querySelector('textarea[name="moTa"]');
             const trangThaiSelect = modal.querySelector('select[name="trangThai"]');
             
@@ -78,6 +79,7 @@
             tenSanPhamInput.value = this.getAttribute('data-tenSanPham');
             hangSanPhamInput.value = this.getAttribute('data-hang');
             loaiSanPhamInput.value = this.getAttribute('data-loaisanpham');
+            kieuDangInput.value = this.getAttribute('data-kieudang');
             donGiaSanPhamInput.value = this.getAttribute('data-dongia');
             thoiGianBaoHanhSanPhamInput.value = this.getAttribute('data-thoigianbaohanh');
             moTaSanPhamInput.value = this.getAttribute('data-mota');
@@ -89,8 +91,48 @@
             previewImage.src = '/productImg/' + idSanPham + '.webp';
         });
     });
+    // Xử lý modal thêm sản phẩm: xem trước ảnh
+    const addProductModal = document.getElementById('addProductModal');
+    const fileInputAdd = addProductModal.querySelector('input[name="anhSanPham"]');
+    const previewImageAdd = addProductModal.querySelector('#previewImage1');
+
+    fileInputAdd.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            // Kiểm tra định dạng file
+            const validTypes = ['image/png', 'image/jpeg', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('Vui lòng chọn file ảnh (PNG, JPEG, WebP).');
+                this.value = ''; // Xóa file đã chọn
+                previewImageAdd.src = '';
+                previewImageAdd.style.display = 'none';
+                return;
+            }
+            // Kiểm tra kích thước file (tối đa 5MB)
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (file.size > maxSize) {
+                alert('Kích thước file tối đa là 5MB.');
+                this.value = '';
+                previewImageAdd.src = '';
+                previewImageAdd.style.display = 'none';
+                return;
+            }
+            // Thu hồi URL cũ nếu có
+            if (previewImageAdd.src) {
+                URL.revokeObjectURL(previewImageAdd.src);
+            }
+            previewImageAdd.src = URL.createObjectURL(file);
+            previewImageAdd.style.display = 'block';
+        } else {
+            if (previewImageAdd.src) {
+                URL.revokeObjectURL(previewImageAdd.src);
+            }
+            previewImageAdd.src = '';
+            previewImageAdd.style.display = 'none';
+        }
+    });
     
-})
+  })
 
 document.querySelector('#addForm').addEventListener('submit', function(event) {
     var fileInput = document.querySelector('input[name="anhSanPham"]');
@@ -142,6 +184,7 @@ setTimeout(function() {
                     <th scope="col">Tên</th>
                     <th scope="col">Hãng</th>
                     <th scope="col">Loại sản phẩm</th>
+                    <th scope="col">Kiểu dáng</th>
                     <th scope="col">Đơn giá</th>
                     <th scope="col">Thời gian bảo hành</th>
                     <th scope="col">Mô tả</th>
@@ -156,7 +199,8 @@ setTimeout(function() {
                   <td>{{ $sanPham->getTenSanPham() }}</td>
                   <td>{{ $mapTenHang[$sanPham->getIdHang()->getId()] }}</td>
                   <td>{{ $mapTenLoaiSP[$sanPham->getIdLSP()->getId()] }}</td>  
-                  <td>{{ number_format($sanPham->getDonGia()) }} VNĐ</td>
+                  <td>{{ $mapTenKieuDang[$sanPham->getIdKieuDang()->getId()] }}</td>
+                  <td>{{ number_format($mapDonGiaSanPham[$sanPham->getId()]) }} VNĐ</td>
                   <td>{{ $sanPham->getThoiGianBaoHanh() }} tháng</td>
                   <td>{{ Str::limit($sanPham->getMoTa(), 50) }}</td>
                   <td>
@@ -174,6 +218,7 @@ setTimeout(function() {
                       data-tenSanPham="{{ $sanPham->getTenSanPham() }}"
                       data-hang="{{ $sanPham->getIdHang()->getId() }}"
                       data-loaisanpham="{{ $sanPham->getIdLSP()->getId() }}"
+                      data-kieudang="{{ $sanPham->getIdKieuDang()->getId() }}"
                       data-dongia="{{ $sanPham->getDonGia() }}"
                       data-thoigianbaohanh="{{ $sanPham->getThoiGianBaoHanh() }}"
                       data-mota="{{ $sanPham->getMoTa() }}"
@@ -279,13 +324,23 @@ setTimeout(function() {
           
           <!-- Hàng 2: Thời gian bảo hành & Mức giá -->
           <div class="row mb-3">           
-            <div class="col-6">
+            <!-- <div class="col-4">
               <label class="form-label">Mức giá</label>
               <input type="text" name="donGia" class="form-control" placeholder="Nhập mức giá">
-            </div>
-            <div class="col-6">
+            </div> -->
+            <div class="col-4">
               <label class="form-label">Thời gian bảo hành</label>
               <input type="text" name="thoiGianBaoHanh" class="form-control" placeholder="Nhập thời gian bảo hành">
+            </div>
+            <div class="col-4">
+              <label class="form-label">Kiểu dáng</label>
+              <select id="inputKieuDang" name="idKieuDang" class="form-select">
+                @foreach($listKieuDang as $it)
+                <option value="{{ $it->getId() }}">
+                    {{ $it->getTenKieuDang() }}
+                </option>
+                @endforeach
+              </select>
             </div>
           </div>
 
@@ -299,6 +354,7 @@ setTimeout(function() {
           <div class="mb-3">
             <label class="form-label">Ảnh sản phẩm</label>
             <input type="file" class="form-control" accept="image/*" name="anhSanPham">
+            <img id="previewImage1" src="" alt="Ảnh sản phẩm" style="max-width: 200px; margin-top: 10px; display: none;">
           </div>
           <!-- Nút Lưu -->
           <button type="submit" class="btn btn-primary">Lưu</button>
@@ -350,19 +406,22 @@ setTimeout(function() {
           
           <!-- Hàng 2: Thời gian bảo hành & Mức giá -->
           <div class="row mb-3">           
-            <div class="col-4">
+            <!-- <div class="col-4">
               <label class="form-label">Mức giá</label>
               <input type="text" name="donGia" class="form-control" placeholder="Nhập mức giá">
-            </div>
+            </div> -->
             <div class="col-4">
               <label class="form-label">Thời gian bảo hành</label>
               <input type="text" name="thoiGianBaoHanh" class="form-control" placeholder="Nhập thời gian bảo hành">
             </div>
             <div class="col-4">
-              <label class="form-label">Trạng thái</label>
-              <select id="" class="form-select" name="trangThai">
-                <option value="0">Ngừng kinh doanh</option>
-                <option value="1">Đang kinh doanh</option>
+              <label class="form-label">Kiểu dáng</label>
+              <select id="inputKieuDang" name="idKieuDang" class="form-select">
+                @foreach($listKieuDang as $it)
+                <option value="{{ $it->getId() }}">
+                    {{ $it->getTenKieuDang() }}
+                </option>
+                @endforeach
               </select>
             </div>
           </div>

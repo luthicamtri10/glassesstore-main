@@ -150,4 +150,25 @@ class CTPN_DAO implements DAOInterface {
         }
         return $list;
     }
+
+    public function getGiaBanCaoNhatByIDSP(int $idSP): ?float {
+        $sql = "SELECT GIANHAP, PHANTRAMLN 
+                FROM CTPN 
+                WHERE IDSP = ? 
+                ORDER BY PHANTRAMLN DESC 
+                LIMIT 1";
+        
+        $rs = database_connection::executeQuery($sql, $idSP);
+        if ($row = $rs->fetch_assoc()) {
+            $giaNhap = (float)$row['GIANHAP'];
+            $phanTramLN = (float)$row['PHANTRAMLN'];
+            $giaBan = $giaNhap + ($giaNhap * $phanTramLN);
+            return $giaBan;
+        }
+    
+        return null;
+    }
+    
+
+    
 }

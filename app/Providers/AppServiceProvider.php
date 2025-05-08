@@ -46,8 +46,10 @@ use App\Dao\CTHD_DAO;
 use App\Bus\CTSP_BUS;
 use App\Dao\CTSP_DAO;
 use App\Bus\HoaDon_BUS;
+use App\Bus\KieuDang_BUS;
 use App\Dao\CTGH_DAO;
 use App\Dao\HoaDon_DAO;
+use App\Dao\KieuDang_DAO;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TaiKhoanController;
 use Illuminate\Support\ServiceProvider;
@@ -83,6 +85,7 @@ class AppServiceProvider extends ServiceProvider
         'NCC' => [NCC_DAO::class, NCC_BUS::class],
         'PTTT' => [PTTT_DAO::class, PTTT_BUS::class],
         'CTGH' => [CTGH_DAO::class, CTGH_BUS::class],
+        'KieuDang' => [KieuDang_DAO::class, KieuDang_BUS::class],
     ];
 
     /**

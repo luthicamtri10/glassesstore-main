@@ -407,7 +407,7 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
     if ($auth->login($email, $password)) {
         $account = app(TaiKhoan_BUS::class)->getModelById($email);
         if($account->getIdQuyen()->getId() == 1 || $account->getIdQuyen()->getId() == 2) {
-            return redirect('/admin/login')->with('error', 'Vui lòng đăng nhập qua trang quản trị!');
+            return redirect()->back()->with('error', 'Vui lòng đăng nhập qua trang quản trị!');
         } else {
             return redirect('/'); 
         }

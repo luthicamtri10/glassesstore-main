@@ -229,4 +229,8 @@ class CTPN_BUS
     public function taoCTSPTuDong($idsp, $soLuong = 1) {
         return $this->ctpnDAO->taoCTSPTuDong($idsp, $soLuong = 1);
     }
+
+    public function getGiaBanCaoNhatByIDSP(int $idSP): ?float {
+        return $this->ctpnDAO->getGiaBanCaoNhatByIDSP($idSP);
+    }
 }
