@@ -14,20 +14,22 @@ use App\Bus\SanPham_BUS;
     $gh = app(GioHang_BUS::class)->getByEmail($email);
     $listCTGH = app(CTGH_BUS::class)->getByIDGH($gh->getIdGH());
 ?>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+
         const successAlert = document.getElementById('successAlert');
         if (successAlert) {
             setTimeout(() => {
                 successAlert.classList.remove('show');
                 successAlert.classList.add('fade');
                 successAlert.style.opacity = 0;
-            }, 3000); // 3 giây
-
+            }, 3000);
             setTimeout(() => {
-                successAlert.remove(); // Xoá hẳn khỏi DOM
+                successAlert.remove();
             }, 4000);
         }
+
         window.updateSelectedProducts = function(checkbox) {
             const selectedCount = document.querySelectorAll('input[name="product_selection[]"]:checked').length;
             document.getElementById('selected-count').innerText = selectedCount;
@@ -41,7 +43,7 @@ use App\Bus\SanPham_BUS;
                 const price = parseInt(checkedCheckbox.getAttribute('data-price'));
                 const quantity = parseInt(checkedCheckbox.getAttribute('data-quantity'));
                 console.log('Sản phẩm ID:', productId);
-                totalAmount += price*quantity; // Cộng dồn giá trị
+                totalAmount += price * quantity;
 
                 selectedProducts.push({
                     product_id: productId,
@@ -50,18 +52,41 @@ use App\Bus\SanPham_BUS;
                 });
             });
 
-            
-
-            // Cập nhật tổng tiền trong footer
             document.getElementById('total-amount').innerText = formatCurrency(totalAmount);
-
-            // document.getElementById('selected-products').value = JSON.stringify(selectedProducts);
         }
+
         function formatCurrency(number) {
             return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + 'đ';
         }
+
+        const forms = document.querySelectorAll('form[action="{{ route("payment.create") }}"]');
+
+        forms.forEach(function(form) {
+            form.addEventListener('submit', function (event) {
+                const checkboxes = document.querySelectorAll('input[name="product_selection[]"]:checked');
+                const selectedIds = [];
+                checkboxes.forEach(cb => {
+                    const response = {
+                        'idsp' : cb.getAttribute('data-id'),
+                        'price' : cb.getAttribute('data-price'),
+                        'quantity' : cb.getAttribute('data-quantity'),
+                    }
+                    selectedIds.push(response);
+                });
+
+                const input = form.querySelector('input[name="listSP"]');
+                input.value = JSON.stringify(selectedIds);
+
+                if (selectedIds.length === 0) {
+                    event.preventDefault();
+                    alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán!");
+                }
+            });
+        });
+
     });
 </script>
+
 @include('admin.includes.navbar')
 <div class="shadow d-flex flex-row justify-content-between alignitem-center gap-5 p-3" style="height: 100px;">
         <div class="d-flex flex-row gap-5">
@@ -100,7 +125,7 @@ use App\Bus\SanPham_BUS;
                     <use xlink:href="#exclamation-triangle-fill"/>
                 </svg>
                 <div>
-                    Không đủ số lượng sản phẩm trong kho hàng
+                    Tới giới hạn số lượng tồn kho
                 </div>
             </div>
         @endif
@@ -160,11 +185,10 @@ use App\Bus\SanPham_BUS;
                 <div>
                     <p class="fw-semibold fs-4">Thành tiền: {{ number_format($total, 0, ',', '.') }}</p>
                 </div>
-                <form action="{{ route('cart.delete') }}" method="post">
-                @csrf
-                    <input type="hidden" name="idgh" value="{{ $it->getIdGH()->getIdGH() }}">
-                    <input type="hidden" name="idsp" value="{{ $it->getIdSP()->getId() }}">
-                    <button type="submit" class="btn btn-danger">Xóa</button>
+                <form id="payment-form" action="{{ route('payment.create') }}" method="post">
+                    @csrf
+                    <input type="hidden" name="listSP" id="listSP">
+                    <button type="submit" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</button>
                 </form>
             </div>
         @endforeach
@@ -174,11 +198,13 @@ use App\Bus\SanPham_BUS;
     <div class="d-flex justify-content-start gap-5">
         <div>Chọn <span id="selected-count">0</span> sản phẩm</div> <!-- Hiển thị số lượng sản phẩm đã chọn -->
         <div>Tổng tiền: <span id="total-amount">0</span></div></div>
-    <!-- <button type="button" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</button> -->
-    <a href="{{ route('pay') }}" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</a>
-
-
-    
+        <form action="{{ route('payment.create') }}" method="post">
+            @csrf
+            <input type="hidden" name="listSP" id="listSP">
+            <button type="submit" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</button>
+        </form>
+        
+    <!-- <a href="{{ route('pay') }}" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</a> -->
 </div>
 
 

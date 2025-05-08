@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Bus\Auth_BUS;
 use App\Bus\DVVC_BUS;
 use App\Bus\HoaDon_BUS;
 use App\Bus\NguoiDung_BUS;
@@ -159,6 +160,21 @@ class HoaDonController extends Controller {
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Cập nhật trạng thái thất bại: ' . $e->getMessage());
         }
+
+    public function createdPayMent(Request $request)  {
+        // dd($request->all());
+        $listSP = $request->input('listSP');
+        $email = app(Auth_BUS::class)->getEmailFromToken();
+        $user = app(TaiKhoan_BUS::class)->getModelById($email);
+        $isLogin = app(Auth_BUS::class)->isAuthenticated();
+        $listPTTT = app(PTTT_BUS::class)->getAllModels();
+        return view('client.CreatePayMent', [
+            'listSP' => $listSP,
+            'user' => $user,
+            'isLogin' => $isLogin,
+            'listPTTT' => $listPTTT
+        ]);
+
     }
 
 
