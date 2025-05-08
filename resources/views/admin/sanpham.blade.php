@@ -200,7 +200,7 @@ setTimeout(function() {
                   <td>{{ $mapTenHang[$sanPham->getIdHang()->getId()] }}</td>
                   <td>{{ $mapTenLoaiSP[$sanPham->getIdLSP()->getId()] }}</td>  
                   <td>{{ $mapTenKieuDang[$sanPham->getIdKieuDang()->getId()] }}</td>
-                  <td>{{ number_format($sanPham->getDonGia()) }} VNĐ</td>
+                  <td>{{ number_format($mapDonGiaSanPham[$sanPham->getId()]) }} VNĐ</td>
                   <td>{{ $sanPham->getThoiGianBaoHanh() }} tháng</td>
                   <td>{{ Str::limit($sanPham->getMoTa(), 50) }}</td>
                   <td>
@@ -324,10 +324,10 @@ setTimeout(function() {
           
           <!-- Hàng 2: Thời gian bảo hành & Mức giá -->
           <div class="row mb-3">           
-            <div class="col-4">
+            <!-- <div class="col-4">
               <label class="form-label">Mức giá</label>
               <input type="text" name="donGia" class="form-control" placeholder="Nhập mức giá">
-            </div>
+            </div> -->
             <div class="col-4">
               <label class="form-label">Thời gian bảo hành</label>
               <input type="text" name="thoiGianBaoHanh" class="form-control" placeholder="Nhập thời gian bảo hành">
@@ -406,10 +406,10 @@ setTimeout(function() {
           
           <!-- Hàng 2: Thời gian bảo hành & Mức giá -->
           <div class="row mb-3">           
-            <div class="col-4">
+            <!-- <div class="col-4">
               <label class="form-label">Mức giá</label>
               <input type="text" name="donGia" class="form-control" placeholder="Nhập mức giá">
-            </div>
+            </div> -->
             <div class="col-4">
               <label class="form-label">Thời gian bảo hành</label>
               <input type="text" name="thoiGianBaoHanh" class="form-control" placeholder="Nhập thời gian bảo hành">

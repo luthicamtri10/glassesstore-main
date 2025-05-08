@@ -36,7 +36,7 @@ class SanPhamController extends Controller
         $idLSP = $this->loaiSanPhamBUS->getModelById($request->input('idLSP'));
         $idKieuDang = $this->kieuDangBUS->getModelById($request->input('idKieuDang'));
         $moTa = $request->input('moTa');
-        $donGia = $request->input('donGia');
+        // $donGia = $request->input('donGia');
         $thoiGianBaoHanh = $request->input('thoiGianBaoHanh');
 
         $anhSanPham = $request->file('anhSanPham');
@@ -49,7 +49,7 @@ class SanPhamController extends Controller
             $idLSP,
             $idKieuDang,
             $moTa,
-            $donGia,
+            null,
             $thoiGianBaoHanh,
             1
         );
@@ -77,7 +77,7 @@ class SanPhamController extends Controller
         $idLSP = $this->loaiSanPhamBUS->getModelById($request->input('idLSP'));
         $idKieuDang = $this->kieuDangBUS->getModelById($request->input('idKieuDang'));
         $moTa = $request->input('moTa');
-        $donGia = $request->input('donGia');
+        // $donGia = $request->input('donGia');
         $thoiGianBaoHanh = $request->input('thoiGianBaoHanh');
         // $trangThai = $request->input('trangThai');
 
@@ -91,7 +91,7 @@ class SanPhamController extends Controller
             $idLSP,
             $idKieuDang,
             $moTa,
-            $donGia,
+            null,
             $thoiGianBaoHanh,
             1
         );

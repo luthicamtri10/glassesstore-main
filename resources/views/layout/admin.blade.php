@@ -32,6 +32,7 @@
                 use App\Bus\ThongKe_BUS;
                 use App\Bus\Auth_BUS;
 use App\Bus\CPVC_BUS;
+use App\Bus\CTPN_BUS;
 use App\Bus\CTQ_BUS;
 use App\Bus\KieuDang_BUS;
 use App\Bus\NCC_BUS;
@@ -333,7 +334,8 @@ use Illuminate\Support\Facades\View as FacadesView;
                         $listHang = $hangBUS->getAllModels();
                         $listSP = $sanPhamBUS->getAllModels();
                         $listKieuDang = $kieuDangBUS->getAllModels();
-
+                        $ctpnBUS = app(CTPN_BUS::class);
+                        
                         $mapTenHang = [];
                         foreach ($listHang as $hang){
                             $mapTenHang[$hang->getId()] = $hang->gettenHang();
@@ -356,6 +358,11 @@ use Illuminate\Support\Facades\View as FacadesView;
                             $listSP = $sanPhamBUS->searchModel($keyword, []);
                         }
 
+                        $mapDonGiaSanPham = [];
+                        foreach ($listSP as $sanPham) {
+                            $mapDonGiaSanPham[$sanPham->getId()] = $ctpnBUS->getGiaBanCaoNhatByIDSP($sanPham->getId());
+                        }
+
                         $current_page = request()->query('page', 1);
                         $limit = 8;
                         $total_record = count($listSP ?? []);
@@ -376,6 +383,7 @@ use Illuminate\Support\Facades\View as FacadesView;
                             'mapTenLoaiSP' => $mapTenLoaiSP, 
                             'mapTenHang' => $mapTenHang,
                             'mapTenKieuDang' => $mapTenKieuDang,
+                            'mapDonGiaSanPham' => $mapDonGiaSanPham,
                             'current_page' => $current_page,
                             'total_page' => $total_page
                         ])->render();
