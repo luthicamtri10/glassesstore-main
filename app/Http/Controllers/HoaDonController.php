@@ -160,6 +160,7 @@ class HoaDonController extends Controller {
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Cập nhật trạng thái thất bại: ' . $e->getMessage());
         }
+    }
 
     public function createdPayMent(Request $request)  {
         // dd($request->all());
@@ -168,11 +169,15 @@ class HoaDonController extends Controller {
         $user = app(TaiKhoan_BUS::class)->getModelById($email);
         $isLogin = app(Auth_BUS::class)->isAuthenticated();
         $listPTTT = app(PTTT_BUS::class)->getAllModels();
+        $listTinh = app(Tinh_BUS::class)->getAllModels();
+        $listDVVC = app(DVVC_BUS::class)->getAllModels();
         return view('client.CreatePayMent', [
             'listSP' => $listSP,
             'user' => $user,
             'isLogin' => $isLogin,
-            'listPTTT' => $listPTTT
+            'listPTTT' => $listPTTT,
+            'listTinh' => $listTinh,
+            'listDVVC' => $listDVVC
         ]);
 
     }

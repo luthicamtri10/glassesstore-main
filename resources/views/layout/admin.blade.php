@@ -29,6 +29,7 @@
                 use App\Bus\Quyen_BUS;
                 use App\Bus\TaiKhoan_BUS;
                 use App\Bus\KhuyenMai_BUS;
+                use App\Bus\ThongKe_BUS;
                 use App\Bus\Auth_BUS;
 use App\Bus\CPVC_BUS;
 use App\Bus\CTQ_BUS;
@@ -291,9 +292,7 @@ use Illuminate\Support\Facades\View as FacadesView;
                             'total_page' => $total_page
                         ])->render();
                         break;
-                    case 'thongke':
-                        include base_path('resources/views/admin/thongke.blade.php');
-                        break;
+            
                     case 'loaisanpham':
                         $bus = app(LoaiSanPham_BUS::class);
                         $list = $bus->getAllModels();
@@ -600,6 +599,47 @@ use Illuminate\Support\Facades\View as FacadesView;
                             'total_page' => $total_page
                         ])->render();
                         break;
+                case 'thanhpho':
+                    $tinhBUS = app(Tinh_BUS::class);
+                    $listTinh = $tinhBUS->getAllModels();
+                    if (isset($_GET['keyword']) || !empty($_GET['keyword'])) {
+                        $keyword = $_GET['keyword'];
+                        $listTinh = $tinhBUS->searchModel($keyword, []);
+                    }
+                    $limit = 8;
+                    $total_record = count($listTinh ?? []);
+                    $total_page = ceil($total_record / $limit);
+                    $current_page = 1;
+                    $tmp = array_slice($listTinh, 0, $limit);
+                    echo FacadesView::make('admin.thanhpho', [
+                        'listTinh' => $tmp,
+                        'current_page' => $current_page,
+                        'total_page' => $total_page
+                    ])->render();
+                    break;
+                case 'thongke':
+                    $thongkeBUS = app(ThongKe_BUS::class);
+                
+                    // Lấy dữ liệu từ POST hoặc mặc định 1 tháng qua
+                    $to = $_POST['to'] ?? date('Y-m-d'); // Ngày hiện tại
+                    $from = $_POST['from'] ?? date('Y-m-d', strtotime('-1 month', strtotime($to))); // 1 tháng trước
+                
+                    // Lấy top 5 khách hàng
+                    $topCustomers = $thongkeBUS->getTop5KhachHang($from, $to);
+                
+                    // Không lấy dữ liệu đơn hàng và chi tiết hóa đơn ban đầu
+                    $hoaDonHang = [];
+                    $CTHDList = [];
+                
+                    // Render view thongke
+                    echo FacadesView::make('admin.thongke', [
+                        'topCustomers' => $topCustomers,
+                        'hoaDonHang' => $hoaDonHang,
+                        'CTHDList' => $CTHDList,
+                        'from' => $from,
+                        'to' => $to
+                    ])->render();
+                    break;  
                     default:
                         include base_path('resources/views/admin/nguoidung.blade.php');
                         break;

@@ -9,7 +9,7 @@ use InvalidArgumentException;
 
 use function Laravel\Prompts\alert;
 
-class Tinh_DAO implements DAOInterface {
+class Tinh_DAO  {
     public function readDatabase(): array
     {
         $list = [];
@@ -28,7 +28,7 @@ class Tinh_DAO implements DAOInterface {
     }
     public function getAll() : array {
         $list = [];
-        $rs = database_connection::executeQuery("SELECT * FROM TINH");
+        $rs = database_connection::executeQuery("SELECT * FROM TINH WHERE TRANGTHAIHD = 1");
         while($row = $rs->fetch_assoc()) {
             $model = $this->createTinhModel($row);
             array_push($list, $model);
@@ -46,10 +46,10 @@ class Tinh_DAO implements DAOInterface {
         }
         return null;
     }
-    public function insert($model): int {
-        $query = "INSERT INTO TINH (tenTinh, trangThaiHD) VALUES (?,?)";
-        $args = [$model->getTinh(), $model->getTrangThaiHD()];
-        return database_connection::executeQuery($query, ...$args);
+    public function insert($tenTinh): int {
+        $query = "INSERT INTO tinh (TENTINH, TRANGTHAIHD) VALUES (?,1)";
+        $rs = database_connection::executeQuery($query, $tenTinh);
+        return is_int($rs) ? $rs : 0;
     }
     public function update($model): int {
         $query = "UPDATE TINH SET tenTinh = ?, trangThaiHD = ? WHERE id = ?";
@@ -59,40 +59,32 @@ class Tinh_DAO implements DAOInterface {
     }
     public function delete($id): int
     {
-        $query = "UPDATE TINH SET trangThaiHD = false WHERE id = ?";
-        $result = database_connection::executeUpdate($query, ...[$id]);
+        $query = "UPDATE TINH SET TRANGTHAIHD = 0 WHERE id = ?";
+        $result = database_connection::executeUpdate($query,$id);
         
         return is_int($result) ? $result : 0;
     }
 
-    public function search(string $condition, $columnNames): array
+    public function search(string $condition, array $n): array
     {
         if (empty($condition)) {
             throw new InvalidArgumentException("Search condition cannot be empty or null");
         }
-        $query = "";
-        if ($columnNames === null || count($columnNames) === 0) {
-            $query = "SELECT * FROM TINH WHERE id LIKE ? OR tenTinh LIKE ? OR trangThaiHD LIKE ? ";
-            $args = array_fill(0,  3, "%" . $condition . "%");
-        } else if (count($columnNames) === 1) {
-            $column = $columnNames[0];
-            $query = "SELECT * FROM TINH WHERE $column LIKE ?";
-            $args = ["%" . $condition . "%"];
-        } else {
-            $query = "SELECT * FROM TINH WHERE " . implode(" LIKE ? OR ", $columnNames) . " LIKE ?";
-            $args = array_fill(0, count($columnNames), "%" . $condition . "%");
-        }
+    
+        $query = "SELECT * FROM TINH WHERE tenTinh LIKE ?";
+        $args = ["%" . $condition . "%"];
+    
         $rs = database_connection::executeQuery($query, ...$args);
         $list = [];
+    
         while ($row = $rs->fetch_assoc()) {
             $model = $this->createTinhModel($row);
-            array_push($list, $model);
+            $list[] = $model;
         }
-        if (count($list) === 0) {
-            return [];
-        }
+    
         return $list;
     }
+    
 
 }   
 ?>

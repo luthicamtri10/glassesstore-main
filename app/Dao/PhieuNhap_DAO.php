@@ -73,7 +73,7 @@ class PhieuNhap_DAO
     }
     public function update($e): int
     {
-        $query = "UPDATE PHIEUNHAP SET idNCC = ?, tonHDgTien = ?, ngayTao = ?, idNhanVien = ?, trangThai = ? WHERE id = ?";
+        $query = "UPDATE PHIEUNHAP SET idNCC = ?, tongTien = ?, ngayTao = ?, idNhanVien = ?, trangThaiHD = ? WHERE id = ?";
         $args = [$e->getIdNCC()->getIdNCC(), $e->getTongTien(), $e->getNgayTao(), $e->getIdNhanVien()->getId(), $e->getTrangThaiPN(), $e->getId()];
         $rs = database_connection::executeUpdate($query, ...$args);
         return is_int($rs) ? $rs : 0;
