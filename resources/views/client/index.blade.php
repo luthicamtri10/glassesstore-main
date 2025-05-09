@@ -661,7 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     <!-- Nội dung trang chính ở đây -->
      <header >
-    <div class="text-white" id="navbar-ctn" style="background-color: #dddd; padding: 10px 10%;border-radius: 0 0 20px 20px;">
+    <div class="text-white" id="navbar-ctn" style="background-color: white; padding: 10px 10%;border-radius: 0 0 20px 20px;">
       <div class="top-nav">
         <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
         <ul class="list-top-nav d-flex ms-auto gap-2">

@@ -89,14 +89,14 @@ use App\Bus\TaiKhoan_BUS;
       </a>
     </li>
     @endif
-    <!-- @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 15))
+    @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 15))
     <li class="sidebar-item" id="thanhpho">
       <a href="/admin?modun=thanhpho" class="sidebar-link" >
         <i class='bx bxs-truck'></i>
         <span>Thành phố</span>
       </a>
     </li>
-    @endif -->
+    @endif
     @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 3))
     <li class="sidebar-item" id="ncc">
       <a href="/admin?modun=nhacungcap" class="sidebar-link"  >

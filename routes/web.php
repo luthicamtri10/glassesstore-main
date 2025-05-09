@@ -351,8 +351,8 @@ Route::post('admin/sanpham/controlActive', [SanPhamController::class, 'controlAc
 
 
 Route::post('/admin/loaisanpham/store', [LoaiSanPhamController::class, 'store'])->name('admin.loaisanpham.store');
-Route::post('/admin/loaisanpham/update', [LoaiSanPhamController::class, 'update'])->name('admin.loaisanpham.update');
-Route::post('/admin/loaisanpham/delete', [LoaiSanPhamController::class, 'delete'])->name('admin.loaisanpham.delete');
+Route::put('/admin/loaisanpham/{id}', [LoaiSanPhamController::class, 'update'])->name('admin.loaisanpham.update');
+Route::delete('/admin/loaisanpham/delete', [LoaiSanPhamController::class, 'detroy'])->name('admin.loaisanpham.delete');
 
 Route::post('/admin/taikhoan/store', [TaiKhoanController::class, 'store'])->name('admin.taikhoan.store');
 Route::post('/admin/taikhoan/update', [TaiKhoanController::class, 'update'])->name('admin.taikhoan.update');
