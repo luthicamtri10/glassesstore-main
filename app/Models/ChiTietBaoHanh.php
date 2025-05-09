@@ -4,52 +4,52 @@ namespace App\Models;
 use Illuminate\Support\Facades\Date;
 
 class ChiTietBaoHanh {
-    private int $idkh;
-    private float $chiPhiBH;
-    private Date $thoiDiemBH;
-    private String $soSeri;
+    private $idkh;
+    private $chiPhiBH;
+    private $thoiDiemBH;
+    private $soSeri;
 
-    public function __construct(int $idkh, String $soSeri, float $chiPhiBH, String $thoiDiemBH) {
+    public function __construct($idkh, $soSeri, $chiPhiBH, $thoiDiemBH) {
         $this->idkh = $idkh;
         $this->chiPhiBH = $chiPhiBH;
-        $this->thoiDiemBH = new Date($thoiDiemBH);
+        $this->thoiDiemBH = $thoiDiemBH;
         $this->soSeri = $soSeri;
 
     }
 
-    public function getidKH(): int {
+    public function getidKH() {
         return $this->idkh;
     }
 
   
-    public function getChiPhiBH(): float {
+    public function getChiPhiBH() {
         return $this->chiPhiBH;
     }
 
-    public function getThoiDiemBH(): Date {
+    public function getThoiDiemBH() {
         return $this->thoiDiemBH;
     }
 
-    public function getSoSeri(): String {
+    public function getSoSeri() {
         return $this->soSeri;
     }
   
 
-    public function setKhachHang(int $khachHang): void {
+    public function setKhachHang(int $khachHang) {
         $this->idkh = $khachHang;
     }
 
   
 
-    public function setChiPhiBH(float $chiPhiBH): void {
+    public function setChiPhiBH(float $chiPhiBH) {
         $this->chiPhiBH = $chiPhiBH;
     }
 
-    public function setThoiDiemBH(string $thoiDiemBH): void {
-        $this->thoiDiemBH = new Date($thoiDiemBH);
+    public function setThoiDiemBH(string $thoiDiemBH) {
+        $this->thoiDiemBH = new $thoiDiemBH;
     }
 
-    public function setSoSeri(String $soSeri): void {
+    public function setSoSeri(String $soSeri) {
         $this->soSeri = $soSeri;
     }
   

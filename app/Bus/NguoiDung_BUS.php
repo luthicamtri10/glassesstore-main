@@ -75,6 +75,10 @@ class NguoiDung_BUS{
     public function getModelBySDT($sdt) {
         return $this->nguoiDungDAO->getBySDT($sdt);
     }
+
+    public function getNguoiDungBySoseri($soSeri) {
+        return $this->nguoiDungDAO->getNguoiDungBySoseri($soSeri);
+    }
     
  }
 ?>

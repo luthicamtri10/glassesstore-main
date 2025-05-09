@@ -35,6 +35,18 @@ class LoaiSanPham_DAO implements DAOInterface {
         return $list;
     }
 
+    public function getAllIsActive(): array {
+        $list = [];
+        $query = "SELECT * FROM loaisanpham WHERE TRANGTHAIHD = 1";
+
+        $rs = database_connection::executeQuery($query);
+        while ($row = $rs->fetch_assoc()) {
+            $list[] = $this->createLoaiSanPhamModel($row);
+        }
+        
+        return $list;
+    }
+
  
     private function createLoaiSanPhamModel($row){
         // return new LoaiSanPham(

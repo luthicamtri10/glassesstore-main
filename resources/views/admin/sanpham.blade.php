@@ -303,7 +303,7 @@ setTimeout(function() {
             <div class="col-4">
               <label class="form-label">Loại sản phẩm</label>
               <select id="" class="form-select" name="idLSP">
-                @foreach($listLSP as $it)
+                @foreach($listLSPIsActive as $it)
                 <option value="{{ $it->getId() }}">
                     {{ $it->gettenLSP() }}
                 </option>
@@ -313,7 +313,7 @@ setTimeout(function() {
             <div class="col-4">
               <label class="form-label">Hãng</label>
               <select id="inputCompany" name="idHang" class="form-select">
-                @foreach($listHang as $it)
+                @foreach($listHangIsActive as $it)
                 <option value="{{ $it->getId() }}">
                     {{ $it->gettenHang() }}
                 </option>
@@ -385,7 +385,7 @@ setTimeout(function() {
             <div class="col-4">
               <label class="form-label">Loại sản phẩm</label>
               <select id="" class="form-select" name="idLSP">
-                @foreach($listLSP as $it)
+                @foreach($listLSPIsActive as $it)
                 <option value="{{ $it->getId() }}">
                     {{ $it->gettenLSP() }}
                 </option>
@@ -395,7 +395,7 @@ setTimeout(function() {
             <div class="col-4">
               <label class="form-label">Hãng</label>
               <select id="inputCompany" name="idHang" class="form-select">
-                @foreach($listHang as $it)
+                @foreach($listHangIsActive as $it)
                 <option value="{{ $it->getId() }}">
                     {{ $it->gettenHang() }}
                 </option>
