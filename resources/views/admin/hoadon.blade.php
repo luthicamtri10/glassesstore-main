@@ -41,11 +41,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Xóa keyword khỏi URL
         url.searchParams.delete('keywordTinh');
-
         url.searchParams.delete('trangthai');
-
         url.searchParams.delete('ngaybatdau');
         url.searchParams.delete('ngayketthuc');
+        url.searchParams.delete('keywordSoSeri');
         
 
         // Reset về trang đầu nếu có tham số phân trang
@@ -228,6 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <div class="p-4 bg-light">
     <div class="col-md-12 d-flex flex-wrap align-items-center gap-3">
         <form class="d-flex flex-wrap w-100 gap-2" method="GET" role="search">
+            <input class="form-control me-2 w-25" type="search" placeholder="Tìm kiếm" aria-label="Search" name="keywordSoSeri" value="{{ request('keywordSoSeri') }}" style="min-width: 150px;">
             <select name="trangthai" class="selectpicker" title="Chọn trạng thái" style="max-width: 200px;" data-live-search="true" data-size="5">
                 <option disabled {{ request('trangthai') ? '' : 'selected' }}>Chọn trạng thái</option>
                 @foreach ($hoaDonStatuses as $status)

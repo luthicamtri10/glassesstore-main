@@ -31,6 +31,7 @@
                 use App\Bus\KhuyenMai_BUS;
                 use App\Bus\ThongKe_BUS;
                 use App\Bus\Auth_BUS;
+use App\Bus\ChiTietBaoHanh_BUS;
 use App\Bus\CPVC_BUS;
 use App\Bus\CTPN_BUS;
 use App\Bus\CTQ_BUS;
@@ -331,7 +332,9 @@ use Illuminate\Support\Facades\View as FacadesView;
                         $sanPhamBUS = app(SanPham_BUS::class);
                         $kieuDangBUS = app(KieuDang_BUS::class);
                         $listLSP = $loaiSanPhamBUS->getAllModels();
+                        $listLSPIsActive = $loaiSanPhamBUS->getAllModelsActive();
                         $listHang = $hangBUS->getAllModels();
+                        $listHangIsActive = $hangBUS->getActiveHangs();
                         $listSP = $sanPhamBUS->getAllModels();
                         $listKieuDang = $kieuDangBUS->getAllModels();
                         $ctpnBUS = app(CTPN_BUS::class);
@@ -378,7 +381,9 @@ use Illuminate\Support\Facades\View as FacadesView;
                         echo FacadesView::make('admin.sanpham', [
                             'listSP' => $tmp,
                             'listHang' => $listHang,
+                            'listHangIsActive' => $listHangIsActive,
                             'listLSP' => $listLSP,
+                            'listLSPIsActive' => $listLSPIsActive,
                             'listKieuDang' => $listKieuDang,
                             'mapTenLoaiSP' => $mapTenLoaiSP, 
                             'mapTenHang' => $mapTenHang,
@@ -461,11 +466,13 @@ use Illuminate\Support\Facades\View as FacadesView;
                             $ngayBatDau = $_GET['ngaybatdau'];
                             $ngayKetThuc = $_GET['ngayketthuc'];
                         
-                            // Lọc hóa đơn theo ngày
                             $listHoaDon = $hoaDonBUS->getHoaDonsByNgay($ngayBatDau, $ngayKetThuc);
                         } 
                         
-                       
+                        if (isset($_GET['keywordSoSeri']) || !empty($_GET['keywordSoSeri'])) {
+                            $soSeri = $_GET['keywordSoSeri'];
+                            $listHoaDon = $hoaDonBUS->getHoaDonsBySoseri($soSeri);
+                        }
 
                         
 
@@ -494,6 +501,35 @@ use Illuminate\Support\Facades\View as FacadesView;
                             'current_page' => $current_page,
                             'total_page' => $total_page,
                             'hoaDonStatuses' => HoaDonEnum::cases(),
+                        ])->render();
+                        break;
+                    case 'baohanh':
+                        $baoHanhBUS = app(ChiTietBaoHanh_BUS::class);
+                  
+
+                        $keyword = trim(request('keyword'));
+                        if ($keyword === '') {
+                            $listBaoHanh = $baoHanhBUS->getAllModels();
+                        } else {
+                            $result = $baoHanhBUS->getBySeri($keyword);
+                            $listBaoHanh = $result ? [$result] : [];
+                        }
+
+                        $current_page = request()->query('page', 1);
+                        $limit = 8;
+                        $total_record = count($listBaoHanh ?? []);
+                        $total_page = ceil($total_record / $limit);
+                        $current_page = max(1, min($current_page, $total_page));
+                        $start = ($current_page - 1) * $limit;
+                        if(empty($listBaoHanh)) {
+                            $tmp = [];
+                        } else {
+                            $tmp = array_slice($listBaoHanh, $start, $limit);            
+                        }
+                        echo FacadesView::make('admin.baohanh', [
+                            'listBaoHanh' => $tmp,
+                            'current_page' => $current_page,
+                            'total_page' => $total_page,
                         ])->render();
                         break;
                     case 'donvivanchuyen':

@@ -22,6 +22,10 @@ class LoaiSanPham_BUS implements BUSInterface {
         return $this->LoaiSanPhamList;
     }
 
+    public function getAllModelsActive(): array {
+        return $this->loaiSanPhamDAO->getAllIsActive();
+    }
+
     public function getModelById($id) {
         return $this->loaiSanPhamDAO->getById($id);
     }
