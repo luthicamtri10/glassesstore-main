@@ -14,7 +14,11 @@ use App\Bus\SanPham_BUS;
     $gh = app(GioHang_BUS::class)->getByEmail($email);
     $listCTGH = app(CTGH_BUS::class)->getByIDGH($gh->getIdGH());
 ?>
-
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
+    {{ session('success') }}
+</div>
+@endif
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
@@ -185,10 +189,12 @@ use App\Bus\SanPham_BUS;
                 <div>
                     <p class="fw-semibold fs-4">Thành tiền: {{ number_format($total, 0, ',', '.') }}</p>
                 </div>
-                <form id="payment-form" action="{{ route('payment.create') }}" method="post">
+                <form id="payment-form" action="{{ route('cart.delete') }}" method="post">
                     @csrf
-                    <input type="hidden" name="listSP" id="listSP">
-                    <button type="submit" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</button>
+                    <!-- <input type="hidden" name="listSP" id="listSP"> -->
+                     <input type="hidden" name="idsp" value="{{ $it->getIdSP()->getId() }}">
+                     <input type="hidden" name="idgh" value="{{ $it->getIdGH()->getIdGH() }}">
+                    <button type="submit" class="btn btn-danger text-white" >Xóa</button>
                 </form>
             </div>
         @endforeach
@@ -206,10 +212,3 @@ use App\Bus\SanPham_BUS;
         
     <!-- <a href="{{ route('pay') }}" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</a> -->
 </div>
-
-
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
-    {{ session('success') }}
-</div>
-@endif

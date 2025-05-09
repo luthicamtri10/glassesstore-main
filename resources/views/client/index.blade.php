@@ -13,16 +13,137 @@ use App\Bus\TaiKhoan_BUS;
 use App\Bus\SanPham_BUS;
     $sanPham = app(SanPham_BUS::class);
     ?>
+     @if(session('error'))
+    <div class="alert alert-danger successAlert">{{ session('error') }}</div>
+@elseif(session('success'))
+    <div class="alert alert-success successAlert">{{ session('success') }}</div>        
+@endif
     <style>
 header {
     position: sticky;
     top: 0;
     transition: transform 0.3s ease;
     z-index: 1002;
+    background-color: #dddd;
+    border-radius: 0 0 20px 20px;
+    padding: 10px 10%;
 }
 
 header.hidden {
     transform: translateY(-100%);
+}
+
+.top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.top-nav p {
+    color: #55d5d2;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.list-top-nav {
+    display: flex;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.list-top-nav .nav-item {
+    position: relative;
+    white-space: nowrap;
+    padding: 5px 15px;
+    background-color: #6c757d;
+    border-radius: 20px;
+}
+
+.list-top-nav .nav-item a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.list-top-nav .nav-item:hover {
+    background-color: #5a6268;
+}
+
+#userDropdownMenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 999;
+    width: 120px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+.navbar-brand img {
+    height: 40px;
+}
+
+.navbar .d-flex {
+    width: 100%;
+    align-items: center;
+    gap: 30px;
+}
+
+form[role="search"] {
+    position: relative;
+    flex-grow: 1;
+}
+
+form[role="search"] input {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px 40px 8px 10px;
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    font-size: 16px;
+}
+
+form[role="search"] i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #555;
+}
+
+.navbar ul {
+    display: flex;
+    gap: 40px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-item {
+    white-space: nowrap;
+}
+
+.nav-item a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
 }
 
 #item-sanpham a:hover,
@@ -36,8 +157,8 @@ header.hidden {
     transition: transform 0.3s ease;
 }
 
-.dropdown-menu {
-    display: none;
+.nav-item .dropdown-menu {
+    display: none !important; 
     position: absolute;
     background-color: white;
     border: 1px solid #ccc;
@@ -49,7 +170,7 @@ header.hidden {
 }
 
 .nav-item:hover .dropdown-menu {
-    display: block;
+    display: block !important;
 }
 
 .dropdown-menu .dropdown-item {
@@ -90,7 +211,6 @@ header.hidden {
         max-height: 200px;
     }
 }
-
 
 .dropdown-menu .dropdown-item.active a {
     color: white;
@@ -206,12 +326,6 @@ header.hidden {
     max-width: 30%;
 }
 
-form[role="search"] {
-    display: flex;
-    gap: 14px;
-    align-items: center;
-}
-
 .apply-filter-btn, #apply-lsp-filter, #apply-hang-filter {
     font-size: 18px;
     padding: 3px 6px;
@@ -235,11 +349,11 @@ form[role="search"] {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Biến cờ để ngăn gọi loadProducts nhiều lần
+    
     let isLoading = false;
     let debounceTimeout = null;
 
-    // Hàm debounce để ngăn gọi loadProducts liên tục
+   
     const debounce = (func, delay) => {
         return (...args) => {
             clearTimeout(debounceTimeout);
@@ -247,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     };
 
-    // Hàm tải danh sách sản phẩm bằng AJAX
+   
     const loadProducts = async (params = '', scrollToList = false) => {
         if (isLoading) return;
         isLoading = true;
@@ -572,7 +686,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </a>
         <form action="" method="get" role="search" class="w-100">
           <ul class="d-flex justify-content-center gap-5 w-100 pt-4" >
-            <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="#list-product" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a></li>
+            <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="#list-product" class="nav-link text-white">Sản Phẩm </li>
             <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}" {{ request('keyword') ? '' : 'selected' }}><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555; padding: 10px"></i></li>
             
             <li class="nav-item fw-medium my-2 mx-2" id="item-xemthem">
@@ -599,7 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <li class="nav-item fw-medium my-2" id="item-giohang">
                 <a href="{{ url('/yourcart?email=' . $user->getEmail()) }}" class="nav-link text-white">
                   Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;">
-                    <small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">0</small>
+                    <small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">{{$totalSPinGH}}</small>
                   </i>
                 </a>
               </li>

@@ -171,13 +171,13 @@ if ($request->ajax()) {
     $user = app(TaiKhoan_BUS::class)->getModelById($email);
     $gh = app(GioHang_BUS::class)->getByEmail($email);
     $total = 0;
-    if ($isLogin) {
-        $listCTGH = app(CTGH_BUS::class)->getByIDGH($gh->getIdGH());
-        foreach ($listCTGH as $ct) {
+    if($isLogin) {
+        $listCTGH = app(CTGH_BUS::class)->getByIDGH ($gh->getIdGH());
+        foreach($listCTGH as $ct) {
             $total += $ct->getSoLuong();
         }
     }
-
+    // $ctq = app(CTQ_BUS::class)->getModelById($user->getIdQuyen()->getId());
     // Trả về view
     return view('client.index', [
         'listSP' => $filteredSP,
@@ -401,6 +401,7 @@ use App\Http\Controllers\HistoryController;
 Route::get('/lich-su-don-hang', [HistoryController::class, 'showOrderHistory'])->name('order.history');
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BaoHanhController;
 use App\Http\Controllers\CTPNController;
 use App\Http\Controllers\GioHangController;
 use App\Http\Controllers\HoaDonController;
@@ -498,4 +499,7 @@ Route::get('/admin/thongke', [ThongKeController::class, 'index'])->name('admin.t
 Route::post('/admin/thongke/top', [ThongKeController::class, 'getTopCustomers'])->name('admin.thongke.top');
 Route::post('/admin/thongke/orders', [ThongKeController::class, 'getCustomerOrders'])->name('admin.thongke.orders');
 Route::get('/admin/thongke/details/{orderId}', [ThongKeController::class, 'getOrderDetails'])->name('admin.thongke.details');
+
+Route::post('admin.baohanh.store', [BaoHanhController::class, 'store'])->name('admin.baohanh.store');
+
 ?>

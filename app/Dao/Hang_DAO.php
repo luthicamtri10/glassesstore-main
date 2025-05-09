@@ -68,39 +68,39 @@ class Hang_DAO
     }
 
     public function search(string $condition, array $columnNames = [], ?int $trangThai = null): array
-{
-    $list = [];
-    $args = [];
+    {
+        $list = [];
+        $args = [];
 
-    $whereClauses = [];
-    if (!empty($condition)) {
-        if (empty($columnNames)) {
-            $whereClauses[] = "(TENHANG LIKE ? OR MOTA LIKE ?)";
-            $args[] = "%$condition%";
-            $args[] = "%$condition%";
-        } else {
-            foreach ($columnNames as $column) {
-                $whereClauses[] = "$column LIKE ?";
+        $whereClauses = [];
+        if (!empty($condition)) {
+            if (empty($columnNames)) {
+                $whereClauses[] = "(TENHANG LIKE ? OR MOTA LIKE ?)";
                 $args[] = "%$condition%";
+                $args[] = "%$condition%";
+            } else {
+                foreach ($columnNames as $column) {
+                    $whereClauses[] = "$column LIKE ?";
+                    $args[] = "%$condition%";
+                }
             }
         }
-    }
 
-    if ($trangThai !== null) {
-        $whereClauses[] = "TRANGTHAIHD = ?";
-        $args[] = $trangThai;
-    }
+        if ($trangThai !== null) {
+            $whereClauses[] = "TRANGTHAIHD = ?";
+            $args[] = $trangThai;
+        }
 
-    $query = "SELECT * FROM hang";
-    if (!empty($whereClauses)) {
-        $query .= " WHERE " . implode(" AND ", $whereClauses);
-    }
+        $query = "SELECT * FROM hang";
+        if (!empty($whereClauses)) {
+            $query .= " WHERE " . implode(" AND ", $whereClauses);
+        }
 
-    $rs = database_connection::executeQuery($query, ...$args);
-    while ($row = $rs->fetch_assoc()) {
-        $list[] = $this->createHangModel($row);
-    }
+        $rs = database_connection::executeQuery($query, ...$args);
+        while ($row = $rs->fetch_assoc()) {
+            $list[] = $this->createHangModel($row);
+        }
 
-    return $list;
-}
+        return $list;
+    }
 }

@@ -66,12 +66,12 @@ class ChiTietBaoHanh_BUS
         return $result;
     }
 
-    public function searchModel(string $value, array $columns): array
-    {
-        if (empty($value)) {
-            throw new InvalidArgumentException("Giá trị tìm kiếm không được để trống");
-        }
+    // public function searchModel(string $value, array $columns): array
+    // {
+    //     if (empty($value)) {
+    //         throw new InvalidArgumentException("Giá trị tìm kiếm không được để trống");
+    //     }
 
-        return $this->dao->search($value, $columns);
-    }
+    //     return $this->dao->search($value, $columns);
+    // }
 }

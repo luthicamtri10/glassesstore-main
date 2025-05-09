@@ -19,9 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-<div class="d-flex flex-column gap-3 p-5 bg-light" style="height: 100vh;">
-<div class="text-white" id="navbar-ctn">
-    <div class="top-nav">
+    <div class="top-nav p-3">
         <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
         <ul class="list-top-nav d-flex ms-auto gap-2">
           <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill " id="chinhsach"><a href="/yourInfo">Thông tin cá nhân</a></li>
@@ -46,55 +44,71 @@ document.addEventListener('DOMContentLoaded', function () {
           @endif
         </ul>
     </div>
-    <div class="d-flex justify-content-between gap-5 mt-5 " style="">
-        <div class="d-flex flex-column gap-3 p-3" >
+    <div class="d-flex justify-content-between gap-5 p-5 " style="">
+        <div class="d-flex flex-column gap-3 p-3" style="width: 50%;">
             <h1 class="text-dark fw-semibold">Thanh toán</h1>
-            <div class="d-flex flex-column">
-                <label class="text-dark fw-semibold" for="">Họ tên *</label>
-                <input class="p-2 rounded hover:border-blue-500" type="text" name="hoten" id="" value="{{$user->getIdNguoiDung()->getHoTen()}}" required>
-            </div>
-            <div class="d-flex flex-column">
-                <label class="text-dark fw-semibold" for="">Số điện thoại *</label>
-                <input class="p-2 rounded hover:border-blue-500" type="text" name="sdt" id="" value="{{$user->getIdNguoiDung()->getSoDienThoai()}}" required>
-            </div>
-            <div class="d-flex flex-column">
-                <label class="text-dark fw-semibold" for="">Email *</label>
-                <input class="p-2 rounded hover:border-blue-500" type="text" name="email" id="" value="{{$user->getEmail()}}" required>
-            </div>
-            <div class="d-flex flex-column">
-                <label class="text-dark fw-semibold" for="">Tỉnh/Thành phố *</label>
-                <!-- <input class="rounded hover:border-blue-500" type="text" name="pttt" id="" required> -->
-                <select class="p-2 rounded hover:border-blue-500" name="tinh" id="">
-                    <option value="" disabled>Chọn tỉnh/thành phố</option>
-                    @foreach($listTinh as $pttt) 
-                        <option value="{{$pttt->getId()}}">{{$pttt->getTenTinh()}}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="d-flex flex-column">
-                <label class="text-dark fw-semibold" for="">Địa chỉ *</label>
-                <input class="p-2 rounded hover:border-blue-500" type="text" name="diachi" id="" value="{{$user->getIdNguoiDung()->getDiaChi()}}" required>
-            </div>
-            <div class="d-flex flex-column">
-                <label class="text-dark fw-semibold" for="">Phương thức thanh toán *</label>
-                <!-- <input class="rounded hover:border-blue-500" type="text" name="pttt" id="" required> -->
-                <select class="p-2 rounded hover:border-blue-500" name="pttt" id="">
-                    <option value="" disabled>Chọn phương thức thanh toán</option>
-                    @foreach($listPTTT as $pttt) 
-                        <option value="{{$pttt->getId()}}">{{$pttt->getTenPTTT()}}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="d-flex flex-column">
-                <label class="text-dark fw-semibold" for="">Đơn vị vận chuyển *</label>
-                <!-- <input class="rounded hover:border-blue-500" type="text" name="pttt" id="" required> -->
-                <select class="p-2 rounded hover:border-blue-500" name="dvvc" id="">
-                    <option value="" disabled>Chọn đơn vị vận chuyển</option>
-                    @foreach($listDVVC as $pttt) 
-                        <option value="{{$pttt->getIdDVVC()}}">{{$pttt->getTenDV()}}</option>
-                    @endforeach
-                </select>
-            </div>
+            <form class="d-flex flex-column gap-3 p-3" action="" method="post">
+            @csrf
+                <div class="d-flex flex-column">
+                    <label class="text-dark fw-semibold" for="">Họ tên *</label>
+                    <input class="p-2 rounded hover:border-blue-500" type="text" name="hoten" id="" value="{{$user->getIdNguoiDung()->getHoTen()}}" required>
+                </div>
+                <div class="d-flex flex-column">
+                    <label class="text-dark fw-semibold" for="">Số điện thoại *</label>
+                    <input class="p-2 rounded hover:border-blue-500" type="text" name="sdt" id="" value="{{$user->getIdNguoiDung()->getSoDienThoai()}}" required>
+                </div>
+                <div class="d-flex flex-column">
+                    <label class="text-dark fw-semibold" for="">Email *</label>
+                    <input class="p-2 rounded hover:border-blue-500" type="text" name="email" id="" value="{{$user->getEmail()}}" required>
+                </div>
+                <div class="d-flex flex-column">
+                    <label class="text-dark fw-semibold" for="">Tỉnh/Thành phố *</label>
+                    <!-- <input class="rounded hover:border-blue-500" type="text" name="pttt" id="" required> -->
+                    <select class="p-2 rounded hover:border-blue-500" name="tinh" id="">
+                        <option value="" disabled>Chọn tỉnh/thành phố</option>
+                        @foreach($listTinh as $pttt) 
+                            <option value="{{$pttt->getId()}}">{{$pttt->getTenTinh()}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="d-flex flex-column">
+                    <label class="text-dark fw-semibold" for="">Địa chỉ *</label>
+                    <input class="p-2 rounded hover:border-blue-500" type="text" name="diachi" id="" value="{{$user->getIdNguoiDung()->getDiaChi()}}" required>
+                </div>
+                <div class="d-flex flex-column">
+                    <label class="text-dark fw-semibold" for="">Phương thức thanh toán *</label>
+                    <!-- <input class="rounded hover:border-blue-500" type="text" name="pttt" id="" required> -->
+                    <select class="p-2 rounded hover:border-blue-500" name="pttt" id="">
+                        <option value="" disabled>Chọn phương thức thanh toán</option>
+                        @foreach($listPTTT as $pttt) 
+                            <option value="{{$pttt->getId()}}">{{$pttt->getTenPTTT()}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="d-flex flex-column">
+                    <label class="text-dark fw-semibold" for="">Đơn vị vận chuyển *</label>
+                    <!-- <input class="rounded hover:border-blue-500" type="text" name="pttt" id="" required> -->
+                    <select class="p-2 rounded hover:border-blue-500" name="dvvc" id="">
+                        <option value="" disabled>Chọn đơn vị vận chuyển</option>
+                        @foreach($listDVVC as $pttt) 
+                            <option value="{{$pttt->getIdDVVC()}}">{{$pttt->getTenDV()}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="d-flex flex-column" style="display: flex; align-items: center;">
+                    <button type="submit" name="submit" class="btn btn-info text-white p-3 fw-semibold fs-5" style="width: 200px;">Lưu</button>
+                </div>
+            </form>
+            <?php
+                if(isset($_POST['submit'])&&($_POST['submit'])) {
+                    $tinh = $_POST['tinh'];
+                    $dvvc = $POST['dvvc'];
+                    $pttt = $_POST['pttt'];
+                    $diachi = $_POST['diachi'];
+                    echo 'tinh: '. $tinh . '-dvvc: ' . $dvvc. '-pttt: '. $pttt . '-diachi: '. $diachi;
+                }
+                
+            ?>
         </div>  
         
         <div class="d-flex flex-column gap-3 p-3 bg-body-secondary rounded" style="width: 50%;height: 100%;">
@@ -133,5 +147,3 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         </div>
     </div>
-    
-</div>

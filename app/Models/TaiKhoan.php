@@ -3,9 +3,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TaiKhoan extends Model {
+class TaiKhoan {
 
-    protected $table = 'taikhoan';
+    // protected $table = 'taikhoan';
     private $tenTK;
     private $email;
     private $password;
