@@ -101,44 +101,43 @@ class KhuyenMai_DAO
     }
 
     public function search(string $condition, array $columnNames = [], ?int $trangThai = null, ?string $ngayBatDau = null, ?string $ngayKetThuc = null): array
-    {
-        $list = [];
-        $args = [];
+{
+    $list = [];
+    $args = [];
 
-        $whereClauses = [];
-        $query = "SELECT km.* FROM khuyenmai km JOIN sanpham sp ON km.IDSP = sp.ID";
+    $whereClauses = [];
+    $query = "SELECT km.* FROM khuyenmai km JOIN sanpham sp ON km.IDSP = sp.ID";
 
-        if (!empty($condition)) {
-            $whereClauses[] = "(sp.TENSANPHAM LIKE ? OR km.MOTA LIKE ?)";
-            $args[] = "%$condition%";
-            $args[] = "%$condition%";
-        }
-
-        if ($trangThai !== null) {
-            $whereClauses[] = "km.TRANGTHAIHD = ?";
-            $args[] = $trangThai;
-        }
-
-        if ($ngayBatDau !== null) {
-            $whereClauses[] = "km.NGAYBATDAU >= ?";
-            $args[] = $ngayBatDau;
-        }
-
-        if ($ngayKetThuc !== null) {
-            $whereClauses[] = "km.NGAYKETTHUC <= ?";
-            $args[] = $ngayKetThuc;
-        }
-
-        if (!empty($whereClauses)) {
-            $query .= " WHERE " . implode(" AND ", $whereClauses);
-        }
-
-        $rs = database_connection::executeQuery($query, ...$args);
-        while ($row = $rs->fetch_assoc()) {
-            $list[] = $this->createKhuyenMaiModel($row);
-        }
-
-        return $list;
+    if (!empty($condition)) {
+        $whereClauses[] = "sp.TENSANPHAM LIKE ?";
+        $args[] = "%$condition%";
     }
+
+    if ($trangThai !== null) {
+        $whereClauses[] = "km.TRANGTHAIHD = ?";
+        $args[] = $trangThai;
+    }
+
+    if ($ngayBatDau !== null) {
+        $whereClauses[] = "km.NGAYBATDAU >= ?";
+        $args[] = $ngayBatDau;
+    }
+
+    if ($ngayKetThuc !== null) {
+        $whereClauses[] = "km.NGAYKETTHUC <= ?";
+        $args[] = $ngayKetThuc;
+    }
+
+    if (!empty($whereClauses)) {
+        $query .= " WHERE " . implode(" AND ", $whereClauses);
+    }
+
+    $rs = database_connection::executeQuery($query, ...$args);
+    while ($row = $rs->fetch_assoc()) {
+        $list[] = $this->createKhuyenMaiModel($row);
+    }
+
+    return $list;
+}
 }
 ?>

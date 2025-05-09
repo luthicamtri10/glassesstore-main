@@ -482,9 +482,9 @@ main {
                                 <div class="col-1">{{ $orderData['id'] }}</div>
                                 <div class="col-2">{{ $quantity }}</div>
                                 <div class="col-2">
-                                    <span class="badge {{ ($orderData['trangThai'] ?? 'PENDING') == 'PAID' ? 'bg-success' : (($orderData['trangThai'] ?? 'PENDING') == 'PENDING' ? 'bg-warning' : 'bg-danger') }}">
-                                        {{ $orderData['trangThai'] ?? 'Không xác định' }}
-                                    </span>
+                                <span class="badge {{ ($orderData['trangThai'] ?? 'PENDING') == 'PAID' || ($orderData['trangThai'] ?? 'PENDING') == 'DAGIAO' ? 'bg-success' : (($orderData['trangThai'] ?? 'PENDING') == 'PENDING' ? 'bg-warning' : 'bg-danger') }}">
+                                    {{ collect($statuses)->firstWhere('value', $orderData['trangThai'] ?? 'PENDING')['label'] ?? 'Không xác định' }}
+                                </span>
                                 </div>
                                 <div class="col-2">{{ $orderData['ngayTao'] ? \Carbon\Carbon::parse($orderData['ngayTao'])->format('d/m/Y H:i') : 'N/A' }}</div>
                                 <div class="col-2">{{ number_format($orderData['tongTien'] ?? 0, 0, ',', '.') }} VNĐ</div>
@@ -732,6 +732,15 @@ main {
                 });
             }
         });
+        const statuses = [
+        { value: "PENDING", label: "Đang xử lý" },
+        { value: "PAID", label: "Đã thanh toán" },
+        { value: "EXPIRED", label: "Hết hạn" },
+        { value: "CANCELLED", label: "Đã hủy" },
+        { value: "REFUNDED", label: "Đã hoàn tiền" },
+        { value: "DANGGIAO", label: "Đang giao" },
+        { value: "DAGIAO", label: "Đã giao" }
+    ];
     </script>
 </body>
 </html>

@@ -25,7 +25,7 @@ use App\Bus\TaiKhoan_BUS;
 <aside id="sidebar" class="expand d-block">
 <div class="d-flex p-4" style="background-color: #2c3e50;">
   <div class="sidebar-logo">
-    <a href="/">
+    <a href="">
       <img src="https://img.ws.mms.shopee.vn/vn-11134216-7r98o-lq2sgdy60w5uba" 
            alt="Logo" 
            class="img-fluid rounded-5" 

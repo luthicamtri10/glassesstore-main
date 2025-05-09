@@ -116,35 +116,42 @@ class SanPham_DAO implements DAOInterface{
     // }
 
     public function search(string $condition, array $columnNames): array
-    {
-        if (empty($condition)) {
-            throw new InvalidArgumentException("Search condition cannot be empty or null");
-        }
-
-        $query = "
-            SELECT *
-                FROM sanpham
-                JOIN hang ON hang.ID = sanpham.IDHANG
-                JOIN loaisanpham ON loaisanpham.ID = sanpham.IDLSP
-                WHERE (
-                    sanpham.MOTA LIKE CONCAT('%', ?, '%')
-                    OR sanpham.TENSANPHAM LIKE CONCAT('%', ?, '%')
-                    OR hang.TENHANG LIKE CONCAT('%', ?, '%')
-                    OR loaisanpham.TENLSP LIKE CONCAT('%', ?, '%')
-                );
-        ";
-
-        $args = array_fill(0, 4, "%" . $condition . "%"); // Chỉ ba tham số
-        $rs = database_connection::executeQuery($query, ...$args);
-        $list = [];
-        
-        while ($row = $rs->fetch_assoc()) {
-            $model = $this->createSanPhamModel($row);
-            array_push($list, $model);
-        }
-        
-        return $list; // Không cần kiểm tra count ở đây, trả về mảng rỗng nếu không có kết quả
+{
+    if (empty($condition)) {
+        throw new InvalidArgumentException("Search condition cannot be empty or null");
     }
+
+   
+    $query = "
+        SELECT sanpham.ID, sanpham.TENSANPHAM, sanpham.MOTA, sanpham.DONGIA, 
+               sanpham.THOIGIANBAOHANH, sanpham.TRANGTHAIHD,
+               kieudang.ID AS IDKIEUDANG, sanpham.IDHANG, sanpham.IDLSP,
+               hang.TENHANG, loaisanpham.TENLSP
+        FROM sanpham
+        JOIN hang ON hang.ID = sanpham.IDHANG
+        JOIN loaisanpham ON loaisanpham.ID = sanpham.IDLSP
+        LEFT JOIN kieudang ON kieudang.ID = sanpham.IDKIEUDANG
+        WHERE sanpham.TENSANPHAM LIKE CONCAT('%', ?, '%')
+    ";
+
+   
+    $rs = database_connection::executeQuery($query, $condition);
+    $list = [];
+    
+    
+    while ($row = $rs->fetch_assoc()) {
+        // Kiểm tra ID có tồn tại
+        if (!isset($row['ID'])) {
+            error_log("Warning: Missing sanpham.ID in query result: " . json_encode($row));
+            continue;
+        }
+        
+        $model = $this->createSanPhamModel($row);
+        array_push($list, $model);
+    }
+    
+    return $list;
+}
     public function searchByKhoangGia($startPrice, $endPrice) {
         $list = [];
         $query = "
@@ -365,5 +372,43 @@ class SanPham_DAO implements DAOInterface{
         }
         return null;
     }
-
+    public function searchByCriteria($idHang = null, $idLSP = null, $idKieuDang = null, $startPrice = null, $endPrice = null)
+    {
+        $list = [];
+        $query = "SELECT * FROM SANPHAM WHERE TRANGTHAIHD = 1";
+        $params = [];
+        $types = "";
+    
+        // Xây dựng câu truy vấn động
+        if ($idHang !== null && $idHang != 0) {
+            $query .= " AND IDHANG = ?";
+            $params[] = $idHang;
+            $types .= "i";
+        }
+        if ($idLSP !== null && $idLSP != 0) {
+            $query .= " AND IDLSP = ?";
+            $params[] = $idLSP;
+            $types .= "i";
+        }
+        if ($idKieuDang !== null && $idKieuDang != 0) {
+            $query .= " AND IDKIEUDANG = ?";
+            $params[] = $idKieuDang;
+            $types .= "i";
+        }
+        if ($startPrice !== null && $endPrice !== null) {
+            $query .= " AND DONGIA >= ? AND DONGIA <= ?";
+            $params[] = $startPrice;
+            $params[] = $endPrice;
+            $types .= "dd";
+        }
+    
+        $rs = database_connection::executeQuery($query, ...$params);
+        while ($row = $rs->fetch_assoc()) {
+            $model = $this->createSanPhamModel($row);
+            array_push($list, $model);
+        }
+    
+        return $list;
+    }
+    
 }

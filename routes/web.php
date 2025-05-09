@@ -12,6 +12,7 @@ use App\Bus\NguoiDung_BUS;
 use App\Bus\SanPham_BUS;
 use App\Bus\TaiKhoan_BUS;
 use App\Bus\Tinh_BUS;
+use App\Bus\KieuDang_BUS;
 use App\Http\Controllers\CPVCController;
 use App\Http\Controllers\DonViVanChuyenController;
 use App\Http\Controllers\LoaiSanPhamController;
@@ -42,21 +43,27 @@ Route::get('/', function() {
     return redirect('/index' );
 });
 
-Route::get('/index', function() {
+Route::get('/index', function (Request $request) {
     $sanPham = app(SanPham_BUS::class);
     $lsp = app(LoaiSanPham_BUS::class);
     $hang = app(Hang_BUS::class);
+    $kieuDang = app(KieuDang_BUS::class);
 
-    // Lấy danh sách sản phẩm
+    // Lấy danh sách cơ bản
     $listSP = $sanPham->getAllModelsActive();
     $listLSP = $lsp->getAllModels();
     $listHang = $hang->getAllModels();
+    $listKieuDang = $kieuDang->getAllModels();
     $top4Product = $sanPham->getTop4ProductWasHigestSale();
 
-    $keyword = $_GET['keyword'] ?? null;
-    $idLSP = $_GET['lsp'] ?? null;
-    $idHang = $_GET['hang'] ?? null;
-    $khoanggia = $_GET['khoanggia'] ?? null;
+    // Lấy tham số từ request
+    $keyword = $request->input('keyword') ?? $_GET['keyword'] ?? null;
+    $idLSP = $request->input('lsp') ?? $_GET['lsp'] ?? null;
+    $idHang = $request->input('hang') ?? $_GET['hang'] ?? null;
+    $idKieuDang = $request->input('kieudang') ?? $_GET['kieudang'] ?? null;
+    $khoanggia = $request->input('khoanggia') ?? $_GET['khoanggia'] ?? null;
+    $filterPriceFrom = $request->input('filter_price_from') ?? $_GET['filter_price_from'] ?? null;
+    $filterPriceTo = $request->input('filter_price_to') ?? $_GET['filter_price_to'] ?? null;
 
     // Khởi tạo danh sách sản phẩm
     $filteredSP = $listSP;
@@ -77,10 +84,12 @@ Route::get('/index', function() {
     }
 
     if ($idLSP && $idHang) {
-        $filteredSP = $sanPham->searchByLSPAndHang($idLSP,$idHang);
+        $filteredSP = $sanPham->searchByLSPAndHang($idLSP, $idHang);
     }
 
     // Lọc theo khoảng giá
+    $startPrice = null;
+    $endPrice = null;
     if ($khoanggia && $khoanggia != 0) {
         $khoanggia = trim($khoanggia, '[]');
         list($startPrice, $endPrice) = explode('-', $khoanggia);
@@ -89,8 +98,16 @@ Route::get('/index', function() {
         }
         $startPrice = (float)$startPrice;
         $endPrice = (float)$endPrice;
+    } elseif ($filterPriceFrom || $filterPriceTo) {
+        $startPrice = $filterPriceFrom ? (float)$filterPriceFrom : 0;
+        $endPrice = $filterPriceTo ? (float)$filterPriceTo : 1000000000;
+    }
 
-        $filteredSP = $sanPham->searchByKhoangGia($startPrice, $endPrice);
+    // Lọc theo kiểu dáng (kieudang) - bổ sung
+    if ($idKieuDang && $idKieuDang != 0) {
+        $filteredSP = array_filter($filteredSP, function ($sp) use ($idKieuDang) {
+            return $sp->getIdKieuDang() && $sp->getIdKieuDang()->getId() == $idKieuDang;
+        });
     }
 
     // Kết hợp các điều kiện lọc
@@ -104,8 +121,43 @@ Route::get('/index', function() {
         $filteredSP = $sanPham->searchByKhoangGiaAndLSP($idLSP, $startPrice, $endPrice);
     }
 
+    // Lọc nâng cao (sử dụng searchByCriteria)
+    if ($idKieuDang || $startPrice !== null || $endPrice !== null) {
+        $filteredSP = $sanPham->searchByCriteria($idHang, $idLSP, $idKieuDang, $startPrice, $endPrice);
+    }
+
+    // Chuẩn bị dữ liệu JSON
+    $products = array_map(function($sp) { 
+        return [
+            'id' => $sp->getId(),
+            'tenSanPham' => $sp->getTenSanPham(),
+            'moTa' => $sp->getMoTa(),
+            'donGia' => number_format($sp->getDonGia(), 0, ',', '.'),
+            'thoiGianBaoHanh' => $sp->getThoiGianBaoHanh(),
+            'img' => "productImg/{$sp->getId()}.webp", // Đường dẫn hình ảnh
+            'hang' => $sp->getIdHang()->getTenHang(), // Tên hãng
+            'lsp' => $sp->getIdLSP()->getTenLSP(), // Tên loại sản phẩm
+            'kieudang' => $sp->getIdKieuDang() ? $sp->getIdKieuDang()->getTenKieuDang() : 'Không xác định' // Tên kiểu dáng
+        ];
+    }, $filteredSP);
+
+    
+$headers = [
+    'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+    'Pragma' => 'no-cache',
+    'Expires' => '0',
+];
+
+// Trả về JSON cho AJAX
+if ($request->ajax()) {
+    return response()->json([
+        'listSP' => $products,
+        'success' => true
+    ], 200)->withHeaders($headers);
+}
+
     // Phân trang
-    $current_page = request()->query('page', 1);
+    $current_page = $request->query('page', 1);
     $limit = 8;
     $total_record = count($filteredSP ?? []);
     $total_page = ceil($total_record / $limit);
@@ -118,24 +170,20 @@ Route::get('/index', function() {
     $email = app(Auth_BUS::class)->getEmailFromToken();
     $user = app(TaiKhoan_BUS::class)->getModelById($email);
     $gh = app(GioHang_BUS::class)->getByEmail($email);
-    // $ctq = app(CTQ_BUS::class)->getModelById($user->getIdQuyen()->getId());
+    $total = 0;
+    if ($isLogin) {
+        $listCTGH = app(CTGH_BUS::class)->getByIDGH($gh->getIdGH());
+        foreach ($listCTGH as $ct) {
+            $total += $ct->getSoLuong();
+        }
+    }
+
     // Trả về view
-    $products = array_map(function($sp) { 
-        return [
-            'id' => $sp->getId(),
-            'tenSanPham' => $sp->getTenSanPham(),
-            'moTa' => $sp->getMoTa(),
-            'donGia' => number_format($sp->getDonGia(), 0, ',', '.'),
-            'thoiGianBaoHanh' => $sp->getThoiGianBaoHanh(),
-            'img' => "productImg/{$sp->getId()}.webp", // Đường dẫn hình ảnh
-            'hang' => $sp->getIdHang()->getTenHang(), // Tên hãng
-            'lsp' => $sp->getIdLSP()->getTenLSP() // Tên loại sản phẩm
-        ];
-    }, $filteredSP);
     return view('client.index', [
         'listSP' => $filteredSP,
         'listLSP' => $listLSP,
         'listHang' => $listHang,
+        'listKieuDang' => $listKieuDang, 
         'tmp' => $tmp,
         'current_page' => $current_page,
         'total_page' => $total_page,
@@ -143,7 +191,8 @@ Route::get('/index', function() {
         'user' => $user,
         'top4Product' => $top4Product,
         'sanPham' => $sanPham,
-        'gh' => $gh
+        'gh' => $gh,
+        'totalSPinGH' => $total
     ]);
 });
 Route::get('/index/quantri', function() {
@@ -222,6 +271,13 @@ Route::get('/index/quantri', function() {
     $email = app(Auth_BUS::class)->getEmailFromToken();
     $user = app(TaiKhoan_BUS::class)->getModelById($email);
     $gh = app(GioHang_BUS::class)->getByEmail($email);
+    $total = 0;
+    if($isLogin) {
+        $listCTGH = app(CTGH_BUS::class)->getByIDGH ($gh->getIdGH());
+        foreach($listCTGH as $ct) {
+            $total += $ct->getSoLuong();
+        }
+    }
     // $ctq = app(CTQ_BUS::class)->getModelById($user->getIdQuyen()->getId());
     // Trả về view
     $products = array_map(function($sp) { 
@@ -247,7 +303,9 @@ Route::get('/index/quantri', function() {
         'user' => $user,
         'top4Product' => $top4Product,
         'sanPham' => $sanPham,
-        'gh' => $gh
+        'gh' => $gh,
+        'totalSPinGH' => $total
+
     ]);
 });
 // Route::get('/index/quantri', function() {
