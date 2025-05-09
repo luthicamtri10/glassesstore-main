@@ -349,11 +349,10 @@ form[role="search"] i {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    
     let isLoading = false;
     let debounceTimeout = null;
 
-   
+    // Hàm debounce để giới hạn tần suất gọi hàm
     const debounce = (func, delay) => {
         return (...args) => {
             clearTimeout(debounceTimeout);
@@ -361,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     };
 
-   
+    // Hàm tải sản phẩm qua AJAX
     const loadProducts = async (params = '', scrollToList = false) => {
         if (isLoading) return;
         isLoading = true;
@@ -392,8 +391,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.listSP.forEach(sp => {
                     const html = `
                         <div class="col rounded-5 product" 
-                             data-idsp="${sp.id}" 
-                             data-tensp="${sp.tenSanPham}" 
+                             data-idsp="${sp.id || ''}" 
+                             data-tensp="${sp.tenSanPham || 'Không xác định'}" 
                              data-hang="${sp.hang || 'Không xác định'}" 
                              data-lsp="${sp.lsp || 'Không xác định'}" 
                              data-kieudang="${sp.kieudang || 'Không xác định'}" 
@@ -423,19 +422,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 productList.appendChild(productRow);
 
-                document.querySelectorAll('.product').forEach(productDiv => {
-                    productDiv.removeEventListener('click', handleProductClick);
-                    productDiv.addEventListener('click', handleProductClick);
-                });
+                // Gắn sự kiện cho các sản phẩm mới tải
+                attachProductClickEvents();
+            }
 
-                if (scrollToList) {
-                    setTimeout(() => {
-                        const productListSection = document.getElementById('list-product');
-                        if (productListSection) {
-                            productListSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    }, 100);
-                }
+            if (scrollToList) {
+                setTimeout(() => {
+                    const productListSection = document.getElementById('list-product');
+                    if (productListSection) {
+                        productListSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
             }
         } catch (error) {
             console.error('Lỗi tải sản phẩm:', error);
@@ -444,24 +441,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Hàm gắn sự kiện click cho các phần tử .product
+    const attachProductClickEvents = () => {
+        document.querySelectorAll('.product').forEach(productDiv => {
+            productDiv.removeEventListener('click', handleProductClick);
+            productDiv.addEventListener('click', handleProductClick);
+        });
+    };
+
     // Hàm xử lý click sản phẩm
-    function handleProductClick() {
+    const handleProductClick = function () {
         const modal = document.getElementById('productDetailModal');
         if (!modal) return;
-        modal.querySelector('input[name="idsp"]').value = this.dataset.idsp;
-        modal.querySelector('div[name="tensp"]').textContent = this.dataset.tensp;
-        modal.querySelector('div[name="hang"]').textContent = this.dataset.hang;
-        modal.querySelector('div[name="lsp"]').textContent = this.dataset.lsp;
-        modal.querySelector('div[name="kieudang"]').textContent = this.dataset.kieudang;
-        modal.querySelector('div[name="mota"]').textContent = this.dataset.mota;
-        modal.querySelector('div[name="dongia"]').textContent = this.dataset.dongia;
-        modal.querySelector('div[name="tgbh"]').textContent = this.dataset.tgbh;
-        modal.querySelector('img[name="img"]').src = this.dataset.img;
-        modal.querySelector('div[name="stock"]').textContent = this.dataset.stock;
-        new bootstrap.Modal(modal).show();
-    }
 
-    // Tải sản phẩm ban đầu chỉ khi có tham số tìm kiếm hoặc lọc
+        modal.querySelector('input[name="idsp"]').value = this.dataset.idsp || '';
+        modal.querySelector('div[name="tensp"]').textContent = this.dataset.tensp || 'Không xác định';
+        modal.querySelector('div[name="hang"]').textContent = this.dataset.hang || 'Không xác định';
+        modal.querySelector('div[name="lsp"]').textContent = this.dataset.lsp || 'Không xác định';
+        modal.querySelector('div[name="kieudang"]').textContent = this.dataset.kieudang || 'Không xác định';
+        modal.querySelector('div[name="mota"]').textContent = this.dataset.mota || 'Không có mô tả';
+        modal.querySelector('div[name="dongia"]').textContent = this.dataset.dongia || '0₫';
+        modal.querySelector('div[name="tgbh"]').textContent = this.dataset.tgbh || '0';
+        modal.querySelector('img[name="img"]').src = this.dataset.img || '/placeholder.jpg';
+        modal.querySelector('div[name="stock"]').textContent = this.dataset.stock || '0';
+
+        new bootstrap.Modal(modal).show();
+    };
+
+    // Gắn sự kiện cho các sản phẩm render từ server
+    attachProductClickEvents();
+
+    // Tải sản phẩm ban đầu nếu có tham số tìm kiếm hoặc lọc
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.toString()) {
         loadProducts(window.location.search);
@@ -620,7 +630,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Xử lý thông báo tự động ẩn
-    const successAlert = document.getElementById('successAlert');
+    const successAlert = document.querySelector('.successAlert');
     if (successAlert) {
         setTimeout(() => {
             successAlert.classList.remove('show');
@@ -687,7 +697,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <form action="" method="get" role="search" class="w-100">
           <ul class="d-flex justify-content-center gap-5 w-100 pt-4" >
             <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="#list-product" class="nav-link text-white">Sản Phẩm </li>
-            <li class="nav-item fw-medium" style="position: relative;"><input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px;outline: none;border:none;padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}" {{ request('keyword') ? '' : 'selected' }}><i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555; padding: 10px"></i></li>
+            <li class="nav-item fw-medium" style="position: relative;">
+    <form action="/index" method="get" role="search">
+        <input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px; outline: none; border: none; padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}">
+        <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555; padding: 10px;"></i>
+    </form>
+</li>
             
             <li class="nav-item fw-medium my-2 mx-2" id="item-xemthem">
     <a href="#" class="nav-link text-white">Xem thêm</a>

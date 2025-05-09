@@ -134,27 +134,27 @@ Route::get('/index', function (Request $request) {
             'moTa' => $sp->getMoTa(),
             'donGia' => number_format($sp->getDonGia(), 0, ',', '.'),
             'thoiGianBaoHanh' => $sp->getThoiGianBaoHanh(),
-            'img' => "productImg/{$sp->getId()}.webp", // Đường dẫn hình ảnh
-            'hang' => $sp->getIdHang()->getTenHang(), // Tên hãng
-            'lsp' => $sp->getIdLSP()->getTenLSP(), // Tên loại sản phẩm
-            'kieudang' => $sp->getIdKieuDang() ? $sp->getIdKieuDang()->getTenKieuDang() : 'Không xác định' // Tên kiểu dáng
+            'img' => "productImg/{$sp->getId()}.webp",
+            'hang' => $sp->getIdHang()->getTenHang(),
+            'lsp' => $sp->getIdLSP()->getTenLSP(),
+            'kieudang' => $sp->getIdKieuDang() ? $sp->getIdKieuDang()->getTenKieuDang() : 'Không xác định',
+            
         ];
     }, $filteredSP);
 
-    
-$headers = [
-    'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
-    'Pragma' => 'no-cache',
-    'Expires' => '0',
-];
+    $headers = [
+        'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+        'Pragma' => 'no-cache',
+        'Expires' => '0',
+    ];
 
-// Trả về JSON cho AJAX
-if ($request->ajax()) {
-    return response()->json([
-        'listSP' => $products,
-        'success' => true
-    ], 200)->withHeaders($headers);
-}
+    // Trả về JSON cho AJAX hoặc render view
+    if ($request->ajax()) {
+        return response()->json([
+            'listSP' => $products,
+            'success' => true
+        ], 200)->withHeaders($headers);
+    }
 
     // Phân trang
     $current_page = $request->query('page', 1);
@@ -171,19 +171,19 @@ if ($request->ajax()) {
     $user = app(TaiKhoan_BUS::class)->getModelById($email);
     $gh = app(GioHang_BUS::class)->getByEmail($email);
     $total = 0;
-    if($isLogin) {
-        $listCTGH = app(CTGH_BUS::class)->getByIDGH ($gh->getIdGH());
-        foreach($listCTGH as $ct) {
+    if ($isLogin) {
+        $listCTGH = app(CTGH_BUS::class)->getByIDGH($gh->getIdGH());
+        foreach ($listCTGH as $ct) {
             $total += $ct->getSoLuong();
         }
     }
-    // $ctq = app(CTQ_BUS::class)->getModelById($user->getIdQuyen()->getId());
-    // Trả về view
+
+    // Trả về view với dữ liệu ban đầu
     return view('client.index', [
         'listSP' => $filteredSP,
         'listLSP' => $listLSP,
         'listHang' => $listHang,
-        'listKieuDang' => $listKieuDang, 
+        'listKieuDang' => $listKieuDang,
         'tmp' => $tmp,
         'current_page' => $current_page,
         'total_page' => $total_page,
@@ -192,7 +192,8 @@ if ($request->ajax()) {
         'top4Product' => $top4Product,
         'sanPham' => $sanPham,
         'gh' => $gh,
-        'totalSPinGH' => $total
+        'totalSPinGH' => $total,
+        'initialProducts' => $products 
     ]);
 });
 Route::get('/index/quantri', function() {
