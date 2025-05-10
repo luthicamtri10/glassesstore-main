@@ -1,90 +1,159 @@
-@include('admin.includes.navbar')
-<?php
-  
-?>
-<div class="p-3">
-            <!-- Nút mở Modal -->
-            <!-- <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#warehouseModal">
-                <i class='bx bx-plus'></i>
-            </button> -->
-            <table class="table table-hover shadow-sm">
-                <thead>
-                    <tr>
-                    <th scope="col">ID khách hàng</th>
-                    <th scope="col">ID sản phẩm</th>
-                    <th scope="col">Chi phí bảo hành</th>
-                    <th scope="col">Thời điểm bảo hành</th>
-                    <th scope="col">Số seri</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                    <th scope="row"></th>
-                    <th scope="row"></th>
-                    <th scope="row"></th>
-                    <th scope="row"></th>
-                    <th scope="row"></th>
-                    </tr>
-                </tbody>
-            </table>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const searchForm = document.querySelector('form[method="GET"]');
 
-            <nav aria-label="Page navigation example" class="d-flex justify-content-center">
-                <ul class="pagination">
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                    </li>
-                </ul>
-            </nav>
+  if (searchForm) {
+      searchForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(searchForm);
+          const url = new URL(window.location.href);
+
+          // Lấy các tham số cũ và thêm vào URL
+          const currentParams = new URLSearchParams(window.location.search);
+
+          // Giữ lại tham số 'modun=hoadon' nếu có
+          if (!currentParams.has('modun')) {
+              currentParams.set('modun', 'baohanh');
+          }
+
+          // Thêm hoặc thay đổi các tham số từ form
+          for (const [key, value] of formData.entries()) {
+              if (value.trim() !== '') {
+                  currentParams.set(key, value);
+              } else {
+                  currentParams.delete(key); // Nếu trường nào trống thì xóa khỏi URL
+              }
+          }
+
+          // Gắn lại các tham số vào URL
+          url.search = currentParams.toString();
+
+          // Chuyển hướng đến URL mới
+          window.location.href = url.toString();
+      });
+  }
+
+  const refreshBtn = document.getElementById('refreshBtn');
+    refreshBtn.addEventListener('click', function () {
+        const url = new URL(window.location.href);
+
+        // Xóa keyword khỏi URL
+        url.searchParams.delete('keyword');
+
+        // Reset về trang đầu nếu có tham số phân trang
+        url.searchParams.delete('page');
+
+        url.searchParams.set('modun', 'baohanh');
+
+        // Chuyển hướng
+        window.location.href = url.toString();
+  });
+})
+</script>
+
+
+<div class="p-3 bg-light">
+    <form class="d-flex me-2 mb-3" method="GET" role="search">
+        <input class="form-control me-2 w-25" type="search" placeholder="Tìm kiếm" aria-label="Search" id="keyword" name="keyword" value="{{ request('keyword') }}">
+        <button class="btn btn-outline-success me-2" type="submit">Tìm</button>    
+        <button class="btn btn-info ms-2" id="refreshBtn" type="button">Làm mới</button>
+    </form>
+    <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addGuaranteeModal">
+        <i class='bx bx-plus'></i>
+    </button>
+    <table class="table table-hover shadow-sm">
+        <thead>
+            <tr>
+            <th scope="col">ID khách hàng</th>
+            <th scope="col">Số seri</th>
+            <th scope="col">Chi phí bảo hành</th>
+            <th scope="col">Thời điểm bảo hành</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach($listBaoHanh as $baoHanh)
+            <tr>
+                <td>{{ $baoHanh->getidKH() }}</td>
+                <td>{{ $baoHanh->getSoSeri() }}</td>
+                <td>{{ $baoHanh->getChiPhiBH() }}</td>
+                <td>{{ $baoHanh->getThoiDiemBH() }}</td>
+            </tr>
+        @endforeach
+        </tbody>
+    </table>
+
+    <!-- Phân trang -->
+    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+        <ul class="pagination">
+            <!-- Hiển thị PREV nếu không phải trang đầu tiên -->
+            <?php
+            $queryString = isset($_GET['keyword']) ? '&keyword=' . urlencode($_GET['keyword']) : '';
+            $query = $_GET;
+
+            // PREV
+            if ($current_page > 1) {
+                echo '<li class="page-item">
+                        <a class="page-link" href="?' . http_build_query(array_merge($query, ['page' => $current_page - 1])) . '" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>';
+            }
+
+            // Hiển thị các trang phân trang xung quanh trang hiện tại
+            $page_range = 1; // Hiển thị 1 trang trước và 1 trang sau
+            $start_page = max(1, $current_page - $page_range);
+            $end_page = min($total_page, $current_page + $page_range);
+
+            for ($i = $start_page; $i <= $end_page; $i++) {
+                if ($i == $current_page) {
+                    echo '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
+                } else {
+                    echo '<li class="page-item"><a class="page-link" href="?' . http_build_query(array_merge($query, ['page' => $i])) . '">' . $i . '</a></li>';
+                }
+            }
+            
+            // NEXT
+            
+            if ($current_page < $total_page) {
+                echo '<li class="page-item">
+                        <a class="page-link" href="?' . http_build_query(array_merge($query, ['page' => $current_page + 1])) . '" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>';
+            }
+            ?>
+        </ul>
+    </nav>  
 </div>
 
-<!-- <div class="modal fade" id="warehouseModal">
+<div class="modal fade" id="addGuaranteeModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="userModalLabel">Thông tin kho</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" >Thêm chi tiết bảo hành</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
       </div>
       <div class="modal-body">
-        <form class="row g-3 modal-lg">
-          <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">Tên nhà cung cấp</label>
-              <input type="text" class="form-control" id="inputEmail4">
+        <form method="post" action="{{ route('admin.baohanh.store') }}" enctype="multipart/form-data">
+          @csrf
+          <div class="row mb-3">
+            <div class="col-6">
+              <label class="form-label">Số Seri</label>
+              <input type="text" name="soSeri" class="form-control" placeholder="Nhập số Seri">
+            </div>
+              <div class="col-6">
+              <label class="form-label">Chi phí bảo hành</label>
+              <input type="text" name="chiPhiBaoHanh" class="form-control" placeholder="Nhập chi phí bảo hành">
+            </div>
           </div>
-          <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">Số điện thoại</label>
-              <input type="text" class="form-control" id="inputEmail4">
-          </div>
-          <div class="col-md-6">
-              <label for="inputEmail4" class="form-label">Địa chỉ</label>
-              <input type="text" class="form-control" id="inputEmail4">
-          </div>
-          <div class="col-md-6">
-              <label for="inputStatus" class="form-label">Trạng thái</label>
-              <select id="inputStatus" class="form-select">
-                <option selected>Choose...</option>
-                <option>Hoạt động</option>
-                <option>Ngừng hoạt động</option>
-              </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Mô tả</label>
-            <textarea class="form-control" rows="3" placeholder="Nhập mô tả"></textarea>
-          </div>
+         
+          <!-- Nút Lưu -->
+          <button type="submit" class="btn btn-primary">Lưu</button>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Lưu</button>
       </div>
     </div>
   </div>
-</div> -->
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

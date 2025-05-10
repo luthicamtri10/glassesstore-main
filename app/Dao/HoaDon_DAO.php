@@ -220,6 +220,28 @@ class HoaDon_DAO{
         return $list;
     }
 
+    public function getHoaDonsBySoseri($soSeri)
+    {
+        $list = [];
+        $query = "
+            SELECT hd.* 
+            FROM hoadon hd
+            JOIN cthd ct ON hd.ID = ct.IDHD
+            WHERE ct.SOSERI = ?
+        ";
+        $rs = database_connection::executeQuery($query, $soSeri);
+
+        while ($row = $rs->fetch_assoc()) {
+            $model = $this->createHoaDonModel($row);
+            if ($model) {
+                $list[] = $model;
+            }
+        }
+
+        return $list;
+    }
+
+
 
 
 

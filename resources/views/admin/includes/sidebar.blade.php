@@ -25,7 +25,7 @@ use App\Bus\TaiKhoan_BUS;
 <aside id="sidebar" class="expand d-block">
 <div class="d-flex p-4" style="background-color: #2c3e50;">
   <div class="sidebar-logo">
-    <a href="/">
+    <a href="">
       <img src="https://img.ws.mms.shopee.vn/vn-11134216-7r98o-lq2sgdy60w5uba" 
            alt="Logo" 
            class="img-fluid rounded-5" 
@@ -89,14 +89,14 @@ use App\Bus\TaiKhoan_BUS;
       </a>
     </li>
     @endif
-    <!-- @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 15))
+    @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 15))
     <li class="sidebar-item" id="thanhpho">
       <a href="/admin?modun=thanhpho" class="sidebar-link" >
         <i class='bx bxs-truck'></i>
         <span>Thành phố</span>
       </a>
     </li>
-    @endif -->
+    @endif
     @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 3))
     <li class="sidebar-item" id="ncc">
       <a href="/admin?modun=nhacungcap" class="sidebar-link"  >

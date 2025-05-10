@@ -25,7 +25,19 @@ class LoaiSanPham_DAO implements DAOInterface {
 
     public function getAll(): array {
         $list = [];
-        $query = "SELECT * FROM loaisanpham";
+        $query = "SELECT * FROM loaisanpham WHERE TRANGTHAIHD >= 0";
+
+        $rs = database_connection::executeQuery($query);
+        while ($row = $rs->fetch_assoc()) {
+            $list[] = $this->createLoaiSanPhamModel($row);
+        }
+        
+        return $list;
+    }
+
+    public function getAllIsActive(): array {
+        $list = [];
+        $query = "SELECT * FROM loaisanpham WHERE TRANGTHAIHD = 1";
 
         $rs = database_connection::executeQuery($query);
         while ($row = $rs->fetch_assoc()) {
@@ -76,7 +88,7 @@ class LoaiSanPham_DAO implements DAOInterface {
 
   
     public function delete(int $id): int {
-        $query = "DELETE FROM loaisanpham WHERE ID = ?";
+        $query = "UPDATE loaisanpham SET TRANGTHAIHD = -1 WHERE ID = ?";
         $result = database_connection::executeUpdate($query, $id);
         return is_int($result) ? $result : 0;
     }

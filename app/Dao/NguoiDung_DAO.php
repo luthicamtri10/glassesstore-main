@@ -152,5 +152,26 @@ class NguoiDung_DAO {
         }
         return null;
     }
+
+    public function getNguoiDungBySoseri($soSeri)
+    {
+        $query = "
+            SELECT nd.* 
+            FROM cthd ct
+            JOIN hoadon hd ON ct.IDHD = hd.ID
+            JOIN taikhoan tk ON hd.EMAIL = tk.EMAIL
+            JOIN nguoidung nd ON tk.IDNGUOIDUNG = nd.ID
+            WHERE ct.SOSERI = ?
+        ";
+        
+        $rs = database_connection::executeQuery($query, $soSeri);
+        
+        if ($row = $rs->fetch_assoc()) {
+            return $this->createNguoiDungModel($row);
+        }
+        
+        return null;
+    }
+
 }
 ?>

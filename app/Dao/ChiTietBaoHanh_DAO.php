@@ -10,7 +10,7 @@ use App\Services\database_connection;
 use InvalidArgumentException;
 use RuntimeException;
 
-class ChiTietBaoHanh_DAO implements DAOInterface
+class ChiTietBaoHanh_DAO 
 {
   
 
@@ -26,12 +26,9 @@ class ChiTietBaoHanh_DAO implements DAOInterface
 
     private function createModel(array $rs): ChiTietBaoHanh
     {
-        $idKhachHang = $rs['IDKHACHHANG'];
-        $soSeri = $rs['SOSERI'];
-
         return new ChiTietBaoHanh(
-            $idKhachHang,
-            $soSeri,
+            $rs['IDKHACHHANG'],
+            $rs['SOSERI'],
             $rs['CHIPHIBH'],
             $rs['THOIDIEMBAOHANH']
         );
@@ -136,26 +133,17 @@ class ChiTietBaoHanh_DAO implements DAOInterface
         return is_int($rs) ? $rs : 0;
     }
 
-    public function search(string $condition, array $columnNames = []): array
+    public function search($soSeri)
     {
-        if (empty($condition)) {
-            throw new InvalidArgumentException("Điều kiện tìm kiếm không được để trống");
+        $query = "SELECT * FROM chitietbaohanh WHERE SOSERI = ?";
+        $rs = database_connection::executeQuery($query, $soSeri);
+
+        if ($row = $rs->fetch_assoc()) {
+            return $this->createModel($row);
         }
 
-        $columns = empty($columnNames)
-            ? ['IDKHACHHANG', 'CHIPHIBH', 'THOIDIEMBAOHANH', 'SOSERI']
-            : $columnNames;
-
-        $likeConditions = array_map(fn($col) => "$col LIKE ?", $columns);
-        $query = "SELECT * FROM chitietbaohanh WHERE " . implode(" OR ", $likeConditions);
-        $args = array_fill(0, count($columns), "%" . $condition . "%");
-
-        $rs = database_connection::executeQuery($query, ...$args);
-
-        $list = [];
-        while ($row = $rs->fetch_assoc()) {
-            $list[] = $this->createModel($row);
-        }
-        return $list;
+        return null;
     }
+
+    
 }

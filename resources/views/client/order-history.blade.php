@@ -21,20 +21,20 @@ main {
     flex: 1 0 auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: center; 
     align-items: center;
-    padding: 20px 0;
+    padding: 10px 0;
 }
 .footer {
     flex-shrink: 0;
-    background-color:rgb(57, 193, 195);
+    background-color: rgb(57, 193, 195);
     padding: 1rem;
     text-align: center;
     font-size: 0.8rem;
-    color:white ;
+    color: white;
 }
 .footer a {
-    color:rgb(218, 226, 233);
+    color: rgb(218, 226, 233);
     margin: 0 0.5rem;
     text-decoration: none;
 }
@@ -46,38 +46,32 @@ main {
     padding: 0.5rem 1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-#navbar {
+.top-nav {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 20px 0;
-    background-color: rgba(62, 75, 74, 0.32);
+    padding: 5px 0.5rem;
 }
-.navbar-brand img {
-    height: 20px;
-    width: auto;
-    margin-left: 25px;
+.top-nav p {
+    margin: 0;
+    color: #55d5d2;
+    font-size: 16px;
+    font-weight: 600;
 }
-.navbar-brand {
-    margin-right: 0;
-    flex-shrink: 0;
+.list-top-nav {
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
-.nav-link, .btn-nav {
-    color: #6c757d;
-    font-size: 0.9rem;
-    margin-left: 1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 150px;
+.list-top-nav .nav-item a {
+    color: white;
+    text-decoration: none;
 }
-.nav-link:hover, .btn-nav:hover {
-    color: #000;
-}
-.search-bar {
-    max-width: 300px;
-    margin-left: 1rem;
+.list-top-nav .nav-item:hover a {
+    color: #ccc;
 }
 .product-tab {
     display: flex;
@@ -85,11 +79,11 @@ main {
     padding: 0.5rem 1rem;
     border-bottom: 1px solid rgba(222, 226, 230, 0.1);
     width: 100%;
-    margin-top: 100px;
+    margin-top: 10px; /* Giảm từ 20px xuống 10px để đẩy lên trên */
     margin-bottom: 20px;
 }
 .product-tab span {
-    font-size: 0.9rem;
+    font-size: 23px;
     color: #6c757d;
     cursor: pointer;
 }
@@ -212,59 +206,8 @@ main {
     background-color: #55d5d2;
     color: #fff;
 }
-#navbar form {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-.navbar-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 100px;
-    padding: 0;
-    margin: 0;
-    max-width: 700px;
-    width: 100%;
-}
-
-#item-giohang .fa-bag-shopping {
-    position: relative;
-}
-#item-giohang .fa-bag-shopping small {
-    padding: 4px;
-    background: rgb(232, 164, 76);
-    color: white;
-    position: absolute;
-    right: -10px; 
-    bottom: -8px;
-    font-size: 12px;
-    line-height: 12px;
-    border-radius: 50%;
-    z-index: 100;
-    min-width: 18px;
-    text-align: center;
-}
 
 @media (max-width: 768px) {
-   
-    #navbar {
-        padding: 10px 0;
-    }
-    .navbar-nav {
-        gap: 20px; 
-        flex-direction: row;
-        max-width: 100%;
-    }
-    .navbar-brand img {
-        height: 30px;
-        margin-left: 10px;
-    }
-    .nav-link {
-        font-size: 0.8rem;
-        margin-left: 0.5rem;
-    }
-   
     .top-nav {
         flex-direction: column;
         align-items: center;
@@ -274,7 +217,6 @@ main {
         flex-wrap: wrap;
         justify-content: center;
     }
-   
     .filter-section {
         flex-direction: column;
         align-items: flex-start;
@@ -289,20 +231,18 @@ main {
         width: 100%;
         justify-content: flex-start;
     }
-    
     .table-custom {
         padding: 0 0.5rem;
-        overflow-x: auto; 
+        overflow-x: auto;
     }
     .header-row, .data-row {
         flex-direction: row;
-        min-width: 600px; 
+        min-width: 600px;
     }
     .col-1, .col-2, .col-3 {
         font-size: 0.8rem;
         padding: 0 5px;
     }
-   
     .modal-dialog {
         margin: 0.5rem;
     }
@@ -313,7 +253,6 @@ main {
     .modal-content .table th, .modal-content .table td {
         padding: 0.5rem;
     }
-  
     .footer {
         font-size: 0.7rem;
         padding: 0.5rem;
@@ -321,16 +260,6 @@ main {
 }
 
 @media (max-width: 576px) {
-    /* Navbar */
-    .navbar-nav {
-        gap: 10px;
-        flex-direction: column; /* Chuyển sang dọc trên mobile nhỏ */
-        align-items: center;
-    }
-    .nav-link {
-        font-size: 0.75rem;
-    }
-    /* Filter section */
     .search-filter input.form-control {
         max-width: 200px;
     }
@@ -338,17 +267,13 @@ main {
         padding: 5px 10px;
         font-size: 0.8rem;
     }
-    /* Table */
     .col-1, .col-2, .col-3 {
         font-size: 0.75rem;
     }
-    /* Modal */
     .modal-content .table {
         font-size: 0.75rem;
     }
 }
-
-
     </style>
 </head>
 <body>
@@ -364,6 +289,7 @@ main {
                         @if(app(\App\Bus\CTQ_BUS::class)->checkChucNangExistInQuyen($user->getIdQuyen()->getId(), 6))
                             
                         @endif
+                        <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="trangchu"><a href="/index">Trang Chủ</a></li>
                         <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="userDropdownBtn" style="position: relative; cursor: pointer;">
                             {{ $user->getTenTK() }}
                             <div id="userDropdownMenu" style="display: none; width: 150px; position: absolute; right: 0; background: white; border: 1px solid #ccc; padding: 10px; z-index: 999; border-radius: 5px;">
@@ -374,35 +300,12 @@ main {
                             </div>
                         </li>
                     @else
+                    <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="trangchu"><a href="/index">Trang Chủ</a></li>
                         <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="taikhoan"><a href="/login">Đăng nhập</a></li>
                     @endif
                 </ul>
             </div>
-            <div class="navbar text-white navbar-expand" id="navbar">
-                <a href="/index" class="navbar-brand">
-                    <img src="{{ asset('client/img/logo.svg') }}" alt="Anna Logo" class="img-fluid rounded-5" style="height: 40px;">
-                </a>
-                <form action="/index" method="get" role="search">
-                    <ul class="navbar-nav">
-                        <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham">
-                            <a href="/index" class="nav-link text-white">Sản Phẩm <i class="fa-regular fa-angle-up"></i></a>
-                        </li>
-                        
-                        @if($isLogin && ($user->getIdQuyen()->getId() != 1 && $user->getIdQuyen()->getId() != 2))
-                            <li class="nav-item fw-medium my-2" id="item-giohang">
-                                <a href="{{ url('/yourcart?email=' . $user->getEmail()) }}" class="nav-link text-white">
-                                    Giỏ Hàng 
-                                    <i class="fa-light fa-bag-shopping" style="position: relative;">
-                                        <small style="padding: 5px; background: rgb(232, 164, 76); color: white; position: absolute; right: -15px; bottom: -15px; font-size: 12px; border-radius: 50%;">
-                                            {{ session()->has('cart') && is_array(session('cart')) ? count(session('cart')) : 0 }}
-                                        </small>
-                                    </i>
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </form>
-            </div>
+            
         </div>
     </header>
 
@@ -482,9 +385,9 @@ main {
                                 <div class="col-1">{{ $orderData['id'] }}</div>
                                 <div class="col-2">{{ $quantity }}</div>
                                 <div class="col-2">
-                                    <span class="badge {{ ($orderData['trangThai'] ?? 'PENDING') == 'PAID' ? 'bg-success' : (($orderData['trangThai'] ?? 'PENDING') == 'PENDING' ? 'bg-warning' : 'bg-danger') }}">
-                                        {{ $orderData['trangThai'] ?? 'Không xác định' }}
-                                    </span>
+                                <span class="badge {{ ($orderData['trangThai'] ?? 'PENDING') == 'PAID' || ($orderData['trangThai'] ?? 'PENDING') == 'DAGIAO' ? 'bg-success' : (($orderData['trangThai'] ?? 'PENDING') == 'PENDING' ? 'bg-warning' : 'bg-danger') }}">
+                                    {{ collect($statuses)->firstWhere('value', $orderData['trangThai'] ?? 'PENDING')['label'] ?? 'Không xác định' }}
+                                </span>
                                 </div>
                                 <div class="col-2">{{ $orderData['ngayTao'] ? \Carbon\Carbon::parse($orderData['ngayTao'])->format('d/m/Y H:i') : 'N/A' }}</div>
                                 <div class="col-2">{{ number_format($orderData['tongTien'] ?? 0, 0, ',', '.') }} VNĐ</div>
@@ -732,6 +635,15 @@ main {
                 });
             }
         });
+        const statuses = [
+        { value: "PENDING", label: "Đang xử lý" },
+        { value: "PAID", label: "Đã thanh toán" },
+        { value: "EXPIRED", label: "Hết hạn" },
+        { value: "CANCELLED", label: "Đã hủy" },
+        { value: "REFUNDED", label: "Đã hoàn tiền" },
+        { value: "DANGGIAO", label: "Đang giao" },
+        { value: "DAGIAO", label: "Đã giao" }
+    ];
     </script>
 </body>
 </html>

@@ -142,7 +142,15 @@ class HistoryController extends Controller
         if (!session()->has('cart')) {
             session(['cart' => []]);
         }
-
+        $statuses = [
+            ['value' => 'PENDING', 'label' => 'Đang xử lý'],
+            ['value' => 'PAID', 'label' => 'Đã thanh toán'],
+            ['value' => 'EXPIRED', 'label' => 'Hết hạn'],
+            ['value' => 'CANCELLED', 'label' => 'Đã hủy'],
+            ['value' => 'REFUNDED', 'label' => 'Đã hoàn tiền'],
+            ['value' => 'DANGGIAO', 'label' => 'Đang giao'],
+            ['value' => 'DAGIAO', 'label' => 'Đã giao'],
+        ];
         return view('client.order-history', [
             'orders' => $orders,
             'error' => $error,
@@ -152,6 +160,7 @@ class HistoryController extends Controller
             'sort_order' => $sort_order,
             'isLogin' => $isLogin,
             'user' => $user,
+            'statuses' => $statuses,
         ]);
     }
 }

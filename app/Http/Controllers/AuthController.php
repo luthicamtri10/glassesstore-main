@@ -29,11 +29,25 @@ class AuthController extends Controller {
         }
         
     }
-   
-    public function logout() {
+    public function logout(Request $request)
+    {
+        $email = $this->auth_bus->getEmailFromToken();
+        $account = app(TaiKhoan_BUS::class)->getModelById($email);
+        
+       
         $this->auth_bus->logout();
-        return redirect('/admin/login');
-    } 
+    
+       
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    
+        if ($account && ($account->getIdQuyen()->getId() == 1 || $account->getIdQuyen()->getId() == 2)) {
+         
+            return redirect('/admin/login');
+        }
+    
+        return redirect('/index');
+    }
 
     public function register(Request $request) {
         // dd($request->all());
