@@ -86,13 +86,26 @@ class SanPhamController extends Controller
     }
 
     public function update(Request $request) {
+        $validatedData = $request->validate([
+            'tenSanPham' => 'required|string|max:255',
+            'moTa' => 'required|string',
+            'thoiGianBaoHanh' => 'required|integer',
+           
+        ], [
+            'tenSanPham.required' => 'Vui lòng nhập tên sản phẩm.',
+            'moTa.required' => 'Vui lòng nhập mô tả.',
+            'thoiGianBaoHanh.required' => 'Vui lòng nhập thời gian.',
+            'thoiGianBaoHanh.integer' => 'Phải là số.',
+            
+        ]);
+        
         $idSanPham = $request->input('idSanPham');
-        $tenSanPham = $request->input('tenSanPham');
+        $tenSanPham = $validatedData['tenSanPham'];
         $idHang = $this->hangBUS->getModelById($request->input('idHang'));
         $idLSP = $this->loaiSanPhamBUS->getModelById($request->input('idLSP'));
         $idKieuDang = $this->kieuDangBUS->getModelById($request->input('idKieuDang'));
-        $moTa = $request->input('moTa');
-        $thoiGianBaoHanh = $request->input('thoiGianBaoHanh');
+        $moTa = $validatedData['moTa'];
+        $thoiGianBaoHanh = $validatedData['thoiGianBaoHanh'];
 
         $anhSanPham = $request->file('anhSanPham');
 
@@ -110,7 +123,7 @@ class SanPhamController extends Controller
         );
 
         // Thêm sản phẩm vào database và lấy ID mới
-        $newSanPham = $this->sanPhamBUS->updateModel($sanPham);
+        $this->sanPhamBUS->updateModel($sanPham);
         Log::info('id'. $idSanPham);
 
         // Xử lý file ảnh nếu có gửi lên

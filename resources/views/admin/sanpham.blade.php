@@ -129,6 +129,53 @@
       }
     });
 
+    // Xử lý modal cập nhật sản phẩm: xem trước ảnh
+    const updateProductModal = document.getElementById('updateProductModal');
+    const fileInputUpdate = updateProductModal.querySelector('input[name="anhSanPham"]');
+    const previewImageUpdate = updateProductModal.querySelector('#previewImage');
+
+    fileInputUpdate.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const validTypes = ['image/png', 'image/jpeg', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('Vui lòng chọn file ảnh (PNG, JPEG, WebP).');
+                this.value = '';
+                previewImageUpdate.src = '';
+                previewImageUpdate.style.display = 'none';
+                return;
+            }
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (file.size > maxSize) {
+                alert('Kích thước file tối đa là 5MB.');
+                this.value = '';
+                previewImageUpdate.src = '';
+                previewImageUpdate.style.display = 'none';
+                return;
+            }
+            if (previewImageUpdate.src) {
+                URL.revokeObjectURL(previewImageUpdate.src);
+            }
+            previewImageUpdate.src = URL.createObjectURL(file);
+            previewImageUpdate.style.display = 'block';
+        } else {
+            // Khôi phục ảnh hiện tại của sản phẩm nếu không chọn file
+            const idSanPham = updateProductModal.querySelector('input[name="idSanPham"]').value;
+            previewImageUpdate.src = idSanPham ? `/productImg/${idSanPham}.webp` : '';
+            previewImageUpdate.style.display = idSanPham ? 'block' : 'none';
+        }
+    });
+
+    // Khôi phục ảnh hiện tại khi modal hiển thị lại sau validation thất bại
+    const updateModal = new bootstrap.Modal(updateProductModal);
+    updateProductModal.addEventListener('shown.bs.modal', function() {
+        const idSanPham = updateProductModal.querySelector('input[name="idSanPham"]').value;
+        if (idSanPham && !fileInputUpdate.files.length) {
+            previewImageUpdate.src = `/productImg/${idSanPham}.webp`;
+            previewImageUpdate.style.display = 'block';
+        }
+    });
+
   })
 
   document.querySelector('#addForm').addEventListener('submit', function(event) {
@@ -395,12 +442,15 @@
       <div class="modal-body">
         <form method="post" action="{{ route('admin.sanpham.update') }}" enctype="multipart/form-data">
           @csrf
-          <input type="hidden" name="idSanPham">
+          <input type="hidden" name="idSanPham" value="{{ old('idSanPham') }}">
           <!-- Hàng 1: Tên sản phẩm & Loại Sản Phẩm & Hãng -->
           <div class="row mb-3">
             <div class="col-4">
               <label class="form-label">Tên sản phẩm</label>
-              <input type="text" name="tenSanPham" class="form-control" placeholder="Nhập tên sản phẩm">
+              <input type="text" name="tenSanPham" class="form-control" placeholder="Nhập tên sản phẩm" value="{{ old('tenSanPham') }}">
+              @error('tenSanPham')
+              <div class="text-danger">{{ $message }}</div>
+              @enderror
             </div>
             <div class="col-4">
               <label class="form-label">Loại sản phẩm</label>
@@ -428,7 +478,10 @@
           <div class="row mb-3">
             <div class="col-4">
               <label class="form-label">Thời gian bảo hành</label>
-              <input type="text" name="thoiGianBaoHanh" class="form-control" placeholder="Nhập thời gian bảo hành">
+              <input type="text" name="thoiGianBaoHanh" class="form-control" placeholder="Nhập thời gian bảo hành" value="{{ old('thoiGianBaoHanh') }}">
+              @error('thoiGianBaoHanh')
+              <div class="text-danger">{{ $message }}</div>
+              @enderror
             </div>
             <div class="col-4">
               <label class="form-label">Kiểu dáng</label>
@@ -446,7 +499,10 @@
           <!-- Hàng 3: Mô tả -->
           <div class="mb-3">
             <label class="form-label">Mô tả</label>
-            <textarea class="form-control" name="moTa" rows="3" placeholder="Nhập mô tả"></textarea>
+            <textarea class="form-control" name="moTa" rows="3" placeholder="Nhập mô tả">{{ old('moTa') }}</textarea>
+            @error('moTa')
+            <div class="text-danger">{{ $message }}</div>
+            @enderror
           </div>
 
           <!-- Hàng 4: Ảnh sản phẩm -->
