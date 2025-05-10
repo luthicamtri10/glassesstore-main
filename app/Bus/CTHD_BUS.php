@@ -34,4 +34,17 @@ class CTHD_BUS {
     public function getCTHTbyIDHD($id) {
         return $this->cthdDAO->getCTHDbyIDHD($id);
     }
+    public function getCTHDByIDSPAndIDHD($idsp, $idhd) {
+        // $this->cthdDAO->getCTHDByIDSPAndIDHD($idsp, $idhd);
+        $list = [];
+        $listCTHD = $this->cthdDAO->getCTHDbyIDHD($idhd);
+        foreach ($listCTHD as $key) {
+            # code...
+            // $sp = app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri());
+            if(app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri())->getId() == $idsp) {
+                array_push($list, $key);
+            }
+        }
+        return $list;
+    }
 }

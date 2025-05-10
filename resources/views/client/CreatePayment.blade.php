@@ -5,19 +5,85 @@
 <link rel="stylesheet" href="{{ asset('css/client/include/footer.css') }}">
 <?php
     use App\Bus\SanPham_BUS;
-    $listSP = json_decode($listSP);
+    use App\Bus\CTSP_BUS;
+    // $listSP = json_decode($listSP);
     $tongTien = 0;
+    $sum = 0;
+    foreach ($listSP as $key) {
+        # code...
+        $tmp = app(SanPham_BUS::class)->getModelById($key->idsp);
+        $sum += $tmp->getDonGia() * $key->quantity;
+    }
 ?>
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
+    {{ session('success') }}
+</div>
+@endif
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const formElements = document.querySelectorAll('#paymentForm select, #paymentForm input[type="text"]');
+    $(document).ready(function() {
+        $('#paymentForm').on('submit', function(e) {
+            e.preventDefault(); // Ngăn chặn hành vi mặc định của form
 
-    formElements.forEach(element => {
-        element.addEventListener('change', function () {
-            document.getElementById('paymentForm').submit(); // Submit form khi có sự thay đổi
+            $.ajax({
+                url: "{{ route('payment.search') }}", // Đường dẫn đến route
+                method: 'GET',
+                data: $(this).serialize(), // Lấy dữ liệu từ form
+                success: function(data) {
+                    // alert('success!');
+                    document.getElementById("cpvc").innerText = formatCurrency(data.cpvc);
+                    document.getElementById('tongtien').innerText = formatCurrency(data.tongtien);
+                    document.getElementById("idtinh").value = data.tinh;
+                    document.getElementById("idpttt").value = data.pttt;
+                    document.getElementById("iddvvc").value = data.dvvc;
+                    console.log(data.diachi);
+                    document.getElementById('diachidata').value = data.diachi;
+                },
+                error: function(xhr) {
+                    alert("failed in search!");
+                }
+            });
         });
     });
-});
+    function formatCurrency(amount) {
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₫";
+    }
+    
+    $(document).ready(function() {
+        $('#saveHoaDon').on('click', function(e) {
+            e.preventDefault(); // Ngăn chặn hành vi mặc định của nút
+
+            const form = document.getElementById('formSubmit');
+            const productRows = $('#divSP > div'); // Lấy tất cả các div chứa sản phẩm
+
+            // Xóa các input hidden trước đó nếu có
+            $('.product-hidden-input').remove();
+
+            const listCTHD = []; // Tạo mảng để lưu sản phẩm
+
+            productRows.each(function(index) {
+                const idsp = $(this).data('idsp'); // Lấy idsp từ thuộc tính data
+                const quantity = $(this).data('quantity'); // Lấy quantity từ thuộc tính data
+
+                // Thêm sản phẩm vào mảng
+                listCTHD.push({ sanPham: idsp, soLuong: quantity });
+            });
+
+            // Chuyển đổi mảng thành JSON và thiết lập vào input hidden
+            document.getElementById('listCTHD').value = JSON.stringify(listCTHD);
+
+            const cpvc = $('#cpvc').text().trim(); // Lấy giá trị của cpvc
+
+            // Kiểm tra giá trị của cpvc
+            if (!cpvc) {
+                alert("Hãy lưu thông tin hóa đơn trước khi thanh toán!");
+                return; // Dừng lại nếu cpvc không có giá trị
+            } else {
+                form.submit(); // Gửi form nếu cpvc hợp lệ
+            }
+        });
+    });
 </script>
     <div class="top-nav p-3">
         <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
@@ -47,8 +113,9 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="d-flex justify-content-between gap-5 p-5 " style="">
         <div class="d-flex flex-column gap-3 p-3" style="width: 50%;">
             <h1 class="text-dark fw-semibold">Thanh toán</h1>
-            <form class="d-flex flex-column gap-3 p-3" action="" method="post">
-            @csrf
+            <form id="paymentForm" class="d-flex flex-column gap-3 p-3" method="get">
+                <input type="hidden" name="listSP" id="listSPInput">    
+                <input type="hidden" name="tongtien" value="{{$sum}}">
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Họ tên *</label>
                     <input class="p-2 rounded hover:border-blue-500" type="text" name="hoten" id="" value="{{$user->getIdNguoiDung()->getHoTen()}}" required>
@@ -96,54 +163,107 @@ document.addEventListener('DOMContentLoaded', function () {
                     </select>
                 </div>
                 <div class="d-flex flex-column" style="display: flex; align-items: center;">
-                    <button type="submit" name="submit" class="btn btn-info text-white p-3 fw-semibold fs-5" style="width: 200px;">Lưu</button>
+                    <button type="submit" class="btn btn-info text-white p-3 fw-semibold fs-5" style="width: 200px;">Lưu</button>
                 </div>
             </form>
             <?php
-                if(isset($_POST['submit'])&&($_POST['submit'])) {
-                    $tinh = $_POST['tinh'];
-                    $dvvc = $POST['dvvc'];
-                    $pttt = $_POST['pttt'];
-                    $diachi = $_POST['diachi'];
-                    echo 'tinh: '. $tinh . '-dvvc: ' . $dvvc. '-pttt: '. $pttt . '-diachi: '. $diachi;
-                }
+                // if(isset($_POST['submit'])&&($_POST['submit'])) {
+                //     $tinh = $_POST['tinh'];
+                //     $dvvc = $POST['dvvc'];
+                //     $pttt = $_POST['pttt'];
+                //     $diachi = $_POST['diachi'];
+                //     echo 'tinh: '. $tinh . '-dvvc: ' . $dvvc. '-pttt: '. $pttt . '-diachi: '. $diachi;
+                // }
                 
             ?>
         </div>  
         
         <div class="d-flex flex-column gap-3 p-3 bg-body-secondary rounded" style="width: 50%;height: 100%;">
-            <div class="d-flex justify-content-between">
-                <p class="fw-semibold fs-5" style="color: black;">Sản phẩm</p>
-                <p class="fw-semibold fs-5" style="color: black;">Thành tiền</p>
-            </div>
-            <hr style="color: gray;">
-            @foreach($listSP as $sp)
-                @php
-                    $sanPham = app(SanPham_BUS::class)->getModelById($sp->idsp);
-                    $total = $sanPham->getDonGia() * $sp->quantity;
-                    $tongTien += $total;
-                @endphp
-                <div class="d-flex justify-content-between gap-3">
-                    <div class="d-flex flex-row gap-3">
-                        <img src="/productImg/{{ $sp->idsp }}.webp" style="height: 150px;width: 150px;" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
-                        <div class="d-flex flex-column gap-2">
-                            <p class="text-dark fw-semibold fs-4">{{$sanPham->getTenSanPham()}}</p>
-                            <p class="text-dark fw-semibold fs-6">SL: {{$sp->quantity}}</p>
-                        </div>
-                    </div>
-                    <p class="text-danger fw-semibold fs-4">{{ number_format($total, 0, ',', '.') }}₫</p>
+            <form class="d-flex flex-column gap-3 p-3" id="formSubmit" action="{{route('payment.changestatus')}}" method="post">
+                <!-- <input type="hidden" name="listSP" id="listSPInput" value='{{ json_encode($listSP) }}'> -->
+                <!-- <input type="hidden" name="listSP" id="listSPInput" value='{{ json_encode($listSP) }}'> -->
+                @csrf
+                <meta name="csrf-token" content="{{ csrf_token() }}">
+                <input type="hidden" name="idHD" id="" value="{{$idHD}}">
+                <input type="hidden" name="listCTHD" id="listCTHD">
+                <input type="hidden" name="tinh" id="idtinh">
+                <input type="hidden" name="pttt" id="idpttt">
+                <input type="hidden" name="dvvc" id="iddvvc">
+                <input type="hidden" name="diachi" id="diachidata">
+                <div class="d-flex justify-content-between">
+                    <p class="fw-semibold fs-5" style="color: black;">Sản phẩm</p>
+                    <p class="fw-semibold fs-5" style="color: black;">Thành tiền</p>
                 </div>
                 <hr style="color: gray;">
-            @endforeach
-            <div class="d-flex flex-column gap-3">
-                <div class="d-flex justify-content-between">
-                    <p class="text-dark fw-semibold fs-4">Tạm tính</p>
-                    <p class="text-danger fw-semibold fs-4">{{ number_format($tongTien, 0, ',', '.') }}₫</p>
+                <div id="divSP">
+                    @if(is_array($listSP) || is_object($listSP))
+                        @foreach($listSP as $sp)
+                            {{-- xử lý sản phẩm --}}
+                            @php
+                                $sanPham = app(SanPham_BUS::class)->getModelById($sp->idsp);
+                                $total = $sanPham->getDonGia() * $sp->quantity;
+                                $tongTien += $total;
+                                $soluong = count(app(CTSP_BUS::class)->getCTSPIsNotSoldByIDSP($key->idsp));
+                                $flag = false;
+                                $tmp = false;
+                                if($soluong < $sp->quantity) {
+                                    $flag = true;
+                                    $tmp = true;
+                                }
+                            @endphp
+                            @if($tmp==true)
+                                <div class="alert alert-danger" role="alert">
+                                    Số lượng tồn kho không đủ để tiếp tục mua hàng
+                                </div>
+                            @endif
+                            <div data-idsp="{{$sp->idsp}}" data-quantity="{{$sp->quantity}}" class="d-flex justify-content-between gap-3">
+                                <div class="d-flex flex-row gap-3">
+                                    <img src="/productImg/{{ $sp->idsp }}.webp" style="height: 150px;width: 150px;" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
+                                    <div class="d-flex flex-column gap-2">
+                                        <p class="text-dark fw-semibold fs-4">{{$sanPham->getTenSanPham()}}</p>
+                                        <p class="text-dark fw-semibold fs-6">SL: {{$sp->quantity}}</p>
+                                        <p class="text-dark fw-semibold fs-6">
+                                        {{ number_format($sanPham->getDonGia(), 0, ',', '.') }}₫
+                                        </p>
+                                    </div>
+                                </div>
+                                <p class="text-danger fw-semibold fs-4">{{ number_format($total, 0, ',', '.') }}₫</p>
+                            </div>
+                            <hr style="color: gray;">
+                            @php
+                                $tmp = false;
+                            @endphp
+                        @endforeach
+                    @else
+                        <p>Không có sản phẩm nào trong giỏ hàng.</p>
+                    @endif
                 </div>
-                <div class="d-flex justify-content-between">
-                    <p class="text-dark fw-semibold fs-4">Phí vận chuyển</p>
-                    <p class="text-danger fw-semibold fs-4">{{ number_format($tongTien, 0, ',', '.') }}₫</p>
+                
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex justify-content-between">
+                        <p class="text-dark fw-semibold fs-4">Tạm tính</p>
+                        <p class="text-danger fw-semibold fs-4">{{ number_format($tongTien, 0, ',', '.') }}₫</p>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <p class="text-dark fw-semibold fs-4">Phí vận chuyển</p>
+                        <p class="text-danger fw-semibold fs-4" id="cpvc"></p>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <p class="text-dark fw-semibold fs-4">Tổng tiền</p>
+                        <p class="text-danger fw-semibold fs-4" id="tongtien">{{ number_format($sum, 0, ',', '.') }}₫</p>
+                    </div>
                 </div>
-            </div>
+                @if($flag == true)
+                    <div class="d-flex flex-column gap-3" style="align-items: center;">
+                        <button disabled id="saveHoaDon" class="btn btn-info text-white fs-4 fw-semibold" style="width: 300px;" type="submit">Thanh toán</button>
+                    </div>    
+                @else
+                    <div class="d-flex flex-column gap-3" style="align-items: center;">
+                        <button id="saveHoaDon" class="btn btn-info text-white fs-4 fw-semibold" style="width: 300px;" type="submit">Thanh toán</button>
+                    </div>
+                @endif
+                
+            </form>
+            
         </div>
     </div>

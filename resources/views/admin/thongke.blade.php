@@ -3,7 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="<?php echo csrf_token(); ?>">
+    <meta name="csrf-token" content="<?php
+
+use App\Bus\CPVC_BUS;
+use App\Bus\CTHD_BUS;
+use App\Bus\CTSP_BUS;
+use App\Bus\DVVC_BUS;
+use App\Bus\HoaDon_BUS;
+use App\Bus\PTTT_BUS;
+use App\Bus\Tinh_BUS;
+use App\Dao\CPVC_DAO;
+use App\Models\CPVC;
+use App\Models\CTHD;
+use App\Models\CTSP;
+
+ echo csrf_token(); ?>">
     <title>Thống Kê Khách Hàng</title>
     <!-- Bootstrap CSS -->
 </head>
@@ -418,3 +432,63 @@
 </body>
 
 </html>
+<?php
+    // $list = app(CPVC_DAO::class)->getByTinhAndDVVC(1, 1);
+    // echo $list->getChiPhiVC();
+    // // foreach($list as $it) {
+    // //     echo $it->getChiPhiVC().'<br>';
+    // // }
+    // $cthd = new CTHD(1,30000,'00100005',1);
+    // $tmp = app(CTHD_BUS::class)->addModel($cthd);
+    // if($tmp) echo 'success';
+    // else echo 'failed!';
+    // $ctsp = app(CTSP_BUS::class)->getCTSPBySoSeri('00100005');
+    // // $ctsp->setTrangThaiHD(0);
+    // $tmp = app(CTSP_BUS::class)->updateStatus($ctsp->getSoSeri(), 0);
+    // if($tmp) echo 'success';
+    // else echo 'failed';
+    // $tinh = app(Tinh_BUS::class)->getModelById(1);
+    // $pttt = app(PTTT_BUS::class)->getModelById(1);
+    // $dvvc = app(DVVC_BUS::class)->getModelById(1);
+    // echo $tinh->getTenTinh() .'-'. $pttt->getTenPTTT() .'-'. $dvvc->getTenDV();
+    // $hd = app(HoaDon_BUS::class)->getModelById(120);
+    // $hd->setTongTien(12000000);
+    // $tmp = app(HoaDon_BUS::class)->updateModel($hd);
+    // if($tmp) echo 'success!';
+    // else echo 'failed!';
+
+    // public function getCTHDByIDSPAndIDHD($idsp, $idhd) {
+    //     $list = [];
+    //     $listCTHD = $this->getCTHDbyIDHD($idhd);
+    //     foreach ($listCTHD as $key) {
+    //         # code...
+    //         // $sp = app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri());
+    //         if(app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri())->getId() == $idsp) {
+    //             array_push($list, $key);
+    //         }
+    //     }
+    //     return $list;
+    // }
+    $list = app(CTHD_BUS::class)->getCTHDByIDSPAndIDHD(1, 116);
+    if($list == []) {
+        echo 'empty <br>';
+    } else {
+        foreach ($list as $key) {
+            # code...
+            echo $key->getSoSeri() .'<br>';
+        }
+    }
+    // $sp = app(CTSP_BUS::class)->getSPBySoSeri('00100006');
+    // echo $sp->getId().'<br>';
+    $listCTHD = app(CTHD_BUS::class)->getCTHTbyIDHD(116);
+    foreach ($listCTHD as $key) {
+        # code...
+        // echo app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri())->getId() .'<br>';
+        if(app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri())->getId() == 1) {
+            var_dump($key);
+        }
+    }
+
+    
+    
+?>

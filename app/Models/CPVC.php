@@ -4,9 +4,11 @@ namespace App\Models;
 
 class CPVC
 {
-    private $idTinh, $idVC, $chiPhiVC;
+    private Tinh $idTinh;
+    private DVVC $idVC;
+    private $chiPhiVC;
 
-    public function __construct($idTinh, $idVC, $chiPhiVC)
+    public function __construct(Tinh $idTinh,DVVC $idVC, $chiPhiVC)
     {
         $this->idTinh = $idTinh;
         $this->idVC = $idVC;
@@ -14,12 +16,12 @@ class CPVC
     }
 
     // Getters
-    public function getIdTinh()
+    public function getIdTinh() : Tinh
     {
         return $this->idTinh;
     }
 
-    public function getIdVC()
+    public function getIdVC() : DVVC
     {
         return $this->idVC;
     }
@@ -30,12 +32,12 @@ class CPVC
     }
 
     // Setters
-    public function setIdTinh($idTinh)
+    public function setIdTinh(Tinh $idTinh)
     {
         $this->idTinh = $idTinh;
     }
 
-    public function setIdVC($idVC)
+    public function setIdVC(DVVC $idVC)
     {
         $this->idVC = $idVC;
     }

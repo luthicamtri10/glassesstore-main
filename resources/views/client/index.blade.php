@@ -620,6 +620,9 @@ use App\Bus\SanPham_BUS;
             @else
               <button type="button" class="btn btn-danger" style="width: 150px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
             @endif
+          @else
+              <button type="button" class="btn btn-danger" style="width: 150px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
+                
           @endif
         </div>
       </div>

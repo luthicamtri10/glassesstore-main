@@ -53,9 +53,10 @@ class HoaDon_DAO{
 
     public function update($e): int
     {
-        $sql = "UPDATE hoadon SET TRANGTHAI = ?, ORDERCODE = ? WHERE id = ?";
+        $sql = "UPDATE hoadon SET TRANGTHAI = ?, TONGTIEN = ? , ORDERCODE = ? WHERE id = ?";
         $args = [
             $e->getTrangThai()->value,
+            $e->getTongTien(),
             $e->getOrderCode(),
             $e->getId()
         ];
@@ -99,7 +100,7 @@ class HoaDon_DAO{
         $tinh = app(Tinh_BUS::class)->getModelById($rs['IDTINH']);
         $trangThai = strtoupper(trim($rs['TRANGTHAI'] ?? ''));
 
-        if (!in_array($trangThai, ['PAID', 'PENDING', 'EXPIRED', 'CANCELLED', 'REFUNDED', 'DANGGIAO', 'DAGIAO'])) {
+        if (!in_array($trangThai, ['PAID', 'PENDING', 'EXPIRED', 'CANCELLED', 'REFUNDED','DADAT', 'DANGGIAO', 'DAGIAO'])) {
             throw new \Exception("Trạng thái không hợp lệ (ID={$rs['ID']}): '$trangThai'");
         }
 

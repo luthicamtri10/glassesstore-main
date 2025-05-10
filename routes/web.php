@@ -4,11 +4,14 @@ use App\Bus\Auth_BUS;
 use App\Bus\CPVC_BUS;
 use App\Bus\CTGH_BUS;
 use App\Bus\CTQ_BUS;
+use App\Bus\CTSP_BUS;
+use App\Bus\DVVC_BUS;
 use App\Bus\GioHang_BUS;
 use App\Bus\Hang_BUS;
 use App\Bus\HoaDon_BUS;
 use App\Bus\LoaiSanPham_BUS;
 use App\Bus\NguoiDung_BUS;
+use App\Bus\PTTT_BUS;
 use App\Bus\SanPham_BUS;
 use App\Bus\TaiKhoan_BUS;
 use App\Bus\Tinh_BUS;
@@ -390,14 +393,21 @@ Route::get('/pay', function () {
         'listTinh' => $listTinh,
     ]);
 })->name('pay');
-
+Route::get('/process', function() {
+    return view('client.redirect');
+});
+// Route::view('/createdPayment','client.CreatePayment')->name('payment.create');
 Route::post('/hoadon', [HoaDonController::class, 'store'])->name('hoadon.store');
-
 Route::post('/admin/hoadon/update-status', [HoaDonController::class, 'updateStatus'])->name('admin.hoadon.update');
-
-Route::get('client/paymentsuccess', [HoaDonController::class, 'paymentSuccess'])->name('payment.success');
+// Route::get('client/paymentsuccess', [HoaDonController::class, 'paymentSuccess'])->name('payment.success');
+Route::post('client/paymentsuccess', [HoaDonController::class, 'paymentSuccess'])->name('payment.success');
+Route::post('client/paid',[HoaDonController::class, 'paid'])->name('payment.paid');
 Route::post('/createdPayMent', [HoaDonController::class, 'createdPayment'])->name('payment.create');
-
+Route::get('/createdPayment/search', [HoaDonController::class, 'search'])->name('payment.search');
+Route::post('/createdPayment/changeStatus', [HoaDonController::class, 'changeStatusHD'])->name('payment.changestatus');
+Route::get('/getCTHD', [HoaDonController::class, 'getCTHDByIDSPAndIDHD'])->name('payment.getCTHDByIDSPAndIDHD');
+// Route::get('/createdPayment/changeStatus','client.SuccessPayment');
+// Route::view('/createdPayment','client.CreatePayment');
 Route::post('/login', function (\Illuminate\Http\Request $request) {
     $email = $request->input('email-login');
     $password = $request->input('password-login');

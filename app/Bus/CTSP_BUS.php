@@ -27,4 +27,10 @@ class CTSP_BUS {
     public function getCTSPIsNotSoldByIDSP($idsp) {
         return $this->ctspDAO->getCTSPIsNotSoldByIDSP($idsp);
     }
+    public function getCTSPBySoSeri($soseri) {
+        return $this->ctspDAO->getCTSPBySoSeri($soseri);
+    }
+    public function updateStatus($soseri, $active) {
+        return $this->ctspDAO->updateStatus($soseri, $active);
+    }
 }
