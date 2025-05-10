@@ -55,7 +55,11 @@ class SanPham_DAO implements DAOInterface{
         WHERE id = ?";
         $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getIdKieuDang()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD(), $e->getId()];
         $result = database_connection::executeUpdate($sql, ...$args);
-        return is_int($result)? $result : 0;
+        if ($result) {
+            return $e->getId();
+        }
+
+        return 0;
     }
 
     public function delete(int $id): int
