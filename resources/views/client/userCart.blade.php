@@ -155,6 +155,10 @@ use App\Bus\SanPham_BUS;
                         <p>Loại</p>
                         <p class="text-danger fw-semibold">{{ $it->getIdSP()->getIdLSP()->gettenLSP() }}</p>
                     </div>
+                    <div class="d-flex justify-content-start gap-2">
+                        <p>Kiểu</p>
+                        <p class="text-danger fw-semibold">{{ $it->getIdSP()->getIdKieuDang()->gettenKieuDang() }}</p>
+                    </div>
                 </div>
                 <div>
                     <p class="fw-semibold fs-4">Đơn giá: {{ number_format($it->getIdSP()->getDonGia(), 0, ',', '.') }}₫</p>                

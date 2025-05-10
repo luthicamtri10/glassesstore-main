@@ -705,16 +705,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </a>
         <form action="" method="get" role="search" class="w-100">
           <ul class="d-flex justify-content-center gap-5 w-100 pt-4" >
-            <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="javascript:void(0)" class="nav-link text-white">Sản Phẩm </a></li>
-            <li class="nav-item fw-medium" style="position: relative;">
-    <form action="/index" method="get" role="search">
-        <input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px; outline: none; border: none; padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}">
-        <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555; padding: 10px;"></i>
-    </form>
-</li>
-            
-            <li class="nav-item fw-medium my-2 mx-2" id="item-xemthem">
-    <a href="#" class="nav-link text-white">Xem thêm</a>
+             <li class="nav-item fw-medium my-2 mx-2" id="item-xemthem">
+    <a href="#list-product" class="nav-link text-white">Sản Phẩm</a>
     <ul class="dropdown-menu">
         @foreach ($listLSP as $lsp)
             <li class="dropdown-item">
@@ -731,6 +723,14 @@ document.addEventListener('DOMContentLoaded', () => {
         @endforeach
     </ul>
 </li>
+           <!-- <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="javascript:void(0)" class="nav-link text-white">Sản Phẩm </a></li> -->
+            <li class="nav-item fw-medium" style="position: relative;">
+    <form action="/index" method="get" role="search">
+        <input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px; outline: none; border: none; padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}">
+        <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555; padding: 10px;"></i>
+    </form>
+</li>
+            
             <!-- <li class="nav-item fw-medium my-2" id="item-xemthem"><a href="" class="nav-link text-white">Xem Thêm <i class="fa-regular fa-angle-up"></i></a></li> -->
             <!-- <li class="nav-item fw-medium"><a href="#" class="nav-link text-white">Hành Trình Tử Tế</a></li> -->
             @if($isLogin && ($user->getIdQuyen()->getId() != 1 || $user->getIdQuyen()->getId() != 2))
@@ -813,7 +813,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- Lọc nâng cao -->
       <!-- Lọc nâng cao -->
 <div class="filter-dropdown filter-item" style="position: relative;">
-  <button type="button" class="btn btn-outline-secondary w-100 text-center filter-button" id="filter-toggle">Lọc nâng cao</button>
+  <button type="button" class="btn btn-outline-secondary w-100 text-center filter-button" id="filter-toggle">Tìm Kiếm</button>
   <div class="dropdown-menu p-3" id="filter-dropdown">
     <div class="filter-options">
       <label for="filter-hang" class="form-label">Hãng:</label>
@@ -823,7 +823,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <option value="{{ $h->getId() }}" {{ request('filter_hang') == $h->getId() ? 'selected' : '' }}>{{ $h->getTenHang() }}</option>
         @endforeach
       </select>
-      <label for="filter-lsp" class="form-label">Loại sản phẩm:</label>
+      <label for="filter-lsp" class="form-label">Loại mắt kính:</label>
       <select class="form-select mb-2" id="filter-lsp" name="filter_lsp">
         <option value="0">Xem tất cả</option>
         @foreach($listLSP as $lsp)
@@ -854,7 +854,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <!-- Lọc theo loại (lsp) -->
       <div class="filter-dropdown filter-item" style="position: relative;">
-        <button type="button" class="btn btn-outline-secondary w-100 text-center filter-button" id="lsp-toggle">Lọc theo loại</button>
+        <button type="button" class="btn btn-outline-secondary w-100 text-center filter-button" id="lsp-toggle">Loại Mắt Kính</button>
         <div class="dropdown-menu p-3" id="lsp-dropdown">
           <div class="filter-options">
             <select class="form-select mb-2" name="lsp" id="lsp">
@@ -871,7 +871,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <!-- Lọc theo hãng (hang) -->
       <div class="filter-dropdown filter-item" style="position: relative;">
-        <button type="button" class="btn btn-outline-secondary w-100 text-center filter-button" id="hang-toggle">Lọc theo hãng</button>
+        <button type="button" class="btn btn-outline-secondary w-100 text-center filter-button" id="hang-toggle">Hãng</button>
         <div class="dropdown-menu p-3" id="hang-dropdown">
           <div class="filter-options">
             <select class="form-select mb-2" name="hang" id="hang">
