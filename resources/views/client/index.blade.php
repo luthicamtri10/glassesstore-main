@@ -454,7 +454,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const modal = document.getElementById('productDetailModal');
         if (!modal) return;
 
-        modal.querySelector('input[name="idsp"]').value = this.dataset.idsp || '';
+        const idspInput = modal.querySelector('input[name="idsp"]');
+        if (idspInput) {
+            idspInput.value = this.dataset.idsp || '';
+        }
         modal.querySelector('div[name="tensp"]').textContent = this.dataset.tensp || 'Không xác định';
         modal.querySelector('div[name="hang"]').textContent = this.dataset.hang || 'Không xác định';
         modal.querySelector('div[name="lsp"]').textContent = this.dataset.lsp || 'Không xác định';
@@ -625,6 +628,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('productDetailModal');
             if (modal) {
                 bootstrap.Modal.getInstance(modal).hide();
+                // Xử lý backdrop nếu còn sót
+                setTimeout(() => {
+                    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style = '';
+                }, 300); // Đợi hiệu ứng modal đóng xong
             }
         }
     }
@@ -696,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </a>
         <form action="" method="get" role="search" class="w-100">
           <ul class="d-flex justify-content-center gap-5 w-100 pt-4" >
-            <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="#list-product" class="nav-link text-white">Sản Phẩm </li>
+            <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="javascript:void(0)" class="nav-link text-white">Sản Phẩm </a></li>
             <li class="nav-item fw-medium" style="position: relative;">
     <form action="/index" method="get" role="search">
         <input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px; outline: none; border: none; padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}">
