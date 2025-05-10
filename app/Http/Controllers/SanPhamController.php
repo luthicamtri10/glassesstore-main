@@ -31,16 +31,32 @@ class SanPhamController extends Controller
     // Xử lý thêm sản phẩm
     public function store(Request $request)
     {
-        $tenSanPham = $request->input('tenSanPham');
+        $validatedData = $request->validate([
+            'tenSanPham' => 'required|string|max:255',
+            'moTa' => 'required|string',
+            'thoiGianBaoHanh' => 'required|integer',
+            'anhSanPham' => 'required|image|mimes:webp|max:2048',
+        ], [
+            'tenSanPham.required' => 'Vui lòng nhập tên sản phẩm.',
+            'moTa.required' => 'Vui lòng nhập mô tả.',
+            'thoiGianBaoHanh.required' => 'Vui lòng nhập thời gian.',
+            'thoiGianBaoHanh.integer' => 'Phải là số.',
+            'anhSanPham.required' => 'Vui lòng chọn ảnh.',
+            'anhSanPham.image' => 'Ảnh sản phẩm không hợp lệ.',
+            'anhSanPham.mimes' => 'Ảnh sản phẩm phải có định dạng webp.',
+            'anhSanPham.max' => 'Ảnh sản phẩm không được lớn hơn 2MB.',
+        ]);
+
+        $tenSanPham = $validatedData['tenSanPham'];
         $idHang = $this->hangBUS->getModelById($request->input('idHang'));
         $idLSP = $this->loaiSanPhamBUS->getModelById($request->input('idLSP'));
         $idKieuDang = $this->kieuDangBUS->getModelById($request->input('idKieuDang'));
-        $moTa = $request->input('moTa');
+        $moTa = $validatedData['moTa'];
         // $donGia = $request->input('donGia');
-        $thoiGianBaoHanh = $request->input('thoiGianBaoHanh');
+        $thoiGianBaoHanh = $validatedData['thoiGianBaoHanh'];
 
         $anhSanPham = $request->file('anhSanPham');
-
+        // dd($request->all());
         // Tạo sản phẩm mới
         $sanPham = new SanPham(
             null,
@@ -53,7 +69,7 @@ class SanPhamController extends Controller
             $thoiGianBaoHanh,
             1
         );
-
+       
         // Thêm sản phẩm vào database và lấy ID mới
         $newSanPham = $this->sanPhamBUS->addModel($sanPham);
 
@@ -62,9 +78,6 @@ class SanPhamController extends Controller
             $tenAnh = $newSanPham . '.' . $anhSanPham->getClientOriginalExtension();
             $anhSanPham->move(public_path('productImg'), $tenAnh); // Di chuyển ảnh
         } 
-        // else {
-        //     dd('Không có file ảnh nào được gửi');
-        // }
 
         // Trả về thông báo thành công
         return redirect()->back()->with('success', 'Thêm sản phẩm thành công!');
@@ -77,9 +90,7 @@ class SanPhamController extends Controller
         $idLSP = $this->loaiSanPhamBUS->getModelById($request->input('idLSP'));
         $idKieuDang = $this->kieuDangBUS->getModelById($request->input('idKieuDang'));
         $moTa = $request->input('moTa');
-        // $donGia = $request->input('donGia');
         $thoiGianBaoHanh = $request->input('thoiGianBaoHanh');
-        // $trangThai = $request->input('trangThai');
 
         $anhSanPham = $request->file('anhSanPham');
 
