@@ -162,7 +162,7 @@ class CTPN_DAO implements DAOInterface {
         if ($row = $rs->fetch_assoc()) {
             $giaNhap = (float)$row['GIANHAP'];
             $phanTramLN = (float)$row['PHANTRAMLN'];
-            $giaBan = $giaNhap + ($giaNhap * $phanTramLN);
+            $giaBan = $giaNhap + ($giaNhap * $phanTramLN/100);
             return $giaBan;
         }
     

@@ -9,6 +9,8 @@ use App\Bus\LoaiSanPham_BUS;
 use Illuminate\Http\Request;
 use App\Bus\SanPham_BUS;
 use App\Models\SanPham;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 
 use function Laravel\Prompts\alert;
@@ -109,11 +111,24 @@ class SanPhamController extends Controller
 
         // Thêm sản phẩm vào database và lấy ID mới
         $newSanPham = $this->sanPhamBUS->updateModel($sanPham);
+        Log::info('id'. $idSanPham);
 
         // Xử lý file ảnh nếu có gửi lên
         if ($anhSanPham) {
-            $tenAnh = $newSanPham . '.' . $anhSanPham->getClientOriginalExtension();
+            $tenAnh = $idSanPham . '.webp'; // Đảm bảo tên ảnh là <idSanPham>.webp
+            $duongDanAnhCu = public_path('productImg/' . $tenAnh);
+
+            // Xóa ảnh cũ nếu tồn tại
+            if (File::exists($duongDanAnhCu)) {
+                Log::info('Xóa ảnh cũ: ' . $duongDanAnhCu, ['exists' => File::exists($duongDanAnhCu)]);
+                File::delete($duongDanAnhCu);
+            }
+           
+            
+
+            // Lưu ảnh mới
             $anhSanPham->move(public_path('productImg'), $tenAnh);
+            
         }
         return redirect()->back()->with('success', 'Cập nhật thành công!');
     }

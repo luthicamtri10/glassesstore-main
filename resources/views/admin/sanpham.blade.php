@@ -73,32 +73,16 @@
         // const donGiaSanPhamInput = modal.querySelector('input[name="donGia"]');
         const thoiGianBaoHanhSanPhamInput = modal.querySelector('input[name="thoiGianBaoHanh"]');
         const moTaSanPhamInput = modal.querySelector('textarea[name="moTa"]');
-        // const trangThaiSelect = modal.querySelector('select[name="trangThai"]');
-
-        console.log({
-          idSanPhamInput: idSanPhamInput,
-          tenSanPhamInput: tenSanPhamInput,
-          hangSanPhamInput: hangSanPhamInput,
-          loaiSanPhamInput: loaiSanPhamInput,
-          kieuDangInput: kieuDangInput,
-      
-          thoiGianBaoHanhSanPhamInput: thoiGianBaoHanhSanPhamInput,
-          moTaSanPhamInput: moTaSanPhamInput,
-        
-        });
+  
 
         idSanPhamInput.value = this.getAttribute('data-id');
         tenSanPhamInput.value = this.getAttribute('data-tenSanPham');
         hangSanPhamInput.value = this.getAttribute('data-hang');
         loaiSanPhamInput.value = this.getAttribute('data-loaisanpham');
         kieuDangInput.value = this.getAttribute('data-kieudang');
-        // donGiaSanPhamInput.value = this.getAttribute('data-dongia');
         thoiGianBaoHanhSanPhamInput.value = this.getAttribute('data-thoigianbaohanh');
         moTaSanPhamInput.value = this.getAttribute('data-mota');
 
-        // if (trangThaiSelect) {
-        //   trangThaiSelect.value = this.getAttribute('data-trangthai').trim();
-        // }
         const idSanPham = this.getAttribute('data-id').trim();
         previewImage.src = '/productImg/' + idSanPham + '.webp';
       });
