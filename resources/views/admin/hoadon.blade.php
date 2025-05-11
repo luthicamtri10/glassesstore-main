@@ -105,13 +105,27 @@ document.addEventListener("DOMContentLoaded", function () {
         { value: "CANCELLED", label: "Đã hủy" },
         { value: "REFUNDED", label: "Đã hoàn tiền" },
         { value: "DANGGIAO", label: "Đang giao" },
-        { value: "DAGIAO", label: "Đã giao" }
+        { value: "DAGIAO", label: "Đã giao" },
+        { value: "DADAT", label: "Đã đặt" }
     ];
 
     // Nếu trạng thái hiện tại là "PAID", hiển thị "PAID", "DANGGIAO" và "DAGIAO"
     if (trangThai === "PAID") {
         const allowedStatuses = statuses.filter(status => 
-            status.value === "PAID" || status.value === "DANGGIAO"
+            status.value === "PAID" || status.value === "DADAT"
+        );
+        allowedStatuses.forEach(status => {
+            const option = document.createElement("option");
+            option.value = status.value;
+            option.textContent = status.label;
+            if (status.value === trangThai) {
+                option.selected = true;
+            }
+            trangThaiSelect.appendChild(option);
+        });
+    } else if (trangThai === "DADAT") {
+        const allowedStatuses = statuses.filter(status => 
+            status.value === "DADAT" || status.value === "DANGGIAO"
         );
         allowedStatuses.forEach(status => {
             const option = document.createElement("option");
@@ -254,6 +268,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         @case(\App\Enum\HoaDonEnum::DAGIAO)
                             Đã giao
                             @break
+                        @case(\App\Enum\HoaDonEnum::DADAT)
+                            Đã đặt
+                            @break
                         @default
                             {{ $status->value }}
                     @endswitch
@@ -332,6 +349,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span class="badge bg-success">Đang giao</span>
                         @elseif($hoaDon->getTrangThai() == \App\Enum\HoaDonEnum::DAGIAO)
                         <span class="badge bg-success">Đã giao</span>
+                        @elseif($hoaDon->getTrangThai() == \App\Enum\HoaDonEnum::DADAT)
+                        <span class="badge bg-success">Đã đặt</span>
                         @endif
                     </td>
                     <td>
