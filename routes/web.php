@@ -449,7 +449,7 @@ Route::post('/createdPayMent', [HoaDonController::class, 'createdPayment'])->nam
 Route::get('/createdPayment/search', [HoaDonController::class, 'search'])->name('payment.search');
 Route::post('/createdPayment/changeStatus', [HoaDonController::class, 'changeStatusHD'])->name('payment.changestatus');
 Route::get('/getCTHD', [HoaDonController::class, 'getCTHDByIDSPAndIDHD'])->name('payment.getCTHDByIDSPAndIDHD');
-Route::post('/createdPayment/muangay', [HoaDonController::class, 'muangay'])->name('payment.muangay');
+Route::post('/muangay', [HoaDonController::class, 'muangay'])->name('payment.muangay');
 Route::post('/login', function (\Illuminate\Http\Request $request) {
     $email = $request->input('email-login');
     $password = $request->input('password-login');

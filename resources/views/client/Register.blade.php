@@ -4,38 +4,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         
-        // const form = document.querySelector('form[name="information-user"]');
-
-        // form.addEventListener('submit', function (e) {
-        //     e.preventDefault(); // Ngăn chặn hành động gửi form mặc định
-            
-        //     const formData = new FormData(form);
-        //     const params = new URLSearchParams(formData).toString();
-
-        //     fetch("{{ route('register.register') }}", {
-        //         method: 'POST',
-        //         headers: {
-        //             'X-CSRF-TOKEN': '{{ csrf_token() }}', // Thêm CSRF token
-        //             'Content-Type': 'application/x-www-form-urlencoded',
-        //         },
-        //         body: params,
-        //     })
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         // Xử lý phản hồi
-        //         if (data.success) {
-        //             // Nếu thành công, có thể chuyển hướng hoặc hiển thị thông báo
-        //             alert(data.message || 'Đăng ký thành công!');
-        //             console.log(data.message);
-        //             window.location.href = '/login'; // Chuyển hướng đến trang đăng nhập
-        //         } else {
-        //             // Hiển thị thông báo lỗi
-        //             console.log(data.message);
-        //             alert(data.message || 'Đăng ký thất bại!');
-        //         }
-        //     })
-        //     .catch(error => console.error('Error:', error));
-        // });
     });
 </script>
 

@@ -198,6 +198,7 @@ class HoaDonController extends Controller {
         $hoaDon->setId($newId);
 
         // $listSP = json_decode($request->input('listSP'), true);
+        // dd($listSP);
         return view('client.CreatePayMent', [
             'listSP' => $listSP,
             'user' => $user,
@@ -210,26 +211,30 @@ class HoaDonController extends Controller {
 
     }
     public function muangay(Request $request) {
-        dd($request->all());
-        // $listSP = $request->input('listSP');
-        $idsp = $request->input('idsp');
+        // Lấy idsp và quantity từ request
+        // dd($request->all());
+        $idsp = $request->input('idsp2'); // Đảm bảo sử dụng đúng tên trường
         $quantity = $request->input('quantity');
+    
+        // Lấy thông tin người dùng
         $email = app(Auth_BUS::class)->getEmailFromToken();
         $user = app(TaiKhoan_BUS::class)->getModelById($email);
         $isLogin = app(Auth_BUS::class)->isAuthenticated();
-        $listPTTT = app(PTTT_BUS::class)->getAllModels();
-        $listTinh = app(Tinh_BUS::class)->getAllModels();
-        $listDVVC = app(DVVC_BUS::class)->getAllModels();
+    
+        // Lấy giá sản phẩm
         $gia = app(SanPham_BUS::class)->getModelById($idsp)->getDonGia();
+    
+        // Tạo danh sách sản phẩm
         $listSP = [[
             'idsp' => $idsp,
             'price' => $gia,
             'quantity' => $quantity
-        ]];
-        // $listSP = json_decode($listSP); 
+        ]]; // Sử dụng mảng để tạo danh sách sản phẩm
+        // $listSP = [];
+        
+        // Tạo hóa đơn
         $hoaDon = new HoaDon(
             null,
-            // null,
             $user,
             $this->nguoiDungBUS->getModelById(1),
             0.0,
@@ -240,18 +245,19 @@ class HoaDonController extends Controller {
             $user->getIdNguoiDung()->getTinh(), 
             HoaDonEnum::PENDING
         );
-
+    
         $newId = $this->hoaDonBUS->addModel($hoaDon);
         $hoaDon->setId($newId);
-
-        // $listSP = json_decode($request->input('listSP'), true);
-        return view('client.CreatePayMent', [
-            'listSP' => $listSP,
+    
+        // Trả về view với dữ liệu cần thiết
+        // dd($listSP);
+        return view('client.MuaNgay', [
+            'listSP' => $listSP, // Trả về danh sách sản phẩm
             'user' => $user,
             'isLogin' => $isLogin,
-            'listPTTT' => $listPTTT,
-            'listTinh' => $listTinh,
-            'listDVVC' => $listDVVC,
+            'listPTTT' => app(PTTT_BUS::class)->getAllModels(),
+            'listTinh' => app(Tinh_BUS::class)->getAllModels(),
+            'listDVVC' => app(DVVC_BUS::class)->getAllModels(),
             'idHD' => $hoaDon->getId()
         ]);
     }

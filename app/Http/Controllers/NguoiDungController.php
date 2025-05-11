@@ -24,6 +24,16 @@ class NguoiDungController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'fullname' => 'required|string|max:255',
+            'birthdate' => 'required|date',
+            'address' => 'required|string|max:255',
+            'idquyen' => 'required|exists:quyen,id',
+            'idnguoidung' => 'required|exists:nguoidung,id',
+            'gender' => 'required|in:MALE,FEMALE,UNDEFINED', // Validate gender
+            'sdt' => 'required|regex:/^[0-9]{10,11}$/', // Validate phone number
+            'cccd' => 'required|digits:12', // Validate ID card
+        ]);
         $fullname = $request->input('fullname');
         $birthdate = $request->input('birthdate');
         $address = $request->input('address');  
@@ -55,6 +65,16 @@ class NguoiDungController extends Controller
 
     public function update(Request $request)
     {
+        $request->validate([
+            'id' => 'required|exists:nguoidung,id', // Ensure ID exists
+            'HOTEN' => 'required|string|max:255',
+            'NGAYSINH' => 'required|date',
+            'GIOITINH' => 'required|in:MALE,FEMALE,UNDEFINED', // Validate gender
+            'DIACHI' => 'required|string|max:255',
+            'IDTINH' => 'required|exists:tinh,id', // Validate province
+            'SODIENTHOAI' => 'required|regex:/^[0-9]{10,11}$/', // Validate phone number
+            'CCCD' => 'required|digits:12', // Validate ID card
+        ]);
         $id = $request->input('id');
         $hoten = $request->input('HOTEN');
         $ngaysinh = $request->input('NGAYSINH');

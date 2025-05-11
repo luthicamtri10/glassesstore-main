@@ -24,13 +24,13 @@ class TaiKhoanController extends Controller
     public function store(Request $request)
     {
         // Validation dữ liệu
-        // $request->validate([
-        //     'username' => 'required|string|max:255',
-        //     'email' => 'required|email|unique:tai_khoan,email',
-        //     'password' => 'required|min:6',
-        //     'idquyen' => 'required|exists:quyen,id',
-        //     'idnguoidung' => 'required|exists:nguoi_dung,id',
-        // ]);
+        $request->validate([
+            'username' => 'required|string|max:255',
+            'email' => 'required|email|unique:taikhoan,email',
+            'password' => 'required|min:6',
+            'idquyen' => 'required|exists:quyen,id',
+            'idnguoidung' => 'required|exists:nguoidung,id',
+        ]);
 
         // Lấy dữ liệu từ form
         $tenTK = $request->input('username');
@@ -50,6 +50,13 @@ class TaiKhoanController extends Controller
         return redirect()->back()->with('success', 'Tài khoản đã được thêm thành công!');
     }
     public function update(Request $request) {
+        $request->validate([
+            'username' => 'required|string|max:255',
+            'email' => 'required|email|unique:taikhoan,email',
+            // 'password' => 'required|min:6',
+            'idquyen' => 'required|exists:quyen,id',
+            'idnguoidung' => 'required|exists:nguoidung,id',
+        ]);
         $tenTK = $request->input('username');
         $email = $request->input('email');
         $password = $request->input('password');  // Mã hóa mật khẩu

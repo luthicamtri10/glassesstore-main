@@ -222,19 +222,28 @@
         @csrf  <!-- Thêm csrf token để bảo vệ bảo mật -->
           <div class="col-md-6">
               <label for="inputEmail4" class="form-label" name="username">Username</label>
-              <input type="text" class="form-control" name="username">
+              <input type="text" class="form-control" name="username" value="{{ old('username') }}">
+              <div class="d-flex justify-content-end">
+                @error('username') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="col-md-6">
               <label for="inputEmail4" class="form-label" name="email">Email</label>
-              <input type="text" class="form-control" name="email">
+              <input type="text" class="form-control" name="email" value="{{ old('email') }}">
+              <div class="d-flex justify-content-end">
+                @error('email') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="col-md-6">
               <label for="inputPassword4" class="form-label" name="password">Password</label>
-              <input type="password" class="form-control" name="password">
+              <input type="password" class="form-control" name="password" value="{{ old('password') }}">
+              <div class="d-flex justify-content-end">
+                @error('password') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="col-md-6">
               <label for="inputGroup" class="form-label">Nhóm quyền</label>
-              <select id="inputGroup" class="form-select" name="idquyen">
+              <select id="inputGroup" class="form-select" name="idquyen" value="{{ old('idquyen') }}">
                 <option selected disabled>Chọn quyền</option>
                 @foreach($listQ as $it)
                     <option value="{{ $it->getId() }}">
@@ -242,10 +251,13 @@
                     </option>
                 @endforeach
               </select>
+              <div class="d-flex justify-content-end">
+                @error('idquyen') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="col-md-6">
               <label for="inputGroup" class="form-label">Người dùng</label>
-              <select id="inputGroup" class="form-select" name="idnguoidung">
+              <select id="inputGroup" class="form-select" name="idnguoidung" value="{{ old('idnguoidung') }}">
                 <option selected disabled>Chọn người dùng</option>
                 @foreach($listND as $it)
                     <option value="{{ $it->getId() }}">
@@ -253,6 +265,9 @@
                     </option>
                 @endforeach
               </select>
+              <div class="d-flex justify-content-end">
+                @error('idnguoidung') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <!-- <div class="col-md-6">
               <label for="inputStatus" class="form-label">Trạng thái</label>
@@ -284,19 +299,28 @@
         @csrf  <!-- Thêm csrf token để bảo vệ bảo mật -->
           <div class="col-md-6">
               <label for="inputEmail4" class="form-label" name="username">Username</label>
-              <input type="text" class="form-control" name="username">
+              <input type="text" class="form-control" name="username" value="{{old('username')}}">
+              <div class="d-flex justify-content-end">
+                @error('username') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="col-md-6">
               <label for="inputEmail4" class="form-label" name="email">Email</label>
-              <input type="text" class="form-control" name="email">
+              <input type="text" class="form-control" name="email" value="{{old('email')}}">
+              <!-- <div class="d-flex justify-content-end">
+                @error('email') <div class="text-danger">{{ $message }}</div> @enderror
+              </div> -->
           </div>
           <div class="col-md-6">
               <label for="inputPassword4" class="form-label" name="password">Mật khẩu mới (để trống nếu không đổi):</label>
-              <input type="password" class="form-control" name="password" placeholder="********">
+              <input type="password" class="form-control" name="password" placeholder="********" value="{{old('password')}}">
+              <!-- <div class="d-flex justify-content-end">
+                @error('password') <div class="text-danger">{{ $message }}</div> @enderror
+              </div> -->
           </div>
           <div class="col-md-6">
               <label for="inputGroup" class="form-label">Nhóm quyền</label>
-              <select id="inputGroup" class="form-select" name="idquyen">
+              <select id="inputGroup" class="form-select" name="idquyen" value="{{old('idquyen')}}">
                 <option selected disabled>Chọn quyền</option>
                 @foreach($listQ as $it)
                     <option value="{{ $it->getId() }}">
@@ -304,10 +328,13 @@
                     </option>
                 @endforeach
               </select>
+              <div class="d-flex justify-content-end">
+                @error('idquyen') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="col-md-6">
               <label for="inputGroup" class="form-label">Người dùng</label>
-              <select id="inputGroup" class="form-select" name="idnguoidung">
+              <select id="inputGroup" class="form-select" name="idnguoidung" value="{{old('idnguoidung')}}">
                 <option selected disabled>Chọn người dùng</option>
                 @foreach($listND as $it)
                     <option value="{{ $it->getId() }}">
@@ -315,6 +342,9 @@
                     </option>
                 @endforeach
               </select>
+              <div class="d-flex justify-content-end">
+                @error('idnguoidung') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <!-- <div class="col-md-6">
               <label for="inputStatus" class="form-label">Trạng thái</label>

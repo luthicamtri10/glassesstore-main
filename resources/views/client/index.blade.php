@@ -455,9 +455,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!modal) return;
 
         const idspInput = modal.querySelector('input[name="idsp"]');
+        const idspInput2 = modal.querySelector('input[name="idsp2"]');
+        const price = modal.querySelector('input[name="price"]');
         if (idspInput) {
             idspInput.value = this.dataset.idsp || '';
+            idspInput2.value = this.dataset.idsp || '';
+            price.value = this.dataset.price;
+            
         }
+        
         modal.querySelector('div[name="tensp"]').textContent = this.dataset.tensp || 'Không xác định';
         modal.querySelector('div[name="hang"]').textContent = this.dataset.hang || 'Không xác định';
         modal.querySelector('div[name="lsp"]').textContent = this.dataset.lsp || 'Không xác định';
@@ -775,6 +781,7 @@ document.addEventListener('DOMContentLoaded', () => {
                       data-kieudang="{{ $sp->getIdKieuDang() ? $sp->getIdKieuDang()->getTenKieuDang() : 'Không xác định' }}"
                       data-mota="{{ $sp->getMoTa() }}"
                       data-dongia="{{ number_format($sp->getDonGia(), 0, ',', '.') }}₫"
+                      data-price="{{$sp->getDonGia()}}"
                       data-tgbh="{{ $sp->getThoiGianBaoHanh() }}"
                       data-img="/productImg/{{ $sp->getId() }}.webp"
                       data-bs-toggle="modal"
@@ -1178,8 +1185,10 @@ document.addEventListener('DOMContentLoaded', () => {
               </form>
               <form action="{{route('payment.muangay')}}" method="post">
                   @csrf
-                  <input type="hidden" name="idsp" value="">
+                  <input type="hidden" name="idsp2" value="">
                   <input type="hidden" name="quantity" value="1">
+                  <input type="hidden" name="price" value="">
+                  <input type="hidden" name="listSP" id="listSP"> 
                   <button type="submit" class="btn btn-light" style="width: 150px;">Mua ngay</button>
               </form>
             @else

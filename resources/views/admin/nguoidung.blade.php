@@ -243,28 +243,40 @@
         @csrf  <!-- Thêm csrf token để bảo vệ bảo mật -->
           <div class="col-md-6">
               <label for="inputEmail4" class="form-label">Họ tên</label>
-              <input type="text" class="form-control" name="fullname">
+              <input type="text" class="form-control" name="fullname" value="{{old('fullname')}}">
+              <div class="d-flex justify-content-end">
+                @error('fullname') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="col-md-6">
               <label for="inputEmail4" class="form-label" name="birthdate">Ngày sinh</label>
-              <input type="date" class="form-control" name="birthdate">
+              <input type="date" class="form-control" name="birthdate" value="{{old('birthdate')}}">
+              <div class="d-flex justify-content-end">
+                @error('birthdate') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="col-md-6">
               <label for="inputPassword4" class="form-label">Giới tính</label>
-              <select name="gender" id="inputGroup" class="form-select">
+              <select name="gender" id="inputGroup" class="form-select" value="{{old('gender')}}">
                 <option selected disabled>Chọn giới tính</option>
                 <option value="MALE">Nam</option>
                 <option value="FEMALE">Nữ</option>
                 <option value="UNDEFINED">Khác</option>
               </select>
+              <div class="d-flex justify-content-end">
+                @error('gender') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="col-md-6">
               <label for="inputGroup" class="form-label">Địa chỉ</label>
-              <input type="text" class="form-control" name="address">
+              <input type="text" class="form-control" name="address" value="{{old('address')}}">
+              <div class="d-flex justify-content-end">
+                @error('address') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="col-md-6">
               <label for="inputGroup" class="form-label">Tỉnh</label>
-              <select id="inputGroup" class="form-select" name="tinh">
+              <select id="inputGroup" class="form-select" name="tinh" value="{{old('tinh')}}">
                 <option selected disabled>Chọn tỉnh</option>
                 @foreach($listTinh as $it)
                     <option value="{{ $it->getId() }}">
@@ -272,14 +284,23 @@
                     </option>
                 @endforeach
               </select>
+              <div class="d-flex justify-content-end">
+                @error('tinh') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="col-md-6">
               <label for="inputEmail4" class="form-label" name="sdt">Số điện thoại</label>
-              <input type="text" class="form-control" name="sdt">
+              <input type="text" class="form-control" name="sdt" value="{{old('sdt')}}">
+              <div class="d-flex justify-content-end">
+                @error('sdt') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="col-md-6">
               <label for="inputEmail4" class="form-label" name="cccd">CCCD</label>
-              <input type="text" class="form-control" name="cccd">
+              <input type="text" class="form-control" name="cccd" value="{{old('cccd')}}">
+              <div class="d-flex justify-content-end">
+                @error('cccd') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lưu</button>
@@ -290,6 +311,8 @@
     </div>
   </div>
 </div>
+
+
 <div class="modal fade" id="userUpdateModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg"> <!-- modal-lg để modal to hơn -->
     <div class="modal-content">
@@ -303,28 +326,40 @@
         <input type="hidden" name="id">
         <div class="col-md-6">
             <label for="inputEmail4" class="form-label">Họ tên</label>
-            <input type="text" class="form-control" name="HOTEN">
+            <input type="text" class="form-control" name="HOTEN" value="{{old('HOTEN')}}">
+            <div class="d-flex justify-content-end">
+                @error('HOTEN') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
         </div>
         <div class="col-md-6">
             <label for="inputEmail4" class="form-label">Ngày sinh</label>
-            <input type="date" class="form-control" name="NGAYSINH">
+            <input type="date" class="form-control" name="NGAYSINH" value="{{old('NGAYSINH')}}">
+            <div class="d-flex justify-content-end">
+                @error('NGAYSINH') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
         </div>
         <div class="col-md-6">
             <label for="inputPassword4" class="form-label">Giới tính</label>
-            <select name="GIOITINH" id="inputGroup" class="form-select">
+            <select name="GIOITINH" id="inputGroup" class="form-select" value="{{old('GIOITINH')}}">
                 <option selected disabled>Chọn giới tính</option>
                 <option value="MALE">Nam</option>
                 <option value="FEMALE">Nữ</option>
                 <option value="UNDEFINED">Khác</option>
             </select>
+            <div class="d-flex justify-content-end">
+                @error('GIOTINH') <div class="text-danger">{{ $message }}</div> @enderror
+            </div>
         </div>
         <div class="col-md-6">
             <label for="inputGroup" class="form-label">Địa chỉ</label>
-            <input type="text" class="form-control" name="DIACHI">
+            <input type="text" class="form-control" name="DIACHI" value="{{old('DIACHI')}}">
+            <div class="d-flex justify-content-end">
+                @error('DIACHI') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
         </div>
         <div class="col-md-6">
             <label for="inputGroup" class="form-label">Tỉnh</label>
-            <select id="inputGroup" class="form-select" name="IDTINH">
+            <select id="inputGroup" class="form-select" name="IDTINH" value="{{old('IDTINH')}}">
                 <option selected disabled>Chọn tỉnh</option>
                 @foreach($listTinh as $it)
                     <option value="{{ $it->getId() }}">
@@ -332,14 +367,23 @@
                     </option>
                 @endforeach
             </select>
+            <div class="d-flex justify-content-end">
+                @error('IDTINH') <div class="text-danger">{{ $message }}</div> @enderror
+            </div>
         </div>
         <div class="col-md-6">
             <label for="inputEmail4" class="form-label">Số điện thoại</label>
-            <input type="text" class="form-control" name="SODIENTHOAI">
+            <input type="text" class="form-control" name="SODIENTHOAI" value="{{old('SODIENTHOAI')}}">
+            <div class="d-flex justify-content-end">
+                @error('SODIENTHOAI') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
         </div>
         <div class="col-md-6">
             <label for="inputEmail4" class="form-label">CCCD</label>
-            <input type="text" class="form-control" name="CCCD">
+            <input type="text" class="form-control" name="CCCD" value="{{old('CCCD')}}">
+            <div class="d-flex justify-content-end">
+                @error('CCCD') <div class="text-danger">{{ $message }}</div> @enderror
+              </div>
         </div>
         <div class="col-md-6">
             <label for="inputStatus" class="form-label">Trạng thái</label>
