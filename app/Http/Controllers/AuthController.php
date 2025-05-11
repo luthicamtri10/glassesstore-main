@@ -20,14 +20,16 @@ class AuthController extends Controller {
     }
     public function login($email, $password)
     {
-        if($this->auth_bus->login($email, $password)) {
-            // return redirect()->back()->with('success','Nguời dùng đăng nhập thành công!');
-            return true;
-        } else {
-            // return redirect()->back()->with('error','Tài khoản đã bị khóa!');
-            return false;
+        // Kiểm tra email và password trống
+        if (empty($email) || empty($password)) {
+            return redirect()->back()->with('error', 'Email và mật khẩu không được để trống!');
         }
-        
+
+        if($this->auth_bus->login($email, $password)) {
+            return redirect()->back()->with('success', 'Đăng nhập thành công!');
+        } else {
+            return redirect()->back()->with('error', 'Email hoặc mật khẩu không đúng!');
+        }
     }
     public function logout(Request $request)
     {
