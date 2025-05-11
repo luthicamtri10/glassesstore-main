@@ -99,7 +99,7 @@ class HoaDon_DAO{
         $tinh = app(Tinh_BUS::class)->getModelById($rs['IDTINH']);
         $trangThai = strtoupper(trim($rs['TRANGTHAI'] ?? ''));
 
-        if (!in_array($trangThai, ['PAID', 'PENDING', 'EXPIRED', 'CANCELLED', 'REFUNDED', 'DANGGIAO', 'DAGIAO'])) {
+        if (!in_array($trangThai, ['PAID', 'PENDING', 'EXPIRED', 'CANCELLED', 'REFUNDED', 'DANGGIAO', 'DAGIAO', 'DADAT'])) {
             throw new \Exception("Trạng thái không hợp lệ (ID={$rs['ID']}): '$trangThai'");
         }
 
