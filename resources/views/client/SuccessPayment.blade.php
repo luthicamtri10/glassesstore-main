@@ -51,6 +51,11 @@
     <p>Số điện thoại: {{$user->getIdNguoiDung()->getSoDienThoai()}}</p>
     <p>Thanh toán: {{$hoaDon->getIdPTTT()->getTenPTTT()}}</p>
     <p>Đơn vị vận chuyển: {{$dvvc->getTenDV()}}</p>
+    @if($hoaDon->getIdPTTT()->getId()!=1)
+    <a href="/lich-su-don-hang/dadat">
+        <button class="btn btn-info">Thanh toán ngay</button>
+    </a>
+    @endif
     <hr>
     <table  class="table table-hover">
         <thead>

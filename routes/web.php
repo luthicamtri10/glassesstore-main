@@ -403,7 +403,7 @@ Route::post('/admin/khuyenmai/controlDelete', [KhuyenMaiController::class, 'cont
 use App\Http\Controllers\HistoryController;
 
 Route::get('/lich-su-don-hang', [HistoryController::class, 'showOrderHistory'])->name('order.history');
-
+Route::get('/lich-su-don-hang/dadat', [HistoryController::class, 'showOrderStatusDADAT'])->name('order.history.dadat');
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BaoHanhController;
 use App\Http\Controllers\CTPNController;

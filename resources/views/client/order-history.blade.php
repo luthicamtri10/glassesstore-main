@@ -277,6 +277,14 @@ main {
     </style>
 </head>
 <body>
+    <?php
+        use App\Bus\HoaDon_BUS;
+    ?>
+    @if(session('error')) 
+        <div class="alert alert-danger" role="alert">
+            {{session('error')}}
+        </div>
+    @endif
     <header>
         <div class="text-white" id="navbar-ctn">
             <div class="top-nav">
@@ -446,6 +454,7 @@ main {
                                 $groupedProducts[$key]['quantity']++;
                             }
                         }
+                        $hoaDon = app(HoaDon_BUS::class)->getModelById($orderData['id']);
                     @endphp
                     <div class="modal fade" id="orderDetailModal-{{ $orderData['id'] }}" tabindex="-1" aria-labelledby="orderDetailModalLabel-{{ $orderData['id'] }}" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -460,6 +469,14 @@ main {
                                     <p><strong>Email khách hàng:</strong> {{ $orderData['emailKhachHang'] ?? 'Không xác định' }}</p>
                                     <p><strong>Tỉnh:</strong> {{ $orderData['tinh'] ?? 'Không xác định' }}</p>
                                     <p><strong>Địa chỉ:</strong> {{ $orderData['diaChi'] ?? 'Không xác định' }}</p>
+                                    <form action="{{ route('payment.paid') }}" method="POST">
+    @csrf
+    <input type="hidden" name="id" value="{{ $hoaDon->getId() }}">
+    <input type="hidden" name="tongtien" value="{{ $hoaDon->getTongTien() }}">
+    <input type="hidden" name="ordercode" value="{{ $hoaDon->getOrderCode() }}">
+    <button type="submit" class="btn btn-info m-3">Thanh toán với PayOS</button>
+</form>
+
                                     <h6>Danh sách sản phẩm:</h6>
                                     <table class="table table-striped">
                                         <thead>

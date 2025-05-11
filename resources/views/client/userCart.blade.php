@@ -5,6 +5,7 @@
 use App\Bus\CTSP_BUS;
 use App\Bus\CTGH_BUS;
 use App\Bus\GioHang_BUS;
+use App\Bus\HoaDon_BUS;
 use App\Bus\SanPham_BUS;
 use App\Models\CTGH;
 
@@ -15,8 +16,9 @@ use App\Models\CTGH;
     }
     $gh = app(GioHang_BUS::class)->getByEmail($email);
     $listCTGH = app(CTGH_BUS::class)->getByIDGH($gh->getIdGH());
-
-
+    // $hd = app(HoaDon_BUS::class)->getModelById(236);
+    // echo $hd->getIdPTTT()->getTenPTTT().'<br>';
+    // $hd->setIdPTTT()
 ?>
 @if(session('success'))
 <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">

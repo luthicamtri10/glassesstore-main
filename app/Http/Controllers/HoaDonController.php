@@ -118,28 +118,7 @@ class HoaDonController extends Controller {
 
     public function paymentSuccess(Request $request)
     {
-        // $orderCode = $request->query('orderCode');
-        // $status = $request->query('status');
-
-        // $success = false;
-
-        // if ($orderCode && $status === 'PAID') {
-        //     $hoaDon = $this->hoaDonBUS->getByOrderCode($orderCode);
-        //     if ($hoaDon) {
-        //         Log::info("Found order with orderCode: {$orderCode}");
-        //         $hoaDon->setTrangThai(HoaDonEnum::PAID);
-        //         $hoaDon->setOrderCode($orderCode);
-        //         $this->hoaDonBUS->updateModel($hoaDon);
-        //         // $success = true;
-        //     }else {
-        //         // Debugging
-        //         Log::warning("Payment failed for orderCode: {$orderCode} with status: {$status}");
-        //     }
-        // }
-
-        // // return view('client/paymentsuccess', compact('success'));
-        // $returnUrl = url("/?orderCode={$orderCode}&status={$status}");
-        // return redirect($returnUrl);
+        
         $orderCode = $request->input('orderCode');
         Log::info("Received order code: {$orderCode}"); // Thêm dòng này để debug
         $status = 'PAID'; // Giả định trạng thái đã thanh toán
@@ -305,6 +284,7 @@ class HoaDonController extends Controller {
         } else {
             $orderCode = (int)($hd->getId() . substr(time(), -4));
             $hd->setOrderCode($orderCode);
+            $hd->setIdPTTT($pttt);
             app(HoaDon_BUS::class)->updateModel($hd); // Cập nhật mã đơn hàng
 
             $returnUrl = url("client/paymentsuccess?orderCode=" . $orderCode);
@@ -337,10 +317,10 @@ class HoaDonController extends Controller {
             // } else {
             //     return back()->with('error', 'Không thể tạo đơn hàng thanh toán với PayOS.')->withErrors($responseData);
             // }
+            // dd($hd);
             return view('client.SuccessPayment',[
                 'hoaDon' => $hd,
                 'dvvc' => $dvvc,
-                'pttt' => $pttt,
                 'isLogin' => $isLogin,
                 'user' => $user,
                 'listSP' => $listCTHD,
@@ -350,13 +330,23 @@ class HoaDonController extends Controller {
 
     }
     public function paid(Request $request) {
-        $tongtien = $request->input('tongtien');
-        $ordercode = $request->input('ordercode');
+        // dd($request->all());
+        $tongtien = (int) $request->input('tongtien');
+        $ordercode = (int) $request->input('ordercode');
         $returnUrl = url("client/paymentsuccess?orderCode=" . $ordercode);
         $cancelUrl = url("/");
         $description = "Thanh toán đơn hàng #" . $ordercode;
         $signatureRaw = "amount={$tongtien}&cancelUrl={$cancelUrl}&description={$description}&orderCode={$ordercode}&returnUrl={$returnUrl}";
-        $signature = hash_hmac('sha256', $signatureRaw, env('PAYOS_CHECKSUM_KEY'));
+        $signature = hash_hmac('sha256', $signatureRaw, 'e565caa65f2ddfcc509fb1cf94ab52a4f37c1a8abb403af3cb339941f430261c');
+        // $signatureRaw = sprintf(
+        //     "amount=%s&cancelUrl=%s&description=%s&orderCode=%s&returnUrl=%s",
+        //     $tongtien,
+        //     urlencode($cancelUrl),
+        //     urlencode($description),
+        //     $ordercode,
+        //     urlencode($returnUrl)
+        // );
+        // $signature = hash_hmac('sha256', $signatureRaw, 'e565caa65f2ddfcc509fb1cf94ab52a4f37c1a8abb403af3cb339941f430261c');
         $payload = [
             "orderCode" => $ordercode,
             "amount" => $tongtien,
@@ -366,16 +356,23 @@ class HoaDonController extends Controller {
             "signature" => $signature,
         ];
 
+        // $response = Http::withHeaders([
+        //     'Content-Type' => 'application/json',
+        //     'x-client-id' => env('PAYOS_CLIENT_ID'),
+        //     'x-api-key' => env('PAYOS_API_KEY')
+        // ])->post('https://api-merchant.payos.vn/v2/payment-requests', $payload);
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'x-client-id' => env('PAYOS_CLIENT_ID'),
-            'x-api-key' => env('PAYOS_API_KEY')
+            'x-client-id' => 'd4999768-4dc1-4c9d-a8ca-85553d797c3f',
+            'x-api-key' => '261c7797-ea98-40ef-9da6-a8bd1714a9bf'
         ])->post('https://api-merchant.payos.vn/v2/payment-requests', $payload);
-
+    
         $responseData = $response->json();
+        
         if ($response->successful() && isset($responseData['data']['checkoutUrl'])) {
             return redirect($responseData['data']['checkoutUrl']);
         } else {
+            dd($responseData);
             return back()->with('error', 'Không thể tạo đơn hàng thanh toán với PayOS.')->withErrors($responseData);
         }
     }

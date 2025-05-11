@@ -53,11 +53,12 @@ class HoaDon_DAO{
 
     public function update($e): int
     {
-        $sql = "UPDATE hoadon SET TRANGTHAI = ?, TONGTIEN = ? , ORDERCODE = ? WHERE id = ?";
+        $sql = "UPDATE hoadon SET TRANGTHAI = ?, TONGTIEN = ? , ORDERCODE = ?, IDPTTT = ? WHERE id = ?";
         $args = [
             $e->getTrangThai()->value,
             $e->getTongTien(),
             $e->getOrderCode(),
+            $e->getIdPTTT()->getId(),
             $e->getId()
         ];
         $result = database_connection::executeUpdate($sql, ...$args);
@@ -115,7 +116,8 @@ class HoaDon_DAO{
             case 'DAGIAO': $trangThai = HoaDonEnum::DAGIAO; break;
             default: throw new \Exception("Trạng thái không hợp lệ");
         }
-        return new HoaDon($id, $email, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $diaChi, $tinh, $trangThai);
+        $orderCode = $rs['ORDERCODE'];
+        return new HoaDon($id, $email, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $diaChi, $tinh, $trangThai, $orderCode);
     }
 
     public function getAll() : array {
