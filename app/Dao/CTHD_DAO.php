@@ -22,9 +22,9 @@ class CTHD_DAO{
 
     public function insert($e): int
     {
-        $sql = "INSERT INTO CTHD (giaLucDat, soSeri, trangThaiHD) 
-        VALUES (?, ?, ?)";
-        $args = [$e->getGiaLucDat(), $e->getSoSeri(), $e->getTrangThaiHD()];
+        $sql = "INSERT INTO `cthd`(`IDHD`, `SOSERI`, `GIALUCDAT`, `TRANGTHAIBH`) VALUES
+         (?, ?, ?, ?)";
+        $args = [$e->getIdHD(), $e->getSoSeri(), $e->getGiaLucDat(), $e->gettrangThaiBH()];
         return database_connection::executeQuery($sql, ...$args);
     }
 
@@ -40,9 +40,9 @@ class CTHD_DAO{
         $idHD = $rs['IDHD'];
         $giaLucDat = $rs['GIALUCDAT'];
         $soSeri = $rs['SOSERI'];
-        $trangThaiHD = $rs['TRANGTHAIBH'];
+        $trangThaiBH = $rs['TRANGTHAIBH'];
 
-        return new CTHD($idHD, $giaLucDat, $soSeri, $trangThaiHD);
+        return new CTHD($idHD, $giaLucDat, $soSeri, $trangThaiBH);
     }
 
     public function getAll() : array {
@@ -77,5 +77,18 @@ class CTHD_DAO{
         }
         return $list;
     }
+
+    // public function getCTHDByIDSPAndIDHD($idsp, $idhd) {
+    //     $list = [];
+    //     $listCTHD = $this->getCTHDbyIDHD($idhd);
+    //     foreach ($listCTHD as $key) {
+    //         # code...
+    //         // $sp = app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri());
+    //         if(app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri())->getId() == $idsp) {
+    //             array_push($list, $key);
+    //         }
+    //     }
+    //     return $list;
+    // }
 
 }

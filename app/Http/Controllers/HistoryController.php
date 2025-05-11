@@ -66,7 +66,7 @@ class HistoryController extends Controller
                                     'soSeri' => $cthd->getSoSeri() ?? 'N/A',
                                     'tenSanPham' => $sanPham ? ($sanPham->getTenSanPham() ?? 'Không xác định') : 'Không xác định',
                                     'giaLucDat' => $cthd->getGiaLucDat() ?? 0,
-                                    'trangThaiHD' => $cthd->getTrangThaiHD() ?? false,
+                                    'trangThaiHD' => $cthd->getTrangThaiBH() ?? false,
                                 ];
                             }
                         }

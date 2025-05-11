@@ -55,41 +55,31 @@ class GioHangController extends Controller {
         }
         $ctgh = app(CTGH_BUS::class)->getCTGHByIDGHAndIDSP($idgh, $idsp);
         $list = app(CTSP_BUS::class)->getCTSPIsNotSoldByIDSP($idsp);
-        // if (count($list) > $ctgh->getSoLuong()) {
-        //     if($ctgh == null) {
-        //         $gh = app(GioHang_BUS::class)->getModelById($idgh);
-        //         $sp = app(SanPham_BUS::class)->getModelById($idsp);
-        //         $new = new CTGH($gh,$sp,1);
-        //         app(CTGH_BUS::class)->addGH($new);
-        //      } else {
-        //         $gh = app(GioHang_BUS::class)->getModelById($idgh);
-        //         $sp = app(SanPham_BUS::class)->getModelById($idsp);
-        //         $soluong = $ctgh->getSoLuong() + 1;
-        //         $updated = new CTGH($gh,$sp,$soluong);
-        //         app(CTGH_BUS::class)->updateCTGH($updated);
-        //      }
-        //     return redirect()->back()->with('success', 'Thêm sản phẩm vào giỏ hàng thành công!');
-        // } else {
-        //     return redirect()->back()->with('error', 'Hiện tại sản phẩm đang hết hàng!');
-        // }
-        if($ctgh == null) {
-            $gh = app(GioHang_BUS::class)->getModelById($idgh);
-            $sp = app(SanPham_BUS::class)->getModelById($idsp);
-            $new = new CTGH($gh,$sp,1);
-            app(CTGH_BUS::class)->addGH($new);
-            return redirect()->back()->with('success', 'Thêm sản phẩm vào giỏ hàng thành công!');
+        if(count($list) <=0) {
+            return redirect()->back()->with('error', 'Hiện tại sản phẩm đang hết hàng!');
         } else {
-            if(count($list) > $ctgh->getSoLuong()) {
+            if($ctgh == null) {
                 $gh = app(GioHang_BUS::class)->getModelById($idgh);
                 $sp = app(SanPham_BUS::class)->getModelById($idsp);
-                $soluong = $ctgh->getSoLuong() + 1;
-                $updated = new CTGH($gh,$sp,$soluong);
-                app(CTGH_BUS::class)->updateCTGH($updated);
+                $new = new CTGH($gh,$sp,1);
+                app(CTGH_BUS::class)->addGH($new);
                 return redirect()->back()->with('success', 'Thêm sản phẩm vào giỏ hàng thành công!');
             } else {
-                return redirect()->back()->with('error', 'Hiện tại sản phẩm đang hết hàng!');
+                if(count($list) > $ctgh->getSoLuong()) {
+                    $gh = app(GioHang_BUS::class)->getModelById($idgh);
+                    $sp = app(SanPham_BUS::class)->getModelById($idsp);
+                    $soluong = $ctgh->getSoLuong() + 1;
+                    $updated = new CTGH($gh,$sp,$soluong);
+                    app(CTGH_BUS::class)->updateCTGH($updated);
+                    return redirect()->back()->with('success', 'Thêm sản phẩm vào giỏ hàng thành công!');
+                } else if(count(($list)) <= 0) {
+                    return redirect()->back()->with('error', 'Hiện tại sản phẩm đang hết hàng!');
+                } else {
+                    return redirect()->back()->with('error', 'Hiện tại sản phẩm đang hết hàng!');
+                }
             }
         }
+        
     }
 }
 ?>

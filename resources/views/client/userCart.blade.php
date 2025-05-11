@@ -6,6 +6,8 @@ use App\Bus\CTSP_BUS;
 use App\Bus\CTGH_BUS;
 use App\Bus\GioHang_BUS;
 use App\Bus\SanPham_BUS;
+use App\Models\CTGH;
+
     if (isset($_GET['email']) || !empty($_GET['email'])) {
         $email = $_GET['email'];
     } else {
@@ -13,12 +15,16 @@ use App\Bus\SanPham_BUS;
     }
     $gh = app(GioHang_BUS::class)->getByEmail($email);
     $listCTGH = app(CTGH_BUS::class)->getByIDGH($gh->getIdGH());
+
+
 ?>
 @if(session('success'))
 <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
     {{ session('success') }}
 </div>
 @endif
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
@@ -41,7 +47,7 @@ use App\Bus\SanPham_BUS;
             let totalAmount = 0;
             const selectedProducts = [];
             const checkboxes = document.querySelectorAll('input[name="product_selection[]"]:checked');
-
+            let shouldDisable = false;
             checkboxes.forEach(function(checkedCheckbox) {
                 const productId = checkedCheckbox.getAttribute('data-id');
                 const price = parseInt(checkedCheckbox.getAttribute('data-price'));
@@ -54,9 +60,15 @@ use App\Bus\SanPham_BUS;
                     price: price,
                     quantity: quantity
                 });
+                if (document.querySelector(`.alert-warning[data-idsp="${productId}"]`)) {
+                    alert("Số lượng sản phẩm hiện có không đủ để tiếp tục mua sắm");
+                    console.log("sp co alert: ", productId);
+                    shouldDisable = true;
+                }
             });
 
             document.getElementById('total-amount').innerText = formatCurrency(totalAmount);
+            document.getElementById('btnDatNgay').disabled = shouldDisable;
         }
 
         function formatCurrency(number) {
@@ -89,6 +101,7 @@ use App\Bus\SanPham_BUS;
         });
 
     });
+    
 </script>
 
 @include('admin.includes.navbar')
@@ -115,7 +128,7 @@ use App\Bus\SanPham_BUS;
 </div>
 <div class="bg-light d-flex flex-column p-5 gap-3 " style="width: 100%;height: 100%;margin-bottom: 200px;">
     @if (empty($listCTGH))
-        <p class="text-center">Không tìm thấy sản phẩm nào phù hợp với từ khóa "{{ request('keyword') }}"</p>
+        <p class="text-center">Không có sản phẩm nào. "{{ request('keyword') }}"</p>
     @else
         @foreach($listCTGH as $it)
         @php
@@ -123,8 +136,8 @@ use App\Bus\SanPham_BUS;
             $limitSP = app(CTSP_BUS::class)->getCTSPIsNotSoldByIDSP($it->getIdSP()->getId());
         @endphp
 
-        @if ($it->getSoLuong() >= count($limitSP))
-            <div class="alert alert-warning d-flex align-items-center" id="errorAlert" role="alert" style="height: 50px;">
+        @if ($it->getSoLuong() > count($limitSP))
+            <div class="alert alert-warning d-flex align-items-center" id="errorAlert" role="alert" style="height: 50px;" data-idsp="{{$it->getIdSP()->getId()}}">
                 <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:">
                     <use xlink:href="#exclamation-triangle-fill"/>
                 </svg>
@@ -154,6 +167,10 @@ use App\Bus\SanPham_BUS;
                     <div class="d-flex justify-content-start gap-2">
                         <p>Loại</p>
                         <p class="text-danger fw-semibold">{{ $it->getIdSP()->getIdLSP()->gettenLSP() }}</p>
+                    </div>
+                    <div class="d-flex justify-content-start gap-2">
+                        <p>Kiểu</p>
+                        <p class="text-danger fw-semibold">{{ $it->getIdSP()->getIdKieuDang()->gettenKieuDang() }}</p>
                     </div>
                 </div>
                 <div>
@@ -204,10 +221,11 @@ use App\Bus\SanPham_BUS;
     <div class="d-flex justify-content-start gap-5">
         <div>Chọn <span id="selected-count">0</span> sản phẩm</div> <!-- Hiển thị số lượng sản phẩm đã chọn -->
         <div>Tổng tiền: <span id="total-amount">0</span></div></div>
+     
         <form action="{{ route('payment.create') }}" method="post">
             @csrf
             <input type="hidden" name="listSP" id="listSP">
-            <button type="submit" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</button>
+            <button id="btnDatNgay" type="submit" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</button>
         </form>
         
     <!-- <a href="{{ route('pay') }}" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</a> -->

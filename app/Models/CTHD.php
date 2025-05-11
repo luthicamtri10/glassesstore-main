@@ -5,14 +5,14 @@ use JsonSerializable;
 
 class CTHD implements JsonSerializable
 {
-    private $idHD, $giaLucDat, $trangThaiHD, $soSeri;
+    private $idHD, $giaLucDat, $trangThaiBH, $soSeri;
 
-    public function __construct($idHD, $giaLucDat, $soSeri, $trangThaiHD)
+    public function __construct($idHD, $giaLucDat, $soSeri, $trangThaiBH)
     {
         $this->idHD = $idHD;
         $this->giaLucDat = $giaLucDat;
         $this->soSeri = $soSeri;
-        $this->trangThaiHD = $trangThaiHD;
+        $this->trangThaiBH = $trangThaiBH;
     }
 
     // Getter và Setter cho idHD
@@ -49,15 +49,15 @@ class CTHD implements JsonSerializable
         $this->soSeri = $soSeri;
     }
 
-    // Getter và Setter cho trangThaiHD
-    public function getTrangThaiHD()
+    // Getter và Setter cho trangThaiBH
+    public function gettrangThaiBH()
     {
-        return $this->trangThaiHD;
+        return $this->trangThaiBH;
     }
 
-    public function setTrangThaiHD($trangThaiHD)
+    public function settrangThaiBH($trangThaiBH)
     {
-        $this->trangThaiHD = $trangThaiHD;
+        $this->trangThaiBH = $trangThaiBH;
     }
 
     public function jsonSerialize(): array {
@@ -65,7 +65,7 @@ class CTHD implements JsonSerializable
             'IDHD' => $this->getIDHD(),
             'SOSERI' => $this->getSOSERI(),
             'GIALUCDAT' => $this->getGiaLucDat(),
-            'TRANGTHAIBH' => $this->getTrangThaiHD(),
+            'TRANGTHAIBH' => $this->gettrangThaiBH(),
         ];
     }
 

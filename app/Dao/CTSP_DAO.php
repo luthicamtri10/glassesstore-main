@@ -25,6 +25,20 @@ class CTSP_DAO{
         }
         return null;
     }
+    // public function createModelCTSP($model) {
+    //     return new CTSP();
+    // }
+    public function getCTSPBySoSeri($soseri) {
+        $query = "SELECT * FROM CTSP WHERE SOSERI = ?";
+        $result = database_connection::executeQuery($query, $soseri);
+        if($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if($row) {
+                return $this->createCTSPModel($row);
+            }
+        }
+        return null;
+    }
     public function getCTSPByIDSP($idsp) {
         $list = [];
         $query = "SELECT * FROM CTSP WHERE IDSP = ?";
@@ -35,7 +49,7 @@ class CTSP_DAO{
         }
         return $list;
     }
-    // public function getCTSPIsNotSoldByIdSP($idsp) {
+    // public function getCTSPBySoSeri($soseri) {
 
     // }
     public function getSeriOfCTSPNotSale($idsp) {
@@ -61,7 +75,7 @@ class CTSP_DAO{
     }
     public function createCTSPModel($rs) {
         $idsp = app(SanPham_BUS::class)->getModelById($rs['IDSP']); 
-        return new CTSP($idsp, $rs['SOSERI']);
+        return new CTSP($idsp, $rs['SOSERI'],$rs['TRANGTHAIHD']);
     }
     public function getCTSPIsNotSoldByIDSP($idsp) {
         $list = [];
@@ -71,5 +85,11 @@ class CTSP_DAO{
             array_push($list, $model);
         }
         return $list;
+    }
+    public function updateStatus($soseri, $active) {
+        $query = 'UPDATE CTSP SET TRANGTHAIHD = ? WHERE SOSERI = ?';
+        $args = [$active, $soseri];
+        $rs = database_connection::executeUpdate($query, ...$args);
+        return is_int($rs) ? $rs : 0;  
     }
 }

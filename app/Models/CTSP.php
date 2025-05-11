@@ -6,11 +6,13 @@ class CTSP
 {
     private SanPham $idSP;
     private $soSeri;
+    private $trangThaiHD;
 
-    public function __construct(SanPham $idSP, $soSeri)
+    public function __construct(SanPham $idSP, $soSeri, $trangThaiHD)
     {
         $this->idSP = $idSP;
         $this->soSeri = $soSeri;
+        $this->trangThaiHD = $trangThaiHD;
     }
 
     // Getter và Setter cho ID
@@ -33,5 +35,11 @@ class CTSP
     public function setSoSeri($soSeri)
     {
         $this->soSeri = $soSeri;
+    }
+    public function getTrangThaiHD() {
+        return $this->trangThaiHD;
+    }
+    public function setTrangThaiHD($trangThaiHD) {
+        $this->trangThaiHD = $trangThaiHD;
     }
 }

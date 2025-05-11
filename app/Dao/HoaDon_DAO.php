@@ -53,9 +53,10 @@ class HoaDon_DAO{
 
     public function update($e): int
     {
-        $sql = "UPDATE hoadon SET TRANGTHAI = ?, ORDERCODE = ? WHERE id = ?";
+        $sql = "UPDATE hoadon SET TRANGTHAI = ?, TONGTIEN = ? , ORDERCODE = ? WHERE id = ?";
         $args = [
             $e->getTrangThai()->value,
+            $e->getTongTien(),
             $e->getOrderCode(),
             $e->getId()
         ];

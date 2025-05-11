@@ -2,6 +2,8 @@
 
 namespace App\Dao;
 
+use App\Bus\DVVC_BUS;
+use App\Bus\Tinh_BUS;
 use App\Models\CPVC;
 use App\Services\database_connection;
 use App\Interface\DAOInterface;
@@ -42,16 +44,29 @@ class CPVC_DAO implements DAOInterface
         }
         return $list;
     }
-    
-    public function getById($id)
-    {
-        $query = "SELECT * FROM CPVC WHERE idTinh = ?";
-        $result = database_connection::executeQuery($query, $id);
+
+    public function getByTinhAndDVVC($idtinh, $iddv) {
+        $query = "SELECT * FROM CPVC WHERE idTinh = ? AND IDVC = ?";
+        $args = [$idtinh, $iddv];
+        $result = database_connection::executeQuery($query, ...$args);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             return $this->createCPVCModel($row);
         }
         return null;
+    }
+    
+    public function getById($id)
+    {
+        $list = [];
+        $query = "SELECT * FROM CPVC WHERE idTinh = ?";
+      
+        $rs = database_connection::executeQuery("SELECT * FROM CPVC");
+        while ($row = $rs->fetch_assoc()) {
+            $model = $this->createCPVCModel($row);
+            array_push($list, $model);
+        }
+        return $list;
     }
 
     public function insert($model): int
@@ -74,13 +89,12 @@ class CPVC_DAO implements DAOInterface
         return database_connection::executeQuery($query, $id);
     }
 
-    private function createCPVCModel($row): CPVC
+    private function createCPVCModel($row)
     {
-        return new CPVC(
-            $row['idTinh'],
-            $row['idVC'],
-            $row['chiPhiVC']
-        );
+        $idtinh = app(Tinh_BUS::class)->getModelById($row['IDTINH']);
+        $idDVVC = app(DVVC_BUS::class)->getModelById($row['IDVC']);
+        $cpvc = $row['CHIPHIVC'];
+        return new CPVC($idtinh,$idDVVC,$cpvc);
     }
     public function readDatabase(): array
     {
