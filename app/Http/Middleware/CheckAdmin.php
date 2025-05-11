@@ -19,10 +19,10 @@ class CheckAdmin
             return redirect('/admin/login')->with('error', 'Email không hợp lệ.');
         }
 
-        // Kiểm tra độ dài mật khẩu
-        if (strlen($user->getMatKhau()) < 5) {
-            return redirect('/admin/login')->with('error', 'Mật khẩu phải có ít nhất 5 ký tự.');
-        }
+        // // Kiểm tra độ dài mật khẩu
+        // if (strlen($user->getMatKhau()) < 6) {
+        //     return redirect('/admin/login')->with('error', 'Mật khẩu phải có ít nhất 5 ký tự.');
+        // }
         
         // Kiểm tra xem người dùng đã đăng nhập và có quyền = 1 hoặc 2
         if (!$isLogin || ($user->getIdQuyen()->getId() != 1 && $user->getIdQuyen()->getId() != 2)) {
