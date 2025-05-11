@@ -148,6 +148,7 @@ class HistoryController extends Controller
             ['value' => 'EXPIRED', 'label' => 'Hết hạn'],
             ['value' => 'CANCELLED', 'label' => 'Đã hủy'],
             ['value' => 'REFUNDED', 'label' => 'Đã hoàn tiền'],
+            ['value' => 'DADAT', 'label' => 'Đã đặt'],
             ['value' => 'DANGGIAO', 'label' => 'Đang giao'],
             ['value' => 'DAGIAO', 'label' => 'Đã giao'],
         ];

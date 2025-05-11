@@ -1176,7 +1176,12 @@ document.addEventListener('DOMContentLoaded', () => {
                   <input type="hidden" name="idsp" value="">
                   <button type="submit" class="btn btn-light" style="width: 200px;">Thêm vào giỏ hàng</button>
               </form>
-              <button type="button" class="btn btn-light" style="width: 150px;">Mua ngay</button>
+              <form action="{{route('payment.muangay')}}" method="post">
+                  @csrf
+                  <input type="hidden" name="idsp" value="">
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="btn btn-light" style="width: 150px;">Mua ngay</button>
+              </form>
             @else
               <button type="button" class="btn btn-danger" style="width: 150px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
             @endif

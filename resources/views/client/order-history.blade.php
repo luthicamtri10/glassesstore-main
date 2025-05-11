@@ -334,15 +334,16 @@ main {
             @endif
 
             <div class="product-tab">
-                <span class="active">Sản phẩm đã mua</span>
+                <!-- <span class="active">Sản phẩm đã mua</span> -->
+                 <h1>Lịch sử đơn hàng</h1>
             </div>
 
             <div class="filter-section">
                 <div class="search-filter">
                     <form action="{{ route('order.history') }}" method="get" id="search-form">
                         <label for="search-keyword">Tìm kiếm:</label>
-                        <input type="text" id="search-keyword" name="keyword" value="{{ request('keyword') }}" placeholder="Nhập tên sản phẩm" class="form-control">
-                        <button type="submit">Tìm</button>
+                        <input class="p-2 rounded border border-0 shadow" type="text" id="search-keyword" name="keyword" value="{{ request('keyword') }}" placeholder="Nhập tên sản phẩm" class="form-control">
+                        <button class="p-2 rounded " type="submit">Tìm</button>
                         <input type="hidden" name="filter_date" value="{{ request('filter_date') }}">
                         <input type="hidden" name="sort_order" value="{{ request('sort_order', 'desc') }}">
                         <input type="hidden" name="page" value="{{ request('page', 1) }}">
@@ -351,7 +352,7 @@ main {
                 <div class="date-filter">
                     <form action="{{ route('order.history') }}" method="get" id="filter-form">
                         <label for="filter-date">Lọc theo ngày:</label>
-                        <input type="date" id="filter-date" name="filter_date" value="{{ $filter_date ?? '' }}" onchange="document.getElementById('filter-form').submit()">
+                        <input class="p-2 rounded border border-0" type="date" id="filter-date" name="filter_date" value="{{ $filter_date ?? '' }}" onchange="document.getElementById('filter-form').submit()">
                         <input type="hidden" name="keyword" value="{{ request('keyword') }}">
                         <input type="hidden" name="sort_order" value="{{ request('sort_order', 'desc') }}">
                         <input type="hidden" name="page" value="{{ request('page', 1) }}">
@@ -360,7 +361,7 @@ main {
                 <div class="sort-filter">
                     <form action="{{ route('order.history') }}" method="get" id="sort-form">
                         <label for="sort-order">Sắp xếp:</label>
-                        <select id="sort-order" name="sort_order" onchange="document.getElementById('sort-form').submit()">
+                        <select class="p-2 rounded border border-0" id="sort-order" name="sort_order" onchange="document.getElementById('sort-form').submit()">
                             <option value="desc" {{ $sort_order === 'desc' ? 'selected' : '' }}>Ngày giảm dần</option>
                             <option value="asc" {{ $sort_order === 'asc' ? 'selected' : '' }}>Ngày tăng dần</option>
                         </select>

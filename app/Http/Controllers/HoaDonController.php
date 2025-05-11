@@ -129,13 +129,17 @@ class HoaDonController extends Controller {
                 Log::info("Found order with orderCode: {$orderCode}");
                 $hoaDon->setTrangThai(HoaDonEnum::PAID);
                 $this->hoaDonBUS->updateModel($hoaDon);
-                return response()->json(['success' => true, 'checkoutUrl' => url('/success')]);
+                // return response()->json(['success' => true, 'checkoutUrl' => url('/success')]);
+                return back()->with('success', 'Bạn đã thanh toán đơn hàng thành công.');
+                
             } else {
-                Log::warning("Payment failed for orderCode: {$orderCode}");
+                // Log::warning("Payment failed for orderCode: {$orderCode}");
+                return back()->with('error', 'Không tìm thấy đơn hàng.');
             }
         }
+        return back()->with('error', 'Thanh toán đơn hàng không thành công.');
 
-        return response()->json(['success' => false, 'error' => 'Không tìm thấy hóa đơn.'], 400);
+        // return response()->json(['success' => false, 'error' => 'Không tìm thấy hóa đơn.'], 400);
     }
 
     public function updateStatus(Request $request)
@@ -204,6 +208,52 @@ class HoaDonController extends Controller {
             'idHD' => $hoaDon->getId()
         ]);
 
+    }
+    public function muangay(Request $request) {
+        dd($request->all());
+        // $listSP = $request->input('listSP');
+        $idsp = $request->input('idsp');
+        $quantity = $request->input('quantity');
+        $email = app(Auth_BUS::class)->getEmailFromToken();
+        $user = app(TaiKhoan_BUS::class)->getModelById($email);
+        $isLogin = app(Auth_BUS::class)->isAuthenticated();
+        $listPTTT = app(PTTT_BUS::class)->getAllModels();
+        $listTinh = app(Tinh_BUS::class)->getAllModels();
+        $listDVVC = app(DVVC_BUS::class)->getAllModels();
+        $gia = app(SanPham_BUS::class)->getModelById($idsp)->getDonGia();
+        $listSP = [[
+            'idsp' => $idsp,
+            'price' => $gia,
+            'quantity' => $quantity
+        ]];
+        // $listSP = json_decode($listSP); 
+        $hoaDon = new HoaDon(
+            null,
+            // null,
+            $user,
+            $this->nguoiDungBUS->getModelById(1),
+            0.0,
+            $this->ptttBUS->getModelById(1),
+            new \DateTime(),
+            1,
+            $user->getIdNguoiDung()->getDiaChi(),
+            $user->getIdNguoiDung()->getTinh(), 
+            HoaDonEnum::PENDING
+        );
+
+        $newId = $this->hoaDonBUS->addModel($hoaDon);
+        $hoaDon->setId($newId);
+
+        // $listSP = json_decode($request->input('listSP'), true);
+        return view('client.CreatePayMent', [
+            'listSP' => $listSP,
+            'user' => $user,
+            'isLogin' => $isLogin,
+            'listPTTT' => $listPTTT,
+            'listTinh' => $listTinh,
+            'listDVVC' => $listDVVC,
+            'idHD' => $hoaDon->getId()
+        ]);
     }
 
     public function search(Request $request) {
@@ -285,6 +335,7 @@ class HoaDonController extends Controller {
             $orderCode = (int)($hd->getId() . substr(time(), -4));
             $hd->setOrderCode($orderCode);
             $hd->setIdPTTT($pttt);
+            // $hd->setTongTien(10000);
             app(HoaDon_BUS::class)->updateModel($hd); // Cập nhật mã đơn hàng
 
             $returnUrl = url("client/paymentsuccess?orderCode=" . $orderCode);
@@ -372,7 +423,7 @@ class HoaDonController extends Controller {
         if ($response->successful() && isset($responseData['data']['checkoutUrl'])) {
             return redirect($responseData['data']['checkoutUrl']);
         } else {
-            dd($responseData);
+            // dd($responseData);
             return back()->with('error', 'Không thể tạo đơn hàng thanh toán với PayOS.')->withErrors($responseData);
         }
     }
