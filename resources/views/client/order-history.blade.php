@@ -12,268 +12,267 @@
     <link rel="stylesheet" href="{{ asset('css/client/include/footer.css') }}">
     <style>
     body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-}
-main {
-    flex: 1 0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; 
-    align-items: center;
-    padding: 10px 0;
-}
-.footer {
-    flex-shrink: 0;
-    background-color: rgb(57, 193, 195);
-    padding: 1rem;
-    text-align: center;
-    font-size: 0.8rem;
-    color: white;
-}
-.footer a {
-    color: rgb(218, 226, 233);
-    margin: 0 0.5rem;
-    text-decoration: none;
-}
-.footer a:hover {
-    color: #000;
-}
-.navbar-custom {
-    background-color: #f8f9fa;
-    padding: 0.5rem 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.top-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 5px 0.5rem;
-}
-.top-nav p {
-    margin: 0;
-    color: #55d5d2;
-    font-size: 16px;
-    font-weight: 600;
-}
-.list-top-nav {
-    display: flex;
-    gap: 10px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-.list-top-nav .nav-item a {
-    color: white;
-    text-decoration: none;
-}
-.list-top-nav .nav-item:hover a {
-    color: #ccc;
-}
-.product-tab {
-    display: flex;
-    justify-content: center;
-    padding: 0.5rem 1rem;
-    border-bottom: 1px solid rgba(222, 226, 230, 0.1);
-    width: 100%;
-    margin-top: 10px; /* Giảm từ 20px xuống 10px để đẩy lên trên */
-    margin-bottom: 20px;
-}
-.product-tab span {
-    font-size: 23px;
-    color: #6c757d;
-    cursor: pointer;
-}
-.product-tab span.active {
-    color: #000;
-    font-weight: bold;
-}
-.product-tab span:hover {
-    color: #000;
-}
-.filter-section {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    padding: 0 1rem;
-    margin-bottom: 20px;
-    gap: 20px;
-    align-items: center;
-}
-.filter-section .date-filter,
-.filter-section .sort-filter,
-.filter-section .search-filter,
-.filter-section .refresh-btn {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-.search-filter form {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.search-filter label {
-    margin-bottom: 0;
-    white-space: nowrap;
-    font-size: 0.9rem;
-    color: black;
-}
-.search-filter input.form-control {
-    height: 34px;
-    font-size: 0.9rem;
-    width: 200px;
-}
-.search-filter button {
-    height: 34px;
-    padding: 0 15px;
-    font-size: 0.9rem;
-    background-color: rgb(32, 186, 207);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
-.search-filter button:hover {
-    background-color: rgb(9, 117, 167);
-}
-.pagination .page-link {
-    color: #6c757d;
-}
-.pagination .page-item.active .page-link {
-    background-color: #007bff;
-    border-color: #007bff;
-}
-.alert {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1050;
-    max-width: 400px;
-}
-.table-custom {
-    width: 100%;
-    padding: 0 1rem;
-}
-.header-row {
-    background-color: #f8f9fa;
-    font-weight: bold;
-    padding: 0.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #dee2e6;
-}
-.data-row {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #dee2e6;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.data-row:last-child {
-    border-bottom: none;
-}
-.col-1 { width: 8%; text-align: center; }
-.col-2 { width: 15%; text-align: center; }
-.col-3 { width: 20%; text-align: center; }
-.btn-view-order {
-    display: inline-block;
-    padding: 5px 10px;
-    border: 1px solid #007bff;
-    color: #007bff;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.3s, color 0.3s;
-}
-.btn-view-order:hover {
-    background-color: #007bff;
-    color: #fff;
-}
-.btn-refresh {
-    padding: 5px 10px;
-    border: 2px solid rgb(40, 167, 165);
-    color: rgb(31, 129, 132);
-    background-color: #fff;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.3s, color 0.3s;
-}
-.btn-refresh:hover {
-    background-color: #55d5d2;
-    color: #fff;
-}
-
-@media (max-width: 768px) {
-    .top-nav {
+        display: flex;
         flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+    }
+    main {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; 
         align-items: center;
-        gap: 10px;
-    }
-    .list-top-nav {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .filter-section {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-        padding: 0 0.5rem;
-    }
-    .search-filter input.form-control {
-        width: 100%;
-        max-width: 250px;
-    }
-    .search-filter, .date-filter, .sort-filter, .refresh-btn {
-        width: 100%;
-        justify-content: flex-start;
-    }
-    .table-custom {
-        padding: 0 0.5rem;
-        overflow-x: auto;
-    }
-    .header-row, .data-row {
-        flex-direction: row;
-        min-width: 600px;
-    }
-    .col-1, .col-2, .col-3 {
-        font-size: 0.8rem;
-        padding: 0 5px;
-    }
-    .modal-dialog {
-        margin: 0.5rem;
-    }
-    .modal-content .table {
-        font-size: 0.8rem;
-        overflow-x: auto;
-    }
-    .modal-content .table th, .modal-content .table td {
-        padding: 0.5rem;
+        padding: 10px 0;
     }
     .footer {
-        font-size: 0.7rem;
-        padding: 0.5rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .search-filter input.form-control {
-        max-width: 200px;
-    }
-    .search-filter button, .btn-refresh {
-        padding: 5px 10px;
+        flex-shrink: 0;
+        background-color: rgb(57, 193, 195);
+        padding: 1rem;
+        text-align: center;
         font-size: 0.8rem;
+        color: white;
     }
-    .col-1, .col-2, .col-3 {
-        font-size: 0.75rem;
+    .footer a {
+        color: rgb(218, 226, 233);
+        margin: 0 0.5rem;
+        text-decoration: none;
     }
-    .modal-content .table {
-        font-size: 0.75rem;
+    .footer a:hover {
+        color: #000;
     }
-}
+    .navbar-custom {
+        background-color: #f8f9fa;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 5px 0.5rem;
+    }
+    .top-nav p {
+        margin: 0;
+        color: #55d5d2;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    .list-top-nav {
+        display: flex;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .list-top-nav .nav-item a {
+        color: white;
+        text-decoration: none;
+    }
+    .list-top-nav .nav-item:hover a {
+        color: #ccc;
+    }
+    .product-tab {
+        display: flex;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid rgba(222, 226, 230, 0.1);
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+    .product-tab span {
+        font-size: 23px;
+        color: #6c757d;
+        cursor: pointer;
+    }
+    .product-tab span.active {
+        color: #000;
+        font-weight: bold;
+    }
+    .product-tab span:hover {
+        color: #000;
+    }
+    .filter-section {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        padding: 0 1rem;
+        margin-bottom: 20px;
+        gap: 20px;
+        align-items: center;
+    }
+    .filter-section .date-filter,
+    .filter-section .sort-filter,
+    .filter-section .search-filter,
+    .filter-section .refresh-btn {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    .search-filter form {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .search-filter label {
+        margin-bottom: 0;
+        white-space: nowrap;
+        font-size: 0.9rem;
+        color: black;
+    }
+    .search-filter input.form-control {
+        height: 34px;
+        font-size: 0.9rem;
+        width: 200px;
+    }
+    .search-filter button {
+        height: 34px;
+        padding: 0 15px;
+        font-size: 0.9rem;
+        background-color: rgb(32, 186, 207);
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+    .search-filter button:hover {
+        background-color: rgb(9, 117, 167);
+    }
+    .pagination .page-link {
+        color: #6c757d;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .alert {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+        max-width: 400px;
+    }
+    .table-custom {
+        width: 100%;
+        padding: 0 1rem;
+    }
+    .header-row {
+        background-color: #f8f9fa;
+        font-weight: bold;
+        padding: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #dee2e6;
+    }
+    .data-row {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #dee2e6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .data-row:last-child {
+        border-bottom: none;
+    }
+    .col-1 { width: 7%; text-align: center; }
+    .col-2 { width: 14%; text-align: center; }
+    .col-3 { width: 18%; text-align: center; }
+    .col-4 { width: 14%; text-align: center; }
+    .btn-view-order {
+        display: inline-block;
+        padding: 5px 10px;
+        border: 1px solid #007bff;
+        color: #007bff;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .btn-view-order:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+    .btn-refresh {
+        padding: 5px 10px;
+        border: 2px solid rgb(40, 167, 165);
+        color: rgb(31, 129, 132);
+        background-color: #fff;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .btn-refresh:hover {
+        background-color: #55d5d2;
+        color: #fff;
+    }
+    @media (max-width: 768px) {
+        .top-nav {
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .list-top-nav {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .filter-section {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 0 0.5rem;
+        }
+        .search-filter input.form-control {
+            width: 100%;
+            max-width: 250px;
+        }
+        .search-filter, .date-filter, .sort-filter, .refresh-btn {
+            width: 100%;
+            justify-content: flex-start;
+        }
+        .table-custom {
+            padding: 0 0.5rem;
+            overflow-x: auto;
+        }
+        .header-row, .data-row {
+            flex-direction: row;
+            min-width: 600px;
+        }
+        .col-1, .col-2, .col-3, .col-4 {
+            font-size: 0.8rem;
+            padding: 0 5px;
+        }
+        .modal-dialog {
+            margin: 0.5rem;
+        }
+        .modal-content .table {
+            font-size: 0.8rem;
+            overflow-x: auto;
+        }
+        .modal-content .table th, .modal-content .table td {
+            padding: 0.5rem;
+        }
+        .footer {
+            font-size: 0.7rem;
+            padding: 0.5rem;
+        }
+    }
+    @media (max-width: 576px) {
+        .search-filter input.form-control {
+            max-width: 200px;
+        }
+        .search-filter button, .btn-refresh {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+        .col-1, .col-2, .col-3, .col-4 {
+            font-size: 0.75rem;
+        }
+        .modal-content .table {
+            font-size: 0.75rem;
+        }
+    }
     </style>
 </head>
 <body>
@@ -294,9 +293,6 @@ main {
                         @if($user->getIdQuyen()->getId() == 1 || $user->getIdQuyen()->getId() == 2)
                             <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang"><a href="/admin">Trang quản trị</a></li>
                         @endif
-                        @if(app(\App\Bus\CTQ_BUS::class)->checkChucNangExistInQuyen($user->getIdQuyen()->getId(), 6))
-                            
-                        @endif
                         <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="trangchu"><a href="/index">Trang Chủ</a></li>
                         <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="userDropdownBtn" style="position: relative; cursor: pointer;">
                             {{ $user->getTenTK() }}
@@ -308,12 +304,11 @@ main {
                             </div>
                         </li>
                     @else
-                    <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="trangchu"><a href="/index">Trang Chủ</a></li>
+                        <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="trangchu"><a href="/index">Trang Chủ</a></li>
                         <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="taikhoan"><a href="/login">Đăng nhập</a></li>
                     @endif
                 </ul>
             </div>
-            
         </div>
     </header>
 
@@ -334,16 +329,16 @@ main {
             @endif
 
             <div class="product-tab">
-                <!-- <span class="active">Sản phẩm đã mua</span> -->
-                 <h1>Lịch sử đơn hàng</h1>
+               <!-- <span class="active">Sản phẩm đã mua</span>-->
+                 <h1 style="font-size:40px">Lịch sử đơn hàng</h1>
             </div>
 
             <div class="filter-section">
                 <div class="search-filter">
                     <form action="{{ route('order.history') }}" method="get" id="search-form">
                         <label for="search-keyword">Tìm kiếm:</label>
-                        <input class="p-2 rounded border border-0 shadow" type="text" id="search-keyword" name="keyword" value="{{ request('keyword') }}" placeholder="Nhập tên sản phẩm" class="form-control">
-                        <button class="p-2 rounded " type="submit">Tìm</button>
+                        <input type="text" id="search-keyword" name="keyword" value="{{ request('keyword') }}" placeholder="Nhập tên sản phẩm" class="form-control">
+                        <button type="submit">Tìm</button>
                         <input type="hidden" name="filter_date" value="{{ request('filter_date') }}">
                         <input type="hidden" name="sort_order" value="{{ request('sort_order', 'desc') }}">
                         <input type="hidden" name="page" value="{{ request('page', 1) }}">
@@ -352,7 +347,7 @@ main {
                 <div class="date-filter">
                     <form action="{{ route('order.history') }}" method="get" id="filter-form">
                         <label for="filter-date">Lọc theo ngày:</label>
-                        <input class="p-2 rounded border border-0" type="date" id="filter-date" name="filter_date" value="{{ $filter_date ?? '' }}" onchange="document.getElementById('filter-form').submit()">
+                        <input type="date" id="filter-date" name="filter_date" value="{{ $filter_date ?? '' }}" onchange="document.getElementById('filter-form').submit()">
                         <input type="hidden" name="keyword" value="{{ request('keyword') }}">
                         <input type="hidden" name="sort_order" value="{{ request('sort_order', 'desc') }}">
                         <input type="hidden" name="page" value="{{ request('page', 1) }}">
@@ -361,7 +356,7 @@ main {
                 <div class="sort-filter">
                     <form action="{{ route('order.history') }}" method="get" id="sort-form">
                         <label for="sort-order">Sắp xếp:</label>
-                        <select class="p-2 rounded border border-0" id="sort-order" name="sort_order" onchange="document.getElementById('sort-form').submit()">
+                        <select id="sort-order" name="sort_order" onchange="document.getElementById('sort-form').submit()">
                             <option value="desc" {{ $sort_order === 'desc' ? 'selected' : '' }}>Ngày giảm dần</option>
                             <option value="asc" {{ $sort_order === 'asc' ? 'selected' : '' }}>Ngày tăng dần</option>
                         </select>
@@ -376,83 +371,87 @@ main {
             </div>
 
             @if(isset($orders) && is_array($orders) && count($orders) > 0)
-                <div class="table-custom">
-                    <div class="header-row">
-                        <div class="col-1">STT</div>
-                        <div class="col-2">Số lượng sản phẩm</div>
-                        <div class="col-2">Trạng thái</div>
-                        <div class="col-2">Ngày đặt hàng</div>
-                        <div class="col-2">Tổng tiền</div>
-                        <div class="col-2">Thao tác</div>
+    <div class="table-custom">
+        <div class="header-row">
+            <div class="col-1">STT</div>
+            <div class="col-2">Số lượng sản phẩm</div>
+            <div class="col-2">Trạng thái</div>
+            <div class="col-2">Ngày đặt hàng</div>
+            <div class="col-2">Tổng tiền</div>
+            <div class="col-4">PTTT</div>
+            <div class="col-2">Thao tác</div>
+        </div>
+        @php
+            $stt = ($current_page - 1) * 8 + 1; // Tính STT bắt đầu dựa trên trang hiện tại
+        @endphp
+        @foreach($orders as $index => $orderData)
+            @php
+                $quantity = count($orderData['chiTietHoaDons'] ?? []);
+            @endphp
+            @if(is_array($orderData) && isset($orderData['id']))
+                <div class="data-row">
+                    <div class="col-1">{{ $stt++ }}</div> <!-- Sử dụng STT tăng dần -->
+                    <div class="col-2">{{ $quantity }}</div>
+                    <div class="col-2">
+                        <span class="badge {{ ($orderData['trangThai'] ?? 'PENDING') == 'EXPIRED' ? 'bg-secondary' : (in_array(($orderData['trangThai'] ?? 'PENDING'), ['PAID', 'REFUNDED', 'DAGIAO', 'DADAT']) ? 'bg-success' : 'bg-danger') }}">
+                            {{ collect($statuses)->firstWhere('value', $orderData['trangThai'] ?? 'PENDING')['label'] ?? 'Không xác định' }}
+                        </span>
                     </div>
-                    @foreach($orders as $index => $orderData)
-                        @php
-                            $quantity = count($orderData['chiTietHoaDons'] ?? []);
-                        @endphp
-                        @if(is_array($orderData) && isset($orderData['id']))
-                            <div class="data-row">
-                                <div class="col-1">{{ $orderData['id'] }}</div>
-                                <div class="col-2">{{ $quantity }}</div>
-                                <div class="col-2">
-                                <span class="badge {{ ($orderData['trangThai'] ?? 'PENDING') == 'PAID' || ($orderData['trangThai'] ?? 'PENDING') == 'DAGIAO' ? 'bg-success' : (($orderData['trangThai'] ?? 'PENDING') == 'PENDING' ? 'bg-warning' : 'bg-danger') }}">
-                                    {{ collect($statuses)->firstWhere('value', $orderData['trangThai'] ?? 'PENDING')['label'] ?? 'Không xác định' }}
-                                </span>
-                                </div>
-                                <div class="col-2">{{ $orderData['ngayTao'] ? \Carbon\Carbon::parse($orderData['ngayTao'])->format('d/m/Y H:i') : 'N/A' }}</div>
-                                <div class="col-2">{{ number_format($orderData['tongTien'] ?? 0, 0, ',', '.') }} VNĐ</div>
-                                <div class="col-2">
-                                    <a href="#" class="btn-view-order" data-bs-toggle="modal" data-bs-target="#orderDetailModal-{{ $orderData['id'] }}" data-order-id="{{ $orderData['id'] }}">Chi tiết</a>
-                                </div>
-                            </div>
-                        @else
-                            <div class="data-row">
-                                <div class="col-12 text-center">Dữ liệu không hợp lệ</div>
-                            </div>
-                        @endif
-                    @endforeach
+                    <div class="col-2">{{ $orderData['ngayTao'] ? \Carbon\Carbon::parse($orderData['ngayTao'])->format('d/m/Y H:i') : 'N/A' }}</div>
+                    <div class="col-2">{{ number_format($orderData['tongTien'] ?? 0, 0, ',', '.') }} VNĐ</div>
+                    <div class="col-4">{{ $orderData['phuongThucThanhToan'] ?? 'Không xác định' }}</div>
+                    <div class="col-2">
+                        <a href="#" class="btn-view-order" data-bs-toggle="modal" data-bs-target="#orderDetailModal-{{ $orderData['id'] }}" data-order-id="{{ $orderData['id'] }}">Chi tiết</a>
+                    </div>
                 </div>
             @else
-                <div class="text-center py-3">Không có đơn hàng nào để hiển thị.</div>
+                <div class="data-row">
+                    <div class="col-12 text-center">Dữ liệu không hợp lệ</div>
+                </div>
             @endif
+        @endforeach
+    </div>
+@else
+    <div class="text-center py-3">Không có đơn hàng nào để hiển thị.</div>
+@endif
 
-            @if(($total_page ?? 0) > 1)
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center mt-3">
-                        <li class="page-item {{ ($current_page ?? 1) == 1 ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ route('order.history') }}?page={{ ($current_page ?? 1) - 1 }}&filter_date={{ $filter_date ?? '' }}&sort_order={{ $sort_order ?? 'desc' }}&keyword={{ request('keyword') }}" aria-label="Previous">
-                                <span aria-hidden="true">«</span>
-                            </a>
-                        </li>
-                        @for($i = 1; $i <= ($total_page ?? 1); $i++)
-                            <li class="page-item {{ ($current_page ?? 1) == $i ? 'active' : '' }}">
-                                <a class="page-link" href="{{ route('order.history') }}?page={{ $i }}&filter_date={{ $filter_date ?? '' }}&sort_order={{ $sort_order ?? 'desc' }}&keyword={{ request('keyword') }}">{{ $i }}</a>
-                            </li>
-                        @endfor
-                        <li class="page-item {{ ($current_page ?? 1) == ($total_page ?? 1) ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ route('order.history') }}?page={{ ($current_page ?? 1) + 1 }}&filter_date={{ $filter_date ?? '' }}&sort_order={{ $sort_order ?? 'desc' }}&keyword={{ request('keyword') }}" aria-label="Next">
-                                <span aria-hidden="true">»</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            @endif
+@if(($total_page ?? 0) > 1)
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center mt-3">
+            <li class="page-item {{ ($current_page ?? 1) == 1 ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ route('order.history') }}?page={{ ($current_page ?? 1) - 1 }}&filter_date={{ $filter_date ?? '' }}&sort_order={{ $sort_order ?? 'desc' }}&keyword={{ request('keyword') }}" aria-label="Previous">
+                    <span aria-hidden="true">«</span>
+                </a>
+            </li>
+            @for($i = 1; $i <= ($total_page ?? 1); $i++)
+                <li class="page-item {{ ($current_page ?? 1) == $i ? 'active' : '' }}">
+                    <a class="page-link" href="{{ route('order.history') }}?page={{ $i }}&filter_date={{ $filter_date ?? '' }}&sort_order={{ $sort_order ?? 'desc' }}&keyword={{ request('keyword') }}">{{ $i }}</a>
+                </li>
+            @endfor
+            <li class="page-item {{ ($current_page ?? 1) == ($total_page ?? 1) ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ route('order.history') }}?page={{ ($current_page ?? 1) + 1 }}&filter_date={{ $filter_date ?? '' }}&sort_order={{ $sort_order ?? 'desc' }}&keyword={{ request('keyword') }}" aria-label="Next">
+                    <span aria-hidden="true">»</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+@endif
 
             @foreach($orders as $orderData)
                 @if(is_array($orderData) && isset($orderData['id']))
                     @php
                         $groupedProducts = [];
                         foreach ($orderData['chiTietHoaDons'] ?? [] as $cthd) {
-                            if (is_array($cthd) && isset($cthd['tenSanPham'])) {
-                                $key = $cthd['tenSanPham'];
+                            if (is_array($cthd) && isset($cthd['tenSanPham'], $cthd['soSeri'])) {
+                                $key = $cthd['tenSanPham'] . '-' . $cthd['soSeri'];
                                 if (!isset($groupedProducts[$key])) {
                                     $groupedProducts[$key] = [
                                         'tenSanPham' => $cthd['tenSanPham'],
+                                        'soSeri' => $cthd['soSeri'],
                                         'giaLucDat' => $cthd['giaLucDat'] ?? 0,
                                         'trangThaiHD' => isset($cthd['trangThaiHD']) && $cthd['trangThaiHD'],
-                                        'quantity' => 0,
                                     ];
                                 }
-                                $groupedProducts[$key]['quantity']++;
                             }
                         }
                         $hoaDon = app(HoaDon_BUS::class)->getModelById($orderData['id']);
@@ -465,25 +464,24 @@ main {
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p><strong>Phương thức thanh toán:</strong> {{ $orderData['phuongThucThanhToan'] ?? 'Không xác định' }}</p>
+                                    <!--<p><strong>Phương thức thanh toán:</strong> {{ $orderData['phuongThucThanhToan'] ?? 'Không xác định' }}</p>-->
                                     <p><strong>Đơn vị vận chuyển:</strong> {{ $orderData['donViVanChuyen'] ?? 'Không xác định' }}</p>
                                     <p><strong>Email khách hàng:</strong> {{ $orderData['emailKhachHang'] ?? 'Không xác định' }}</p>
                                     <p><strong>Tỉnh:</strong> {{ $orderData['tinh'] ?? 'Không xác định' }}</p>
                                     <p><strong>Địa chỉ:</strong> {{ $orderData['diaChi'] ?? 'Không xác định' }}</p>
                                     <form action="{{ route('payment.paid') }}" method="POST">
-    @csrf
-    <input type="hidden" name="id" value="{{ $hoaDon->getId() }}">
-    <input type="hidden" name="tongtien" value="{{ $hoaDon->getTongTien() }}">
-    <input type="hidden" name="ordercode" value="{{ $hoaDon->getOrderCode() }}">
-    <button type="submit" class="btn btn-info m-3">Thanh toán với PayOS</button>
-</form>
-
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{ $hoaDon->getId() }}">
+                                        <input type="hidden" name="tongtien" value="{{ $hoaDon->getTongTien() }}">
+                                        <input type="hidden" name="ordercode" value="{{ $hoaDon->getOrderCode() }}">
+                                        <button type="submit" class="btn btn-info m-3">Thanh toán với PayOS</button>
+                                    </form>
                                     <h6>Danh sách sản phẩm:</h6>
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
                                                 <th>Tên sản phẩm</th>
-                                                <th>Số lượng</th>
+                                                <th>Số Seri</th>
                                                 <th>Giá lúc đặt</th>
                                                 <th>Trạng thái bảo hành</th>
                                             </tr>
@@ -493,7 +491,7 @@ main {
                                                 @foreach($groupedProducts as $product)
                                                     <tr>
                                                         <td>{{ $product['tenSanPham'] }}</td>
-                                                        <td>{{ $product['quantity'] }}</td>
+                                                        <td>{{ $product['soSeri'] }}</td>
                                                         <td>{{ number_format($product['giaLucDat'], 0, ',', '.') }} VNĐ</td>
                                                         <td>{{ $product['trangThaiHD'] ? 'Còn bảo hành' : 'Hết bảo hành' }}</td>
                                                     </tr>
@@ -653,15 +651,16 @@ main {
                 });
             }
         });
-        const statuses = [
-        { value: "PENDING", label: "Đang xử lý" },
-        { value: "PAID", label: "Đã thanh toán" },
-        { value: "EXPIRED", label: "Hết hạn" },
-        { value: "CANCELLED", label: "Đã hủy" },
-        { value: "REFUNDED", label: "Đã hoàn tiền" },
-        { value: "DANGGIAO", label: "Đang giao" },
-        { value: "DAGIAO", label: "Đã giao" }
-    ];
+       const statuses = [
+    { value: "PENDING", label: "Đang xử lý" },
+    { value: "PAID", label: "Đã thanh toán" },
+    { value: "EXPIRED", label: "Hết hạn" },
+    { value: "CANCELLED", label: "Đã hủy" },
+    { value: "REFUNDED", label: "Đã hoàn tiền" },
+    { value: "DADAT", label: "Đã đặt" },
+    { value: "DANGGIAO", label: "Đang giao" },
+    { value: "DAGIAO", label: "Đã giao" }
+];
     </script>
 </body>
 </html>
