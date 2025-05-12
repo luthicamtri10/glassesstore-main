@@ -33,8 +33,10 @@
                 data: $(this).serialize(), // Lấy dữ liệu từ form
                 success: function(data) {
                     // alert('success!');
+                    console.log(data);
                     document.getElementById("cpvc").innerText = formatCurrency(data.cpvc);
                     document.getElementById('tongtien').innerText = formatCurrency(data.tongtien);
+                    console.log('tinh: ',data.tinh);
                     document.getElementById("idtinh").value = data.tinh;
                     document.getElementById("idpttt").value = data.pttt;
                     document.getElementById("iddvvc").value = data.dvvc;
@@ -42,6 +44,8 @@
                     document.getElementById('diachidata').value = data.diachi;
                 },
                 error: function(xhr) {
+                    // console.log(data.tinh);
+
                     alert("failed in search!");
                 }
             });

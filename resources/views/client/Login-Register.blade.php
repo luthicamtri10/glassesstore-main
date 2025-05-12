@@ -53,7 +53,7 @@
                 <button type="submit" class="w-100">Đăng nhập ngay</button>
                 <p class="text-start my-4"><a href="#">Quên mật khẩu?</a></p>
                 <p>Bạn chưa có tài khoản? <a href="/register" class="link-register" >Đăng ký ngay</a></p>
-                <p><a href="/admin/login">Đăng nhập quản trị</a></p>
+                <!-- <p><a href="/admin/login">Đăng nhập quản trị</a></p> -->
             </form>
         </div>
     </div>
