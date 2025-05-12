@@ -103,24 +103,24 @@
                 @else
                 @foreach($listCPVC as $cost)
                 <tr>
-                    <td>{{ $cost->getIdVC() }}</td>
-                    <td>{{ $cost->getIDTINH() }}</td>
-                    <td>{{ $cost->getIDVC() }}</td>
+                    <td>{{ $cost->getIdVC()->getIdDVVC() }}</td>
+                    <td>{{ $cost->getIdTinh()->getId() }}</td>
+                    <td>{{ $cost->getIdVC()->getIdDVVC() }}</td>
                     <td>{{ number_format($cost->getCHIPHIVC(), 0, ',', '.') }} đ</td>
                     <td>
                         <button class="btn btn-warning btn-sm btn-edit"
-                            data-id="{{ $cost->getIdVC() }}"
-                            data-province-id="{{ $cost->getIDTINH() }}"
-                            data-shipping-id="{{ $cost->getIDVC() }}"
+                            data-id="{{ $cost->getIdVC()->getIdDVVC() }}"
+                            data-province-id="{{ $cost->getIdTinh()->getId() }}"
+                            data-shipping-id="{{ $cost->getIdVC()->getIdDVVC() }}"
                             data-cost="{{ $cost->getCHIPHIVC() }}"
                             data-bs-toggle="modal"
                             data-bs-target="#shippingCostUpdateModal">Sửa</button>
 
                         <form method="POST" action="{{ route('admin.chiphivanchuyen.controlDelete') }}" style="display:inline;">
                             @csrf
-                            <input type="hidden" name="id" value="{{ $cost->getIdVC() }}">
-                            <input type="hidden" name="idtinh" value="{{ $cost->getIDTINH() }}">
-                            <input type="hidden" name="idvc" value="{{ $cost->getIDVC() }}">
+                            <input type="hidden" name="id" value="{{ $cost->getIdVC()->getIdDVVC() }}">
+                            <input type="hidden" name="idtinh" value="{{ $cost->getIdTinh()->getId() }}">
+                            <input type="hidden" name="idvc" value="{{ $cost->getIdVC()->getIdDVVC() }}">
                             <input type="hidden" name="chiphi" value="{{ $cost->getCHIPHIVC() }}">
                             <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                         </form>
