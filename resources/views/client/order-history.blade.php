@@ -278,6 +278,7 @@
 <body>
     <?php
         use App\Bus\HoaDon_BUS;
+        use App\Enum\HoaDonEnum;
     ?>
     @if(session('error')) 
         <div class="alert alert-danger" role="alert">
@@ -337,7 +338,7 @@
                 <div class="search-filter">
                     <form action="{{ route('order.history') }}" method="get" id="search-form">
                         <label for="search-keyword">Tìm kiếm:</label>
-                        <input type="text" id="search-keyword" name="keyword" value="{{ request('keyword') }}" placeholder="Nhập tên sản phẩm" class="form-control">
+                        <input class="rounded p-1 shadow border border-0" type="text" id="search-keyword" name="keyword" value="{{ request('keyword') }}" placeholder="Nhập tên sản phẩm" class="form-control">
                         <button type="submit">Tìm</button>
                         <input type="hidden" name="filter_date" value="{{ request('filter_date') }}">
                         <input type="hidden" name="sort_order" value="{{ request('sort_order', 'desc') }}">
@@ -347,7 +348,7 @@
                 <div class="date-filter">
                     <form action="{{ route('order.history') }}" method="get" id="filter-form">
                         <label for="filter-date">Lọc theo ngày:</label>
-                        <input type="date" id="filter-date" name="filter_date" value="{{ $filter_date ?? '' }}" onchange="document.getElementById('filter-form').submit()">
+                        <input  class="rounded p-1 shadow border border-0" type="date" id="filter-date" name="filter_date" value="{{ $filter_date ?? '' }}" onchange="document.getElementById('filter-form').submit()">
                         <input type="hidden" name="keyword" value="{{ request('keyword') }}">
                         <input type="hidden" name="sort_order" value="{{ request('sort_order', 'desc') }}">
                         <input type="hidden" name="page" value="{{ request('page', 1) }}">
@@ -356,7 +357,7 @@
                 <div class="sort-filter">
                     <form action="{{ route('order.history') }}" method="get" id="sort-form">
                         <label for="sort-order">Sắp xếp:</label>
-                        <select id="sort-order" name="sort_order" onchange="document.getElementById('sort-form').submit()">
+                        <select  class="rounded p-1 shadow border border-0" id="sort-order" name="sort_order" onchange="document.getElementById('sort-form').submit()">
                             <option value="desc" {{ $sort_order === 'desc' ? 'selected' : '' }}>Ngày giảm dần</option>
                             <option value="asc" {{ $sort_order === 'asc' ? 'selected' : '' }}>Ngày tăng dần</option>
                         </select>
@@ -469,6 +470,8 @@
                                     <p><strong>Email khách hàng:</strong> {{ $orderData['emailKhachHang'] ?? 'Không xác định' }}</p>
                                     <p><strong>Tỉnh:</strong> {{ $orderData['tinh'] ?? 'Không xác định' }}</p>
                                     <p><strong>Địa chỉ:</strong> {{ $orderData['diaChi'] ?? 'Không xác định' }}</p>
+                                    <p>{{$hoaDon->getTrangThai()}}</p>
+                                    @if($hoaDon->getIdPTTT()->getId()!=1 && $hoaDon->getTrangThai() === HoaDonEnum::DADAT)
                                     <form action="{{ route('payment.paid') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="id" value="{{ $hoaDon->getId() }}">
@@ -476,6 +479,7 @@
                                         <input type="hidden" name="ordercode" value="{{ $hoaDon->getOrderCode() }}">
                                         <button type="submit" class="btn btn-info m-3">Thanh toán với PayOS</button>
                                     </form>
+                                    @endif
                                     <h6>Danh sách sản phẩm:</h6>
                                     <table class="table table-striped">
                                         <thead>

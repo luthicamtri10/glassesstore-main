@@ -180,6 +180,9 @@ class HoaDonController extends Controller {
         $listTinh = app(Tinh_BUS::class)->getAllModels();
         $listDVVC = app(DVVC_BUS::class)->getAllModels();
         $listSP = json_decode($listSP); 
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        // $current_time = new \DateTime();
+        // dd($current_time);
         $hoaDon = new HoaDon(
             null,
             // null,
@@ -233,6 +236,8 @@ class HoaDonController extends Controller {
         // $listSP = [];
         
         // Tạo hóa đơn
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+
         $hoaDon = new HoaDon(
             null,
             $user,
@@ -392,18 +397,9 @@ class HoaDonController extends Controller {
         $ordercode = (int) $request->input('ordercode');
         $returnUrl = url("client/paymentsuccess?orderCode=" . $ordercode);
         $cancelUrl = url("/");
-        $description = "Thanh toán đơn hàng #" . $ordercode;
+        $description = "Thanh toán #" . $ordercode;
         $signatureRaw = "amount={$tongtien}&cancelUrl={$cancelUrl}&description={$description}&orderCode={$ordercode}&returnUrl={$returnUrl}";
         $signature = hash_hmac('sha256', $signatureRaw, 'e565caa65f2ddfcc509fb1cf94ab52a4f37c1a8abb403af3cb339941f430261c');
-        // $signatureRaw = sprintf(
-        //     "amount=%s&cancelUrl=%s&description=%s&orderCode=%s&returnUrl=%s",
-        //     $tongtien,
-        //     urlencode($cancelUrl),
-        //     urlencode($description),
-        //     $ordercode,
-        //     urlencode($returnUrl)
-        // );
-        // $signature = hash_hmac('sha256', $signatureRaw, 'e565caa65f2ddfcc509fb1cf94ab52a4f37c1a8abb403af3cb339941f430261c');
         $payload = [
             "orderCode" => $ordercode,
             "amount" => $tongtien,
@@ -412,12 +408,6 @@ class HoaDonController extends Controller {
             "cancelUrl" => $cancelUrl,
             "signature" => $signature,
         ];
-
-        // $response = Http::withHeaders([
-        //     'Content-Type' => 'application/json',
-        //     'x-client-id' => env('PAYOS_CLIENT_ID'),
-        //     'x-api-key' => env('PAYOS_API_KEY')
-        // ])->post('https://api-merchant.payos.vn/v2/payment-requests', $payload);
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
             'x-client-id' => 'd4999768-4dc1-4c9d-a8ca-85553d797c3f',
@@ -429,7 +419,7 @@ class HoaDonController extends Controller {
         if ($response->successful() && isset($responseData['data']['checkoutUrl'])) {
             return redirect($responseData['data']['checkoutUrl']);
         } else {
-            // dd($responseData);
+            dd($responseData);
             return back()->with('error', 'Không thể tạo đơn hàng thanh toán với PayOS.')->withErrors($responseData);
         }
     }
