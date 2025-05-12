@@ -257,7 +257,7 @@
         <td>{{ $mapTenHang[$sanPham->getIdHang()->getId()] }}</td>
         <td>{{ $mapTenLoaiSP[$sanPham->getIdLSP()->getId()] }}</td>
         <td>{{ $mapTenKieuDang[$sanPham->getIdKieuDang()->getId()] }}</td>
-        <td>{{ number_format($mapDonGiaSanPham[$sanPham->getId()]) }} VNĐ</td>
+        <td>{{ number_format($sanPham->getDonGia()) }} VNĐ</td>
         <td>{{ $sanPham->getThoiGianBaoHanh() }} tháng</td>
         <td>{{ Str::limit($sanPham->getMoTa(), 50) }}</td>
         <td>

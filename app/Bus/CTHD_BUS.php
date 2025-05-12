@@ -34,6 +34,11 @@ class CTHD_BUS {
     public function getCTHTbyIDHD($id) {
         return $this->cthdDAO->getCTHDbyIDHD($id);
     }
+
+    public function getCTHDbySoSeri($soSeri) {
+        return $this->cthdDAO->getCTHDbySoSeri($soSeri);
+    }
+
     public function getCTHDByIDSPAndIDHD($idsp, $idhd) {
         // $this->cthdDAO->getCTHDByIDSPAndIDHD($idsp, $idhd);
         $list = [];
