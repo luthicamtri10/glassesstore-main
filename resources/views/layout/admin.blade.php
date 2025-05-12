@@ -361,9 +361,9 @@ use Illuminate\Support\Facades\View as FacadesView;
                             $listSP = $sanPhamBUS->searchModel($keyword, []);
                         }
 
-                        $mapDonGiaSanPham = [];
                         foreach ($listSP as $sanPham) {
-                            $mapDonGiaSanPham[$sanPham->getId()] = $ctpnBUS->getGiaBanCaoNhatByIDSP($sanPham->getId());
+                            $sanPham->setDonGia($ctpnBUS->getGiaBanCaoNhatByIDSP($sanPham->getId()));
+                            $sanPhamBUS->updateModel($sanPham);
                         }
 
                         $current_page = request()->query('page', 1);
@@ -388,7 +388,6 @@ use Illuminate\Support\Facades\View as FacadesView;
                             'mapTenLoaiSP' => $mapTenLoaiSP, 
                             'mapTenHang' => $mapTenHang,
                             'mapTenKieuDang' => $mapTenKieuDang,
-                            'mapDonGiaSanPham' => $mapDonGiaSanPham,
                             'current_page' => $current_page,
                             'total_page' => $total_page
                         ])->render();
