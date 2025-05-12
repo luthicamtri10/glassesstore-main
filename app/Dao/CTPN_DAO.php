@@ -73,7 +73,7 @@ class CTPN_DAO implements DAOInterface {
             $soseri = $idspFormatted . $sttFormatted;
             $idsanpham = app(SanPham_BUS::class)->getModelById($idsp);
             // Tạo model CTSP mới (giả sử bạn có class CTSP)
-            $ctsp = new CTSP($idsanpham, $soseri);
+            $ctsp = new CTSP($idsanpham, $soseri,1);
             // $ctsp->setSoSeri($soseri);
             // $ctsp->setIdSP($idsp);
     
