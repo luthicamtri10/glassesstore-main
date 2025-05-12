@@ -178,7 +178,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="ngayNhap" class="form-label">Ngày nhập</label>
-                            <input type="date" class="form-control" id="ngayNhap" name="ngayNhap" required>
+                            <input type="date" class="form-control" id="ngayNhap" name="ngayNhap" required value="{{ date('Y-m-d') }}">
                         </div>
                     </div>
 

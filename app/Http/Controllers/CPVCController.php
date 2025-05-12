@@ -32,7 +32,7 @@ class CPVCController extends Controller
     public function store(Request $request)
     {
         $cpvc = new CPVC(
-            null, // ID tự tăng
+            $request->IDDVVC, // ID tự tăng
             $request->IDTINH,
             $request->IDVC,
             $request->CHIPHIVC
