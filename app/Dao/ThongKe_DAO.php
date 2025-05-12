@@ -6,6 +6,7 @@ use App\Services\database_connection;
 class ThongKe_DAO {
 
     public function getTop5KhachHang($fromDate, $toDate) {
+        $toPlusOne = date('Y-m-d', strtotime($toDate . ' +1 day'));
         $query = "
             SELECT 
                 nd.ID,
@@ -21,7 +22,7 @@ class ThongKe_DAO {
             LIMIT 5
         ";
 
-        $rs = database_connection::executeQuery($query, $fromDate, $toDate);
+        $rs = database_connection::executeQuery($query, $fromDate, $toPlusOne);
         $result = [];
 
         if ($rs) {
@@ -34,7 +35,8 @@ class ThongKe_DAO {
     }
 
     public function getListDonHang($customerId, $fromDate, $toDate) {
-        $params = [$fromDate, $toDate];
+         $toPlusOne = date('Y-m-d', strtotime($toDate . ' +1 day'));
+        $params = [$fromDate, $toPlusOne];
         $whereCustomer = ''; 
     
         if ($customerId !== null) {
