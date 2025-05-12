@@ -17,9 +17,21 @@ class LoaiSanPhamController extends Controller
     }
 
     public function store(Request $request){
+         $validated = $request->validate([
+        'tenLSP' => 'required|string|max:100',
+        'moTa'   => 'nullable|string|max:255',
+    ], [
+        'tenLSP.required' => 'Tên loại sản phẩm là bắt buộc.',
+        'tenLSP.string'   => 'Tên loại sản phẩm phải là chuỗi.',
+        'tenLSP.max'      => 'Tên loại sản phẩm không được vượt quá 100 ký tự.',
+        'moTa.string'     => 'Mô tả phải là chuỗi.',
+        'moTa.max'        => 'Mô tả không được vượt quá 255 ký tự.',
+    ]);
         $tenLSP = $request->input('tenLSP');
         $moTa = $request->input('moTa');
-        
+        if($moTa == "" || $moTa == null){
+            $moTa = "Không có mô tả";
+        }
         $loaiSanPham = new LoaiSanPham(null, $tenLSP, $moTa, 1);
         $this->loaiSanPhamBUS->addModel($loaiSanPham);
 
@@ -51,7 +63,9 @@ class LoaiSanPhamController extends Controller
         $tenLSP = $request->input('tenLSP');
         $moTa = $request->input('moTa');
         $trangThaiHD = $request->input('trangThaiHD');
-
+        if($moTa == "" || $moTa == null){
+            $moTa = "Không có mô tả";
+        }
         // Create a LoaiSanPham object
         $loaiSanPham = new LoaiSanPham($id, $tenLSP, $moTa, $trangThaiHD);
 

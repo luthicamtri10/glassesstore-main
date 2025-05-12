@@ -276,6 +276,7 @@ class HoaDonController extends Controller {
         $diachi=  $request->input('diachi');
         $cpvc = app(CPVC_DAO::class)->getByTinhAndDVVC($tinh, $dvvc)->getChiPhiVC();
         $tongtien += $cpvc;
+        // dd($tinh);
         return response()->json([
             'tinh' => $tinh,
             'dvvc' => $dvvc,
@@ -289,20 +290,17 @@ class HoaDonController extends Controller {
     public function changeStatusHD(Request $request) {
         // dd($request->all());
         $hd = app(HoaDon_BUS::class)->getModelById($request->input('idHD'));
-        // dd($hd);
         $tinh = app(Tinh_BUS::class)->getModelById($request->input('tinh'));
         $pttt = app(PTTT_BUS::class)->getModelById($request->input('pttt'));
         $dvvc = app(DVVC_BUS::class)->getModelById($request->input('dvvc'));
         $diachi = $request->input('diachi');
         $listCTHD = json_decode($request->listCTHD);
-        // dd($listCTHD);
         $email = app(Auth_BUS::class)->getEmailFromToken();
         $user = app(TaiKhoan_BUS::class)->getModelById($email);
         $gh = app(GioHang_BUS::class)->getByEmail($email);
         $sum = 0;
         foreach ($listCTHD as $key) {
             # code...
-            // echo $key->sanPham .'-'. $key->soLuong .'<br>';
             
             $sp = app(SanPham_BUS::class)->getModelById($key->sanPham);
             $sum += $sp->getDonGia() * $key->soLuong;
@@ -335,18 +333,11 @@ class HoaDonController extends Controller {
                 'user' => $user,
                 'listSP' => $listCTHD
             ]);
-            // return redirect()->route('client.SuccessPayment')->with([
-            //     'hoaDon' => $hd,
-            //     'dvvc' => $dvvc,
-            //     'isLogin' => $isLogin,
-            //     'user' => $user,
-            //     'listSP' => $listCTHD
-            // ]);
         } else {
             $orderCode = (int)($hd->getId() . substr(time(), -4));
             $hd->setOrderCode($orderCode);
             $hd->setIdPTTT($pttt);
-            // $hd->setTongTien(10000);
+            $hd->setTongTien(10000);
             app(HoaDon_BUS::class)->updateModel($hd); // Cập nhật mã đơn hàng
 
             $returnUrl = url("client/paymentsuccess?orderCode=" . $orderCode);

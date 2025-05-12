@@ -78,6 +78,18 @@ class CTHD_DAO{
         return $list;
     }
 
+    public function getCTHDbySoSeri($soSeri) {
+        $query = "SELECT * FROM cthd WHERE SOSERI = ?";
+        $result = database_connection::executeQuery($query, $soSeri);
+        if($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if($row) {
+                return $this->createCTHDModel($row);
+            }
+        }
+        return null;
+    }
+
     // public function getCTHDByIDSPAndIDHD($idsp, $idhd) {
     //     $list = [];
     //     $listCTHD = $this->getCTHDbyIDHD($idhd);

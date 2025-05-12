@@ -564,7 +564,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const filterKieuDang = document.getElementById('filter-kieudang').value;
         const filterPriceFrom = document.getElementById('filter-price-from').value;
         const filterPriceTo = document.getElementById('filter-price-to').value;
-
+// Kiểm tra nếu chỉ nhập một trong hai ô giá
+    if ((filterPriceFrom && !filterPriceTo) || (!filterPriceFrom && filterPriceTo)) {
+        alert('Vui lòng nhập cả giá "từ" và "đến"');
+        return; 
+    }
+    // Kiểm tra nếu cả hai ô giá đều được nhập, thì giá từ phải nhỏ hơn giá đến
+    if (filterPriceFrom && filterPriceTo) {
+        const fromValue = parseFloat(filterPriceFrom);
+        const toValue = parseFloat(filterPriceTo);
+        if (fromValue >= toValue) {
+            alert('Giá "từ" phải nhỏ hơn giá "đến"');
+            return; 
+        }
+    }
         const params = new URLSearchParams();
         if (filterHang && filterHang !== '0') params.set('hang', filterHang);
         if (filterLsp && filterLsp !== '0') params.set('lsp', filterLsp);
@@ -671,6 +684,63 @@ document.addEventListener('DOMContentLoaded', () => {
             item.style.backgroundColor = '#55d5d2';
         }
     });
+       
+    // Xử lý dropdown "Sản phẩm" bằng AJAX
+    const setupSanPhamDropdown = () => {
+        const sanPhamDropdown = document.getElementById('sanpham-dropdown');
+        const sanPhamItems = sanPhamDropdown.querySelectorAll('.dropdown-item');
+        const submenuItems = sanPhamDropdown.querySelectorAll('.submenu li');
+
+        // Xử lý khi chọn loại sản phẩm (LSP)
+        sanPhamItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const lspId = item.getAttribute('data-lsp-id');
+                
+                // Tạo tham số để gửi qua AJAX
+                const params = new URLSearchParams();
+                if (lspId && lspId !== '0') params.set('lsp', lspId);
+
+                // Cập nhật URL mà không tải lại trang
+                window.history.pushState({}, '', `/index?${params.toString()}`);
+                
+                // Gọi AJAX để tải lại danh sách sản phẩm
+                debounce(loadProducts, 300)(`?${params.toString()}`, true);
+            });
+        });
+
+        // Xử lý khi chọn kiểu dáng (KieuDang)
+        submenuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const lspId = item.getAttribute('data-lsp-id');
+                const kieuDangId = item.getAttribute('data-kieudang-id');
+
+                // Tạo tham số để gửi qua AJAX
+                const params = new URLSearchParams();
+                if (lspId && lspId !== '0') params.set('lsp', lspId);
+                if (kieuDangId && kieuDangId !== '0') params.set('kieudang', kieuDangId);
+
+                // Cập nhật URL mà không tải lại trang
+                window.history.pushState({}, '', `/index?${params.toString()}`);
+                
+                // Gọi AJAX để tải lại danh sách sản phẩm
+                debounce(loadProducts, 300)(`?${params.toString()}`, true);
+            });
+        });
+
+        // Đóng dropdown khi click ra ngoài
+        document.addEventListener('click', (e) => {
+            if (!sanPhamDropdown.contains(e.target) && !e.target.closest('#item-sanpham')) {
+                sanPhamDropdown.classList.remove('show');
+            }
+        });
+    };
+
+    // Gọi hàm setupSanPhamDropdown khi trang tải xong
+    setupSanPhamDropdown();
 });
 </script>
 
@@ -680,11 +750,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="top-nav">
         <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
         <ul class="list-top-nav d-flex ms-auto gap-2">
+          
+          @if($isLogin) 
           <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill " id="chinhsach"><a href="/yourInfo">Thông tin cá nhân</a></li>
           <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang">
               <a href="{{ route('order.history') }}">Tra cứu đơn hàng</a>
           </li>
-          @if($isLogin) 
           @if($user->getIdQuyen()->getId() == 1 || $user->getIdQuyen()->getId() == 2) 
             <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang"><a href="/admin">Trang quản trị</a></li>
           @endif
@@ -711,18 +782,20 @@ document.addEventListener('DOMContentLoaded', () => {
       </a>
         <form action="" method="get" role="search" class="w-100">
           <ul class="d-flex justify-content-center gap-5 w-100 pt-4" >
-             <li class="nav-item fw-medium my-2 mx-2" id="item-xemthem">
+               <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham">
     <a href="#list-product" class="nav-link text-white">Sản Phẩm</a>
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu" id="sanpham-dropdown">
         @foreach ($listLSP as $lsp)
-            <li class="dropdown-item">
-                <a href="?lsp={{ $lsp->getId() }}">{{ $lsp->getTenLSP() }}</a>
+            <li class="dropdown-item" data-lsp-id="{{ $lsp->getId() }}">
+                <a href="javascript:void(0)">{{ $lsp->getTenLSP() }}</a>
                 <ul class="submenu">
                     @foreach ($listKieuDang as $kd)
-                        <li><a href="?lsp={{ $lsp->getId() }}&kieudang={{ $kd->getId() }}">{{ $kd->getTenKieuDang() }}</a></li>
+                        <li data-kieudang-id="{{ $kd->getId() }}" data-lsp-id="{{ $lsp->getId() }}">
+                            <a href="javascript:void(0)">{{ $kd->getTenKieuDang() }}</a>
+                        </li>
                     @endforeach
                     @if (empty($listKieuDang))
-                        <li><a href="#">Không có kiểu dáng</a></li>
+                        <li><a href="javascript:void(0)">Không có kiểu dáng</a></li>
                     @endif
                 </ul>
             </li>

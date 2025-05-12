@@ -469,25 +469,25 @@ use App\Models\CTSP;
     //     }
     //     return $list;
     // }
-    $list = app(CTHD_BUS::class)->getCTHDByIDSPAndIDHD(1, 116);
-    if($list == []) {
-        echo 'empty <br>';
-    } else {
-        foreach ($list as $key) {
-            # code...
-            echo $key->getSoSeri() .'<br>';
-        }
-    }
-    // $sp = app(CTSP_BUS::class)->getSPBySoSeri('00100006');
-    // echo $sp->getId().'<br>';
-    $listCTHD = app(CTHD_BUS::class)->getCTHTbyIDHD(116);
-    foreach ($listCTHD as $key) {
-        # code...
-        // echo app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri())->getId() .'<br>';
-        if(app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri())->getId() == 1) {
-            var_dump($key);
-        }
-    }
+    // $list = app(CTHD_BUS::class)->getCTHDByIDSPAndIDHD(1, 116);
+    // if($list == []) {
+    //     echo 'empty <br>';
+    // } else {
+    //     foreach ($list as $key) {
+    //         # code...
+    //         echo $key->getSoSeri() .'<br>';
+    //     }
+    // }
+    // // $sp = app(CTSP_BUS::class)->getSPBySoSeri('00100006');
+    // // echo $sp->getId().'<br>';
+    // $listCTHD = app(CTHD_BUS::class)->getCTHTbyIDHD(116);
+    // foreach ($listCTHD as $key) {
+    //     # code...
+    //     // echo app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri())->getId() .'<br>';
+    //     if(app(CTSP_BUS::class)->getSPBySoSeri($key->getSoSeri())->getId() == 1) {
+    //         var_dump($key);
+    //     }
+    // }
 
     
     

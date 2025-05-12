@@ -34,6 +34,7 @@
                     // alert('success!');
                     document.getElementById("cpvc").innerText = formatCurrency(data.cpvc);
                     document.getElementById('tongtien').innerText = formatCurrency(data.tongtien);
+                    
                     document.getElementById("idtinh").value = data.tinh;
                     document.getElementById("idpttt").value = data.pttt;
                     document.getElementById("iddvvc").value = data.dvvc;
@@ -114,19 +115,19 @@
         <div class="d-flex flex-column gap-3 p-3" style="width: 50%;">
             <h1 class="text-dark fw-semibold">Thanh toán</h1>
             <form id="paymentForm" class="d-flex flex-column gap-3 p-3" method="get">
-                <input type="hidden" name="listSP" id="listSPInput">    
+                <!-- <input type="hidden" name="listSP" id="listSPInput">     -->
                 <input type="hidden" name="tongtien" value="{{$sum}}">
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Họ tên *</label>
-                    <input class="p-2 rounded hover:border-blue-500" type="text" name="hoten" id="" value="{{$user->getIdNguoiDung()->getHoTen()}}" required>
+                    <input class="p-2 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getIdNguoiDung()->getHoTen()}}" required>
                 </div>
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Số điện thoại *</label>
-                    <input class="p-2 rounded hover:border-blue-500" type="text" name="sdt" id="" value="{{$user->getIdNguoiDung()->getSoDienThoai()}}" required>
+                    <input class="p-2 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getIdNguoiDung()->getSoDienThoai()}}" required>
                 </div>
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Email *</label>
-                    <input class="p-2 rounded hover:border-blue-500" type="text" name="email" id="" value="{{$user->getEmail()}}" required>
+                    <input class="p-2 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getEmail()}}" required>
                 </div>
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Tỉnh/Thành phố *</label>
