@@ -73,6 +73,7 @@
         // const donGiaSanPhamInput = modal.querySelector('input[name="donGia"]');
         const thoiGianBaoHanhSanPhamInput = modal.querySelector('input[name="thoiGianBaoHanh"]');
         const moTaSanPhamInput = modal.querySelector('textarea[name="moTa"]');
+        const soLuongInput = modal.querySelector('input[name="soluong"]');
   
 
         idSanPhamInput.value = this.getAttribute('data-id');
@@ -82,7 +83,7 @@
         kieuDangInput.value = this.getAttribute('data-kieudang');
         thoiGianBaoHanhSanPhamInput.value = this.getAttribute('data-thoigianbaohanh');
         moTaSanPhamInput.value = this.getAttribute('data-mota');
-
+        soLuongInput.value = this.getAttribute('data-soluong');
         const idSanPham = this.getAttribute('data-id').trim();
         previewImage.src = '/productImg/' + idSanPham + '.webp';
       });
@@ -278,7 +279,7 @@
             data-hang="{{ $sanPham->getIdHang()->getId() }}"
             data-loaisanpham="{{ $sanPham->getIdLSP()->getId() }}"
             data-kieudang="{{ $sanPham->getIdKieuDang()->getId() }}"
-           
+            data-soluong="{{ $sanPham->getSoLuong() }}"
             data-thoigianbaohanh="{{ $sanPham->getThoiGianBaoHanh() }}"
             data-mota="{{ $sanPham->getMoTa() }}"
             
@@ -444,6 +445,7 @@
       <div class="modal-body">
         <form method="post" action="{{ route('admin.sanpham.update') }}" enctype="multipart/form-data">
           @csrf
+          <input type="hidden" name="soluong">
           <input type="hidden" name="idSanPham" value="{{ old('idSanPham') }}">
           <!-- Hàng 1: Tên sản phẩm & Loại Sản Phẩm & Hãng -->
           <div class="row mb-3">
@@ -495,6 +497,7 @@
                 @endforeach
               </select>
             </div>
+            
           </div>
 
 

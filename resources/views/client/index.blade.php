@@ -807,8 +807,8 @@ document.addEventListener('DOMContentLoaded', () => {
            <!-- <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="javascript:void(0)" class="nav-link text-white">Sản Phẩm </a></li> -->
             <li class="nav-item fw-medium" style="position: relative;">
     <form action="/index" method="get" role="search">
-        <input class="rounded-pill py-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px; outline: none; border: none; padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}">
-        <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; color: #555; padding: 10px;"></i>
+        <input class="rounded-pill py-2 mb-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px; outline: none; border: none; padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}">
+        <i class="fa-solid fa-magnifying-glass mb-3" style="position: absolute; right: 10px; color: #555; padding: 10px;"></i>
     </form>
 </li>
             
@@ -817,7 +817,7 @@ document.addEventListener('DOMContentLoaded', () => {
             @if($isLogin && ($user->getIdQuyen()->getId() != 1 || $user->getIdQuyen()->getId() != 2))
               <li class="nav-item fw-medium my-2" id="item-giohang">
                 <a href="{{ url('/yourcart?email=' . $user->getEmail()) }}" class="nav-link text-white">
-                  Giỏ Hàng <i class="fa-solid fa-cart-shopping" style="position: relative;font-size: 16px; margin-left: 5px; vertical-align: middle;">
+                  Giỏ Hàng <i class="fa-solid fa-cart-shopping mt-3" style="position: relative;font-size: 16px; margin-left: 15px; vertical-align: middle;">
                     <small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">{{$totalSPinGH}}</small>
                   </i>
                 </a>

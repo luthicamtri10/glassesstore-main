@@ -462,23 +462,7 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
     // dd($request->all());
     $email = $request->input('email-login');
     $password = $request->input('password-login');
-    
-    // $auth = app()->make(AuthController::class);
-    
-    
-    // if ($auth->login($email, $password)) {
-    //     $account = app(TaiKhoan_BUS::class)->getModelById($email);
-    //     if (!$account) {
-    //         return redirect()->back()->with('error', 'Tài khoản không tồn tại!');
-    //     }
-    //     if($account->getIdQuyen()->getId() == 1 || $account->getIdQuyen()->getId() == 2) {
-    //         return redirect()->back()->with('error', 'Vui lòng đăng nhập qua trang quản trị!');
-    //     } else {
-    //         return redirect('/'); 
-    //     }
-    // } else {
-    //     return redirect()->back()->with('error','Tài khoản đã bị khóa!');
-    // }
+
     $user = app(TaiKhoan_BUS::class)->getModelById($email);
     if($user!=null) {
         
@@ -498,23 +482,6 @@ Route::post('/admin/login', function (\Illuminate\Http\Request $request) {
     $email = $request->input('email-login');
     $password = $request->input('password-login');
     
-    // $auth = app()->make(AuthController::class);
-    
-    // if ($auth->login($email, $password)) {
-    //     $account = app(TaiKhoan_BUS::class)->getModelById($email);
-    //     if($account != null) {
-    //         if($account->getIdQuyen()->getId() == 1 || $account->getIdQuyen()->getId() == 2) {
-    //             return redirect('/admin'); 
-    //         } else {
-    //             return redirect('/admin/login')->with('error', 'Bạn không có quyền truy cập trang quản trị!');
-    //         }
-    //     } else {
-    //         return redirect()->back()->with('error','Không tìm thấy tài khoản!');
-    //     }
-        
-    // } else {
-    //     return redirect()->back()->with('error','Tài khoản đã bị khóa!');
-    // }
     $user = app(TaiKhoan_BUS::class)->getModelById($email);
     if($user!=null) {
         

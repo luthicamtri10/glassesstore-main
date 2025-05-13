@@ -35,19 +35,45 @@ class SanPham_DAO implements DAOInterface{
         return null;
     }
 
+    // public function insert($e): int
+    // {
+    //     $sql = "INSERT INTO `sanpham`(`TENSANPHAM`, `IDHANG`, `IDLSP`, `IDKIEUDANG`, `MOTA`, `DONGIA`, `THOIGIANBAOHANH`, `TRANGTHAIHD`, `soLuong`)
+    //     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    //     $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getIdKieuDang()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD(), $e->getSoLuong()];
+    //     $result = database_connection::executeUpdate($sql, ...$args);
+    //     // Lấy ID của sản phẩm vừa được chèn vào
+    //     if ($result) {
+    //         return database_connection::getLastInsertId();
+    //     }
+
+    //     return 0;
+    // }
     public function insert($e): int
     {
-        $sql = "INSERT INTO SanPham (tenSanPham, idHang, idLSP, idKieuDang, moTa, donGia, thoiGianBaoHanh, soLuong trangThaiHD) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getIdKieuDang()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getSoLuong(), $e->getTrangThaiHD()];
+        $sql = "INSERT INTO `sanpham` (`TENSANPHAM`, `IDHANG`, `IDLSP`, `IDKIEUDANG`, `MOTA`, `DONGIA`, `THOIGIANBAOHANH`, `TRANGTHAIHD`, `soLuong`) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        $args = [
+            $e->getTenSanPham(),
+            $e->getIdHang()->getId(),
+            $e->getIdLSP()->getId(),
+            $e->getIdKieuDang()->getId(),
+            $e->getMoTa(),
+            $e->getDonGia(),
+            $e->getThoiGianBaoHanh(),
+            $e->getTrangThaiHD(),
+            $e->getSoLuong()
+        ];
+
         $result = database_connection::executeUpdate($sql, ...$args);
-        // Lấy ID của sản phẩm vừa được chèn vào
+
         if ($result) {
             return database_connection::getLastInsertId();
         }
 
         return 0;
     }
+
 
     public function update($e): int
     {

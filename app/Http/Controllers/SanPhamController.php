@@ -69,6 +69,7 @@ class SanPhamController extends Controller
             $moTa,
             null,
             $thoiGianBaoHanh,
+            0,
             1
         );
        
@@ -86,6 +87,7 @@ class SanPhamController extends Controller
     }
 
     public function update(Request $request) {
+        // dd($request->all());
         $validatedData = $request->validate([
             'tenSanPham' => 'required|string|max:255',
             'moTa' => 'required|string',
@@ -119,6 +121,7 @@ class SanPhamController extends Controller
             $moTa,
             null,
             $thoiGianBaoHanh,
+            $request->input('soluong'),
             1
         );
 
