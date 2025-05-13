@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Bus\Auth_BUS;
+use App\Bus\DiaChi_BUS;
 use Illuminate\Http\Request;
 use App\Models\TaiKhoan;
 use App\Bus\NguoiDung_BUS;
@@ -9,6 +11,7 @@ use App\Bus\Quyen_BUS;
 use App\Bus\TaiKhoan_BUS;
 use App\Bus\Tinh_BUS;
 use App\Enum\GioiTinhEnum;
+use App\Models\DiaChi;
 use App\Models\NguoiDung;
 
 class NguoiDungController extends Controller
@@ -165,6 +168,36 @@ class NguoiDungController extends Controller
        
         return redirect()->back()->with('success', 'Cập nhật thông tin thành công!');
     }
+    // public function addAddress(Request $request){
+    //     // dd($request->all());
+    //     // $idnd = $request->idnd;
+    //     $diaChi = $request->diachi;
+    //     $email = app(Auth_BUS::class)->getEmailFromToken();
+    //     $user = app(TaiKhoan_BUS::class)->getModelById($email);
+    //     // $nd = app(NguoiDung_BUS::class)->getModelById($user);
+    //     $dc = new DiaChi($user->getIdNguoiDung()->getId(), $diaChi);
+    //     app(DiaChi_BUS::class)->addModel($dc);
+    //     return response()->json(['status' => 'success']);
+    // }
+    public function addAddress(Request $request)
+    {
+        $diachi = $request->input('diachi');
+        $user = session('user'); // đảm bảo user được lưu trong session
+
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'Chưa đăng nhập']);
+        }
+
+        $idNguoiDung = $user->getIdNguoiDung()->getId();
+
+        $bus = app(\App\Bus\DiaChi_BUS::class);
+
+        $newDC = new \App\Models\DiaChi($user->getIdNguoiDung(), $diachi);
+        $bus->addModel($newDC);
+
+        return response()->json(['status' => 'success']);
+    }
+
 }
 
 ?>

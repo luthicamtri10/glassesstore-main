@@ -6,22 +6,24 @@
 <?php
     use App\Bus\SanPham_BUS;
     use App\Bus\CTSP_BUS;
-    // $listSP = json_decode($listSP);
+    use App\Bus\DiaChi_BUS;
+use App\Bus\NguoiDung_BUS;
+use App\Models\DiaChi;
+
     $listSP = session('listSP');
-    // $listSP = json_decode($listSP);
     if (is_string($listSP)) {
-        $listSP = json_decode($listSP); // Mặc định json_decode trả về object
+        $listSP = json_decode($listSP); 
     } elseif (is_array($listSP)) {
-        // Nếu $listSP là array, kiểm tra phần tử đầu tiên
         if (isset($listSP[0]) && is_array($listSP[0])) {
-            $listSP = json_decode(json_encode($listSP)); // ép từ array sang object
+            $listSP = json_decode(json_encode($listSP)); 
         }
     }
-    
+
     $listPTTT = session('listPTTT');
     $listDVVC = session('listDVVC');
     $listTinh = session('listTinh');
     $user = session('user');
+    $listDiaChi = app(DiaChi_BUS::class)->getByIdND($user->getIdNguoiDung()->getId());
     $isLogin = session('isLogin');
     $tongTien = 0;
     $sum = 0;
@@ -30,6 +32,10 @@
         $tmp = app(SanPham_BUS::class)->getModelById($key->idsp);
         $sum += $tmp->getDonGia() * $key->quantity;
     }
+    // var_dump($user->getIdNguoiDung());
+    // $dc = new DiaChi($user->getIdNguoiDung(), 'Đống Đa');
+    // app(DiaChi_BUS::class)->addModel($dc);
+    // echo app(NguoiDung_BUS::class)->getModelById($user->getIdNguoiDung()->getId())->getHoTen();
 ?>
 @if(session('success'))
 <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
@@ -56,6 +62,7 @@
                     document.getElementById("iddvvc").value = data.dvvc;
                     console.log(data.diachi);
                     document.getElementById('diachidata').value = data.diachi;
+                    console.log("diachi", data.diachi);
                 },
                 error: function(xhr) {
                     alert("failed in search!");
@@ -100,7 +107,99 @@
                 form.submit(); // Gửi form nếu cpvc hợp lệ
             }
         });
+        // Nếu cần khởi động theo radio mặc định
+        if ($('#radioDefault1').is(':checked')) {
+            $('#inputDiaChiUser').show().prop('disabled', false);       // bật input
+            $('#diaChiSelectTemplate').hide().find('select').prop('disabled', true); // tắt select
+        } else {
+            $('#inputDiaChiUser').hide().prop('disabled', true);         // tắt input
+            $('#diaChiSelectTemplate').show().find('select').prop('disabled', false); // bật select
+        }
+        $('#radioDefault1').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('#inputDiaChiUser').show().prop('disabled', false);       // bật input
+                $('#diaChiSelectTemplate').hide().find('select').prop('disabled', true); // tắt select
+            }
+        });
+
+        $('#radioDefault2').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('#inputDiaChiUser').hide().prop('disabled', true);         // tắt input
+                $('#diaChiSelectTemplate').show().find('select').prop('disabled', false); // bật select
+            }
+        });
+
     });
+    $(document).ready(function () {
+        // $('#addDiaChi button').click(function (e) {
+        //     e.preventDefault();
+
+        //     let newAddress = $('#addDiaChi input').val().trim();
+
+        //     if (newAddress === '') {
+        //         alert("Vui lòng nhập địa chỉ mới!");
+        //         return;
+        //     }
+
+        //     // Tạo option mới và thêm vào select
+        //     let selectElement = $('#diaChiSelectTemplate select');
+        //     selectElement.append(`<option value="${newAddress}" selected>${newAddress}</option>`);
+
+        //     // Reset input
+        //     $('#addDiaChi input').val('');
+
+        //     // (Tuỳ chọn) Gửi địa chỉ mới về server qua AJAX để lưu
+        //     $.ajax({
+        //         url: "{{ route('user.addAddress') }}", // Tạo route tương ứng
+        //         method: 'POST',
+        //         data: {
+        //             diachi: newAddress,
+        //             _token: '{{ csrf_token() }}'
+        //         },
+        //         success: function (response) {
+        //             alert("Đã thêm địa chỉ thành công!");
+        //         },
+        //         error: function (xhr) {
+        //             alert("Lỗi khi thêm địa chỉ!");
+        //         }
+        //     });
+        // });
+        $('#addDiaChi button').click(function (e) {
+            e.preventDefault();
+
+            let newAddress = $('#addDiaChi input').val().trim();
+
+            if (newAddress === '') {
+                alert("Vui lòng nhập địa chỉ mới!");
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('user.addAddress') }}",
+                method: 'POST',
+                data: {
+                    diachi: newAddress,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function (response) {
+                    if (response.status === 'success') {
+                        let selectElement = $('#diaChiSelectTemplate select');
+                        selectElement.append(`<option value="${newAddress}" selected>${newAddress}</option>`);
+                        $('#addDiaChi input').val('');
+                        alert("Đã thêm địa chỉ thành công!");
+                    } else if (response.status === 'exists') {
+                        alert("Địa chỉ đã tồn tại!");
+                    }
+                },
+                error: function () {
+                    alert("Lỗi khi thêm địa chỉ!");
+                }
+            });
+        });
+    });
+    
+
+    
 </script>
     <div class="top-nav p-3">
         <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
@@ -157,7 +256,37 @@
                 </div>
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Địa chỉ *</label>
-                    <input class="p-2 rounded hover:border-blue-500" type="text" name="diachi" id="" value="{{$user->getIdNguoiDung()->getDiaChi()}}" required>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1" checked>
+                        <label class="form-check-label" for="radioDefault1">
+                            Địa chỉ mặc định của khách hàng
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
+                        <label class="form-check-label" for="radioDefault2" onclick="">
+                            Địa chỉ khác của khách hàng
+                        </label>
+                    </div>
+                    <div id="selectDiaChi" class="mt-2">
+                        <input style="display:none;" class="p-2 rounded hover:border-blue-500" type="text" name="diachi" id="inputDiaChiUser" value="{{$user->getIdNguoiDung()->getDiaChi()}}" required>
+                        <!-- <input class="p-2 rounded hover:border-blue-500" type="text" name="diachi" id="inputDiaChiUser" value="{{ $user->getIdNguoiDung()->getDiaChi() }}" required> -->
+                        
+                        <div id="diaChiSelectTemplate" class="" style="display: none;display: flex;justify-content: start;align-items: center;gap: 10px;">
+                            <select name="diachi" class="p-2 rounded hover:border-blue-500">
+                                <!-- <option value="">Chọn địa chỉ hiện có</option> -->
+                                @foreach($listDiaChi as $dc)
+                                    <option value="{{ $dc->getDiaChi() }}">{{ $dc->getDiaChi() }}</option>
+                                @endforeach
+                            </select>
+                            <div id="addDiaChi">
+                                <input class="p-2 rounded hover:border-blue-500" type="text" placeholder="Nhập địa chỉ mới">
+                                <button class="btn btn-info">Lưu</button>
+                            </div>
+                        </div>
+                        
+                    </div>
                 </div>
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Phương thức thanh toán *</label>
@@ -183,16 +312,6 @@
                     <button type="submit" class="btn btn-info text-white p-3 fw-semibold fs-5" style="width: 200px;">Lưu</button>
                 </div>
             </form>
-            <?php
-                // if(isset($_POST['submit'])&&($_POST['submit'])) {
-                //     $tinh = $_POST['tinh'];
-                //     $dvvc = $POST['dvvc'];
-                //     $pttt = $_POST['pttt'];
-                //     $diachi = $_POST['diachi'];
-                //     echo 'tinh: '. $tinh . '-dvvc: ' . $dvvc. '-pttt: '. $pttt . '-diachi: '. $diachi;
-                // }
-                
-            ?>
         </div>  
         
         <div class="d-flex flex-column gap-3 p-3 bg-body-secondary rounded" style="width: 50%;height: 100%;">

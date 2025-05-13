@@ -44,14 +44,18 @@ use App\Validates\validation;
 use App\Bus\CTHD_BUS;
 use App\Dao\CTHD_DAO;
 use App\Bus\CTSP_BUS;
+use App\Bus\DiaChi_BUS as BusDiaChi_BUS;
 use App\Dao\CTSP_DAO;
 use App\Bus\HoaDon_BUS;
 use App\Bus\KieuDang_BUS;
 use App\Dao\CTGH_DAO;
+use App\Dao\DiaChi_DAO as DaoDiaChi_DAO;
 use App\Dao\HoaDon_DAO;
 use App\Dao\KieuDang_DAO;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TaiKhoanController;
+use DiaChi_BUS;
+use DiaChi_DAO;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 
@@ -86,6 +90,7 @@ class AppServiceProvider extends ServiceProvider
         'PTTT' => [PTTT_DAO::class, PTTT_BUS::class],
         'CTGH' => [CTGH_DAO::class, CTGH_BUS::class],
         'KieuDang' => [KieuDang_DAO::class, KieuDang_BUS::class],
+        'DiaChi' => [DaoDiaChi_DAO::class, BusDiaChi_BUS::class]
     ];
 
     /**

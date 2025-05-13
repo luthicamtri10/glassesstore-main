@@ -479,7 +479,7 @@ Route::post('/login', function (\Illuminate\Http\Request $request) {
         return redirect()->back()->with('error','Tài khoản đã bị khóa!');
     }
 })->name('login');
-
+Route::post('/payment/add-address', [NguoiDungController::class, 'addAddress'])->name('user.addAddress');
 Route::post('/admin/login', function (\Illuminate\Http\Request $request) {
     $email = $request->input('email-login');
     $password = $request->input('password-login');

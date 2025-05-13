@@ -97,9 +97,6 @@ class HoaDonController extends Controller {
         if (session()->has('listSP')) {
             session()->forget('listSP');
         }
-
-        // $listSP = [['idsp' => $idsp,
-        //             'quantity' => $quantity]];
         session([
             'listSP' => $request->input('listSP')
         ]);

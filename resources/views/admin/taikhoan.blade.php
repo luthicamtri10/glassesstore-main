@@ -155,7 +155,11 @@
                             <input type="hidden" name="password" value="{{ $tk->getPassword() }}">
                             <input type="hidden" name="idnguoidung" value="{{ $tk->getIdNguoiDung()->getId() }}">
                             <input type="hidden" name="idquyen" value="{{ $tk->getIdQuyen()->getId() }}">
-                            <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                            @if($tk->getTrangThaiHD() == 1)
+                            <button type="submit" class="btn btn-danger btn-sm">Khóa</button>
+                            @else
+                            <button type="submit" class="btn btn-success btn-sm">Mở</button>
+                            @endif
                         </form>
                     </td>
                 </tr>
