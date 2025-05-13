@@ -240,6 +240,7 @@
         <th scope="col">ID</th>
         <th scope="col">Tên</th>
         <th scope="col">Hãng</th>
+        <th scope="col">Số lượng</th>
         <th scope="col">Loại sản phẩm</th>
         <th scope="col">Kiểu dáng</th>
         <th scope="col">Đơn giá</th>
@@ -255,6 +256,7 @@
         <td>{{ $sanPham->getId() }}</td>
         <td>{{ $sanPham->getTenSanPham() }}</td>
         <td>{{ $mapTenHang[$sanPham->getIdHang()->getId()] }}</td>
+        <td>{{ $sanPham->getSoLuong()}}</td>
         <td>{{ $mapTenLoaiSP[$sanPham->getIdLSP()->getId()] }}</td>
         <td>{{ $mapTenKieuDang[$sanPham->getIdKieuDang()->getId()] }}</td>
         <td>{{ number_format($sanPham->getDonGia()) }} VNĐ</td>

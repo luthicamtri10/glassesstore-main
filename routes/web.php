@@ -443,18 +443,27 @@ Route::get('/process', function() {
 Route::post('/hoadon', [HoaDonController::class, 'store'])->name('hoadon.store');
 Route::post('/admin/hoadon/update-status', [HoaDonController::class, 'updateStatus'])->name('admin.hoadon.update');
 Route::get('client/paymentsuccess', [HoaDonController::class, 'paymentSuccess'])->name('payment.success');
-// Route::post('client/paymentsuccess', [HoaDonController::class, 'paymentSuccess'])->name('payment.success');
 Route::post('client/paid',[HoaDonController::class, 'paid'])->name('payment.paid');
-Route::post('/createdPayMent', [HoaDonController::class, 'createdPayment'])->name('payment.create');
 Route::get('/createdPayment/search', [HoaDonController::class, 'search'])->name('payment.search');
 Route::post('/createdPayment/changeStatus', [HoaDonController::class, 'changeStatusHD'])->name('payment.changestatus');
+Route::get('/success', function() {
+    $idhd = $_GET['idhd'];
+    $hoaDon = app(HoaDon_BUS::class)->getModelById($idhd);
+    return view('client.SuccessPayment', [
+        'hoaDon' => $hoaDon
+    ]);
+});
+Route::view('/createdPayment', 'client.MuaNgay');
 Route::get('/getCTHD', [HoaDonController::class, 'getCTHDByIDSPAndIDHD'])->name('payment.getCTHDByIDSPAndIDHD');
-Route::post('/muangay', [HoaDonController::class, 'muangay'])->name('payment.muangay');
+Route::get('/muangay', [HoaDonController::class, 'muangay'])->name('payment.muangay');
+Route::get('/createdPayMent', [HoaDonController::class, 'createdPayment'])->name('payment.create');
+Route::view('/createPayment', 'client.CreatePayment');
 Route::post('/login', function (\Illuminate\Http\Request $request) {
     $email = $request->input('email-login');
     $password = $request->input('password-login');
     
     $auth = app()->make(AuthController::class);
+    
     
     if ($auth->login($email, $password)) {
         $account = app(TaiKhoan_BUS::class)->getModelById($email);

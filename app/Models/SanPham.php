@@ -8,8 +8,8 @@ class SanPham
     private Hang $idHang;
     private LoaiSanPham $idLSP;
     private KieuDang $idKieuDang;
-
-    public function __construct($id = null, $tenSanPham, Hang $idHang, LoaiSanPham $idLSP, KieuDang $idKieuDang, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD)
+    private $soLuong;
+    public function __construct($id = null, $tenSanPham, Hang $idHang, LoaiSanPham $idLSP, KieuDang $idKieuDang, $moTa, $donGia, $thoiGianBaoHanh, $soLuong, $trangThaiHD)
     {
         $this->id = $id;
         $this->tenSanPham = $tenSanPham;
@@ -19,6 +19,7 @@ class SanPham
         $this->moTa = $moTa;
         $this->donGia = $donGia;
         $this->thoiGianBaoHanh = $thoiGianBaoHanh;
+        $this->soLuong = $soLuong;
         $this->trangThaiHD = $trangThaiHD;
     }
 
@@ -31,6 +32,14 @@ class SanPham
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    public function getSoLuong() {
+        return $this->soLuong;
+    }
+
+    public function setSoLuong($soLuong) {
+        $this->soLuong = $soLuong;
     }
 
     // Getter và Setter cho tenSanPham

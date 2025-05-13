@@ -8,6 +8,10 @@
     use App\Bus\CTSP_BUS;
     use App\Bus\DVVC_BUS;
     use App\Bus\SanPham_BUS;
+    use App\Enum\HoaDonEnum;
+    $user = session('user');
+    $isLogin = session('isLogin');
+    $dvvc = app(DVVC_BUS::class)->getModelById($hoaDon->getIdDVVC()->getIdDVVC());
 ?>
 <div class="top-nav p-3">
     <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
@@ -51,43 +55,50 @@
     <p>Số điện thoại: {{$user->getIdNguoiDung()->getSoDienThoai()}}</p>
     <p>Thanh toán: {{$hoaDon->getIdPTTT()->getTenPTTT()}}</p>
     <p>Đơn vị vận chuyển: {{$dvvc->getTenDV()}}</p>
-    @if($hoaDon->getIdPTTT()->getId()!=1)
-    <a href="/lich-su-don-hang/dadat">
+    <p>Tổng tiền: {{ number_format($hoaDon->getTongTien(), 0, ',', '.') }}₫</p>
+    @if($hoaDon->getIdPTTT()->getId()!=1 && $hoaDon->getTrangThai() == HoaDonEnum::DADAT)
+    <!-- <a href="/lich-su-don-hang/dadat">
         <button class="btn btn-info">Thanh toán ngay</button>
-    </a>
+    </a> -->
+    <form action="{{ route('payment.paid') }}" method="POST">
+        @csrf
+        <input type="hidden" name="id" value="{{ $hoaDon->getId() }}">
+        <input type="hidden" name="tongtien" value="{{ $hoaDon->getTongTien() }}">
+        <input type="hidden" name="ordercode" value="{{ $hoaDon->getOrderCode() }}">
+        <button type="submit" class="btn btn-info">Thanh toán với PayOS</button>
+    </form>
     @endif
     <hr>
     <table  class="table table-hover">
         <thead>
             <tr>
                 <th scope="col">Tên Sản Phẩm</th>
-                <th scope="col">Số lượng</th>
+                <th scope="col">Số seri</th>
                 <th scope="col">Đơn giá</th></th>
-                <th scope="col">Thành tiền</th>
-                <th scope="col">Hành động</th>
+                <!-- <th scope="col">Thành tiền</th> -->
+                <!-- <th scope="col">Hành động</th> -->
             </tr>
         </thead>
         <tbody>
             @php
                 $listCTHD = app(CTHD_BUS::class)->getCTHTbyIDHD($hoaDon->getId());
             @endphp
-            @foreach($listSP as $sanpham)
+            @foreach($listCTHD as $cthd)
             @php
-                $sp = app(SanPham_BUS::class)->getModelById($sanpham->sanPham);
+                $sp = app(CTSP_BUS::class)->getSPBySoSeri($cthd->getSoSeri());
                 
             @endphp
             <tr>
                 <th scope="col">{{$sp->getTenSanPham()}}</th>
-                <th scope="col">{{$sanpham->soLuong}}</th>
-                <th scope="col">{{$sp->getDonGia()}}</th>
-                <th scope="col">{{$sp->getDonGia() * $sanpham->soLuong}}</th>
-                <th scope="col">
+                <th scope="col">{{$cthd->getSoSeri()}}</th>
+                <th scope="col">{{ number_format($sp->getDonGia(), 0, ',', '.') }}₫</th>
+                <!-- <th scope="col">
                     <form id="getCTHD" action="" method="get">
                         <input type="hidden" name="idsp" value="{{$sp->getId()}}">
                         <input type="hidden" name="idhd" value="{{$hoaDon->getId()}}">
                         <button type="button" class="btn btn-info btn-detail" data-idsp="{{$sp->getId()}}" data-idhd="{{$hoaDon->getId()}}" data-bs-toggle="modal" data-bs-target="#detail">Xem chi tiết</button>
                     </form>
-                </th>
+                </th> -->
             </tr>
             @endforeach
         </tbody>

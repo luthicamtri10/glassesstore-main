@@ -99,6 +99,10 @@ class CTPN_DAO implements DAOInterface {
         ];
         $rs = database_connection::executeQuery($sql, ...$args);
         $this->taoCTSPTuDong($e->getIdSP()->getId(), $e->getSoLuong());
+        $sp = app(SanPham_BUS::class)->getModelById($e->getIdSP()->getId());
+        $total = $sp->getSoLuong() + $e->getSoLuong();
+        $sp->setSoLuong($total);
+        app(SanPham_BUS::class)->updateModel($sp);
         return $rs;
     }
 

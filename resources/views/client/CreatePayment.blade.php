@@ -7,6 +7,22 @@
     use App\Bus\SanPham_BUS;
     use App\Bus\CTSP_BUS;
     // $listSP = json_decode($listSP);
+    $listSP = session('listSP');
+    // $listSP = json_decode($listSP);
+    if (is_string($listSP)) {
+        $listSP = json_decode($listSP); // Mặc định json_decode trả về object
+    } elseif (is_array($listSP)) {
+        // Nếu $listSP là array, kiểm tra phần tử đầu tiên
+        if (isset($listSP[0]) && is_array($listSP[0])) {
+            $listSP = json_decode(json_encode($listSP)); // ép từ array sang object
+        }
+    }
+    
+    $listPTTT = session('listPTTT');
+    $listDVVC = session('listDVVC');
+    $listTinh = session('listTinh');
+    $user = session('user');
+    $isLogin = session('isLogin');
     $tongTien = 0;
     $sum = 0;
     foreach ($listSP as $key) {
@@ -185,7 +201,6 @@
                 <!-- <input type="hidden" name="listSP" id="listSPInput" value='{{ json_encode($listSP) }}'> -->
                 @csrf
                 <meta name="csrf-token" content="{{ csrf_token() }}">
-                <input type="hidden" name="idHD" id="" value="{{$idHD}}">
                 <input type="hidden" name="listCTHD" id="listCTHD">
                 <input type="hidden" name="tinh" id="idtinh">
                 <input type="hidden" name="pttt" id="idpttt">

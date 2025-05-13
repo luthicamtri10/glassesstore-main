@@ -224,7 +224,7 @@ use App\Models\CTGH;
         <div>Chọn <span id="selected-count">0</span> sản phẩm</div> <!-- Hiển thị số lượng sản phẩm đã chọn -->
         <div>Tổng tiền: <span id="total-amount">0</span></div></div>
      
-        <form action="{{ route('payment.create') }}" method="post">
+        <form action="{{ route('payment.create') }}" method="get">
             @csrf
             <input type="hidden" name="listSP" id="listSP">
             <button id="btnDatNgay" type="submit" class="btn btn-info text-white" style="background-color: #55d5d2;">Đặt ngay</button>

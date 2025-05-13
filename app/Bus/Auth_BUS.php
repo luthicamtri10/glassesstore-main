@@ -19,9 +19,13 @@ class Auth_BUS {
 
     public function login($email, $password) {
         $user = $this->taiKhoanBUS->getModelById($email);
-        if (!$user->getTrangThaiHD() || $user == null) {
+        // if($user!=null) {}
+        if ($user == null) {
             return false;
-        } else {
+        } else if(!$user->getTrangThaiHD()) {
+            return false;
+        }
+        else {
             if ($user && password_verify($password, $user->getPassword())) {
                 $token = $this->jwt::generateToken($user->getEmail());
                 $_SESSION['token'] = $token; // Lưu token vào session

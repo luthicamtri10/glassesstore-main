@@ -470,7 +470,7 @@
                                     <p><strong>Email khách hàng:</strong> {{ $orderData['emailKhachHang'] ?? 'Không xác định' }}</p>
                                     <p><strong>Tỉnh:</strong> {{ $orderData['tinh'] ?? 'Không xác định' }}</p>
                                     <p><strong>Địa chỉ:</strong> {{ $orderData['diaChi'] ?? 'Không xác định' }}</p>
-                                    <p>{{$hoaDon->getTrangThai()}}</p>
+                                    <!-- <p>{{$hoaDon->getTrangThai()}}</p> -->
                                     @if($hoaDon->getIdPTTT()->getId()!=1 && $hoaDon->getTrangThai() === HoaDonEnum::DADAT)
                                     <form action="{{ route('payment.paid') }}" method="POST">
                                         @csrf

@@ -37,9 +37,9 @@ class SanPham_DAO implements DAOInterface{
 
     public function insert($e): int
     {
-        $sql = "INSERT INTO SanPham (tenSanPham, idHang, idLSP, idKieuDang, moTa, donGia, thoiGianBaoHanh, trangThaiHD) 
+        $sql = "INSERT INTO SanPham (tenSanPham, idHang, idLSP, idKieuDang, moTa, donGia, thoiGianBaoHanh, soLuong trangThaiHD) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getIdKieuDang()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD()];
+        $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getIdKieuDang()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getSoLuong(), $e->getTrangThaiHD()];
         $result = database_connection::executeUpdate($sql, ...$args);
         // Lấy ID của sản phẩm vừa được chèn vào
         if ($result) {
@@ -51,9 +51,9 @@ class SanPham_DAO implements DAOInterface{
 
     public function update($e): int
     {
-        $sql = "UPDATE SanPham SET tenSanPham = ?, idHang = ?, idLSP = ?, idKieuDang = ?, moTa = ?, donGia = ?, thoiGianBaoHanh = ?, trangThaiHD = ?
+        $sql = "UPDATE SanPham SET tenSanPham = ?, idHang = ?, idLSP = ?, idKieuDang = ?, moTa = ?, donGia = ?, thoiGianBaoHanh = ?, soLuong = ?, trangThaiHD = ?
         WHERE id = ?";
-        $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getIdKieuDang()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getTrangThaiHD(), $e->getId()];
+        $args = [$e->getTenSanPham(), $e->getIdHang()->getId(), $e->getIdLSP()->getId(), $e->getIdKieuDang()->getId(), $e->getMoTa(), $e->getDonGia(), $e->getThoiGianBaoHanh(), $e->getSoLuong(), $e->getTrangThaiHD(), $e->getId()];
         $result = database_connection::executeUpdate($sql, ...$args);
         if ($result) {
             return $e->getId();
@@ -282,8 +282,9 @@ class SanPham_DAO implements DAOInterface{
         $moTa = $rs['MOTA'];
         $donGia = $rs['DONGIA'];
         $thoiGianBaoHanh = $rs['THOIGIANBAOHANH'];
+        $soLuong = $rs['soLuong'];
         $trangThaiHD = $rs['TRANGTHAIHD'];
-        return new SanPham($id, $tenSanPham, $idHang, $idLSP, $idKieuDang, $moTa, $donGia, $thoiGianBaoHanh, $trangThaiHD);
+        return new SanPham($id, $tenSanPham, $idHang, $idLSP, $idKieuDang, $moTa, $donGia, $thoiGianBaoHanh, $soLuong, $trangThaiHD);
     }
 
     public function getAll() : array {

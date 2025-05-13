@@ -846,7 +846,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   $stock = $sanPham->getStock($sp->getId());
                 @endphp
                 <div class="col rounded-5 product"
-                      data-stock="{{ $stock }}"
+                      data-stock="{{ $sp->getSoLuong() }}"
                       data-idsp="{{ $sp->getId() }}"
                       data-tensp="{{ $sp->getTenSanPham() }}"
                       data-hang="{{ $sp->getIdHang()->getTenHang() }}"
@@ -1037,7 +1037,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   $stock = $sanPham->getStock($sp->getId());
                 @endphp
                 <div class="col rounded-5 product"
-                      data-stock="{{ $stock }}"
+                      data-stock="{{ $sp->getSoLuong() }}"
                       data-idsp="{{ $sp->getId() }}"
                       data-tensp="{{ $sp->getTenSanPham() }}"
                       data-hang="{{ $sp->getIdHang()->getTenHang() }}"
@@ -1256,12 +1256,10 @@ document.addEventListener('DOMContentLoaded', () => {
                   <input type="hidden" name="idsp" value="">
                   <button type="submit" class="btn btn-light" style="width: 200px;">Thêm vào giỏ hàng</button>
               </form>
-              <form action="{{route('payment.muangay')}}" method="post">
-                  @csrf
+              <form action="{{route('payment.muangay')}}" method="get">
                   <input type="hidden" name="idsp2" value="">
                   <input type="hidden" name="quantity" value="1">
                   <input type="hidden" name="price" value="">
-                  <input type="hidden" name="listSP" id="listSP"> 
                   <button type="submit" class="btn btn-light" style="width: 150px;">Mua ngay</button>
               </form>
             @else
