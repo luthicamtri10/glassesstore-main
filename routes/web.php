@@ -125,8 +125,8 @@ Route::get('/index', function (Request $request) {
     }
 
     // Lọc nâng cao (sử dụng searchByCriteria)
-    if ($idKieuDang || $startPrice !== null || $endPrice !== null) {
-        $filteredSP = $sanPham->searchByCriteria($idHang, $idLSP, $idKieuDang, $startPrice, $endPrice);
+    if ($idKieuDang || $startPrice !== null || $endPrice !== null || $keyword) {
+        $filteredSP = $sanPham->searchByCriteria($idHang, $idLSP, $idKieuDang, $startPrice, $endPrice, $keyword);
     }
 
     // Chuẩn bị dữ liệu JSON

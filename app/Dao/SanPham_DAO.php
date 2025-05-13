@@ -219,32 +219,47 @@ class SanPham_DAO implements DAOInterface{
         return $list;
     }
 
-    public function searchByKhoangGiaAndModel($keyword,$startprice,$endprice) {
-        $list = [];
-        $query = "
-            SELECT *
-                FROM sanpham
-                JOIN hang ON hang.ID = sanpham.IDHANG
-                JOIN loaisanpham ON loaisanpham.ID = sanpham.IDLSP
-                WHERE (
-                    (DONGIA BETWEEN ? AND ?)
-                    AND (
-                        sanpham.MOTA LIKE CONCAT('%', ?, '%')
-                        OR sanpham.TENSANPHAM LIKE CONCAT('%', ?, '%')
-                        OR hang.TENHANG LIKE CONCAT('%', ?, '%')
-                        OR loaisanpham.TENLSP LIKE CONCAT('%', ?, '%')LIKE ?
-                    )
-                )
-        ";
-        $args = [$startprice, $endprice, $keyword, $keyword, $keyword, $keyword];
-        $rs = database_connection::executeQuery($query, ...$args);
-        while($row = $rs->fetch_assoc()) {
-            $model = $this->createSanPhamModel($row);
-            array_push($list, $model);
-        }
+    public function searchByKhoangGiaAndModel($keyword, $startprice, $endprice)
+{
+    $list = [];
+    $query = "
+        SELECT *
+        FROM sanpham
+        JOIN hang ON hang.ID = sanpham.IDHANG
+        JOIN loaisanpham ON loaisanpham.ID = sanpham.IDLSP
+        WHERE (
+            (DONGIA BETWEEN ? AND ?)
+            AND (
+                sanpham.MOTA LIKE CONCAT('%', ?, '%')
+                OR sanpham.TENSANPHAM LIKE CONCAT('%', ?, '%')
+                OR hang.TENHANG LIKE CONCAT('%', ?, '%')
+                OR loaisanpham.TENLSP LIKE CONCAT('%', ?, '%')
+            )
+        )
+    ";
+    $params = [(float)$startprice, (float)$endprice, $keyword, $keyword, $keyword, $keyword];
+    $types = "ddssss"; // Xây dựng tĩnh hoặc động
+
+    // Kiểm tra số placeholder
+    $placeholderCount = substr_count($query, '?');
+    if ($placeholderCount !== count($params) || $placeholderCount !== strlen($types)) {
+        error_log("Error: Số placeholder ($placeholderCount) không khớp với params (" . count($params) . ") hoặc types (" . strlen($types) . ")");
         return $list;
     }
 
+    // Log để debug
+    error_log("Query: $query, Types: $types, Params: " . json_encode($params));
+
+    // Gọi executeQuery chỉ với $query và $params
+    $rs = database_connection::executeQuery($query, ...$params);
+
+    while ($row = $rs->fetch_assoc()) {
+        $model = $this->createSanPhamModel($row);
+        array_push($list, $model);
+    }
+
+    return $list;
+}
     public function searchByKhoangGiaAndLSPAndModel($keyword,$idlsp,$startprice,$endprice) {
         $list = [];
         $query = "
@@ -377,43 +392,61 @@ class SanPham_DAO implements DAOInterface{
         }
         return null;
     }
-    public function searchByCriteria($idHang = null, $idLSP = null, $idKieuDang = null, $startPrice = null, $endPrice = null)
-    {
-        $list = [];
-        $query = "SELECT * FROM SANPHAM WHERE TRANGTHAIHD = 1";
-        $params = [];
-        $types = "";
-    
-        // Xây dựng câu truy vấn động
-        if ($idHang !== null && $idHang != 0) {
-            $query .= " AND IDHANG = ?";
-            $params[] = $idHang;
-            $types .= "i";
-        }
-        if ($idLSP !== null && $idLSP != 0) {
-            $query .= " AND IDLSP = ?";
-            $params[] = $idLSP;
-            $types .= "i";
-        }
-        if ($idKieuDang !== null && $idKieuDang != 0) {
-            $query .= " AND IDKIEUDANG = ?";
-            $params[] = $idKieuDang;
-            $types .= "i";
-        }
-        if ($startPrice !== null && $endPrice !== null) {
-            $query .= " AND DONGIA >= ? AND DONGIA <= ?";
-            $params[] = $startPrice;
-            $params[] = $endPrice;
-            $types .= "dd";
-        }
-    
-        $rs = database_connection::executeQuery($query, ...$params);
-        while ($row = $rs->fetch_assoc()) {
-            $model = $this->createSanPhamModel($row);
-            array_push($list, $model);
-        }
-    
-        return $list;
+    public function searchByCriteria($idHang = null, $idLSP = null, $idKieuDang = null, $startPrice = null, $endPrice = null, $keyword = null)
+{
+    $list = [];
+    $query = "SELECT * FROM SANPHAM WHERE TRANGTHAIHD = 1";
+    $params = [];
+    $types = "";
+
+    // Xây dựng câu truy vấn động và giữ $types
+    if ($keyword !== null && $keyword !== '') {
+        $query .= " AND TENSANPHAM LIKE ?";
+        $params[] = '%' . $keyword . '%';
+        $types .= "s";
     }
+    if ($idHang !== null && $idHang != 0) {
+        $query .= " AND IDHANG = ?";
+        $params[] = $idHang;
+        $types .= "i";
+    }
+    if ($idLSP !== null && $idLSP != 0) {
+        $query .= " AND IDLSP = ?";
+        $params[] = $idLSP;
+        $types .= "i";
+    }
+    if ($idKieuDang !== null && $idKieuDang != 0) {
+        $query .= " AND IDKIEUDANG = ?";
+        $params[] = $idKieuDang;
+        $types .= "i";
+    }
+    if ($startPrice !== null && $endPrice !== null) {
+        $query .= " AND DONGIA >= ? AND DONGIA <= ?";
+        // Ép kiểu $startPrice và $endPrice thành số thực
+        $params[] = (float)$startPrice;
+        $params[] = (float)$endPrice;
+        $types .= "dd";
+    }
+
+    // Kiểm tra số placeholder khớp với $types và $params
+    $placeholderCount = substr_count($query, '?');
+    if ($placeholderCount !== strlen($types) || $placeholderCount !== count($params)) {
+        error_log("Error: Số placeholder ($placeholderCount) không khớp với types (" . strlen($types) . ") hoặc params (" . count($params) . ")");
+        return $list; // Trả về mảng rỗng nếu không khớp
+    }
+
+    // Log để debug
+    error_log("Query: $query, Types: $types, Params: " . json_encode($params));
+
+    // Gọi executeQuery chỉ với $query và $params
+    $rs = database_connection::executeQuery($query, ...$params);
+
+    while ($row = $rs->fetch_assoc()) {
+        $model = $this->createSanPhamModel($row);
+        array_push($list, $model);
+    }
+
+    return $list;
+}
     
 }
