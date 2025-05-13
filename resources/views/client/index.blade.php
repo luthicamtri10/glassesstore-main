@@ -559,6 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Lọc nâng cao
     setupDropdown('filter-toggle', 'filter-dropdown', 'apply-filter', () => {
+        const filterKeyword = document.getElementById('filter-keyword').value.trim();
         const filterHang = document.getElementById('filter-hang').value;
         const filterLsp = document.getElementById('filter-lsp').value;
         const filterKieuDang = document.getElementById('filter-kieudang').value;
@@ -579,6 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
         const params = new URLSearchParams();
+        if (filterKeyword) params.set('keyword', filterKeyword);
         if (filterHang && filterHang !== '0') params.set('hang', filterHang);
         if (filterLsp && filterLsp !== '0') params.set('lsp', filterLsp);
         if (filterKieuDang && filterKieuDang !== '0') params.set('kieudang', filterKieuDang);
@@ -815,7 +817,7 @@ document.addEventListener('DOMContentLoaded', () => {
             @if($isLogin && ($user->getIdQuyen()->getId() != 1 || $user->getIdQuyen()->getId() != 2))
               <li class="nav-item fw-medium my-2" id="item-giohang">
                 <a href="{{ url('/yourcart?email=' . $user->getEmail()) }}" class="nav-link text-white">
-                  Giỏ Hàng <i class="fa-light fa-bag-shopping" style="position: relative;">
+                  Giỏ Hàng <i class="fa-solid fa-cart-shopping" style="position: relative;font-size: 16px; margin-left: 5px; vertical-align: middle;">
                     <small style="padding: 5px;background:rgb(232, 164, 76);color: white;position: absolute;right: -15px;bottom: -15px;font-size: 12px;border-radius: 50%;">{{$totalSPinGH}}</small>
                   </i>
                 </a>
@@ -896,6 +898,10 @@ document.addEventListener('DOMContentLoaded', () => {
   <button type="button" class="btn btn-outline-secondary w-100 text-center filter-button" id="filter-toggle">Tìm Kiếm</button>
   <div class="dropdown-menu p-3" id="filter-dropdown">
     <div class="filter-options">
+      <!-- Thêm ô tìm kiếm theo tên sản phẩm -->
+      <label for="filter-keyword" class="form-label">Tên sản phẩm:</label>
+<input type="text" class="form-control mb-2" id="filter-keyword" name="keyword" placeholder="Nhập tên sản phẩm" value="{{ request('keyword') ?? '' }}">
+      
       <label for="filter-hang" class="form-label">Hãng:</label>
       <select class="form-select mb-2" id="filter-hang" name="filter_hang">
         <option value="0">Xem tất cả</option>

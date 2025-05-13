@@ -95,8 +95,8 @@ class SanPham_BUS implements BUSInterface {
     public function getStock($idPd) {
         return $this->sanPhamDAO->getStock($idPd);
     }
-    public function searchByCriteria($idHang = null, $idLSP = null, $idKieuDang = null, $startPrice = null, $endPrice = null)
+   public function searchByCriteria($idHang = null, $idLSP = null, $idKieuDang = null, $startPrice = null, $endPrice = null, $keyword = null)
 {
-    return $this->sanPhamDAO->searchByCriteria($idHang, $idLSP, $idKieuDang, $startPrice, $endPrice);
+    return $this->sanPhamDAO->searchByCriteria($idHang, $idLSP, $idKieuDang, $startPrice, $endPrice, $keyword);
 }
 }
