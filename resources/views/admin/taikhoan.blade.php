@@ -103,7 +103,7 @@
             @endforeach
         </select>
 
-        <button class="btn btn-info ms-2" id="refreshBtn" type="button">Refresh</button>
+        <button class="btn btn-info ms-2" id="refreshBtn" type="button">Làm mới</button>
         <button type="button" class="btn btn-success p-3 w-10 ms-5" data-bs-toggle="modal" data-bs-target="#accountAddModal">
             <i class='bx bx-plus'></i>
         </button>

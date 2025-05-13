@@ -35,11 +35,11 @@
                 <p>Hãy đăng nhập để được hưởng những đặc quyền dành cho riêng bạn</p>
                 <div class="form-group">
                     <label for="email-login" class="form-label">Địa chỉ Email</label>
-                    <input type="email" class="form-control" id="email-login" name="email-login" placeholder="Nhập địa chỉ Email">
+                    <input type="email" class="form-control" id="email-login" name="email-login" placeholder="Nhập địa chỉ Email" value="{{old('email-login')}}" required>
                 </div>
                 <div class="form-group">
                     <label for="password-login" class="form-label">Mật khẩu</label>
-                    <input type="password" id="password-login" name="password-login" class="form-control" aria-describedby="passwordHelpBlock" placeholder="Nhập mật khẩu">
+                    <input type="password" id="password-login" name="password-login" value="{{old('password-login')}}" class="form-control" aria-describedby="passwordHelpBlock" placeholder="Nhập mật khẩu" required>
                     <div id="passwordHelpBlock" class="form-text text-start">
                         Mật khẩu của bạn phải dài từ 8-20 ký tự, chứa chữ và số và không chứa khoảng trắng, ký tự đặc biệt hoặc biểu tượng cảm xúc.
                     </div>
