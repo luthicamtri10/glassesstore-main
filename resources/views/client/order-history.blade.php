@@ -288,7 +288,6 @@
     <header>
         <div class="text-white" id="navbar-ctn">
             <div class="top-nav">
-                <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
                 <ul class="list-top-nav d-flex ms-auto gap-2">
                     @if($isLogin)
                         @if($user->getIdQuyen()->getId() == 1 || $user->getIdQuyen()->getId() == 2)
@@ -466,7 +465,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <!--<p><strong>Phương thức thanh toán:</strong> {{ $orderData['phuongThucThanhToan'] ?? 'Không xác định' }}</p>-->
-                                    <p><strong>Đơn vị vận chuyển:</strong> {{ $orderData['donViVanChuyen'] ?? 'Không xác định' }}</p>
+                                    <!-- <p><strong>Đơn vị vận chuyển:</strong> {{ $orderData['donViVanChuyen'] ?? 'Không xác định' }}</p> -->
                                     <p><strong>Email khách hàng:</strong> {{ $orderData['emailKhachHang'] ?? 'Không xác định' }}</p>
                                     <p><strong>Tỉnh:</strong> {{ $orderData['tinh'] ?? 'Không xác định' }}</p>
                                     <p><strong>Địa chỉ:</strong> {{ $orderData['diaChi'] ?? 'Không xác định' }}</p>

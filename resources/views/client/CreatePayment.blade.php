@@ -32,10 +32,6 @@ use App\Models\DiaChi;
         $tmp = app(SanPham_BUS::class)->getModelById($key->idsp);
         $sum += $tmp->getDonGia() * $key->quantity;
     }
-    // var_dump($user->getIdNguoiDung());
-    // $dc = new DiaChi($user->getIdNguoiDung(), 'Đống Đa');
-    // app(DiaChi_BUS::class)->addModel($dc);
-    // echo app(NguoiDung_BUS::class)->getModelById($user->getIdNguoiDung()->getId())->getHoTen();
 ?>
 @if(session('success'))
 <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
@@ -44,130 +40,55 @@ use App\Models\DiaChi;
 @endif
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#paymentForm').on('submit', function(e) {
-            e.preventDefault(); // Ngăn chặn hành vi mặc định của form
+    // 
+    document.addEventListener("DOMContentLoaded", function() {
+        const ptttSelect = document.getElementById("pttt");
+        const btnDatHang = document.getElementById("saveHoaDon");
+        const btnThanhToan = document.getElementById("btnThanhToan");
 
-            $.ajax({
-                url: "{{ route('payment.search') }}", // Đường dẫn đến route
-                method: 'GET',
-                data: $(this).serialize(), // Lấy dữ liệu từ form
-                success: function(data) {
-                    // alert('success!');
-                    document.getElementById("cpvc").innerText = formatCurrency(data.cpvc);
-                    document.getElementById('tongtien').innerText = formatCurrency(data.tongtien);
-                    
-                    document.getElementById("idtinh").value = data.tinh;
-                    document.getElementById("idpttt").value = data.pttt;
-                    document.getElementById("iddvvc").value = data.dvvc;
-                    console.log(data.diachi);
-                    document.getElementById('diachidata').value = data.diachi;
-                    console.log("diachi", data.diachi);
-                },
-                error: function(xhr) {
-                    alert("failed in search!");
-                }
-            });
-        });
+        function updateButton() {
+            const selectedValue = ptttSelect.value;
+            if (selectedValue === 1) {
+                btnDatHang.style.display = "none";
+                btnThanhToan.style.display = "inline-block";
+            } else {
+                btnDatHang.style.display = "inline-block";
+                btnThanhToan.style.display = "none";
+            }
+        }
+
+        // Gọi một lần khi trang load
+        updateButton();
+
+        // Gọi mỗi khi select thay đổi
+        ptttSelect.addEventListener("change", updateButton);
     });
     function formatCurrency(amount) {
         return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₫";
     }
     
-    $(document).ready(function() {
-        $('#saveHoaDon').on('click', function(e) {
-            e.preventDefault(); // Ngăn chặn hành vi mặc định của nút
+    $(document).on('change', 'input[name="radioDefault"]', function () {
+        let diaChi = $(this).val();
+        
+        // Cập nhật text địa chỉ hiển thị
+        $('#btn-diachi div').text("Địa chỉ: " + diaChi);
 
-            const form = document.getElementById('formSubmit');
-            const productRows = $('#divSP > div'); // Lấy tất cả các div chứa sản phẩm
+        // Gán vào hidden input để gửi form nếu cần
+        $('#diachidata').val(diaChi);
 
-            // Xóa các input hidden trước đó nếu có
-            $('.product-hidden-input').remove();
-
-            const listCTHD = []; // Tạo mảng để lưu sản phẩm
-
-            productRows.each(function(index) {
-                const idsp = $(this).data('idsp'); // Lấy idsp từ thuộc tính data
-                const quantity = $(this).data('quantity'); // Lấy quantity từ thuộc tính data
-
-                // Thêm sản phẩm vào mảng
-                listCTHD.push({ sanPham: idsp, soLuong: quantity });
-            });
-
-            // Chuyển đổi mảng thành JSON và thiết lập vào input hidden
-            document.getElementById('listCTHD').value = JSON.stringify(listCTHD);
-
-            const cpvc = $('#cpvc').text().trim(); // Lấy giá trị của cpvc
-
-            // Kiểm tra giá trị của cpvc
-            if (!cpvc) {
-                alert("Hãy lưu thông tin hóa đơn trước khi thanh toán!");
-                return; // Dừng lại nếu cpvc không có giá trị
-            } else {
-                form.submit(); // Gửi form nếu cpvc hợp lệ
-            }
-        });
-        // Nếu cần khởi động theo radio mặc định
-        if ($('#radioDefault1').is(':checked')) {
-            $('#inputDiaChiUser').show().prop('disabled', false);       // bật input
-            $('#diaChiSelectTemplate').hide().find('select').prop('disabled', true); // tắt select
-        } else {
-            $('#inputDiaChiUser').hide().prop('disabled', true);         // tắt input
-            $('#diaChiSelectTemplate').show().find('select').prop('disabled', false); // bật select
-        }
-        $('#radioDefault1').on('change', function () {
-            if ($(this).is(':checked')) {
-                $('#inputDiaChiUser').show().prop('disabled', false);       // bật input
-                $('#diaChiSelectTemplate').hide().find('select').prop('disabled', true); // tắt select
-            }
-        });
-
-        $('#radioDefault2').on('change', function () {
-            if ($(this).is(':checked')) {
-                $('#inputDiaChiUser').hide().prop('disabled', true);         // tắt input
-                $('#diaChiSelectTemplate').show().find('select').prop('disabled', false); // bật select
-            }
-        });
-
+        // Đóng modal
+        $('#accountUpdateModal').modal('hide');
+        $('#diachidata').val(diaChi);
+    });
+    $(document).on('change', 'select[name="pttt"]', function () {
+        let pttt = $(this).val();
+        $('#idpttt').val(pttt);
     });
     $(document).ready(function () {
-        // $('#addDiaChi button').click(function (e) {
-        //     e.preventDefault();
-
-        //     let newAddress = $('#addDiaChi input').val().trim();
-
-        //     if (newAddress === '') {
-        //         alert("Vui lòng nhập địa chỉ mới!");
-        //         return;
-        //     }
-
-        //     // Tạo option mới và thêm vào select
-        //     let selectElement = $('#diaChiSelectTemplate select');
-        //     selectElement.append(`<option value="${newAddress}" selected>${newAddress}</option>`);
-
-        //     // Reset input
-        //     $('#addDiaChi input').val('');
-
-        //     // (Tuỳ chọn) Gửi địa chỉ mới về server qua AJAX để lưu
-        //     $.ajax({
-        //         url: "{{ route('user.addAddress') }}", // Tạo route tương ứng
-        //         method: 'POST',
-        //         data: {
-        //             diachi: newAddress,
-        //             _token: '{{ csrf_token() }}'
-        //         },
-        //         success: function (response) {
-        //             alert("Đã thêm địa chỉ thành công!");
-        //         },
-        //         error: function (xhr) {
-        //             alert("Lỗi khi thêm địa chỉ!");
-        //         }
-        //     });
-        // });
-        $('#addDiaChi button').click(function (e) {
+        $('#btnDiaChi').click(function (e) {
             e.preventDefault();
 
-            let newAddress = $('#addDiaChi input').val().trim();
+            let newAddress = $('#addDiaChi').val().trim();
 
             if (newAddress === '') {
                 alert("Vui lòng nhập địa chỉ mới!");
@@ -183,9 +104,30 @@ use App\Models\DiaChi;
                 },
                 success: function (response) {
                     if (response.status === 'success') {
+                        // Thêm option vào dropdown (nếu cần)
                         let selectElement = $('#diaChiSelectTemplate select');
                         selectElement.append(`<option value="${newAddress}" selected>${newAddress}</option>`);
-                        $('#addDiaChi input').val('');
+
+                        // Thêm vào danh sách hiển thị
+                        let index = $('#listDiaChiContainer .form-check').length; // để tạo id duy nhất
+                        let newRadioHTML = `
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault_${index}" value="${newAddress}" checked>
+                                <label class="form-check-label text-break w-100" for="radioDefault_${index}">
+                                    ${newAddress}
+                                </label>
+                            </div>
+                        `;
+                        $('#listDiaChiContainer').append(newRadioHTML);
+
+                        // Reset input
+                        $('#addDiaChi').val('');
+                        $('#btn-diachi div').text("Địa chỉ: " + newAddress);
+                        $('#diachidata').val(newAddress);
+
+                        // Đóng modal
+                        $('#accountUpdateModal').modal('hide');
+                        $('diachidata').val(newAddress)
                         alert("Đã thêm địa chỉ thành công!");
                     } else if (response.status === 'exists') {
                         alert("Địa chỉ đã tồn tại!");
@@ -202,7 +144,6 @@ use App\Models\DiaChi;
     
 </script>
     <div class="top-nav p-3">
-        <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
         <ul class="list-top-nav d-flex ms-auto gap-2">
           <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill " id="chinhsach"><a href="/yourInfo">Thông tin cá nhân</a></li>
           <li class="nav-item px-3 py-1 bg-secondary text-white fw-medium rounded-pill" id="tracuudonhang">
@@ -226,92 +167,56 @@ use App\Models\DiaChi;
           @endif
         </ul>
     </div>
-    <div class="d-flex justify-content-between gap-5 p-5 " style="">
+    <div class="d-flex justify-content-between gap-5 p-5 bg-gray-200 bg-light" style="">
         <div class="d-flex flex-column gap-3 p-3" style="width: 50%;">
             <h1 class="text-dark fw-semibold">Thanh toán</h1>
-            <form id="paymentForm" class="d-flex flex-column gap-3 p-3" method="get">
+            <!-- <form id="paymentForm" class="d-flex flex-column gap-3 p-3" method="get"> -->
                 <!-- <input type="hidden" name="listSP" id="listSPInput">     -->
                 <input type="hidden" name="tongtien" value="{{$sum}}">
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Họ tên *</label>
-                    <input class="p-2 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getIdNguoiDung()->getHoTen()}}" required>
+                    <input class="p-2  border border-0 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getIdNguoiDung()->getHoTen()}}" required>
                 </div>
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Số điện thoại *</label>
-                    <input class="p-2 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getIdNguoiDung()->getSoDienThoai()}}" required>
+                    <input class="p-2 border border-0 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getIdNguoiDung()->getSoDienThoai()}}" required>
                 </div>
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Email *</label>
-                    <input class="p-2 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getEmail()}}" required>
-                </div>
-                <div class="d-flex flex-column">
-                    <label class="text-dark fw-semibold" for="">Tỉnh/Thành phố *</label>
-                    <!-- <input class="rounded hover:border-blue-500" type="text" name="pttt" id="" required> -->
-                    <select class="p-2 rounded hover:border-blue-500" name="tinh" id="">
-                        <option value="" disabled>Chọn tỉnh/thành phố</option>
-                        @foreach($listTinh as $pttt) 
-                            <option value="{{$pttt->getId()}}">{{$pttt->getTenTinh()}}</option>
-                        @endforeach
-                    </select>
+                    <input class="p-2  border border-0 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getEmail()}}" required>
                 </div>
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Địa chỉ *</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1" checked>
-                        <label class="form-check-label" for="radioDefault1">
-                            Địa chỉ mặc định của khách hàng
-                        </label>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2">
-                        <label class="form-check-label" for="radioDefault2" onclick="">
-                            Địa chỉ khác của khách hàng
-                        </label>
-                    </div>
-                    <div id="selectDiaChi" class="mt-2">
-                        <input style="display:none;" class="p-2 rounded hover:border-blue-500" type="text" name="diachi" id="inputDiaChiUser" value="{{$user->getIdNguoiDung()->getDiaChi()}}" required>
-                        <!-- <input class="p-2 rounded hover:border-blue-500" type="text" name="diachi" id="inputDiaChiUser" value="{{ $user->getIdNguoiDung()->getDiaChi() }}" required> -->
-                        
-                        <div id="diaChiSelectTemplate" class="" style="display: none;display: flex;justify-content: start;align-items: center;gap: 10px;">
-                            <select name="diachi" class="p-2 rounded hover:border-blue-500">
-                                <!-- <option value="">Chọn địa chỉ hiện có</option> -->
-                                @foreach($listDiaChi as $dc)
-                                    <option value="{{ $dc->getDiaChi() }}">{{ $dc->getDiaChi() }}</option>
-                                @endforeach
-                            </select>
-                            <div id="addDiaChi">
-                                <input class="p-2 rounded hover:border-blue-500" type="text" placeholder="Nhập địa chỉ mới">
-                                <button class="btn btn-info">Lưu</button>
-                            </div>
+                    <!-- <input class="rounded hover:border-blue-500" type="text" name="pttt" id="" required> -->
+                    <!-- <select class="p-2 rounded hover:border-blue-500" name="pttt" id="">
+                        <option value="" disabled>Chọn phương thức thanh toán</option>
+                        @foreach($listPTTT as $pttt) 
+                            <option value="{{$pttt->getId()}}">{{$pttt->getTenPTTT()}}</option>
+                        @endforeach
+                    </select> -->
+                    <button class="bg-white border border-0 p-2 rounded d-flex justify-content-between" id="btn-diachi" data-bs-toggle="modal"
+                                                                            data-bs-target="#accountUpdateModal">
+                        <div id="hienThiDiachi">
+                            <!-- <input type="hidden" name="diachi"> -->
+                            Địa chỉ: {{$user->getIdNguoiDung()->getDiaChi()}}
                         </div>
-                        
-                    </div>
+                        <i class="fa-solid fa-arrow-right pt-1"></i>
+                    </button>
                 </div>
+                
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Phương thức thanh toán *</label>
                     <!-- <input class="rounded hover:border-blue-500" type="text" name="pttt" id="" required> -->
-                    <select class="p-2 rounded hover:border-blue-500" name="pttt" id="">
+                    <select class="p-2 rounded hover:border-blue-500 border border-0" name="pttt" id="">
                         <option value="" disabled>Chọn phương thức thanh toán</option>
                         @foreach($listPTTT as $pttt) 
                             <option value="{{$pttt->getId()}}">{{$pttt->getTenPTTT()}}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="d-flex flex-column">
-                    <label class="text-dark fw-semibold" for="">Đơn vị vận chuyển *</label>
-                    <!-- <input class="rounded hover:border-blue-500" type="text" name="pttt" id="" required> -->
-                    <select class="p-2 rounded hover:border-blue-500" name="dvvc" id="">
-                        <option value="" disabled>Chọn đơn vị vận chuyển</option>
-                        @foreach($listDVVC as $pttt) 
-                            <option value="{{$pttt->getIdDVVC()}}">{{$pttt->getTenDV()}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="d-flex flex-column" style="display: flex; align-items: center;">
-                    <button type="submit" class="btn btn-info text-white p-3 fw-semibold fs-5" style="width: 200px;">Lưu</button>
-                </div>
-            </form>
+                
+                
+            <!-- </form> -->
         </div>  
         
         <div class="d-flex flex-column gap-3 p-3 bg-body-secondary rounded" style="width: 50%;height: 100%;">
@@ -320,11 +225,11 @@ use App\Models\DiaChi;
                 <!-- <input type="hidden" name="listSP" id="listSPInput" value='{{ json_encode($listSP) }}'> -->
                 @csrf
                 <meta name="csrf-token" content="{{ csrf_token() }}">
-                <input type="hidden" name="listCTHD" id="listCTHD">
-                <input type="hidden" name="tinh" id="idtinh">
-                <input type="hidden" name="pttt" id="idpttt">
-                <input type="hidden" name="dvvc" id="iddvvc">
-                <input type="hidden" name="diachi" id="diachidata">
+                <!-- <input type="hidden" name="listCTHD" id="listCTHD"> -->
+                <input type="hidden" name="tinh" id="idtinh" value="{{$user->getIdNguoiDung()->getTinh()->getId()}}">
+                <input type="hidden" name="pttt" id="idpttt" value="1">
+                <!-- <input type="hidden" name="dvvc" id="iddvvc"> -->
+                <input type="hidden" name="diachi" id="diachidata" value="{{$user->getIdNguoiDung()->getDiaChi()}}">
                 <div class="d-flex justify-content-between">
                     <p class="fw-semibold fs-5" style="color: black;">Sản phẩm</p>
                     <p class="fw-semibold fs-5" style="color: black;">Thành tiền</p>
@@ -379,10 +284,7 @@ use App\Models\DiaChi;
                         <p class="text-dark fw-semibold fs-4">Tạm tính</p>
                         <p class="text-danger fw-semibold fs-4">{{ number_format($tongTien, 0, ',', '.') }}₫</p>
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <p class="text-dark fw-semibold fs-4">Phí vận chuyển</p>
-                        <p class="text-danger fw-semibold fs-4" id="cpvc"></p>
-                    </div>
+                    
                     <div class="d-flex justify-content-between">
                         <p class="text-dark fw-semibold fs-4">Tổng tiền</p>
                         <p class="text-danger fw-semibold fs-4" id="tongtien">{{ number_format($sum, 0, ',', '.') }}₫</p>
@@ -394,7 +296,8 @@ use App\Models\DiaChi;
                     </div>    
                 @else
                     <div class="d-flex flex-column gap-3" style="align-items: center;">
-                        <button id="saveHoaDon" class="btn btn-info text-white fs-4 fw-semibold" style="width: 300px;" type="submit">Thanh toán</button>
+                        <button id="saveHoaDon" class="btn btn-info text-white fs-4 fw-semibold" style="width: 300px;" type="submit">Đặt hàng</button>
+                        <!-- <button id="btnThanhToan" style="display: none;">Thanh toán</button> -->
                     </div>
                 @endif
                 
@@ -402,3 +305,43 @@ use App\Models\DiaChi;
             
         </div>
     </div>
+
+<div class="modal fade" id="accountUpdateModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg"> <!-- modal-lg để modal to hơn -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userModalLabel">Chọn địa chỉ nhận hàng</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="flex flex-column gap-5">
+            <div class=" w-full">
+                <form class="d-flex justify-content-between" action="">
+                    <div class="d-flex flex-column gap-1">
+                        <label class="text-secondary fs-6" for="">Thêm địa chỉ mới</label>
+                        <input class="flex-1 p-1 rounded border border-0" style="width: 600px;" type="text" name="" id="addDiaChi">
+                        <!-- <hr> -->
+                    </div>
+                    <button class="btn btn-info" id="btnDiaChi" style="height: 50px;">Lưu</button>
+                </form>
+            </div>
+            <hr>
+            <div id="listDiaChiContainer">
+                @foreach($listDiaChi as $dc) 
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault_{{$loop->index}}" value="{{$dc->getDiaChi()}}">
+                    <label class="form-check-label text-break w-100" for="radioDefault_{{$loop->index}}">
+                        {{$dc->getDiaChi()}}
+                    </label>
+                </div>
+                @endforeach
+            </div>
+            <!-- <button></button> -->
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

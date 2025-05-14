@@ -27,8 +27,8 @@ class HoaDon_DAO{
 
     public function insert($e): int
     {
-        $sql = "INSERT INTO hoadon (EMAIL, IDNHANVIEN, TONGTIEN, IDPTTT, NGAYTAO, IDDVVC, DIACHI, IDTINH, TRANGTHAI)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO hoadon (EMAIL, IDNHANVIEN, TONGTIEN, IDPTTT, NGAYTAO, DIACHI, IDTINH, TRANGTHAI)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         // $args = [$e->getEmail()->getEmail(), $e->getIdNhanVien()->getId(), $e->getTongTien(), $e->getIdPTTT()->getId(), $e->getNgayTao(), $e->getIdDVVC()->getId(), $e->getDiaChi(), $e->getTinh()->getId(), $e->getTrangThai()];
         $args = [
             $e->getEmail()->getEmail(),                  // TaiKhoan
@@ -36,7 +36,6 @@ class HoaDon_DAO{
             $e->getTongTien(),
             $e->getIdPTTT()->getId(),                   // PTTT
             $e->getNgayTao()->format('Y-m-d H:i:s'),
-            $e->getIdDVVC(),                            // <- trả về int, không cần ->getId()
             $e->getDiaChi(),
             $e->getTinh()->getId(),                     // Tinh
             $e->getTrangThai()->value,
@@ -96,7 +95,6 @@ class HoaDon_DAO{
             throw new \Exception("Không tìm thấy phương thức thanh toán với ID: " . $rs['IDPTTT']);
         }
         $ngayTao = $rs['NGAYTAO'];
-        $idDVVC = app(DVVC_BUS::class)->getModelById($rs['IDDVVC']);
         $diaChi = $rs['DIACHI'];
         $tinh = app(Tinh_BUS::class)->getModelById($rs['IDTINH']);
         $trangThai = strtoupper(trim($rs['TRANGTHAI'] ?? ''));
@@ -117,7 +115,7 @@ class HoaDon_DAO{
             default: throw new \Exception("Trạng thái không hợp lệ");
         }
         $orderCode = $rs['ORDERCODE'];
-        return new HoaDon($id, $email, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $diaChi, $tinh, $trangThai, $orderCode);
+        return new HoaDon($id, $email, $idNhanVien, $tongTien, $idPTTT, $ngayTao, $diaChi, $tinh, $trangThai, $orderCode);
     }
 
     public function getAll() : array {

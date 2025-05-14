@@ -17,7 +17,6 @@
     <header>
         <div class="text-white" id="navbar-ctn">
             <div class="top-nav">
-                <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
                 
             </div>
             <!-- <div class="navbar text-white navbar-expand" id="navbar">  

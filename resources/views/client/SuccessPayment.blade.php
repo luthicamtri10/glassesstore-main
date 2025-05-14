@@ -11,10 +11,32 @@
     use App\Enum\HoaDonEnum;
     $user = session('user');
     $isLogin = session('isLogin');
-    $dvvc = app(DVVC_BUS::class)->getModelById($hoaDon->getIdDVVC()->getIdDVVC());
+    // $dvvc = app(DVVC_BUS::class)->getModelById($hoaDon->getIdDVVC()->getIdDVVC());
 ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const successAlert = document.getElementById('successAlert');
+        if (successAlert) {
+            setTimeout(() => {
+                successAlert.classList.remove('show');
+                successAlert.classList.add('fade');
+                successAlert.style.opacity = 0;
+            }, 3000); // 3 giây
+
+            setTimeout(() => {
+                successAlert.remove(); // Xoá hẳn khỏi DOM
+            }, 4000);
+        }
+    });
+    
+</script>
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 <div class="top-nav p-3">
-    <p style="color: #55d5d2; font-size: 14px; font-weight: 600;">GIẢM GIÁ NGAY 15% CHO ĐƠN ĐẦU TIÊN</p>
     <ul class="list-top-nav d-flex ms-auto gap-2">
     <li>
         <a href="/index" class="navbar-brand">
@@ -54,7 +76,6 @@
     <p>Địa chỉ: {{$hoaDon->getDiaChi()}} - Tỉnh: {{$hoaDon->getTinh()->getTenTinh()}}</p>
     <p>Số điện thoại: {{$user->getIdNguoiDung()->getSoDienThoai()}}</p>
     <p>Thanh toán: {{$hoaDon->getIdPTTT()->getTenPTTT()}}</p>
-    <p>Đơn vị vận chuyển: {{$dvvc->getTenDV()}}</p>
     <p>Tổng tiền: {{ number_format($hoaDon->getTongTien(), 0, ',', '.') }}₫</p>
     @if($hoaDon->getIdPTTT()->getId()!=1 && $hoaDon->getTrangThai() == HoaDonEnum::DADAT)
     <!-- <a href="/lich-su-don-hang/dadat">

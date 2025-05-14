@@ -81,14 +81,7 @@ use App\Bus\TaiKhoan_BUS;
       </a>
     </li>
     @endif
-    @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 10))
-    <li class="sidebar-item" id="donvivanchuyen">
-      <a href="/admin?modun=donvivanchuyen" class="sidebar-link">
-        <i class='bx bxs-truck'></i>
-        <span>Đơn vị vận chuyển</span>
-      </a>
-    </li>
-    @endif
+
     @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 15))
     <li class="sidebar-item" id="thanhpho">
       <a href="/admin?modun=thanhpho" class="sidebar-link" >
@@ -113,14 +106,7 @@ use App\Bus\TaiKhoan_BUS;
       </a>
     </li>
     @endif
-    @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 8))
-    <li class="sidebar-item" id="khuyenmai">
-      <a href="/admin?modun=khuyenmai" class="sidebar-link"  >
-        <i class='bx bx-time'></i>
-        <span>Khuyến mại</span>
-      </a>
-    </li>
-    @endif
+
     @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 16))
     <li class="sidebar-item" id="baohanh">
       <a href="/admin?modun=baohanh" class="sidebar-link"  >
@@ -129,14 +115,7 @@ use App\Bus\TaiKhoan_BUS;
       </a>
     </li>
     @endif
-    @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 16))
-    <li class="sidebar-item" id="baohanh">
-      <a href="/admin?modun=chiphivanchuyen" class="sidebar-link"  >
-        <i class='bx bx-shield-plus'></i>
-        <span>Chi phí vận chuyển</span>
-      </a>
-    </li>
-    @endif
+
     @if(app(CTQ_BUS::class)->checkChucNangExistInListCTQ($ctq, 7))
     <li class="sidebar-item" id="thongke">
       <a href="/admin?modun=thongke" class="sidebar-link"  >

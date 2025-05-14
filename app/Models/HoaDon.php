@@ -7,14 +7,14 @@ use App\Enum\HoaDonEnum;
 
 class HoaDon
 {
-    private $id, $tongTien, $ngayTao, $idDVVC, $diaChi, $orderCode;
+    private $id, $tongTien, $ngayTao, $diaChi, $orderCode;
     private Tinh $tinh;
     private TaiKhoan $email;
     private NguoiDung $idNhanVien;
     private PTTT $idPTTT;
     private HoaDonEnum $trangThai;
 
-    public function __construct($id = null,TaiKhoan $email, NguoiDung $idNhanVien, $tongTien, $idPTTT, $ngayTao, $idDVVC, $diaChi, Tinh $tinh, HoaDonEnum $trangThai, $orderCode = null)
+    public function __construct($id = null,TaiKhoan $email, NguoiDung $idNhanVien, $tongTien, $idPTTT, $ngayTao, $diaChi, Tinh $tinh, HoaDonEnum $trangThai, $orderCode = null)
     {
         $this->id = $id;
         $this->email = $email;
@@ -22,7 +22,6 @@ class HoaDon
         $this->tongTien = $tongTien;
         $this->idPTTT = $idPTTT;
         $this->ngayTao = $ngayTao;
-        $this->idDVVC = $idDVVC;
         $this->diaChi = $diaChi;
         $this->tinh = $tinh;
         $this->trangThai = $trangThai;
@@ -93,17 +92,6 @@ class HoaDon
     public function setNgayTao($ngayTao)
     {
         $this->ngayTao = $ngayTao;
-    }
-
-    // Getter và Setter cho idDVVC
-    public function getIdDVVC()
-    {
-        return $this->idDVVC;
-    }
-
-    public function setIdDVVC($idDVVC)
-    {
-        $this->idDVVC = $idDVVC;
     }
 
     public function getDiaChi() {

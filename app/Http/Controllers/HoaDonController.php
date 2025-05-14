@@ -57,8 +57,9 @@ class HoaDonController extends Controller {
                 $hoaDon->setTrangThai(HoaDonEnum::PAID);
                 $this->hoaDonBUS->updateModel($hoaDon);
                 // return response()->json(['success' => true, 'checkoutUrl' => url('/success')]);
-                return back()->with('success', 'Bạn đã thanh toán đơn hàng thành công.');
-                
+                // return back()->with('success', 'Bạn đã thanh toán đơn hàng thành công.');
+                // return redirect('/lich-su-don-hang')->with('success', 'Bạn đã thanh toán đơn hàng thành công.');
+                return redirect('/success?idhd=' . $hoaDon->getId())->with('success', 'Bạn đã thanh toán đơn hàng thành công.');
             } else {
                 return back()->with('error', 'Không tìm thấy đơn hàng.');
             }
@@ -176,7 +177,8 @@ class HoaDonController extends Controller {
         $gh = app(GioHang_BUS::class)->getByEmail($email);
         $sum = 0;
         date_default_timezone_set('Asia/Ho_Chi_Minh');
-
+        $listSP = session('listSP');
+        // dd($listSP);
         $hd = new HoaDon(
             null,
             // null,
@@ -185,7 +187,6 @@ class HoaDonController extends Controller {
             0.0,
             $pttt,
             new \DateTime(),
-            $dvvc->getIdDVVC(),
             $diachi,
             $tinh, 
             HoaDonEnum::DADAT
@@ -194,32 +195,31 @@ class HoaDonController extends Controller {
         $newId = $this->hoaDonBUS->addModel($hd);
         $hd->setId($newId);
 
-        foreach ($listCTHD as $key) {
+        foreach ($listSP as $key) {
             # code...
             
-            $sp = app(SanPham_BUS::class)->getModelById($key->sanPham);
-            $total = $sp->getSoLuong() - $key->soLuong;
+            $sp = app(SanPham_BUS::class)->getModelById($key['idsp']);
+            $total = $sp->getSoLuong() - $key['quantity'];
             $sp->setSoLuong($total);
             app(SanPham_BUS::class)->updateModel($sp);
-            $sum += $sp->getDonGia() * $key->soLuong;
-            $listCTSP = app(CTSP_BUS::class)->getCTSPIsNotSoldByIDSP($key->sanPham);
-            for($i = 0 ; $i < $key->soLuong ; $i++) {
-                $cthd = new CTHD($hd->getId(), app(SanPham_BUS::class)->getModelById($key->sanPham)->getDonGia(),$listCTSP[$i]->getSoSeri(),1);
+            $sum += $sp->getDonGia() * $key['quantity'];
+            $listCTSP = app(CTSP_BUS::class)->getCTSPIsNotSoldByIDSP($key['idsp']);
+            for($i = 0 ; $i < $key['quantity'] ; $i++) {
+                $cthd = new CTHD($hd->getId(), app(SanPham_BUS::class)->getModelById($key['idsp'])->getDonGia(),$listCTSP[$i]->getSoSeri(),1);
                 // dd($cthd);
                 app(CTHD_BUS::class)->addModel($cthd);
                 $ctsp = app(CTSP_BUS::class)->getCTSPBySoSeri($listCTSP[$i]->getSoSeri());
                 app(CTSP_BUS::class)->updateStatus($ctsp->getSoSeri(), 0);
-                app(CTGH_BUS::class)->deleteCTGH($gh->getIdGH(), $key->sanPham);
+                app(CTGH_BUS::class)->deleteCTGH($gh->getIdGH(), $key['idsp']);
             }
         }
-        $cpvc = app(CPVC_DAO::class)->getByTinhAndDVVC($tinh->getId(),$dvvc->getIdDVVC());
-        $sum += $cpvc->getChiPhiVC();
+        // $cpvc = app(CPVC_DAO::class)->getByTinhAndDVVC($tinh->getId(),$dvvc->getIdDVVC());
+        // $sum += $cpvc->getChiPhiVC();
         $hd->setTrangThai(HoaDonEnum::DADAT);
         $hd->setTongTien($sum);
         $hd->setTinh($tinh);
         $hd->setDiaChi($diachi);
         $hd->setIdPTTT($pttt);
-        $hd->setIdDVVC($dvvc);
         $isLogin = app(Auth_BUS::class)->isAuthenticated();
         app(HoaDon_BUS::class)->updateModel($hd);
         if($pttt->getId() == 1) {
@@ -230,9 +230,36 @@ class HoaDonController extends Controller {
             $hd->setIdPTTT($pttt);
             $hd->setTongTien(10000);
             app(HoaDon_BUS::class)->updateModel($hd); // Cập nhật mã đơn hàng
+            $returnUrl = url("client/paymentsuccess?orderCode=" . $orderCode);
+            $cancelUrl = url("/");
+            $description = "Thanh toán #" . $orderCode;
+            $signatureRaw = "amount={$hd->getTongTien()}&cancelUrl={$cancelUrl}&description={$description}&orderCode={$orderCode}&returnUrl={$returnUrl}";
+            $signature = hash_hmac('sha256', $signatureRaw, 'e565caa65f2ddfcc509fb1cf94ab52a4f37c1a8abb403af3cb339941f430261c');
+            $payload = [
+                "orderCode" => $orderCode,
+                "amount" => $hd->getTongTien(),
+                "description" => $description,
+                "returnUrl" => $returnUrl,
+                "cancelUrl" => $cancelUrl,
+                "signature" => $signature,
+            ];
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'x-client-id' => 'd4999768-4dc1-4c9d-a8ca-85553d797c3f',
+                'x-api-key' => '261c7797-ea98-40ef-9da6-a8bd1714a9bf'
+            ])->post('https://api-merchant.payos.vn/v2/payment-requests', $payload);
+        
+            $responseData = $response->json();
+            
+            if ($response->successful() && isset($responseData['data']['checkoutUrl'])) {
+                return redirect($responseData['data']['checkoutUrl']);
+            } else {
+                dd($responseData);
+                return back()->with('error', 'Không thể tạo đơn hàng thanh toán với PayOS.')->withErrors($responseData);
+            }
         }
         session()->forget('listSP');
-        return redirect('/success?idhd=' . $hd->getId());
+        return redirect('/success?idhd=' . $hd->getId())->with('success', 'Bạn đã thanh toán đơn hàng thành công.');
 
 
     }
