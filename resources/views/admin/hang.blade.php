@@ -26,11 +26,11 @@
             }, 4000);
         }
 
-        function confirmStatusChange(button) {
-            const currentStatus = parseInt(button.getAttribute('data-status'));
-            const newStatus = currentStatus === 1 ? 'Ngừng kinh doanh' : 'Đang kinh doanh';
-            return confirm('Bạn có chắc muốn chuyển trạng thái sang ' + newStatus + '?');
-        }
+       function confirmStatusChange(button) {
+    const currentStatus = parseInt(button.getAttribute('data-status'));
+    const newStatus = currentStatus === 1 ? 'Ngừng kinh doanh' : 'Đang kinh doanh';
+    return confirm('Bạn có chắc muốn chuyển trạng thái sang ' + newStatus + '?');
+}
 
         document.getElementById('refreshBtn').addEventListener('click', function () {
             const currentUrl = new URL(window.location.href);
@@ -145,15 +145,15 @@
                     data-bs-toggle="modal"
                     data-bs-target="#brandUpdateModal">Sửa</button>
                 <form method="POST" action="{{ route('admin.hang.controlDelete') }}" style="display:inline;">
-                    @csrf
-                    <input type="hidden" name="id" value="{{ $hang->getId() }}">
-                    <input type="hidden" name="active" value="{{ $hang->gettrangThaiHD() == 1 ? 3 : 1 }}">
-                    <button type="submit" 
-                            class="btn btn-danger btn-sm"
-                            data-status="{{ $hang->gettrangThaiHD() }}"
-                            onclick="return confirmStatusChange(this)">
-                        Xóa
-                    </button>
+                  @csrf
+        <input type="hidden" name="id" value="{{ $hang->getId() }}">
+        <input type="hidden" name="active" value="{{ $hang->gettrangThaiHD() == 1 ? 3 : 1 }}">
+        <button type="submit" 
+                class="btn btn-sm {{ $hang->gettrangThaiHD() == 1 ? 'btn-danger' : 'btn-success' }}"
+                data-status="{{ $hang->gettrangThaiHD() }}"
+                onclick="return confirmStatusChange(this)">
+            {{ $hang->gettrangThaiHD() == 1 ? 'Ngừng' : 'Kích hoạt' }}
+        </button>
                 </form>
             </td>
         </tr>
