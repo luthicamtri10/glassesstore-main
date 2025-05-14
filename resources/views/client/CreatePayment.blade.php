@@ -18,6 +18,10 @@ use App\Models\DiaChi;
             $listSP = json_decode(json_encode($listSP)); 
         }
     }
+    // if (session()->has('listSP')) {
+    //     session()->forget('listSP');
+    // }
+    // session(['listSP' => $listSP]);
 
     $listPTTT = session('listPTTT');
     $listDVVC = session('listDVVC');
@@ -71,7 +75,7 @@ use App\Models\DiaChi;
         let diaChi = $(this).val();
         
         // Cập nhật text địa chỉ hiển thị
-        $('#btn-diachi div').text("Địa chỉ: " + diaChi);
+        $('#btn-diachi div').text(diaChi);
 
         // Gán vào hidden input để gửi form nếu cần
         $('#diachidata').val(diaChi);
@@ -186,7 +190,7 @@ use App\Models\DiaChi;
                     <input class="p-2  border border-0 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getEmail()}}" required>
                 </div>
                 <div class="d-flex flex-column">
-                    <label class="text-dark fw-semibold" for="">Địa chỉ *</label>
+                    <label class="text-dark fw-semibold text-break " for="">Địa chỉ *</label>
                     <!-- <input class="rounded hover:border-blue-500" type="text" name="pttt" id="" required> -->
                     <!-- <select class="p-2 rounded hover:border-blue-500" name="pttt" id="">
                         <option value="" disabled>Chọn phương thức thanh toán</option>
@@ -196,9 +200,9 @@ use App\Models\DiaChi;
                     </select> -->
                     <button class="bg-white border border-0 p-2 rounded d-flex justify-content-between" id="btn-diachi" data-bs-toggle="modal"
                                                                             data-bs-target="#accountUpdateModal">
-                        <div id="hienThiDiachi">
+                        <div id="hienThiDiachi" class="text-break">
                             <!-- <input type="hidden" name="diachi"> -->
-                            Địa chỉ: {{$user->getIdNguoiDung()->getDiaChi()}}
+                            {{$user->getIdNguoiDung()->getDiaChi()}}
                         </div>
                         <i class="fa-solid fa-arrow-right pt-1"></i>
                     </button>
@@ -261,7 +265,7 @@ use App\Models\DiaChi;
                                     <img src="/productImg/{{ $sp->idsp }}.webp" style="height: 150px;width: 150px;" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
                                     <div class="d-flex flex-column gap-2">
                                         <p class="text-dark fw-semibold fs-4">{{$sanPham->getTenSanPham()}}</p>
-                                        <p class="text-dark fw-semibold fs-6">SL: {{$sp->quantity}}</p>
+                                        <p class="text-dark fw-semibold fs-6">x{{$sp->quantity}}</p>
                                         <p class="text-dark fw-semibold fs-6">
                                         {{ number_format($sanPham->getDonGia(), 0, ',', '.') }}₫
                                         </p>
@@ -280,10 +284,7 @@ use App\Models\DiaChi;
                 </div>
                 
                 <div class="d-flex flex-column gap-3">
-                    <div class="d-flex justify-content-between">
-                        <p class="text-dark fw-semibold fs-4">Tạm tính</p>
-                        <p class="text-danger fw-semibold fs-4">{{ number_format($tongTien, 0, ',', '.') }}₫</p>
-                    </div>
+                
                     
                     <div class="d-flex justify-content-between">
                         <p class="text-dark fw-semibold fs-4">Tổng tiền</p>

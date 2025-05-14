@@ -219,10 +219,10 @@ use App\Models\CTGH;
         @endforeach
     @endif
 </div>
-<div id="footer-cart" class="d-flex justify-content-between gap-5 p-3" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; background-color: white; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); z-index: 1000;">
-    <div class="d-flex justify-content-start gap-5">
-        <div>Chọn <span id="selected-count">0</span> sản phẩm</div> <!-- Hiển thị số lượng sản phẩm đã chọn -->
-        <div>Tổng tiền: <span id="total-amount">0</span></div></div>
+<div id="footer-cart" class=" gap-5 p-3" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; background-color: white; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); z-index: 1000;">
+    <div class="" style="display: flex; justify-content: end;">
+        <!-- <div>Chọn <span id="selected-count">0</span> sản phẩm</div> Hiển thị số lượng sản phẩm đã chọn -->
+        <!-- <div>Tổng tiền: <span id="total-amount">0</span></div></div> -->
      
         <form action="{{ route('payment.create') }}" method="get">
             @csrf

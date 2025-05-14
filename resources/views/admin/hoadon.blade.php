@@ -342,7 +342,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <th scope="col">Tổng tiền</th>
                     <th scope="col">PTTT</th>
                     <th scope="col">Ngày tạo</th>
-                    <th scope="col">DVVC</th>
+                    <!-- <th scope="col">DVVC</th> -->
                     <th scope="col">Trạng thái</th>
                     <th scope="col">Hành động</th>
                 </tr>
@@ -357,7 +357,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>{{ $hoaDon->getTongTien() }}</td>
                     <td>{{ $mapPTTT[$hoaDon->getIdPTTT()->getId()] }}</td>
                     <td>{{ $hoaDon->getNgayTao() }}</td>
-                    <td>{{ $mapDVVC[$hoaDon->getIdDVVC()->getIdDVVC()] }}</td>
                     <td>
                         @if($hoaDon->getTrangThai() == \App\Enum\HoaDonEnum::PAID)
                             <span class="badge bg-success">Đã thanh toán</span>

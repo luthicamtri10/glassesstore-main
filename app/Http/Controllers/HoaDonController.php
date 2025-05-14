@@ -179,6 +179,13 @@ class HoaDonController extends Controller {
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         $listSP = session('listSP');
         // dd($listSP);
+        if (is_string($listSP)) {
+            $listSP = json_decode($listSP); 
+        } elseif (is_array($listSP)) {
+            if (isset($listSP[0]) && is_array($listSP[0])) {
+                $listSP = json_decode(json_encode($listSP)); 
+            }
+        }
         $hd = new HoaDon(
             null,
             // null,
@@ -198,19 +205,19 @@ class HoaDonController extends Controller {
         foreach ($listSP as $key) {
             # code...
             
-            $sp = app(SanPham_BUS::class)->getModelById($key['idsp']);
-            $total = $sp->getSoLuong() - $key['quantity'];
+            $sp = app(SanPham_BUS::class)->getModelById($key->idsp);
+            $total = $sp->getSoLuong() - $key->quantity;
             $sp->setSoLuong($total);
             app(SanPham_BUS::class)->updateModel($sp);
-            $sum += $sp->getDonGia() * $key['quantity'];
-            $listCTSP = app(CTSP_BUS::class)->getCTSPIsNotSoldByIDSP($key['idsp']);
-            for($i = 0 ; $i < $key['quantity'] ; $i++) {
-                $cthd = new CTHD($hd->getId(), app(SanPham_BUS::class)->getModelById($key['idsp'])->getDonGia(),$listCTSP[$i]->getSoSeri(),1);
+            $sum += $sp->getDonGia() * $key->quantity;
+            $listCTSP = app(CTSP_BUS::class)->getCTSPIsNotSoldByIDSP($key->idsp);
+            for($i = 0 ; $i < $key->quantity ; $i++) {
+                $cthd = new CTHD($hd->getId(), app(SanPham_BUS::class)->getModelById($key->idsp)->getDonGia(),$listCTSP[$i]->getSoSeri(),1);
                 // dd($cthd);
                 app(CTHD_BUS::class)->addModel($cthd);
                 $ctsp = app(CTSP_BUS::class)->getCTSPBySoSeri($listCTSP[$i]->getSoSeri());
                 app(CTSP_BUS::class)->updateStatus($ctsp->getSoSeri(), 0);
-                app(CTGH_BUS::class)->deleteCTGH($gh->getIdGH(), $key['idsp']);
+                app(CTGH_BUS::class)->deleteCTGH($gh->getIdGH(), $key->idsp);
             }
         }
         // $cpvc = app(CPVC_DAO::class)->getByTinhAndDVVC($tinh->getId(),$dvvc->getIdDVVC());
@@ -258,8 +265,8 @@ class HoaDonController extends Controller {
                 return back()->with('error', 'Không thể tạo đơn hàng thanh toán với PayOS.')->withErrors($responseData);
             }
         }
-        session()->forget('listSP');
-        return redirect('/success?idhd=' . $hd->getId())->with('success', 'Bạn đã thanh toán đơn hàng thành công.');
+        // session()->forget('listSP');
+        return redirect('/success?idhd=' . $hd->getId())->with('success', 'Bạn đặt hàng thành công.');
 
 
     }

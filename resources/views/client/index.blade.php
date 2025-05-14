@@ -899,7 +899,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="filter-options">
       <!-- Thêm ô tìm kiếm theo tên sản phẩm -->
       <label for="filter-keyword" class="form-label">Tên sản phẩm:</label>
-<input type="text" class="form-control mb-2" id="filter-keyword" name="keyword" placeholder="Nhập tên sản phẩm" value="{{ request('keyword') ?? '' }}">
+      <input type="text" class="form-control mb-2" id="filter-keyword" name="keyword" placeholder="Nhập tên sản phẩm" value="{{ request('keyword') ?? '' }}">
       
       <label for="filter-hang" class="form-label">Hãng:</label>
       <select class="form-select mb-2" id="filter-hang" name="filter_hang">
@@ -1268,11 +1268,15 @@ document.addEventListener('DOMContentLoaded', () => {
                   <button type="submit" class="btn btn-light" style="width: 150px;">Mua ngay</button>
               </form>
             @else
-              <button type="button" class="btn btn-danger" style="width: 150px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
+              <button type="button" class="btn btn-danger" style="width: 150px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
             @endif
           @else
-              <button type="button" class="btn btn-danger" style="width: 150px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
                 
+                <button type="button" class="btn btn-danger" style="width: 150px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
+                <a class="d-flex flex-row-reverse gap-5" href="/login">
+                  <button type="submit" class="btn btn-light" style="width: 200px;">Thêm vào giỏ hàng</button>
+                  <button type="submit" class="btn btn-light" style="width: 150px;">Mua ngay</button>
+                </a>
           @endif
         </div>
       </div>

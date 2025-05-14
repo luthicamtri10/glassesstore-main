@@ -476,7 +476,7 @@
                                         <input type="hidden" name="id" value="{{ $hoaDon->getId() }}">
                                         <input type="hidden" name="tongtien" value="{{ $hoaDon->getTongTien() }}">
                                         <input type="hidden" name="ordercode" value="{{ $hoaDon->getOrderCode() }}">
-                                        <button type="submit" class="btn btn-info m-3">Thanh toán với PayOS</button>
+                                        <button type="submit" class="btn btn-info mb-3">Thanh toán với PayOS</button>
                                     </form>
                                     @endif
                                     <h6>Danh sách sản phẩm:</h6>

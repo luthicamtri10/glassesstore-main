@@ -182,15 +182,5 @@ class SanPhamController extends Controller
             return redirect()->back()->with('confirm_delete', $productId);
         }
     }
-    // public function delete(Request $request) {
-    //     $id = $request->input('id');
-    //     app(SanPham_BUS::class)->deleteModel($id);
-    //     return redirect()->back()->with('success','Xóa sản phẩm thành công!');
-    // }
-    // public function controlActive(Request $request) {
-    //     $id = $request->input('id');
-    //     app(SanPham_BUS::class)->controlActive($id);
-    //     return redirect()->back()->with('success','Cập nhật trạng thái sản phẩm thành công!');
-    // }
     
 }
