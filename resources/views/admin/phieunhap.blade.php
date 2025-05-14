@@ -326,11 +326,27 @@
             const giaNhap = parseFloat(giaNhapInput.value);
             const phanTramLN = parseFloat(phanTramLNInput.value);
 
+            // Check if product already exists in table
+            const tableBody = document.querySelector("#productTable tbody");
+            const existingRows = tableBody.querySelectorAll('tr');
+            let isDuplicate = false;
+
+            existingRows.forEach(row => {
+                const existingProductId = row.querySelector('input[type="hidden"]').value;
+                if (existingProductId === sanPhamId) {
+                    isDuplicate = true;
+                }
+            });
+
+            if (isDuplicate) {
+                alert("Sản phẩm này đã được thêm vào phiếu nhập!");
+                return;
+            }
+
             if (sanPhamId && soLuong > 0 && giaNhap >= 0) {
                 const thanhTien = soLuong * giaNhap;
 
                 // Thêm sản phẩm vào bảng
-                const tableBody = document.querySelector("#productTable tbody");
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>
@@ -351,7 +367,6 @@
                 // Reset form
                 sanPhamSelect.value = '';
                 soLuongInput.value = 1;
-                // phanTramLN = '';
                 giaNhapInput.value = '';
                 phanTramLNInput.value = 15; // Reset về giá trị mặc định
 
