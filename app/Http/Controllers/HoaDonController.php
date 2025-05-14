@@ -118,9 +118,13 @@ class HoaDonController extends Controller {
     public function muangay(Request $request) {
         // Lấy idsp và quantity từ request
         // dd($request->all());
+
         $idsp = $request->input('idsp2'); // Đảm bảo sử dụng đúng tên trường
         $quantity = $request->input('quantity');
-        
+        $sp = app(SanPham_BUS::class)->getModelById($idsp);
+        if($sp->getSoLuong() <= 0) {
+            return redirect()->back()->with('error', 'Sản phẩm đã hết hàng!');
+        }
         if (session()->has('listSP')) {
             session()->forget('listSP');
         }

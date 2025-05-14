@@ -1,4 +1,12 @@
 <!-- @include('admin.includes.navbar') -->
+ <?php
+
+use App\Bus\Auth_BUS;
+use App\Bus\TaiKhoan_BUS;
+
+    $email = app(Auth_BUS::class)->getEmailFromToken();
+    $user = app(TaiKhoan_BUS::class)->getModelById($email);
+ ?>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const editButtons = document.querySelectorAll('.btn-edit');
@@ -139,6 +147,7 @@
                         </span>
                     </td>
                     <td>
+                        @if($tk->getEmail() != $user->getEmail())
                         <button class="btn btn-warning btn-sm btn-edit"
                             data-username="{{ $tk->getTenTK() }}"
                             data-email="{{ $tk->getEmail() }}"
@@ -161,6 +170,7 @@
                             <button type="submit" class="btn btn-success btn-sm">Mở</button>
                             @endif
                         </form>
+                        @endif
                     </td>
                 </tr>
                 @endforeach

@@ -47,9 +47,12 @@ class HistoryController extends Controller
                 Log::info('User email from token: ' . $email);
 
                 // Truy vấn trực tiếp từ bảng hoadon
-                $rawHoaDons = DB::select("SELECT * FROM hoadon WHERE EMAIL = ?", [$email]);
+                $rawHoaDons = DB::select("SELECT * FROM hoadon
+                        WHERE EMAIL = ?
+                        ORDER BY NGAYTAO DESC;
+                        ", [$email]);
                 Log::info('Raw hoaDons from direct query: ', ['rawHoaDons' => $rawHoaDons]);
-
+                // dd($rawHoaDons);
                 if (empty($rawHoaDons)) {
                     Log::warning('No raw hoaDons found for email: ' . $email);
                     // Không gán thông báo lỗi cụ thể, để $error là null

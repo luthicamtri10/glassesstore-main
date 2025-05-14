@@ -179,15 +179,15 @@ use App\Models\DiaChi;
                 <input type="hidden" name="tongtien" value="{{$sum}}">
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Họ tên *</label>
-                    <input class="p-2  border border-0 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getIdNguoiDung()->getHoTen()}}" required>
+                    <input disabled class="p-2  border border-0 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getIdNguoiDung()->getHoTen()}}" required>
                 </div>
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Số điện thoại *</label>
-                    <input class="p-2 border border-0 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getIdNguoiDung()->getSoDienThoai()}}" required>
+                    <input disabled class="p-2 border border-0 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getIdNguoiDung()->getSoDienThoai()}}" required>
                 </div>
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold" for="">Email *</label>
-                    <input class="p-2  border border-0 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getEmail()}}" required>
+                    <input disabled class="p-2  border border-0 rounded hover:border-blue-500" type="text"  id="" value="{{$user->getEmail()}}" required>
                 </div>
                 <div class="d-flex flex-column">
                     <label class="text-dark fw-semibold text-break " for="">Địa chỉ *</label>

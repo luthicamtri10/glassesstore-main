@@ -13,12 +13,17 @@ use App\Bus\TaiKhoan_BUS;
 use App\Bus\SanPham_BUS;
     $sanPham = app(SanPham_BUS::class);
     ?>
-     @if(session('error'))
-    <div class="alert alert-danger successAlert">{{ session('error') }}</div>
-@elseif(session('success'))
-    <div class="alert alert-success successAlert">{{ session('success') }}</div>        
-@endif
+    @if(session('error'))
+        <div class="alert alert-danger successAlert fixed-top left-alert" style="width: 500px;">{{ session('error') }}</div>
+    @elseif(session('success'))
+        <div class="alert alert-success successAlert fixed-top left-alert" style="width: 500px;">{{ session('success') }}</div>        
+    @endif
     <style>
+      .left-alert {
+        left: 20px; /* Căn trái */
+        top: 20px;  /* Căn trên */
+        z-index: 1050; /* Đảm bảo alert nổi bật hơn các phần khác */
+    }
 header {
     position: sticky;
     top: 0;
