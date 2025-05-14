@@ -148,15 +148,14 @@ class SanPham_DAO implements DAOInterface{
     public function search(string $condition, array $columnNames): array
 {
     if (empty($condition)) {
-        throw new InvalidArgumentException("Search condition cannot be empty or null");
+        throw new InvalidArgumentException("Điều kiện tìm kiếm không được rỗng hoặc null");
     }
 
-   
     $query = "
         SELECT sanpham.ID, sanpham.TENSANPHAM, sanpham.MOTA, sanpham.DONGIA, 
-               sanpham.THOIGIANBAOHANH, sanpham.TRANGTHAIHD,
-               kieudang.ID AS IDKIEUDANG, sanpham.IDHANG, sanpham.IDLSP,
-               hang.TENHANG, loaisanpham.TENLSP
+               sanpham.THOIGIANBAOHANH, sanpham.TRANGTHAIHD, sanpham.soLuong,
+               sanpham.IDHANG, sanpham.IDLSP, sanpham.IDKIEUDANG,
+               hang.TENHANG, loaisanpham.TENLSP, kieudang.TENKIEUDANG
         FROM sanpham
         JOIN hang ON hang.ID = sanpham.IDHANG
         JOIN loaisanpham ON loaisanpham.ID = sanpham.IDLSP
@@ -164,15 +163,12 @@ class SanPham_DAO implements DAOInterface{
         WHERE sanpham.TENSANPHAM LIKE CONCAT('%', ?, '%')
     ";
 
-   
     $rs = database_connection::executeQuery($query, $condition);
     $list = [];
     
-    
     while ($row = $rs->fetch_assoc()) {
-        // Kiểm tra ID có tồn tại
         if (!isset($row['ID'])) {
-            error_log("Warning: Missing sanpham.ID in query result: " . json_encode($row));
+            error_log("Cảnh báo: Thiếu sanpham.ID trong kết quả truy vấn: " . json_encode($row));
             continue;
         }
         

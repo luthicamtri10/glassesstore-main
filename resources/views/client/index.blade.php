@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isLoading = false;
     let debounceTimeout = null;
 
-    // Hàm debounce để giới hạn tần suất gọi hàm
+    // Hàm debounce
     const debounce = (func, delay) => {
         return (...args) => {
             clearTimeout(debounceTimeout);
@@ -381,6 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             const productList = document.getElementById('product-list');
+            const paginationContainer = document.querySelector('.pagination').parentElement;
             productList.innerHTML = '';
 
             if (data.listSP.length === 0) {
@@ -421,9 +422,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     productRow.insertAdjacentHTML('beforeend', html);
                 });
                 productList.appendChild(productRow);
-
-                // Gắn sự kiện cho các sản phẩm mới tải
                 attachProductClickEvents();
+            }
+
+            // Cập nhật phân trang
+            if (data.pagination) {
+                paginationContainer.innerHTML = data.pagination;
+                attachPaginationEvents();
             }
 
             if (scrollToList) {
@@ -436,6 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Lỗi tải sản phẩm:', error);
+            productList.innerHTML = '<h3 class="text-center text-danger w-100">Lỗi tải sản phẩm. Vui lòng thử lại.</h3>';
         } finally {
             isLoading = false;
         }
@@ -456,14 +462,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const idspInput = modal.querySelector('input[name="idsp"]');
         const idspInput2 = modal.querySelector('input[name="idsp2"]');
-        const price = modal.querySelector('input[name="price"]');
         if (idspInput) {
             idspInput.value = this.dataset.idsp || '';
             idspInput2.value = this.dataset.idsp || '';
-            price.value = this.dataset.price;
-            
         }
-        
+
         modal.querySelector('div[name="tensp"]').textContent = this.dataset.tensp || 'Không xác định';
         modal.querySelector('div[name="hang"]').textContent = this.dataset.hang || 'Không xác định';
         modal.querySelector('div[name="lsp"]').textContent = this.dataset.lsp || 'Không xác định';
@@ -477,10 +480,31 @@ document.addEventListener('DOMContentLoaded', () => {
         new bootstrap.Modal(modal).show();
     };
 
-    // Gắn sự kiện cho các sản phẩm render từ server
-    attachProductClickEvents();
+    // Hàm gắn sự kiện cho các nút phân trang
+    const attachPaginationEvents = () => {
+        document.querySelectorAll('.pagination .page-link').forEach(link => {
+            link.removeEventListener('click', handlePaginationClick);
+            link.addEventListener('click', handlePaginationClick);
+        });
+    };
 
-    // Tải sản phẩm ban đầu nếu có tham số tìm kiếm hoặc lọc
+    // Hàm xử lý click phân trang
+    const handlePaginationClick = (e) => {
+        e.preventDefault();
+        const page = e.target.closest('a')?.getAttribute('data-page');
+        if (page) {
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('page', page);
+            window.history.pushState({}, '', `/index?${urlParams.toString()}`);
+            debounce(loadProducts, 300)(`?${urlParams.toString()}`, true);
+        }
+    };
+
+    // Gắn sự kiện ban đầu
+    attachProductClickEvents();
+    attachPaginationEvents();
+
+    // Tải sản phẩm ban đầu nếu có tham số
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.toString()) {
         loadProducts(window.location.search);
@@ -521,7 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Hàm xử lý dropdown chung
+    // Xử lý dropdown chung
     const setupDropdown = (toggleId, dropdownId, applyBtnId, callback) => {
         const toggle = document.getElementById(toggleId);
         const dropdown = document.getElementById(dropdownId);
@@ -559,37 +583,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Lọc nâng cao
     setupDropdown('filter-toggle', 'filter-dropdown', 'apply-filter', () => {
-        const filterKeyword = document.getElementById('filter-keyword').value.trim();
-        const filterHang = document.getElementById('filter-hang').value;
-        const filterLsp = document.getElementById('filter-lsp').value;
-        const filterKieuDang = document.getElementById('filter-kieudang').value;
-        const filterPriceFrom = document.getElementById('filter-price-from').value;
-        const filterPriceTo = document.getElementById('filter-price-to').value;
-// Kiểm tra nếu chỉ nhập một trong hai ô giá
+    const filterKeyword = document.getElementById('filter-keyword').value.trim();
+    const filterHang = document.getElementById('filter-hang').value;
+    const filterLsp = document.getElementById('filter-lsp').value;
+    const filterKieuDang = document.getElementById('filter-kieudang').value;
+    const filterPriceFrom = document.getElementById('filter-price-from').value;
+    const filterPriceTo = document.getElementById('filter-price-to').value;
+
     if ((filterPriceFrom && !filterPriceTo) || (!filterPriceFrom && filterPriceTo)) {
         alert('Vui lòng nhập cả giá "từ" và "đến"');
-        return; 
+        return;
     }
-    // Kiểm tra nếu cả hai ô giá đều được nhập, thì giá từ phải nhỏ hơn giá đến
     if (filterPriceFrom && filterPriceTo) {
         const fromValue = parseFloat(filterPriceFrom);
         const toValue = parseFloat(filterPriceTo);
         if (fromValue >= toValue) {
             alert('Giá "từ" phải nhỏ hơn giá "đến"');
-            return; 
+            return;
         }
     }
-        const params = new URLSearchParams();
-        if (filterKeyword) params.set('keyword', filterKeyword);
-        if (filterHang && filterHang !== '0') params.set('hang', filterHang);
-        if (filterLsp && filterLsp !== '0') params.set('lsp', filterLsp);
-        if (filterKieuDang && filterKieuDang !== '0') params.set('kieudang', filterKieuDang);
-        if (filterPriceFrom && filterPriceTo) params.set('khoanggia', `[${filterPriceFrom}-${filterPriceTo}]`);
-        else if (filterPriceFrom) params.set('khoanggia', `[${filterPriceFrom}-...]`);
 
-        window.history.pushState({}, '', `/index?${params.toString()}`);
-        debounce(loadProducts, 300)('?' + params.toString(), true);
+    const params = new URLSearchParams();
+    if (filterKeyword) params.set('keyword', filterKeyword);
+    if (filterHang && filterHang !== '0') params.set('hang', filterHang);
+    if (filterLsp && filterLsp !== '0') params.set('lsp', filterLsp);
+    if (filterKieuDang && filterKieuDang !== '0') params.set('kieudang', filterKieuDang);
+    if (filterPriceFrom && filterPriceTo) params.set('khoanggia', `[${filterPriceFrom}-${filterPriceTo}]`);
+
+    window.history.pushState({}, '', `/index?${params.toString()}`);
+    debounce(loadProducts, 300)('?' + params.toString(), true);
+    sessionStorage.setItem('filterKeyword', filterKeyword);
+    sessionStorage.setItem('keywordSource', 'filter');
+});
+
+// Khôi phục keyword khi trang tải
+const keywordSource = sessionStorage.getItem('keywordSource');
+if (keywordSource === 'search') {
+    const searchKeyword = sessionStorage.getItem('searchKeyword') || '';
+    document.querySelectorAll('input[name="keyword"]').forEach(input => {
+        input.value = searchKeyword;
     });
+    document.getElementById('filter-keyword').value = '';
+} else if (keywordSource === 'filter') {
+    const filterKeyword = sessionStorage.getItem('filterKeyword') || '';
+    document.getElementById('filter-keyword').value = filterKeyword;
+    document.querySelectorAll('input[name="keyword"]').forEach(input => {
+        input.value = '';
+    });
+} else {
+    document.querySelectorAll('input[name="keyword"]').forEach(input => {
+        input.value = '';
+    });
+    document.getElementById('filter-keyword').value = '';
+}
+
+// Lưu keyword khi nhập vào ô lọc nâng cao
+const filterKeywordInput = document.getElementById('filter-keyword');
+if (filterKeywordInput) {
+    filterKeywordInput.addEventListener('input', () => {
+        sessionStorage.setItem('filterKeyword', filterKeywordInput.value);
+        sessionStorage.setItem('keywordSource', 'filter');
+    });
+}
 
     // Lọc theo loại (lsp)
     setupDropdown('lsp-toggle', 'lsp-dropdown', 'apply-lsp-filter', () => {
@@ -649,12 +704,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('productDetailModal');
             if (modal) {
                 bootstrap.Modal.getInstance(modal).hide();
-                // Xử lý backdrop nếu còn sót
                 setTimeout(() => {
                     document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
                     document.body.classList.remove('modal-open');
                     document.body.style = '';
-                }, 300); // Đợi hiệu ứng modal đóng xong
+                }, 300);
             }
         }
     }
@@ -686,54 +740,39 @@ document.addEventListener('DOMContentLoaded', () => {
             item.style.backgroundColor = '#55d5d2';
         }
     });
-       
+
     // Xử lý dropdown "Sản phẩm" bằng AJAX
     const setupSanPhamDropdown = () => {
         const sanPhamDropdown = document.getElementById('sanpham-dropdown');
         const sanPhamItems = sanPhamDropdown.querySelectorAll('.dropdown-item');
         const submenuItems = sanPhamDropdown.querySelectorAll('.submenu li');
 
-        // Xử lý khi chọn loại sản phẩm (LSP)
         sanPhamItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 const lspId = item.getAttribute('data-lsp-id');
-                
-                // Tạo tham số để gửi qua AJAX
                 const params = new URLSearchParams();
                 if (lspId && lspId !== '0') params.set('lsp', lspId);
-
-                // Cập nhật URL mà không tải lại trang
                 window.history.pushState({}, '', `/index?${params.toString()}`);
-                
-                // Gọi AJAX để tải lại danh sách sản phẩm
                 debounce(loadProducts, 300)(`?${params.toString()}`, true);
             });
         });
 
-        // Xử lý khi chọn kiểu dáng (KieuDang)
         submenuItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 const lspId = item.getAttribute('data-lsp-id');
                 const kieuDangId = item.getAttribute('data-kieudang-id');
-
-                // Tạo tham số để gửi qua AJAX
                 const params = new URLSearchParams();
                 if (lspId && lspId !== '0') params.set('lsp', lspId);
                 if (kieuDangId && kieuDangId !== '0') params.set('kieudang', kieuDangId);
-
-                // Cập nhật URL mà không tải lại trang
                 window.history.pushState({}, '', `/index?${params.toString()}`);
-                
-                // Gọi AJAX để tải lại danh sách sản phẩm
                 debounce(loadProducts, 300)(`?${params.toString()}`, true);
             });
         });
 
-        // Đóng dropdown khi click ra ngoài
         document.addEventListener('click', (e) => {
             if (!sanPhamDropdown.contains(e.target) && !e.target.closest('#item-sanpham')) {
                 sanPhamDropdown.classList.remove('show');
@@ -741,7 +780,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Gọi hàm setupSanPhamDropdown khi trang tải xong
     setupSanPhamDropdown();
 });
 </script>
@@ -806,7 +844,7 @@ document.addEventListener('DOMContentLoaded', () => {
            <!-- <li class="nav-item fw-medium my-2 mx-2" id="item-sanpham"><a href="javascript:void(0)" class="nav-link text-white">Sản Phẩm </a></li> -->
             <li class="nav-item fw-medium" style="position: relative;">
     <form action="/index" method="get" role="search">
-        <input class="rounded-pill py-2 mb-2" type="text" placeholder="Tìm kiếm sản phẩm" style="width: 300px; outline: none; border: none; padding: 0 30px 0 10px;" name="keyword" value="{{ request('keyword') }}">
+        <input type="search" name="keyword" value="" class="form-control me-2 rounded-5" placeholder="Tìm kiếm sản phẩm" aria-label="Search">
         <i class="fa-solid fa-magnifying-glass mb-3" style="position: absolute; right: 10px; color: #555; padding: 10px;"></i>
     </form>
 </li>
@@ -899,7 +937,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="filter-options">
       <!-- Thêm ô tìm kiếm theo tên sản phẩm -->
       <label for="filter-keyword" class="form-label">Tên sản phẩm:</label>
-      <input type="text" class="form-control mb-2" id="filter-keyword" name="keyword" placeholder="Nhập tên sản phẩm" value="{{ request('keyword') ?? '' }}">
+<input type="text" class="form-control" id="filter-keyword" value="" placeholder="Nhập tên sản phẩm">
       
       <label for="filter-hang" class="form-label">Hãng:</label>
       <select class="form-select mb-2" id="filter-hang" name="filter_hang">
@@ -1029,90 +1067,84 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="dmsp w-100" id="list-product">
           <div class="container-rows" style="width: 100%;display: block;" id="product-list">
-          @if(empty($listSP))
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 my-5 w-100">
-              <h3 class="text-center text-gray w-100">Không có sản phẩm cần tìm</h3>
-            </div>
-          @else
-            @php $count = 0; @endphp
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 my-5 w-100">
-              @foreach($listSP as $sp)
+    @if(empty($listSP))
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 my-5 w-100">
+            <h3 class="text-center text-gray w-100">Không có sản phẩm cần tìm</h3>
+        </div>
+    @else
+        @php $count = 0; @endphp
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4 my-5 w-100">
+            @foreach($tmp as $sp)
                 @if($count++ >= 8) @break @endif
                 @php
-                  $stock = $sanPham->getStock($sp->getId());
+                    $stock = $sanPham->getStock($sp->getId());
                 @endphp
                 <div class="col rounded-5 product"
-                      data-stock="{{ $sp->getSoLuong() }}"
-                      data-idsp="{{ $sp->getId() }}"
-                      data-tensp="{{ $sp->getTenSanPham() }}"
-                      data-hang="{{ $sp->getIdHang()->getTenHang() }}"
-                      data-lsp="{{ $sp->getIdLSP()->getTenLSP() }}"
-                      data-kieudang="{{ $sp->getIdKieuDang() ? $sp->getIdKieuDang()->getTenKieuDang() : 'Không xác định' }}"
-                      data-mota="{{ $sp->getMoTa() }}"
-                      data-dongia="{{ number_format($sp->getDonGia(), 0, ',', '.') }}₫"
-                      data-tgbh="{{ $sp->getThoiGianBaoHanh() }}"
-                      data-img="/productImg/{{ $sp->getId() }}.webp"
-                      data-bs-toggle="modal"
-                      data-bs-target="#productDetailModal">
-                  <div class="card shadow-sm border-0 h-100 col rounded-5 product-item">
-                    <div class="ratio ratio-1x1">
-                      <img src="/productImg/{{ $sp->getId() }}.webp" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
+                     data-stock="{{ $sp->getSoLuong() }}"
+                     data-idsp="{{ $sp->getId() }}"
+                     data-tensp="{{ $sp->getTenSanPham() }}"
+                     data-hang="{{ $sp->getIdHang()->getTenHang() }}"
+                     data-lsp="{{ $sp->getIdLSP()->getTenLSP() }}"
+                     data-kieudang="{{ $sp->getIdKieuDang() ? $sp->getIdKieuDang()->getTenKieuDang() : 'Không xác định' }}"
+                     data-mota="{{ $sp->getMoTa() }}"
+                     data-dongia="{{ number_format($sp->getDonGia(), 0, ',', '.') }}₫"
+                     data-tgbh="{{ $sp->getThoiGianBaoHanh() }}"
+                     data-img="/productImg/{{ $sp->getId() }}.webp"
+                     data-bs-toggle="modal"
+                     data-bs-target="#productDetailModal">
+                    <div class="card shadow-sm border-0 h-100 col rounded-5 product-item">
+                        <div class="ratio ratio-1x1">
+                            <img src="/productImg/{{ $sp->getId() }}.webp" class="card-img-top object-fit-cover rounded-top-5" alt="Ảnh sản phẩm">
+                        </div>
+                        <div class=" card-body d-flex flex-column justify-content-between h-60 p-3">
+                            <h6 class="card-title text-truncate text-center w-100" title="{{ $sp->getTenSanPham() }}">{{ $sp->getTenSanPham() }}</h6>
+                            <div class="d-flex align-items-center justify-content-between mt-auto rounded-4 bg-blue-500">
+                                <span class="fw-bold text-primary fs-5 text-center w-100 text-white rounded-4 flex justify-center p-2 txtgia" style="background-color: #55d5d2;height: 50px;cursor: pointer;">
+                                    {{ number_format($sp->getDonGia(), 0, ',', '.') }}₫
+                                </span>
+                                <i class="fa-solid fa-arrow-up-right text-success"></i>
+                            </div>
+                        </div>
                     </div>
-                    <div class=" card-body d-flex flex-column justify-content-between h-60 p-3">
-                      <h6 class="card-title text-truncate text-center w-100" title="{{ $sp->getTenSanPham() }}">{{ $sp->getTenSanPham() }}</h6>
-                      <div class="d-flex align-items-center justify-content-between mt-auto rounded-4 bg-blue-500 ">
-                        <span class="fw-bold text-primary fs-5 text-center w-100 text-white rounded-4 flex justify-center p-2 txtgia" style="background-color: #55d5d2;height: 50px;cursor: pointer;">
-                          {{ number_format($sp->getDonGia(), 0, ',', '.') }}₫
-                        </span>
-                        <i class="fa-solid fa-arrow-up-right text-success"></i>
-                      </div>
-                    </div>
-                  </div>
                 </div>
             @endforeach
-          @endif
-          </div>
-          <nav aria-label="Page navigation example" class="d-flex justify-content-center">
-            <ul class="pagination">
-                <!-- Hiển thị PREV nếu không phải trang đầu tiên -->
-                <?php
-                $queryString = isset($_GET['keyword']) ? '&keyword=' . urlencode($_GET['keyword']) : '';
-                $query = $_GET;
+        </div>
+    @endif
+</div>
+<nav aria-label="Page navigation example" class="d-flex justify-content-center">
+    <ul class="pagination">
+        @if ($current_page > 1)
+            <li class="page-item">
+                <a class="page-link" href="javascript:void(0)" data-page="{{ $current_page - 1 }}" aria-label="Previous">
+                    <span aria-hidden="true">«</span>
+                </a>
+            </li>
+        @endif
 
-                // PREV
-                if ($current_page > 1) {
-                    echo '<li class="page-item">
-                            <a class="page-link" href="?' . http_build_query(array_merge($query, ['page' => $current_page - 1])) . '" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>';
-                }
+        @php
+            $page_range = 1;
+            $start_page = max(1, $current_page - $page_range);
+            $end_page = min($total_page, $current_page + $page_range);
+        @endphp
+        @for ($i = $start_page; $i <= $end_page; $i++)
+            <li class="page-item {{ $i == $current_page ? 'active' : '' }}">
+                @if ($i == $current_page)
+                    <span class="page-link">{{ $i }}</span>
+                @else
+                    <a class="page-link" href="javascript:void(0)" data-page="{{ $i }}">{{ $i }}</a>
+                @endif
+            </li>
+        @endfor
 
-                // Hiển thị các trang phân trang xung quanh trang hiện tại
-                $page_range = 1; // Hiển thị 1 trang trước và 1 trang sau
-                $start_page = max(1, $current_page - $page_range);
-                $end_page = min($total_page, $current_page + $page_range);
-
-                for ($i = $start_page; $i <= $end_page; $i++) {
-                    if ($i == $current_page) {
-                        echo '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
-                    } else {
-                        echo '<li class="page-item"><a class="page-link" href="?' . http_build_query(array_merge($query, ['page' => $i])) . '">' . $i . '</a></li>';
-                    }
-                }
-                
-                // NEXT
-                
-                if ($current_page < $total_page) {
-                    echo '<li class="page-item">
-                            <a class="page-link" href="?' . http_build_query(array_merge($query, ['page' => $current_page + 1])) . '" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>';
-                }
-                ?>
-            </ul>
-        </nav>
+        @if ($current_page < $total_page)
+            <li class="page-item">
+                <a class="page-link" href="javascript:void(0)" data-page="{{ $current_page + 1 }}" aria-label="Next">
+                    <span aria-hidden="true">»</span>
+                </a>
+            </li>
+        @endif
+    </ul>
+</nav>
         </div>
 
       </div>

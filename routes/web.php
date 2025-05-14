@@ -128,38 +128,7 @@ Route::get('/index', function (Request $request) {
     if ($idKieuDang || $startPrice !== null || $endPrice !== null || $keyword) {
         $filteredSP = $sanPham->searchByCriteria($idHang, $idLSP, $idKieuDang, $startPrice, $endPrice, $keyword);
     }
-
-    // Chuẩn bị dữ liệu JSON
-    $products = array_map(function($sp) { 
-        return [
-            'id' => $sp->getId(),
-            'tenSanPham' => $sp->getTenSanPham(),
-            'moTa' => $sp->getMoTa(),
-            'donGia' => number_format($sp->getDonGia(), 0, ',', '.'),
-            'thoiGianBaoHanh' => $sp->getThoiGianBaoHanh(),
-            'img' => "productImg/{$sp->getId()}.webp",
-            'hang' => $sp->getIdHang()->getTenHang(),
-            'lsp' => $sp->getIdLSP()->getTenLSP(),
-            'kieudang' => $sp->getIdKieuDang() ? $sp->getIdKieuDang()->getTenKieuDang() : 'Không xác định',
-            
-        ];
-    }, $filteredSP);
-
-    $headers = [
-        'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
-        'Pragma' => 'no-cache',
-        'Expires' => '0',
-    ];
-
-    // Trả về JSON cho AJAX hoặc render view
-    if ($request->ajax()) {
-        return response()->json([
-            'listSP' => $products,
-            'success' => true
-        ], 200)->withHeaders($headers);
-    }
-
-    // Phân trang
+// Phân trang
     $current_page = $request->query('page', 1);
     $limit = 8;
     $total_record = count($filteredSP ?? []);
@@ -167,6 +136,79 @@ Route::get('/index', function (Request $request) {
     $current_page = max(1, min($current_page, $total_page));
     $start = ($current_page - 1) * $limit;
     $tmp = empty($filteredSP) ? [] : array_slice($filteredSP, $start, $limit);
+    // Chuẩn bị dữ liệu JSON
+    $products = array_map(function($sp) { 
+        return [
+            'id' => $sp->getId(),
+            'tenSanPham' => $sp->getTenSanPham(),
+            'moTa' => $sp->getMoTa(),
+            'donGia' => number_format($sp->getDonGia(), 0, ',', '.') . '₫',
+            'thoiGianBaoHanh' => $sp->getThoiGianBaoHanh(),
+            'stock' => $sp->getSoLuong(),
+            'img' => "productImg/{$sp->getId()}.webp",
+            'hang' => $sp->getIdHang()->getTenHang(),
+            'lsp' => $sp->getIdLSP()->getTenLSP(),
+            'kieudang' => $sp->getIdKieuDang() ? $sp->getIdKieuDang()->getTenKieuDang() : 'Không xác định',
+            
+        ];
+    }, $tmp);
+
+    $headers = [
+        'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+        'Pragma' => 'no-cache',
+        'Expires' => '0',
+    ];
+
+    // Tạo HTML phân trang cho AJAX
+    $paginationHtml = '';
+    if ($request->ajax()) {
+        ob_start();
+        ?>
+        <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+            <ul class="pagination">
+                <?php if ($current_page > 1): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" data-page="<?php echo $current_page - 1; ?>" aria-label="Previous">
+                            <span aria-hidden="true">«</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+
+                <?php
+                $page_range = 1;
+                $start_page = max(1, $current_page - $page_range);
+                $end_page = min($total_page, $current_page + $page_range);
+                for ($i = $start_page; $i <= $end_page; $i++):
+                ?>
+                    <li class="page-item <?php echo $i == $current_page ? 'active' : ''; ?>">
+                        <?php if ($i == $current_page): ?>
+                            <span class="page-link"><?php echo $i; ?></span>
+                        <?php else: ?>
+                            <a class="page-link" href="javascript:void(0)" data-page="<?php echo $i; ?>"><?php echo $i; ?></a>
+                        <?php endif; ?>
+                    </li>
+                <?php endfor; ?>
+
+                <?php if ($current_page < $total_page): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" data-page="<?php echo $current_page + 1; ?>" aria-label="Next">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
+        <?php
+        $paginationHtml = ob_get_clean();
+
+        return response()->json([
+            'listSP' => $products,
+            'current_page' => $current_page,
+            'total_page' => $total_page,
+            'pagination' => $paginationHtml,
+            'success' => true,
+        ], 200)->withHeaders($headers);
+    }
 
     // Kiểm tra đăng nhập
     $isLogin = app(Auth_BUS::class)->isAuthenticated();
@@ -196,7 +238,7 @@ Route::get('/index', function (Request $request) {
         'sanPham' => $sanPham,
         'gh' => $gh,
         'totalSPinGH' => $total,
-        'initialProducts' => $products 
+        'initialProducts' => $products
     ]);
 });
 Route::get('/index/quantri', function() {
